@@ -9,6 +9,7 @@
 
 import { ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 import { GroupConditional } from './conditional.js'
+import { COMPILER } from '../../symbols.js'
 
 /**
  * Object group represents a group with multiple conditionals, where each
@@ -27,10 +28,10 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any>> {
   /**
    * Compiles to a group
    */
-  compile(refs: RefsStore): ObjectGroupNode {
+  [COMPILER](refs: RefsStore): ObjectGroupNode {
     return {
       type: 'group',
-      conditions: this.#conditionals.map((conditional) => conditional.compile(refs)),
+      conditions: this.#conditionals.map((conditional) => conditional[COMPILER](refs)),
     }
   }
 }

@@ -12,25 +12,26 @@ import type { CompilerNodes, ObjectNode, RefsStore } from '@vinejs/compiler/type
 import { BaseType } from './base.js'
 import { ObjectGroup } from './object/group.js'
 import { GroupConditional } from './object/conditional.js'
-import type { ConstructableSchema, SchemaTypes, Transformer } from '../types.js'
+import { ConstructableSchema, SchemaTypes, Transformer } from '../types.js'
+import { BRAND, CBRAND, COMPILER } from '../symbols.js'
 
 export class VineCamelCaseRoot<Schema extends SchemaTypes>
-  implements ConstructableSchema<Schema['__camelCaseBrand'], Schema['__camelCaseBrand']>
+  implements ConstructableSchema<Schema[typeof CBRAND], Schema[typeof CBRAND]>
 {
-  declare __brand: Schema['__camelCaseBrand']
-  declare __camelCaseBrand: Schema['__camelCaseBrand']
+  declare [BRAND]: Schema[typeof CBRAND];
+  declare [CBRAND]: Schema[typeof CBRAND]
   #schema: Schema
 
   constructor(schema: Schema) {
     this.#schema = schema
   }
 
-  compile(
+  [COMPILER](
     propertyName: string,
     refs: RefsStore,
     transform?: Transformer<any, any> | undefined
   ): CompilerNodes {
-    return this.#schema.compile(propertyName, refs, transform)
+    return this.#schema[COMPILER](propertyName, refs, transform)
   }
 }
 
@@ -88,7 +89,7 @@ export class VineRoot<
   /**
    * Compiles the schema type to a compiler node
    */
-  compile(_: string, refs: RefsStore): ObjectNode {
+  [COMPILER](_: string, refs: RefsStore): ObjectNode {
     return {
       type: 'object',
       fieldName: '*',
@@ -109,10 +110,10 @@ export class VineRoot<
         }
       }),
       properties: Object.keys(this.#properties).map((property) => {
-        return this.#properties[property].compile(property, refs)
+        return this.#properties[property][COMPILER](property, refs)
       }),
       groups: this.#groups.map((group) => {
-        return group.compile(refs)
+        return group[COMPILER](refs)
       }),
     }
   }

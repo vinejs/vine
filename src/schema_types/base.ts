@@ -8,13 +8,8 @@
  */
 
 import type { CompilerNodes, RefsStore } from '@vinejs/compiler/types'
-import type {
-  Parser,
-  Validation,
-  Transformer,
-  FieldOptions,
-  ConstructableSchema,
-} from '../types.js'
+import { Parser, Validation, Transformer, FieldOptions, ConstructableSchema } from '../types.js'
+import { BRAND, CBRAND, COMPILER } from '../symbols.js'
 
 /**
  * The BaseSchema class abstracts the repetitive parts of creating
@@ -27,7 +22,7 @@ export abstract class BaseType<Output, CamelCaseOutput>
    * Each subtype should implement the compile method that returns
    * one of the known compiler nodes
    */
-  abstract compile(
+  abstract [COMPILER](
     propertyName: string,
     refs: RefsStore,
     transform?: Transformer<any, any>
@@ -37,8 +32,8 @@ export abstract class BaseType<Output, CamelCaseOutput>
    * The output value of the field. The property points to a type only
    * and not the real value.
    */
-  declare __brand: Output
-  declare __camelCaseBrand: CamelCaseOutput
+  declare [BRAND]: Output;
+  declare [CBRAND]: CamelCaseOutput
 
   /**
    * Field options
@@ -80,5 +75,66 @@ export abstract class BaseType<Output, CamelCaseOutput>
   bail(state: boolean) {
     this.options.bail = state
     return this
+  }
+
+  /**
+   * Mark the field under validation as optional. An optional
+   * field allows both null and undefined values.
+   */
+  optional(): OptionalModifier<this> {
+    return new OptionalModifier(this)
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable(): NullableModifier<this> {
+    return new NullableModifier(this)
+  }
+}
+
+/**
+ * Modifies the schema type to allow null values
+ */
+class NullableModifier<Schema extends BaseType<any, any>> extends BaseType<
+  Schema[typeof BRAND] | null,
+  Schema[typeof CBRAND] | null
+> {
+  #parent: Schema
+  constructor(parent: Schema) {
+    super()
+    this.#parent = parent
+  }
+
+  /**
+   * Compiles to compiler node
+   */
+  [COMPILER](propertyName: string, refs: RefsStore): CompilerNodes {
+    return this.#parent[COMPILER](propertyName, refs)
+  }
+}
+
+/**
+ * Modifies the schema type to allow undefined values
+ */
+class OptionalModifier<Schema extends BaseType<any, any>> extends BaseType<
+  Schema[typeof BRAND] | undefined,
+  Schema[typeof CBRAND] | undefined
+> {
+  #parent: Schema
+  constructor(parent: Schema) {
+    super()
+    this.#parent = parent
+  }
+
+  /**
+   * Compiles to compiler node
+   */
+  [COMPILER](propertyName: string, refs: RefsStore): CompilerNodes {
+    return this.#parent[COMPILER](propertyName, refs)
   }
 }

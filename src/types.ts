@@ -8,6 +8,9 @@
  */
 
 import type { CompilerNodes, FieldContext, RefsStore } from '@vinejs/compiler/types'
+import { BRAND, CBRAND, COMPILER } from './symbols.js'
+
+export type EnumLike = { [K: string]: string | number; [number: number]: string }
 
 /**
  * Representation of a function that performs validation.
@@ -58,7 +61,7 @@ export type Validation<Options extends any> = {
  * The transform function to mutate the output value
  */
 export type Transformer<Schema extends SchemaTypes, Output> = (
-  value: Exclude<Schema['__brand'], undefined>,
+  value: Exclude<Schema[typeof BRAND], undefined>,
   ctx: FieldContext
 ) => Output
 
@@ -99,13 +102,17 @@ export interface MessagesProviderContact {
  * constructed for type inference and compiler output
  */
 export interface ConstructableSchema<Output, CamelCaseOutput> {
-  __brand: Output
-  __camelCaseBrand: CamelCaseOutput
+  [BRAND]: Output
+  [CBRAND]: CamelCaseOutput
 
   /**
-   * Return compiler output
+   * Returns compiler output
    */
-  compile(propertyName: string, refs: RefsStore, transform?: Transformer<any, any>): CompilerNodes
+  [COMPILER](
+    propertyName: string,
+    refs: RefsStore,
+    transform?: Transformer<any, any>
+  ): CompilerNodes
 }
 
 /**
@@ -129,4 +136,4 @@ export type VineOptions = {
   messagesProvider: (messages: Record<string, string>) => MessagesProviderContact
 }
 
-export type Infer<Schema extends ConstructableSchema<any, any>> = Schema['__brand']
+export type Infer<Schema extends ConstructableSchema<any, any>> = Schema[typeof BRAND]

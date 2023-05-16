@@ -565,13 +565,15 @@ test.group('Types | Tuples', () => {
   test('convert keys to camelCase', ({ expectTypeOf }) => {
     const schema = vine
       .schema({
-        contacts: vine
-          .array(
+        colors: vine
+          .tuple([
+            vine.string(),
+            vine.string(),
             vine.object({
-              email: vine.string(),
-              is_primary: vine.boolean(),
-            })
-          )
+              primary_1: vine.string(),
+            }),
+          ])
+          .allowUnknownProperties()
           .nullable()
           .optional(),
       })
@@ -579,13 +581,200 @@ test.group('Types | Tuples', () => {
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
-      contacts:
+      colors: [string, string, { primary1: string }, ...unknown[]] | null | undefined
+    }>()
+  })
+})
+
+test.group('Types | Union', () => {
+  test('infer types', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      contact: vine.union([
+        vine.union.if(
+          (value) => vine.helpers.isObject(value) && 'email' in value,
+          vine.object({
+            email: vine.string(),
+            otp: vine.string(),
+          })
+        ),
+        vine.union.if(
+          (value) => vine.helpers.isObject(value) && 'username' in value,
+          vine.object({
+            username: vine.string(),
+            password: vine.string(),
+          })
+        ),
+      ]),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      contact:
         | {
             email: string
-            isPrimary: boolean
-          }[]
-        | null
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+    }>()
+  })
+
+  test('infer types of nested unions', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      contact: vine.union([
+        vine.union.if(
+          (value) => vine.helpers.isObject(value) && 'email' in value,
+          vine.union([
+            vine.union.if(
+              (value) => vine.helpers.isObject(value) && 'otp' in value,
+              vine.object({
+                otp: vine.string(),
+              })
+            ),
+            vine.union.else(
+              vine.object({
+                email: vine.string(),
+              })
+            ),
+          ])
+        ),
+        vine.union.if(
+          (value) => vine.helpers.isObject(value) && 'username' in value,
+          vine.object({
+            username: vine.string(),
+            password: vine.string(),
+          })
+        ),
+      ]),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      contact:
+        | {
+            email: string
+          }
+        | {
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+    }>()
+  })
+})
+
+test.group('Types | Record', () => {
+  test('infer types', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      colors: vine.record(vine.string()),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      colors: {
+        [K: string]: string
+      }
+    }>()
+  })
+
+  test('infer types with nullable fields', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      colors: vine.record(vine.string()).nullable(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      colors: {
+        [K: string]: string
+      } | null
+    }>()
+  })
+
+  test('infer types with optional fields', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      colors: vine.record(vine.string()).optional().nullable(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      colors:
+        | {
+            [K: string]: string
+          }
         | undefined
+        | null
+    }>()
+  })
+
+  test('infer union record types', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      /**
+       * @todo: Use union of types here
+       */
+      colors: vine.record(vine.string()),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      colors: {
+        [K: string]: string
+      }
+    }>()
+  })
+})
+
+test.group('Types | Enum', () => {
+  test('infer types', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      role: vine.enum(['admin', 'moderator', 'writer']),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      role: 'admin' | 'moderator' | 'writer'
+    }>()
+  })
+
+  test('infer types with nullable fields', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      role: vine.enum(['admin', 'moderator', 'writer']).nullable(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      role: 'admin' | 'moderator' | 'writer' | null
+    }>()
+  })
+
+  test('infer types with optional fields', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      role: vine.enum(['admin', 'moderator', 'writer']).nullable().optional(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      role: 'admin' | 'moderator' | 'writer' | null | undefined
+    }>()
+  })
+
+  test('infer types from native enum', ({ expectTypeOf }) => {
+    enum Role {
+      MODERATOR = 'moderator',
+      WRITER = 'writer',
+      ADMIN = 'admin',
+    }
+
+    const schema = vine.schema({
+      role: vine.enum(Role).nullable().optional(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      role: Role | null | undefined
     }>()
   })
 })

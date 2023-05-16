@@ -7,18 +7,19 @@
  * file that was distributed with this source code.
  */
 
-import { RefsStore, ArrayNode } from '@vinejs/compiler/types'
+import { RefsStore, RecordNode } from '@vinejs/compiler/types'
 
-import { BaseArrayType } from './base.js'
-import type { SchemaTypes, Transformer } from '../../types.js'
+import { BaseType } from '../base.js'
+import { SchemaTypes, Transformer } from '../../types.js'
+import { BRAND, CBRAND, COMPILER } from '../../symbols.js'
 
 /**
  * VineArray represents an array schema type in the validation
  * pipeline
  */
-export class VineArray<Schema extends SchemaTypes> extends BaseArrayType<
-  Schema['__brand'][],
-  Schema['__camelCaseBrand'][]
+export class VineRecord<Schema extends SchemaTypes> extends BaseType<
+  { [K: string]: Schema[typeof BRAND] },
+  { [K: string]: Schema[typeof CBRAND] }
 > {
   #schema: Schema
 
@@ -30,16 +31,16 @@ export class VineArray<Schema extends SchemaTypes> extends BaseArrayType<
   /**
    * Compiles to array data type
    */
-  compile(
+  [COMPILER](
     propertyName: string,
     refs: RefsStore,
     transform?: Transformer<any, any> | undefined
-  ): ArrayNode {
+  ): RecordNode {
     return {
-      type: 'array',
+      type: 'record',
       allowNull: this.options.allowNull,
       bail: this.options.bail,
-      each: this.#schema.compile('*', refs, transform),
+      each: this.#schema[COMPILER]('*', refs, transform),
       fieldName: propertyName,
       propertyName: propertyName,
       isOptional: this.options.isOptional,

@@ -9,13 +9,14 @@
 
 import { RefsStore, TupleNode } from '@vinejs/compiler/types'
 import { SchemaTypes, Transformer } from '../../types.js'
-import { BaseTupleType } from './base.js'
+import { BaseType } from '../base.js'
+import { COMPILER } from '../../symbols.js'
 
 export class VineTuple<
   Schema extends SchemaTypes[],
   Output extends any[],
   CamelCaseOutput extends any[]
-> extends BaseTupleType<Output, CamelCaseOutput> {
+> extends BaseType<Output, CamelCaseOutput> {
   #schemas: [...Schema]
 
   /**
@@ -47,7 +48,7 @@ export class VineTuple<
   /**
    * Compiles to array data type
    */
-  compile(
+  [COMPILER](
     propertyName: string,
     refs: RefsStore,
     transform?: Transformer<any, any> | undefined
@@ -72,7 +73,7 @@ export class VineTuple<
         }
       }),
       properties: this.#schemas.map((schema, index) =>
-        schema.compile(String(index), refs, transform)
+        schema[COMPILER](String(index), refs, transform)
       ),
     }
   }

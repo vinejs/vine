@@ -8,7 +8,8 @@
  */
 
 import type { ConditionalFn, ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
-import type { SchemaTypes } from '../../types.js'
+import { SchemaTypes } from '../../types.js'
+import { COMPILER } from '../../symbols.js'
 
 /**
  * Represents a union conditional type. A conditional is a predicate
@@ -40,12 +41,12 @@ export class GroupConditional<
   /**
    * Compiles to a union conditional
    */
-  compile(refs: RefsStore): ObjectGroupNode['conditions'][number] {
+  [COMPILER](refs: RefsStore): ObjectGroupNode['conditions'][number] {
     return {
       schema: {
         type: 'sub_object',
         properties: Object.keys(this.#properties).map((property) => {
-          return this.#properties[property].compile(property, refs)
+          return this.#properties[property][COMPILER](property, refs)
         }),
         groups: [],
       },

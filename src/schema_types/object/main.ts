@@ -9,10 +9,11 @@
 
 import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
+import { BaseType } from '../base.js'
 import { ObjectGroup } from './group.js'
-import { BaseObjectType } from './base.js'
-import type { SchemaTypes } from '../../types.js'
+import { SchemaTypes } from '../../types.js'
 import { GroupConditional } from './conditional.js'
+import { COMPILER } from '../../symbols.js'
 
 /**
  * VineObject represents an object value in the validation
@@ -22,7 +23,7 @@ export class VineObject<
   Properties extends Record<string, SchemaTypes>,
   Output,
   CamelCaseOutput
-> extends BaseObjectType<Output, CamelCaseOutput> {
+> extends BaseType<Output, CamelCaseOutput> {
   /**
    * Object properties
    */
@@ -62,7 +63,7 @@ export class VineObject<
   /**
    * Compiles the schema type to a compiler node
    */
-  compile(propertyName: string, refs: RefsStore): ObjectNode {
+  [COMPILER](propertyName: string, refs: RefsStore): ObjectNode {
     return {
       type: 'object',
       fieldName: propertyName,
@@ -83,10 +84,10 @@ export class VineObject<
         }
       }),
       properties: Object.keys(this.#properties).map((property) => {
-        return this.#properties[property].compile(property, refs)
+        return this.#properties[property][COMPILER](property, refs)
       }),
       groups: this.#groups.map((group) => {
-        return group.compile(refs)
+        return group[COMPILER](refs)
       }),
     }
   }

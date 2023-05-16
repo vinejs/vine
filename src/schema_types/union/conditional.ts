@@ -8,35 +8,39 @@
  */
 
 import { ConditionalFn, RefsStore, UnionNode } from '@vinejs/compiler/types'
-import type { InferTypes, InferCamelCaseTypes, SchemaTypes } from '../../types.js'
+import { SchemaTypes } from '../../types.js'
+import { BRAND, CBRAND, COMPILER } from '../../symbols.js'
 
 /**
  * Represents a union conditional type. A conditional is a predicate
  * with a schema
  */
-export class UnionConditional<
-  Input extends SchemaTypes,
-  Output extends InferTypes<Input> = InferTypes<Input>,
-  CamelCaseOutput extends InferCamelCaseTypes<Input> = InferCamelCaseTypes<Input>
-> {
-  declare __brand: Output
-  declare __camelCaseBrand: CamelCaseOutput
+export class UnionConditional<Schema extends SchemaTypes> {
+  declare [BRAND]: Schema[typeof BRAND];
+  declare [CBRAND]: Schema[typeof CBRAND]
 
-  #schema: Input
-  #condition: ConditionalFn
+  /**
+   * Properties to merge when conditonal is true
+   */
+  #schema: Schema
 
-  constructor(conditon: ConditionalFn, schema: Input) {
+  /**
+   * Conditional to evaluate
+   */
+  #conditional: ConditionalFn<Record<string, unknown>>
+
+  constructor(conditional: ConditionalFn<Record<string, unknown>>, schema: Schema) {
     this.#schema = schema
-    this.#condition = conditon
+    this.#conditional = conditional
   }
 
   /**
    * Compiles to a union conditional
    */
-  compile(propertyName: string, refs: RefsStore): UnionNode['conditions'][number] {
+  [COMPILER](propertyName: string, refs: RefsStore): UnionNode['conditions'][number] {
     return {
-      schema: this.#schema.compile(propertyName, refs),
-      conditionalFnRefId: refs.trackConditional(this.#condition),
+      schema: this.#schema[COMPILER](propertyName, refs),
+      conditionalFnRefId: refs.trackConditional(this.#conditional),
     }
   }
 }

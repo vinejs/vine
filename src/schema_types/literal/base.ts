@@ -8,23 +8,77 @@
  */
 
 import type { LiteralNode, RefsStore } from '@vinejs/compiler/types'
-
-import { BaseType } from '../base.js'
-import type { Transformer } from '../../types.js'
-import { NullableModifier, OptionalModifier, TransformModifier } from './modifiers.js'
+import { FieldOptions, Parser, Transformer, Validation } from '../../types.js'
+import { BRAND, CBRAND, COMPILER } from '../../symbols.js'
 
 /**
  * The base type for creating a custom literal type. Literal type
  * is a schema type that has no children elements.
  */
-export abstract class BaseLiteralType<Output, CamelCaseOutput> extends BaseType<
-  Output,
-  CamelCaseOutput
-> {
+export abstract class BaseLiteralType<Output, CamelCaseOutput> {
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [BRAND]: Output;
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   * @private
+   */
+  declare [CBRAND]: CamelCaseOutput
+
+  /**
+   * Field options
+   */
+  protected options: FieldOptions = {
+    isOptional: false,
+    allowNull: false,
+    bail: true,
+  }
+
+  /**
+   * Set of validations to run
+   */
+  protected validations: Validation<any>[] = []
+
+  /**
+   * Define a method to parse the input value. The method
+   * is invoked before any validation and hence you must
+   * perform type-checking to know the value you are
+   * working it.
+   */
+  parse(callback: Parser): this {
+    this.options.parse = callback
+    return this
+  }
+
+  /**
+   * Push a validation to the validations chain.
+   */
+  use(validation: Validation<any>): this {
+    this.validations.push(validation)
+    return this
+  }
+
+  /**
+   * Enable/disable the bail mode. In bail mode, the field validations
+   * are stopped after the first error.
+   */
+  bail(state: boolean) {
+    this.options.bail = state
+    return this
+  }
+
   /**
    * Compiles the schema type to a compiler node
    */
-  compile(propertyName: string, refs: RefsStore, transform?: Transformer<any, any>): LiteralNode {
+  [COMPILER](
+    propertyName: string,
+    refs: RefsStore,
+    transform?: Transformer<any, any>
+  ): LiteralNode {
     return {
       type: 'literal',
       fieldName: propertyName,
@@ -74,5 +128,71 @@ export abstract class BaseLiteralType<Output, CamelCaseOutput> extends BaseType<
     transformer: Transformer<this, TransformedOutput>
   ): TransformModifier<this, TransformedOutput> {
     return new TransformModifier(transformer, this)
+  }
+}
+
+/**
+ * Modifies the schema type to allow null values
+ */
+class NullableModifier<Schema extends BaseLiteralType<any, any>> extends BaseLiteralType<
+  Schema[typeof BRAND] | null,
+  Schema[typeof CBRAND] | null
+> {
+  #parent: Schema
+  constructor(parent: Schema) {
+    super()
+    this.#parent = parent
+  }
+
+  /**
+   * Compiles to compiler node
+   */
+  [COMPILER](propertyName: string, refs: RefsStore): LiteralNode {
+    return this.#parent[COMPILER](propertyName, refs)
+  }
+}
+
+/**
+ * Modifies the schema type to allow undefined values
+ */
+class OptionalModifier<Schema extends BaseLiteralType<any, any>> extends BaseLiteralType<
+  Schema[typeof BRAND] | undefined,
+  Schema[typeof CBRAND] | undefined
+> {
+  #parent: Schema
+  constructor(parent: Schema) {
+    super()
+    this.#parent = parent
+  }
+
+  /**
+   * Compiles to compiler node
+   */
+  [COMPILER](propertyName: string, refs: RefsStore): LiteralNode {
+    return this.#parent[COMPILER](propertyName, refs)
+  }
+}
+
+/**
+ * Modifies the schema type to allow custom transformed values
+ */
+class TransformModifier<Schema extends BaseLiteralType<any, any>, Output> extends BaseLiteralType<
+  Output,
+  Output
+> {
+  #parent: Schema
+  #transform: Transformer<Schema, Output>
+
+  constructor(transform: Transformer<Schema, Output>, parent: Schema) {
+    super()
+    this.#transform = transform
+    this.#parent = parent
+  }
+
+  /**
+   * Compiles to compiler node
+   */
+  [COMPILER](propertyName: string, refs: RefsStore): LiteralNode {
+    return this.#parent[COMPILER](propertyName, refs, this.#transform)
   }
 }

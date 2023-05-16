@@ -9,26 +9,27 @@
 
 import { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
+import { SchemaTypes } from '../../types.js'
 import { UnionConditional } from './conditional.js'
-import type { SchemaTypes } from '../../types.js'
+import { BRAND, CBRAND, COMPILER } from '../../symbols.js'
 
 /**
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnion<Conditionals extends UnionConditional<SchemaTypes, any, any>> {
-  declare __brand: Conditionals['__brand']
-  declare __camelCaseBrand: Conditionals['__camelCaseBrand']
+export class VineUnion<Conditionals extends UnionConditional<SchemaTypes>> {
+  declare [BRAND]: Conditionals[typeof BRAND];
+  declare [CBRAND]: Conditionals[typeof CBRAND]
 
   constructor(public conditionals: Conditionals[]) {}
 
   /**
    * Compiles to a union
    */
-  compile(propertyName: string, refs: RefsStore): UnionNode {
+  [COMPILER](propertyName: string, refs: RefsStore): UnionNode {
     return {
       type: 'union',
-      conditions: this.conditionals.map((conditional) => conditional.compile(propertyName, refs)),
+      conditions: this.conditionals.map((conditional) => conditional[COMPILER](propertyName, refs)),
       fieldName: propertyName,
       propertyName: propertyName,
     }
