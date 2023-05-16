@@ -7,9 +7,25 @@
  * file that was distributed with this source code.
  */
 
-import type { CompilerNodes, FieldContext, RefsStore } from '@vinejs/compiler/types'
+import type {
+  ParseFn,
+  RefsStore,
+  TransformFn,
+  FieldContext,
+  CompilerNodes,
+} from '@vinejs/compiler/types'
 import { BRAND, CBRAND, COMPILER } from './symbols.js'
 
+export type {
+  Refs,
+  RefIdentifier,
+  FieldContext,
+  ErrorReporterContract,
+} from '@vinejs/compiler/types'
+
+/**
+ * Representation of a native enum like type
+ */
 export type EnumLike = { [K: string]: string | number; [number: number]: string }
 
 /**
@@ -60,15 +76,15 @@ export type Validation<Options extends any> = {
 /**
  * The transform function to mutate the output value
  */
-export type Transformer<Schema extends SchemaTypes, Output> = (
-  value: Exclude<Schema[typeof BRAND], undefined>,
-  ctx: FieldContext
-) => Output
+export type Transformer<Schema extends SchemaTypes, Output> = TransformFn<
+  Exclude<Schema[typeof BRAND], undefined>,
+  Output
+>
 
 /**
  * The parser function to mutate the input value
  */
-export type Parser = (value: unknown) => any
+export type Parser = ParseFn
 
 /**
  * A set of options accepted by the field
@@ -78,6 +94,7 @@ export type FieldOptions = {
   bail: boolean
   isOptional: boolean
   parse?: Parser
+  transform?: Transformer<any, any>
 }
 
 /**
@@ -136,4 +153,7 @@ export type VineOptions = {
   messagesProvider: (messages: Record<string, string>) => MessagesProviderContact
 }
 
+/**
+ * Infers the schema type
+ */
 export type Infer<Schema extends ConstructableSchema<any, any>> = Schema[typeof BRAND]

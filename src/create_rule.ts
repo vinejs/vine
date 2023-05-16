@@ -15,9 +15,8 @@ import type { Validation, ValidationRule, Validator } from './types.js'
 type GetArgs<T> = undefined extends T ? [options?: T] : [options: T]
 
 /**
- * Convert a validatior function to a rule that you can
- * apply to any schema type using the `schema.use`
- * method.
+ * Convert a validator function to a rule that you can apply
+ * to any schema type using the `schema.use` method.
  */
 export function createRule<Options extends any>(
   validator: Validator<Options>,
@@ -32,6 +31,10 @@ export function createRule<Options extends any>(
     implicit: metaData?.implicit ?? false,
   }
 
+  /**
+   * Creates a validation from the validation rule with runtime
+   * options.
+   */
   return function (...options: GetArgs<Options>): Validation<Options> {
     return {
       rule,

@@ -1,7 +1,7 @@
 /*
  * @vinejs/vine
  *
- * (c) AdonisJS
+ * (c) VineJS
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,7 @@ const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
 const BOOLEAN_NEGATIVES = ['0', 0, 'false', false]
 
 /**
- * Dry collection of helpers used across the codebase to coerce
+ * Collection of helpers used across the codebase to coerce
  * and type-check values from HTML forms.
  */
 export class VineHelpers {

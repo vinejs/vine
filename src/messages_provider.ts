@@ -7,16 +7,15 @@
  * file that was distributed with this source code.
  */
 
-import { FieldContext } from '@vinejs/compiler/types'
-import { MessagesProviderContact } from './types.js'
+import type { MessagesProviderContact, FieldContext } from './types.js'
 
 /**
  * Default messages provider performs messages lookup inside
- * an a collection of key-value pair, with support for
- * interpolation.
+ * a collection of key-value pair.
  */
 export class MessagesProvider implements MessagesProviderContact {
   #messages: Record<string, string> = {}
+
   constructor(messages: Record<string, string>) {
     this.#messages = messages
   }
