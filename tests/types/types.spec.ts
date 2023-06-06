@@ -15,7 +15,7 @@ const vine = new Vine()
 
 test.group('Types | Flat schema', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string(),
       email: vine.string(),
       is_admin: vine.boolean(),
@@ -30,7 +30,7 @@ test.group('Types | Flat schema', () => {
   })
 
   test('infer types with nullable fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string(),
       email: vine.string().nullable(),
       is_admin: vine.boolean(),
@@ -45,7 +45,7 @@ test.group('Types | Flat schema', () => {
   })
 
   test('infer types with optional fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string(),
       email: vine.string().optional().nullable(),
       is_admin: vine.boolean().optional(),
@@ -60,7 +60,7 @@ test.group('Types | Flat schema', () => {
   })
 
   test('infer types with transform function', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string().transform((value) => value),
       email: vine.string().nullable().optional(),
       is_admin: vine
@@ -85,7 +85,7 @@ test.group('Types | Flat schema', () => {
 
   test('convert keys to camelCase', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         username: vine.string().transform((value) => value),
         email: vine.string().nullable().optional(),
         is_admin: vine
@@ -111,7 +111,7 @@ test.group('Types | Flat schema', () => {
 
   test('clone types', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         username: vine
           .string()
           .clone()
@@ -143,7 +143,7 @@ test.group('Types | Flat schema', () => {
 
 test.group('Types | Nested schema', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string(),
       email: vine.string(),
       is_admin: vine.boolean(),
@@ -166,7 +166,7 @@ test.group('Types | Nested schema', () => {
   })
 
   test('infer types with nullable fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string(),
       email: vine.string(),
       is_admin: vine.boolean(),
@@ -191,7 +191,7 @@ test.group('Types | Nested schema', () => {
   })
 
   test('infer types with optional fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string(),
       email: vine.string().optional(),
       is_admin: vine.boolean(),
@@ -216,7 +216,7 @@ test.group('Types | Nested schema', () => {
   })
 
   test('infer types with transform function', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       username: vine.string(),
       email: vine.string().optional(),
       is_admin: vine.boolean(),
@@ -245,7 +245,7 @@ test.group('Types | Nested schema', () => {
 
   test('convert keys to camelCase', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         username: vine.string(),
         email: vine.string().optional(),
         is_admin: vine.boolean(),
@@ -270,9 +270,35 @@ test.group('Types | Nested schema', () => {
     }>()
   })
 
+  test('convert nested object keys to camelCase', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      username: vine.string(),
+      email: vine.string().optional(),
+      is_admin: vine.boolean(),
+      profile: vine
+        .object({
+          twitter_handle: vine.string(),
+          github_username: vine.string().nullable(),
+        })
+        .toCamelCase()
+        .nullable(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      username: string
+      email: string | undefined
+      is_admin: boolean
+      profile: {
+        twitterHandle: string
+        githubUsername: string | null
+      } | null
+    }>()
+  })
+
   test('clone types', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         username: vine.string().clone(),
         email: vine.string().optional().clone(),
         is_admin: vine.boolean(),
@@ -314,7 +340,7 @@ test.group('Types | Object groups', () => {
     ])
 
     const schema = vine
-      .schema({
+      .object({
         visitor_name: vine.string(),
       })
       .merge(guideSchema)
@@ -404,6 +430,67 @@ test.group('Types | Object groups', () => {
     >()
   })
 
+  test('infer types with multiple groups', ({ expectTypeOf }) => {
+    const guideSchema = vine.group([
+      vine.group.if((data) => vine.helpers.isTrue(data.hiring_guide), {
+        hiring_guide: vine.literal(true),
+        guide_name: vine.string(),
+        fees: vine.string(),
+      }),
+      vine.group.if(() => true, {
+        hiring_guide: vine.literal(false),
+      }),
+    ])
+
+    const monumentSchema = vine.group([
+      vine.group.if((data) => data.monument === 'foo', {
+        monument: vine.literal('foo'),
+        available_transport: vine.enum(['bus', 'train']),
+        has_free_entry: vine.literal(false),
+      }),
+      vine.group.if((data) => data.monument === 'bar', {
+        monument: vine.literal('bar'),
+        available_transport: vine.enum(['bus', 'car']),
+        has_free_entry: vine.literal(true),
+      }),
+    ])
+
+    const schema = vine
+      .object({
+        visitor_name: vine.string(),
+      })
+      .merge(guideSchema)
+      .merge(monumentSchema)
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<
+      {
+        visitor_name: string
+      } & (
+        | {
+            hiring_guide: true
+            guide_name: string
+            fees: string
+          }
+        | {
+            hiring_guide: false
+          }
+      ) &
+        (
+          | {
+              monument: 'foo'
+              available_transport: 'bus' | 'train'
+              has_free_entry: false
+            }
+          | {
+              monument: 'bar'
+              available_transport: 'bus' | 'car'
+              has_free_entry: true
+            }
+        )
+    >()
+  })
+
   test('convert keys to camelCase', ({ expectTypeOf }) => {
     const guideSchema = vine.group([
       vine.group.if((data) => vine.helpers.isTrue(data.hiring_guide), {
@@ -417,7 +504,7 @@ test.group('Types | Object groups', () => {
     ])
 
     const schema = vine
-      .schema({
+      .object({
         visitor_name: vine.string(),
       })
       .merge(guideSchema)
@@ -518,7 +605,7 @@ test.group('Types | Object groups', () => {
 
 test.group('Types | Arrays', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       contacts: vine.array(
         vine.object({
           email: vine.string(),
@@ -537,7 +624,7 @@ test.group('Types | Arrays', () => {
   })
 
   test('infer types with nullable fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       contacts: vine
         .array(
           vine.object({
@@ -560,7 +647,7 @@ test.group('Types | Arrays', () => {
   })
 
   test('infer types with optional fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       contacts: vine
         .array(
           vine.object({
@@ -586,7 +673,7 @@ test.group('Types | Arrays', () => {
 
   test('convert keys to camelCase', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         contacts: vine
           .array(
             vine.object({
@@ -613,7 +700,7 @@ test.group('Types | Arrays', () => {
 
   test('clone types', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         contacts: vine
           .array(
             vine.object({
@@ -643,7 +730,7 @@ test.group('Types | Arrays', () => {
 
 test.group('Types | Tuples', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       colors: vine.tuple([vine.string(), vine.string(), vine.string()]),
     })
 
@@ -654,7 +741,7 @@ test.group('Types | Tuples', () => {
   })
 
   test('infer types with nullable fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       colors: vine.tuple([vine.string(), vine.string(), vine.string()]).nullable(),
     })
 
@@ -665,7 +752,7 @@ test.group('Types | Tuples', () => {
   })
 
   test('infer types with optional fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       colors: vine.tuple([vine.string(), vine.string(), vine.string()]).nullable().optional(),
     })
 
@@ -676,7 +763,7 @@ test.group('Types | Tuples', () => {
   })
 
   test('allow unknown properties', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       colors: vine
         .tuple([vine.string(), vine.string(), vine.string()])
         .allowUnknownProperties()
@@ -692,7 +779,7 @@ test.group('Types | Tuples', () => {
 
   test('convert keys to camelCase', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         colors: vine
           .tuple([
             vine.string(),
@@ -715,7 +802,7 @@ test.group('Types | Tuples', () => {
 
   test('clone types', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         colors: vine
           .tuple([
             vine.string().clone(),
@@ -742,7 +829,7 @@ test.group('Types | Tuples', () => {
 
 test.group('Types | Union', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       contact: vine.union([
         vine.union.if(
           (value) => vine.helpers.isObject(value) && 'email' in value,
@@ -776,7 +863,7 @@ test.group('Types | Union', () => {
   })
 
   test('infer types of nested unions', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       contact: vine.union([
         vine.union.if(
           (value) => vine.helpers.isObject(value) && 'email' in value,
@@ -821,7 +908,7 @@ test.group('Types | Union', () => {
   })
 
   test('clone types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       contact: vine
         .union([
           vine.union.if(
@@ -874,7 +961,7 @@ test.group('Types | Union', () => {
 
 test.group('Types | Record', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       colors: vine.record(vine.string()),
     })
 
@@ -887,7 +974,7 @@ test.group('Types | Record', () => {
   })
 
   test('infer types with nullable fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       colors: vine.record(vine.string()).nullable(),
     })
 
@@ -900,7 +987,7 @@ test.group('Types | Record', () => {
   })
 
   test('infer types with optional fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       colors: vine.record(vine.string()).optional().nullable(),
     })
 
@@ -916,7 +1003,7 @@ test.group('Types | Record', () => {
   })
 
   test('infer union record types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       /**
        * @todo: Use union of types here
        */
@@ -932,7 +1019,7 @@ test.group('Types | Record', () => {
   })
 
   test('clone types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       /**
        * @todo: Use union of types here
        */
@@ -951,7 +1038,7 @@ test.group('Types | Record', () => {
 test.group('Types | Enum', () => {
   test('infer types', ({ expectTypeOf }) => {
     const schema = vine
-      .schema({
+      .object({
         role: vine.enum(['admin', 'moderator', 'writer']),
       })
       .clone()
@@ -963,7 +1050,7 @@ test.group('Types | Enum', () => {
   })
 
   test('infer types with nullable fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       role: vine.enum(['admin', 'moderator', 'writer']).nullable(),
     })
 
@@ -974,7 +1061,7 @@ test.group('Types | Enum', () => {
   })
 
   test('infer types with optional fields', ({ expectTypeOf }) => {
-    const schema = vine.schema({
+    const schema = vine.object({
       role: vine.enum(['admin', 'moderator', 'writer']).nullable().optional(),
     })
 
@@ -991,7 +1078,7 @@ test.group('Types | Enum', () => {
       ADMIN = 'admin',
     }
 
-    const schema = vine.schema({
+    const schema = vine.object({
       role: vine.enum(Role).nullable().optional(),
     })
 
@@ -1009,7 +1096,7 @@ test.group('Types | Enum', () => {
     }
 
     const schema = vine
-      .schema({
+      .object({
         role: vine.enum(Role).nullable().optional().clone(),
       })
       .clone()
