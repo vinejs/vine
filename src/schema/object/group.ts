@@ -30,6 +30,18 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any>> {
   }
 
   /**
+   * Clones the ObjectGroup schema type.
+   */
+  clone(): this {
+    const cloned = new ObjectGroup<Conditional>(this.#conditionals)
+    if (this.#otherwiseCallback) {
+      cloned.otherwise(this.#otherwiseCallback)
+    }
+
+    return cloned as this
+  }
+
+  /**
    * Define a fallback method to invoke when all of the group conditions
    * fail. You may use this method to report an error.
    */

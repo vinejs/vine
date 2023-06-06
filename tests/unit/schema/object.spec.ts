@@ -2718,4 +2718,297 @@ test.group('VineObject | clone', () => {
       ],
     })
   })
+
+  test('clone group', ({ assert }) => {
+    const hiringGuide = vine.group([
+      vine.group.if((value) => vine.helpers.isTrue(value.is_hiring_guide), {
+        is_hiring_guide: vine.literal(true),
+        name: vine.string(),
+        price: vine.string(),
+      }),
+      vine.group.else({
+        is_hiring_guide: vine.literal(false),
+      }),
+    ])
+
+    const schema = vine.object({
+      username: vine.string(),
+      password: vine.string(),
+    })
+
+    const schema1 = schema.clone().merge(hiringGuide.clone().otherwise(() => {}))
+    schema.merge(hiringGuide)
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [
+        {
+          type: 'group',
+          elseConditionalFnRefId: undefined,
+          conditions: [
+            {
+              conditionalFnRefId: 'ref://6',
+              schema: {
+                type: 'sub_object',
+                groups: [],
+                properties: [
+                  {
+                    type: 'literal',
+                    fieldName: 'is_hiring_guide',
+                    propertyName: 'is_hiring_guide',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://3',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'name',
+                    propertyName: 'name',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://4',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'price',
+                    propertyName: 'price',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://5',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+            {
+              conditionalFnRefId: 'ref://8',
+              schema: {
+                type: 'sub_object',
+                groups: [],
+                properties: [
+                  {
+                    type: 'literal',
+                    fieldName: 'is_hiring_guide',
+                    propertyName: 'is_hiring_guide',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://7',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      ],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+        },
+        {
+          type: 'literal',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://2',
+            },
+          ],
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [
+        {
+          type: 'group',
+          elseConditionalFnRefId: 'ref://3',
+          conditions: [
+            {
+              conditionalFnRefId: 'ref://7',
+              schema: {
+                type: 'sub_object',
+                groups: [],
+                properties: [
+                  {
+                    type: 'literal',
+                    fieldName: 'is_hiring_guide',
+                    propertyName: 'is_hiring_guide',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://4',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'name',
+                    propertyName: 'name',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://5',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'price',
+                    propertyName: 'price',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://6',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+            {
+              conditionalFnRefId: 'ref://9',
+              schema: {
+                type: 'sub_object',
+                groups: [],
+                properties: [
+                  {
+                    type: 'literal',
+                    fieldName: 'is_hiring_guide',
+                    propertyName: 'is_hiring_guide',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://8',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      ],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+        },
+        {
+          type: 'literal',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://2',
+            },
+          ],
+        },
+      ],
+    })
+  })
 })
