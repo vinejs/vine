@@ -9,14 +9,14 @@
 
 import { AssertionError, deepEqual } from 'node:assert'
 
+import { ContextFactory } from './context.js'
 import type { FieldContext, Validation } from '../src/types.js'
 import { SimpleErrorReporter } from '../src/reporters/simple_error_reporter.js'
-import { SimpleMessagesProvider } from '../src/messages_provider/simple_messages_provider.js'
 
 /**
- * Exposes API's for writing validation assertions
+ * Exposes APIs for writing validation assertions
  */
-export class ValidationAssertion {
+class ValidationResult {
   #outputValue: any
   #reporter: SimpleErrorReporter
 
@@ -37,35 +37,51 @@ export class ValidationAssertion {
   }
 
   /**
-   * Assert the output value of validation. The output value is
-   * same as the input value, unless "mutate" method is called
+   * Returns the validation result output
    */
-  assertOutput(expectedValue: any) {
-    deepEqual(this.#outputValue, expectedValue)
+  getOutput() {
+    return this.#outputValue
+  }
+
+  /**
+   * Returns an array of errors reported to the
+   * error reporter
+   */
+  getErrors() {
+    return this.#reporter.errors
   }
 
   /**
    * Assert one or more validation errors have occurred
    */
-  assertHasErrors() {
-    if (!this.#reporter.hasErrors) {
+  assertSucceeded() {
+    if (this.#reporter.hasErrors) {
+      const errorsCount = this.#reporter.errors.length
       throw this.#assertionError({
-        message: `Expected validation to report one or more errors`,
+        message: `Expected validation to pass. Instead failed with "${errorsCount} error(s)"`,
         operator: 'strictEqual',
-        stackStartFn: this.assertHasErrors,
+        stackStartFn: this.assertSucceeded,
       })
     }
   }
 
   /**
+   * Assert the output value of validation. The output value is
+   * same as the input value, unless "mutate" method is called
+   */
+  assertOutput(expectedOutput: any) {
+    deepEqual(this.#outputValue, expectedOutput)
+  }
+
+  /**
    * Assert one or more validation errors have occurred
    */
-  assertDoesNotHaveErrors() {
-    if (this.#reporter.hasErrors) {
+  assertFailed() {
+    if (!this.#reporter.hasErrors) {
       throw this.#assertionError({
-        message: `Expected validation to report zero errors`,
+        message: `Expected validation to report one or more errors`,
         operator: 'strictEqual',
-        stackStartFn: this.assertDoesNotHaveErrors,
+        stackStartFn: this.assertFailed,
       })
     }
   }
@@ -112,8 +128,12 @@ export class ValidationAssertion {
  * during tests
  */
 export class ValidatorFactory {
+  /**
+   * Creates an instance of the error reporter required
+   * to report errors.
+   */
   #getReporter() {
-    return new SimpleErrorReporter(new SimpleMessagesProvider({}))
+    return new SimpleErrorReporter()
   }
 
   /**
@@ -125,38 +145,49 @@ export class ValidatorFactory {
     ctx: Partial<FieldContext> = {}
   ) {
     const errorReporter = this.#getReporter()
-    const isDefined = value !== null && value !== undefined
-    const data = ctx.fieldName ? { [ctx.fieldName]: value } : value
-
-    let outputValue = value
-
     const normalizedCtx: FieldContext = {
-      data: data,
-      parent: data,
-      value: value,
-      fieldName: '' as any,
-      wildCardPath: '',
-      isArrayMember: false,
-      isDefined: isDefined,
-      isValid: true,
-      meta: {},
-      mutate(newValue) {
-        outputValue = newValue
-      },
-      report(message, rule, context, args) {
-        this.isValid = false
-        errorReporter.report(message, rule, context, args)
-      },
+      ...new ContextFactory().create('', value, errorReporter),
       ...ctx,
     }
 
     const validations = Array.isArray(validation) ? validation : [validation]
     for (let one of validations) {
-      if ((isDefined || one.rule.implicit) && normalizedCtx.isValid) {
+      if (one.rule.isAsync) {
+        throw new Error(
+          `Cannot execute async rule "${one.rule.validator.name}". Use "validator.executeAsync" instead`
+        )
+      }
+
+      if ((normalizedCtx.isDefined || one.rule.implicit) && normalizedCtx.isValid) {
         one.rule.validator(value, one.options, normalizedCtx)
       }
     }
 
-    return new ValidationAssertion(outputValue, errorReporter)
+    return new ValidationResult(normalizedCtx.value, errorReporter)
+  }
+
+  /**
+   * Executes an async validation against the provided
+   * value
+   */
+  async executeAsync(
+    validation: Validation<any> | Validation<any>[],
+    value: any,
+    ctx: Partial<FieldContext> = {}
+  ) {
+    const errorReporter = this.#getReporter()
+    const normalizedCtx: FieldContext = {
+      ...new ContextFactory().create('', value, errorReporter),
+      ...ctx,
+    }
+
+    const validations = Array.isArray(validation) ? validation : [validation]
+    for (let one of validations) {
+      if ((normalizedCtx.isDefined || one.rule.implicit) && normalizedCtx.isValid) {
+        await one.rule.validator(value, one.options, normalizedCtx)
+      }
+    }
+
+    return new ValidationResult(normalizedCtx.value, errorReporter)
   }
 }
