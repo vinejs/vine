@@ -7,17 +7,24 @@
  * file that was distributed with this source code.
  */
 
-import type { MessagesProviderContact, FieldContext } from '../types.js'
+import type {
+  FieldContext,
+  ValidationFields,
+  ValidationMessages,
+  MessagesProviderContact,
+} from '../types.js'
 
 /**
  * Default messages provider performs messages lookup inside
  * a collection of key-value pair.
  */
 export class SimpleMessagesProvider implements MessagesProviderContact {
-  #messages: Record<string, string> = {}
+  #messages: ValidationMessages
+  #fields: ValidationFields
 
-  constructor(messages: Record<string, string>) {
+  constructor(messages: ValidationMessages, fields: ValidationFields) {
     this.#messages = messages
+    this.#fields = fields
   }
 
   /**
@@ -48,13 +55,15 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
    * Returns a validation message for a given field + rule.
    */
   getMessage(rawMessage: string, rule: string, ctx: FieldContext, args?: Record<string, any>) {
+    const field = this.#fields[ctx.fieldName] || ctx.fieldName
+
     /**
      * 1st priority is given to the field messages
      */
     const fieldMessage = this.#messages[`${ctx.wildCardPath}.${rule}`]
     if (fieldMessage) {
       return this.#interpolate(fieldMessage, {
-        field: ctx.fieldName,
+        field,
         ...args,
       })
     }
@@ -63,9 +72,9 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
      * 2nd priority is for rule messages
      */
     const ruleMessage = this.#messages[rule]
-    if (fieldMessage) {
+    if (ruleMessage) {
       return this.#interpolate(ruleMessage, {
-        field: ctx.fieldName,
+        field,
         ...args,
       })
     }
@@ -74,7 +83,7 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
      * Fallback to raw message
      */
     return this.#interpolate(rawMessage, {
-      field: ctx.fieldName,
+      field,
       ...args,
     })
   }
