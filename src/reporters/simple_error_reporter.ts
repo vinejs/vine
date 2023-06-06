@@ -8,7 +8,18 @@
  */
 
 import { ValidationError } from '../errors/validation_error.js'
-import type { ErrorReporterContract, FieldContext, MessagesProviderContact } from '../types.js'
+import type { ErrorReporterContract, FieldContext } from '../types.js'
+
+/**
+ * Shape of the error message collected by the SimpleErrorReporter
+ */
+type SimpleError = {
+  message: string
+  field: string
+  rule: string
+  index?: number
+  meta?: Record<string, any>
+}
 
 /**
  * Simple error reporter collects error messages as an array of object.
@@ -16,14 +27,11 @@ import type { ErrorReporterContract, FieldContext, MessagesProviderContact } fro
  *
  * - message: string
  * - field: string
+ * - rule: string
+ * - index?: number (in case of an array member)
  * - args?: Record<string, any>
  */
 export class SimpleErrorReporter implements ErrorReporterContract {
-  /**
-   * Messages provider to resolve errors
-   */
-  #messagesProvider: MessagesProviderContact
-
   /**
    * Boolean to know one or more errors have been reported
    */
@@ -32,28 +40,27 @@ export class SimpleErrorReporter implements ErrorReporterContract {
   /**
    * Collection of errors
    */
-  errors: { message: string; field: string; args?: Record<string, any> }[] = []
-
-  constructor(messagesProvider: MessagesProviderContact) {
-    this.#messagesProvider = messagesProvider
-  }
+  errors: SimpleError[] = []
 
   /**
-   * Report an error. The "rawMessage" is used when no custom message
-   * is defined for the field or the rule.
+   * Report an error.
    */
-  report(
-    rawMessage: string,
-    rule: string,
-    ctx: FieldContext,
-    args?: Record<string, any> | undefined
-  ) {
-    this.hasErrors = true
-    this.errors.push({
-      message: this.#messagesProvider.getMessage(rawMessage, rule, ctx, args),
+  report(message: string, rule: string, ctx: FieldContext, meta?: Record<string, any> | undefined) {
+    const error: SimpleError = {
+      message,
+      rule,
       field: ctx.wildCardPath,
-      ...(args ? { args } : {}),
-    })
+    }
+
+    if (meta) {
+      error.meta = meta
+    }
+    if (ctx.isArrayMember) {
+      error.index = ctx.fieldName
+    }
+
+    this.hasErrors = true
+    this.errors.push(error)
   }
 
   /**
