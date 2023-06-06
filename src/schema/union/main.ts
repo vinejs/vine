@@ -12,13 +12,20 @@ import { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
 import { UnionConditional } from './conditional.js'
 import { BRAND, CBRAND, PARSE } from '../../symbols.js'
-import type { ParserOptions, SchemaTypes, UnionNoMatchCallback } from '../../types.js'
+import type {
+  ConstructableSchema,
+  ParserOptions,
+  SchemaTypes,
+  UnionNoMatchCallback,
+} from '../../types.js'
 
 /**
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnion<Conditional extends UnionConditional<SchemaTypes>> {
+export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
+  implements ConstructableSchema<Conditional[typeof BRAND], Conditional[typeof CBRAND]>
+{
   declare [BRAND]: Conditional[typeof BRAND];
   declare [CBRAND]: Conditional[typeof CBRAND]
 
@@ -36,6 +43,18 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>> {
   otherwise(callback: UnionNoMatchCallback<Record<string, unknown>>): this {
     this.#otherwiseCallback = callback
     return this
+  }
+
+  /**
+   * Clones the VineUnion schema type.
+   */
+  clone(): this {
+    const cloned = new VineUnion<Conditional>(this.#conditionals)
+    if (this.#otherwiseCallback) {
+      cloned.otherwise(this.#otherwiseCallback)
+    }
+
+    return cloned as this
   }
 
   /**
