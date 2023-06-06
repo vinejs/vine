@@ -7,4 +7,7 @@
  * file that was distributed with this source code.
  */
 
-export { defaultErrorMessages } from './src/defaults.js'
+import { Vine } from './src/vine/main.js'
+
+const vine = new Vine()
+export default vine

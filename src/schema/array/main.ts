@@ -42,21 +42,21 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
    * Enforce a minimum length on an array field
    */
   minLength(expectedLength: number) {
-    return this.use(minLengthRule({ expectedLength }))
+    return this.use(minLengthRule({ min: expectedLength }))
   }
 
   /**
    * Enforce a maximum length on an array field
    */
   maxLength(expectedLength: number) {
-    return this.use(maxLengthRule({ expectedLength }))
+    return this.use(maxLengthRule({ max: expectedLength }))
   }
 
   /**
    * Enforce a fixed length on an array field
    */
   fixedLength(expectedLength: number) {
-    return this.use(fixedLengthRule({ expectedLength }))
+    return this.use(fixedLengthRule({ size: expectedLength }))
   }
 
   /**
