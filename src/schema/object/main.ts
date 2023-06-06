@@ -10,11 +10,72 @@
 import camelcase from 'camelcase'
 import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
-import { BaseType } from '../base.js'
 import { ObjectGroup } from './group.js'
+import { BaseType } from '../base/main.js'
 import { GroupConditional } from './conditional.js'
 import { BRAND, CBRAND, PARSE } from '../../symbols.js'
-import type { ParserOptions, SchemaTypes } from '../../types.js'
+import type {
+  Parser,
+  Validation,
+  SchemaTypes,
+  RuleBuilder,
+  FieldOptions,
+  ParserOptions,
+} from '../../types.js'
+
+/**
+ * Converts schema properties to camelCase
+ */
+export class VineCamelCaseObject<Schema extends VineObject<any, any, any>> extends BaseType<
+  Schema[typeof CBRAND],
+  Schema[typeof CBRAND]
+> {
+  #schema: Schema
+
+  constructor(schema: Schema) {
+    super()
+    this.#schema = schema
+  }
+
+  /**
+   * @inheritdoc
+   */
+  parse(callback: Parser): this {
+    this.#schema.parse(callback)
+    return this
+  }
+
+  /**
+   * @inheritdoc
+   */
+  use(validation: Validation<any> | RuleBuilder): this {
+    this.#schema.use(validation)
+    return this
+  }
+
+  /**
+   * @inheritdoc
+   */
+  bail(state: boolean): this {
+    this.#schema.bail(state)
+    return this
+  }
+
+  /**
+   * Clone top-level object
+   */
+  clone(): this {
+    return new VineCamelCaseObject<Schema>(this.#schema.clone()) as this
+  }
+
+  /**
+   * Compiles the schema type to a compiler node
+   */
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ObjectNode {
+    options.toCamelCase = true
+    return this.#schema[PARSE](propertyName, refs, options)
+  }
+}
 
 /**
  * VineObject represents an object value in the validation
@@ -40,9 +101,23 @@ export class VineObject<
    */
   #allowUnknownProperties: boolean = false
 
-  constructor(properties: Properties) {
-    super()
+  constructor(properties: Properties, options?: FieldOptions, validations?: Validation<any>[]) {
+    super(options, validations)
     this.#properties = properties
+  }
+
+  /**
+   * Returns a clone copy of the object properties. The object groups
+   * are not copied to keep the implementations simple and easy to
+   * reason about.
+   */
+  getProperties(): Properties {
+    return Object.keys(this.#properties).reduce((result, key) => {
+      result[key as keyof Properties] = this.#properties[
+        key
+      ].clone() as Properties[keyof Properties]
+      return result
+    }, {} as Properties)
   }
 
   /**
@@ -59,6 +134,46 @@ export class VineObject<
       Output & { [K: string]: Value },
       CamelCaseOutput & { [K: string]: Value }
     >
+  }
+
+  /**
+   * Merge a union to the object groups. The union can be a "vine.union"
+   * with objects, or a "vine.object.union" with properties.
+   */
+  merge<Group extends ObjectGroup<GroupConditional<any, any, any>>>(
+    group: Group
+  ): VineObject<Properties, Output & Group[typeof BRAND], CamelCaseOutput & Group[typeof CBRAND]> {
+    this.#groups.push(group)
+    return this as VineObject<
+      Properties,
+      Output & Group[typeof BRAND],
+      CamelCaseOutput & Group[typeof CBRAND]
+    >
+  }
+
+  /**
+   * Clone object
+   */
+  clone(): this {
+    const cloned = new VineObject<Properties, Output, CamelCaseOutput>(
+      this.getProperties(),
+      this.cloneOptions(),
+      this.cloneValidations()
+    )
+
+    this.#groups.forEach((group) => cloned.merge(group))
+    if (this.#allowUnknownProperties) {
+      cloned.allowUnknownProperties()
+    }
+
+    return cloned as this
+  }
+
+  /**
+   * Applies camelcase transform
+   */
+  toCamelCase() {
+    return new VineCamelCaseObject(this)
   }
 
   /**
@@ -82,20 +197,5 @@ export class VineObject<
         return group[PARSE](refs, options)
       }),
     }
-  }
-
-  /**
-   * Merge a union to the object groups. The union can be a "vine.union"
-   * with objects, or a "vine.object.union" with properties.
-   */
-  merge<Group extends ObjectGroup<GroupConditional<any, any, any>>>(
-    group: Group
-  ): VineObject<Properties, Output & Group[typeof BRAND], CamelCaseOutput & Group[typeof CBRAND]> {
-    this.#groups.push(group)
-    return this as VineObject<
-      Properties,
-      Output & Group[typeof BRAND],
-      CamelCaseOutput & Group[typeof CBRAND]
-    >
   }
 }
