@@ -21,7 +21,16 @@ import { processCliArgs, configure, run } from '@japa/runner'
 configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
-    files: ['tests/**/*.spec.ts'],
+    suites: [
+      {
+        name: 'unit',
+        files: ['tests/unit/**/*.spec(.js|.ts)'],
+      },
+      {
+        name: 'integration',
+        files: ['tests/integration/**/*.spec(.js|.ts)'],
+      },
+    ],
     plugins: [assert(), runFailedTests(), expectTypeOf()],
     reporters: [specReporter()],
     importer: (filePath) => import(pathToFileURL(filePath).href),

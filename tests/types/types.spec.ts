@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { Vine } from '../../src/vine.js'
+import { Vine } from '../../src/vine/main.js'
 import { Infer } from '../../src/types.js'
 
 const vine = new Vine()

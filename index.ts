@@ -1,3 +1,10 @@
-import camelcase from 'camelcase'
+/*
+ * @vinejs/vine
+ *
+ * (c) VineJS
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-console.log(camelcase('ISAdmin'))
+export { defaultErrorMessages } from './src/error_messages.js'

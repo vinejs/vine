@@ -10,7 +10,7 @@
 /**
  * The symbol for the compile method
  */
-export const COMPILER = Symbol.for('compile')
+export const PARSE = Symbol.for('parse')
 
 /**
  * The symbol for the brand type
@@ -20,4 +20,9 @@ export const BRAND = Symbol.for('brand')
 /**
  * The symbol for the camelcase brand type
  */
-export const CBRAND = Symbol.for('__camelCaseBrand')
+export const CBRAND = Symbol.for('camelCaseBrand')
+
+/**
+ * The symbol for the toValidation method
+ */
+export const VALIDATION = Symbol.for('toValidation')

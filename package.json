@@ -111,7 +111,6 @@
   "dependencies": {
     "@poppinss/macroable": "^1.0.0-6",
     "@vinejs/compiler": "file:../compiler",
-    "camelcase": "^7.0.1",
-    "type-fest": "^3.10.0"
+    "camelcase": "^7.0.1"
   }
 }

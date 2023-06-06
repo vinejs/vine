@@ -13,15 +13,22 @@ import type {
   TransformFn,
   FieldContext,
   CompilerNodes,
+  ErrorReporterContract as BaseReporter,
 } from '@vinejs/compiler/types'
-import { BRAND, CBRAND, COMPILER } from './symbols.js'
+import type { ValidationError } from './errors/validation_error.js'
+import type { BRAND, CBRAND, PARSE, VALIDATION } from './symbols.js'
 
-export type {
-  Refs,
-  RefIdentifier,
-  FieldContext,
-  ErrorReporterContract,
-} from '@vinejs/compiler/types'
+/**
+ * Re-exporting selected types from compiler
+ */
+export type { Refs, RefIdentifier, FieldContext, ConditionalFn } from '@vinejs/compiler/types'
+
+/**
+ * Error reporters must implement the reporter contract interface
+ */
+export interface ErrorReporterContract extends BaseReporter {
+  createError(): ValidationError
+}
 
 /**
  * Representation of a native enum like type
@@ -74,6 +81,14 @@ export type Validation<Options extends any> = {
 }
 
 /**
+ * A rule builder is an object that implements the "VALIDATION"
+ * method and returns [[Validation]] type
+ */
+export interface RuleBuilder {
+  [VALIDATION](): Validation<any>
+}
+
+/**
  * The transform function to mutate the output value
  */
 export type Transformer<Schema extends SchemaTypes, Output> = TransformFn<
@@ -94,8 +109,19 @@ export type FieldOptions = {
   bail: boolean
   isOptional: boolean
   parse?: Parser
-  transform?: Transformer<any, any>
 }
+
+/**
+ * Options accepted when compiling schema types.
+ */
+export type ParserOptions = {
+  toCamelCase: boolean
+}
+
+/**
+ * Method to invoke when union has no match
+ */
+export type UnionNoMatchCallback<Input> = (value: Input, ctx: FieldContext) => any
 
 /**
  * Messages provider is used to resolve validation error messages
@@ -121,15 +147,7 @@ export interface MessagesProviderContact {
 export interface ConstructableSchema<Output, CamelCaseOutput> {
   [BRAND]: Output
   [CBRAND]: CamelCaseOutput
-
-  /**
-   * Returns compiler output
-   */
-  [COMPILER](
-    propertyName: string,
-    refs: RefsStore,
-    transform?: Transformer<any, any>
-  ): CompilerNodes
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes
 }
 
 /**
@@ -151,9 +169,35 @@ export type VineOptions = {
    * the validation lifecycle
    */
   messagesProvider: (messages: Record<string, string>) => MessagesProviderContact
+
+  /**
+   * Validation errors are reported directly to an error reporter. The reporter
+   * can decide how to format and output errors.
+   */
+  errorReporter: (messagesProvider: MessagesProviderContact) => ErrorReporterContract
 }
 
 /**
  * Infers the schema type
  */
 export type Infer<Schema extends ConstructableSchema<any, any>> = Schema[typeof BRAND]
+
+/**
+ * Validation options accepted by the validate method
+ */
+export type ValidationOptions =
+  | {
+      data: any
+    }
+  | {
+      data: any
+      messages: Record<string, any>
+    }
+  | {
+      data: any
+      messagesProvider: MessagesProviderContact
+    }
+  | {
+      data: any
+      errorReporter: ErrorReporterContract
+    }
