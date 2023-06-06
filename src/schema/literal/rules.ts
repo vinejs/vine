@@ -7,26 +7,13 @@
  * file that was distributed with this source code.
  */
 
-import { helpers } from '../vine/helpers.js'
-import { createRule } from '../vine/create_rule.js'
-import { defaultErrorMessages } from '../error_messages.js'
+import { helpers } from '../../vine/helpers.js'
+import { createRule } from '../../vine/create_rule.js'
 
-export const stringRule = createRule((value, _, ctx) => {
-  if (typeof value !== 'string') {
-    ctx.report(defaultErrorMessages.string, 'string', ctx)
-  }
-})
-
-export const booleanRule = createRule((value, _, ctx) => {
-  const valueAsBoolean = helpers.asBoolean(value)
-  if (valueAsBoolean === null) {
-    ctx.report(defaultErrorMessages.boolean, 'boolean', ctx)
-    return
-  }
-
-  ctx.mutate(valueAsBoolean, ctx)
-})
-
+/**
+ * Verifies two equals are equal considering the HTML forms
+ * serialization behavior.
+ */
 export const equalsRule = createRule<{ expectedValue: any }>((value, { expectedValue }, ctx) => {
   if (typeof expectedValue === 'boolean') {
     if (helpers.asBoolean(value) !== expectedValue) {
