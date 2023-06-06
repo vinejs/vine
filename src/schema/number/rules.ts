@@ -9,7 +9,7 @@
 
 import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
-import { defaultErrorMessages } from '../../error_messages.js'
+import { errorMessages } from '../../defaults.js'
 
 /**
  * Enforce the value to be a number or a string representation
@@ -18,7 +18,7 @@ import { defaultErrorMessages } from '../../error_messages.js'
 export const numberRule = createRule((value, _, ctx) => {
   const valueAsNumber = helpers.asNumber(value)
   if (Number.isNaN(valueAsNumber)) {
-    ctx.report(defaultErrorMessages.number, 'number', ctx)
+    ctx.report(errorMessages.number, 'number', ctx)
     return
   }
 
@@ -37,7 +37,7 @@ export const minRule = createRule<{ min: number }>((value, options, ctx) => {
   }
 
   if ((value as number) < options.min) {
-    ctx.report(defaultErrorMessages.min, 'min', ctx, options)
+    ctx.report(errorMessages.min, 'min', ctx, options)
   }
 })
 
@@ -53,7 +53,7 @@ export const maxRule = createRule<{ max: number }>((value, options, ctx) => {
   }
 
   if ((value as number) > options.max) {
-    ctx.report(defaultErrorMessages.max, 'max', ctx, options)
+    ctx.report(errorMessages.max, 'max', ctx, options)
   }
 })
 
@@ -69,7 +69,7 @@ export const rangeRule = createRule<{ min: number; max: number }>((value, option
   }
 
   if ((value as number) < options.min || (value as number) > options.max) {
-    ctx.report(defaultErrorMessages.range, 'range', ctx, options)
+    ctx.report(errorMessages.range, 'range', ctx, options)
   }
 })
 
@@ -85,7 +85,7 @@ export const positiveRule = createRule((value, _, ctx) => {
   }
 
   if ((value as number) < 0) {
-    ctx.report(defaultErrorMessages.positive, 'positive', ctx)
+    ctx.report(errorMessages.positive, 'positive', ctx)
   }
 })
 
@@ -101,6 +101,6 @@ export const negativeRule = createRule<undefined>((value, _, ctx) => {
   }
 
   if ((value as number) >= 0) {
-    ctx.report(defaultErrorMessages.negative, 'negative', ctx)
+    ctx.report(errorMessages.negative, 'negative', ctx)
   }
 })
