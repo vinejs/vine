@@ -10,9 +10,9 @@
 import camelcase from 'camelcase'
 import { RefsStore, ArrayNode } from '@vinejs/compiler/types'
 
-import { BaseType } from '../base.js'
+import { BaseType } from '../base/main.js'
 import { BRAND, CBRAND, PARSE } from '../../symbols.js'
-import type { ParserOptions, SchemaTypes } from '../../types.js'
+import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 
 import {
   compactRule,
@@ -33,26 +33,9 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
 > {
   #schema: Schema
 
-  constructor(schema: Schema) {
-    super()
+  constructor(schema: Schema, options?: FieldOptions, validations?: Validation<any>[]) {
+    super(options, validations)
     this.#schema = schema
-  }
-
-  /**
-   * Compiles to array data type
-   */
-  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ArrayNode {
-    return {
-      type: 'array',
-      fieldName: propertyName,
-      propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
-      bail: this.options.bail,
-      allowNull: this.options.allowNull,
-      isOptional: this.options.isOptional,
-      each: this.#schema[PARSE]('*', refs, options),
-      parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
-      validations: this.compileValidations(refs),
-    }
   }
 
   /**
@@ -95,5 +78,30 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
    */
   compact() {
     return this.use(compactRule())
+  }
+
+  /**
+   * Clones the VineArray schema type. The applied options
+   * and validations are copied to the new instance
+   */
+  clone(): this {
+    return new VineArray(this.#schema.clone(), this.cloneOptions(), this.cloneValidations()) as this
+  }
+
+  /**
+   * Compiles to array data type
+   */
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ArrayNode {
+    return {
+      type: 'array',
+      fieldName: propertyName,
+      propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
+      bail: this.options.bail,
+      allowNull: this.options.allowNull,
+      isOptional: this.options.isOptional,
+      each: this.#schema[PARSE]('*', refs, options),
+      parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
+      validations: this.compileValidations(refs),
+    }
   }
 }

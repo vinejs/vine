@@ -9,7 +9,7 @@
 
 import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
-import { defaultErrorMessages } from '../../error_messages.js'
+import { errorMessages } from '../../defaults.js'
 
 /**
  * Enforce a minimum length on an array field
@@ -26,7 +26,7 @@ export const minLengthRule = createRule<{ expectedLength: number }>((value, opti
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length < options.expectedLength) {
-    ctx.report(defaultErrorMessages['array.minLength'], 'minLength', ctx, options)
+    ctx.report(errorMessages['array.minLength'], 'minLength', ctx, options)
   }
 })
 
@@ -45,7 +45,7 @@ export const maxLengthRule = createRule<{ expectedLength: number }>((value, opti
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length > options.expectedLength) {
-    ctx.report(defaultErrorMessages['array.maxLength'], 'maxLength', ctx, options)
+    ctx.report(errorMessages['array.maxLength'], 'maxLength', ctx, options)
   }
 })
 
@@ -64,7 +64,7 @@ export const fixedLengthRule = createRule<{ expectedLength: number }>((value, op
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length !== options.expectedLength) {
-    ctx.report(defaultErrorMessages['array.fixedLength'], 'fixedLength', ctx, options)
+    ctx.report(errorMessages['array.fixedLength'], 'fixedLength', ctx, options)
   }
 })
 
@@ -83,7 +83,7 @@ export const notEmptyRule = createRule<undefined>((value, _, ctx) => {
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length <= 0) {
-    ctx.report(defaultErrorMessages.notEmpty, 'notEmpty', ctx)
+    ctx.report(errorMessages.notEmpty, 'notEmpty', ctx)
   }
 })
 
@@ -107,7 +107,7 @@ export const distinctRule = createRule<{ fields?: string | string[] }>((value, o
     for (let item of value as any[]) {
       if (helpers.exists(item)) {
         if (uniqueItems.has(item)) {
-          ctx.report(defaultErrorMessages.distinct, 'distinct', ctx, options)
+          ctx.report(errorMessages.distinct, 'distinct', ctx, options)
           return
         } else {
           uniqueItems.add(item)
@@ -129,7 +129,7 @@ export const distinctRule = createRule<{ fields?: string | string[] }>((value, o
       const element = fields.map((field) => item[field]).join('_')
 
       if (uniqueItems.has(element)) {
-        ctx.report(defaultErrorMessages.distinct, 'distinct', ctx, options)
+        ctx.report(errorMessages.distinct, 'distinct', ctx, options)
         return
       } else {
         uniqueItems.add(element)
