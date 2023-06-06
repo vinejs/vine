@@ -10,9 +10,9 @@
 import camelcase from 'camelcase'
 import { RefsStore, TupleNode } from '@vinejs/compiler/types'
 
-import { BaseType } from '../base.js'
 import { PARSE } from '../../symbols.js'
-import type { ParserOptions, SchemaTypes } from '../../types.js'
+import { BaseType } from '../base/main.js'
+import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 
 /**
  * VineTuple is an array with known length and may have different
@@ -30,8 +30,8 @@ export class VineTuple<
    */
   #allowUnknownProperties: boolean = false
 
-  constructor(schemas: [...Schema]) {
-    super()
+  constructor(schemas: [...Schema], options?: FieldOptions, validations?: Validation<any>[]) {
+    super(options, validations)
     this.#schemas = schemas
   }
 
@@ -49,6 +49,23 @@ export class VineTuple<
       [...Output, ...Value[]],
       [...CamelCaseOutput, ...Value[]]
     >
+  }
+
+  /**
+   * Clone object
+   */
+  clone(): this {
+    const cloned = new VineTuple<Schema, Output, CamelCaseOutput>(
+      this.#schemas.map((schema) => schema.clone()) as Schema,
+      this.cloneOptions(),
+      this.cloneValidations()
+    )
+
+    if (this.#allowUnknownProperties) {
+      cloned.allowUnknownProperties()
+    }
+
+    return cloned as this
   }
 
   /**
