@@ -108,6 +108,37 @@ test.group('Types | Flat schema', () => {
       isAdmin: boolean
     }>()
   })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine
+      .schema({
+        username: vine
+          .string()
+          .clone()
+          .transform((value) => value),
+        email: vine.string().nullable().optional().clone(),
+        is_admin: vine
+          .boolean()
+          .nullable()
+          .transform((value) => {
+            if (value === null) {
+              return false
+            }
+
+            return value
+          })
+          .clone(),
+      })
+      .toCamelCase()
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      username: string
+      email: string | null | undefined
+      isAdmin: boolean
+    }>()
+  })
 })
 
 test.group('Types | Nested schema', () => {
@@ -225,6 +256,35 @@ test.group('Types | Nested schema', () => {
           })
           .nullable(),
       })
+      .toCamelCase()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      username: string
+      email: string | undefined
+      isAdmin: boolean
+      profile: {
+        twitterHandle: string
+        githubUsername: string | null
+      } | null
+    }>()
+  })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine
+      .schema({
+        username: vine.string().clone(),
+        email: vine.string().optional().clone(),
+        is_admin: vine.boolean(),
+        profile: vine
+          .object({
+            twitter_handle: vine.string(),
+            github_username: vine.string().nullable(),
+          })
+          .clone()
+          .nullable(),
+      })
+      .clone()
       .toCamelCase()
 
     type Schema = Infer<typeof schema>
@@ -415,6 +475,45 @@ test.group('Types | Object groups', () => {
       | undefined
     >()
   })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const guideSchema = vine.group([
+      vine.group.if((data) => vine.helpers.isTrue(data.hiring_guide), {
+        hiring_guide: vine.literal(true),
+        guide_name: vine.string(),
+        fees: vine.string(),
+      }),
+      vine.group.if(() => true, {
+        hiring_guide: vine.literal(false),
+      }),
+    ])
+
+    const schema = vine
+      .object({
+        visitor_name: vine.string().clone(),
+      })
+      .merge(guideSchema)
+      .allowUnknownProperties()
+      .optional()
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<
+      | ((
+          | {
+              visitor_name: string
+              hiring_guide: true
+              guide_name: string
+              fees: string
+            }
+          | {
+              visitor_name: string
+              hiring_guide: false
+            }
+        ) & { [K: string]: unknown })
+      | undefined
+    >()
+  })
 })
 
 test.group('Types | Arrays', () => {
@@ -511,6 +610,35 @@ test.group('Types | Arrays', () => {
         | undefined
     }>()
   })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine
+      .schema({
+        contacts: vine
+          .array(
+            vine.object({
+              email: vine.string().clone(),
+              is_primary: vine.boolean().clone(),
+            })
+          )
+          .nullable()
+          .clone()
+          .optional(),
+      })
+      .toCamelCase()
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      contacts:
+        | {
+            email: string
+            isPrimary: boolean
+          }[]
+        | null
+        | undefined
+    }>()
+  })
 })
 
 test.group('Types | Tuples', () => {
@@ -575,6 +703,32 @@ test.group('Types | Tuples', () => {
           ])
           .allowUnknownProperties()
           .nullable()
+          .optional(),
+      })
+      .toCamelCase()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      colors: [string, string, { primary1: string }, ...unknown[]] | null | undefined
+    }>()
+  })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine
+      .schema({
+        colors: vine
+          .tuple([
+            vine.string().clone(),
+            vine.string().clone(),
+            vine
+              .object({
+                primary_1: vine.string(),
+              })
+              .clone(),
+          ])
+          .allowUnknownProperties()
+          .nullable()
+          .clone()
           .optional(),
       })
       .toCamelCase()
@@ -665,6 +819,57 @@ test.group('Types | Union', () => {
           }
     }>()
   })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      contact: vine
+        .union([
+          vine.union.if(
+            (value) => vine.helpers.isObject(value) && 'email' in value,
+            vine.union([
+              vine.union.if(
+                (value) => vine.helpers.isObject(value) && 'otp' in value,
+                vine
+                  .object({
+                    otp: vine.string(),
+                  })
+                  .clone()
+              ),
+              vine.union.else(
+                vine
+                  .object({
+                    email: vine.string(),
+                  })
+                  .clone()
+              ),
+            ])
+          ),
+          vine.union.if(
+            (value) => vine.helpers.isObject(value) && 'username' in value,
+            vine.object({
+              username: vine.string().clone(),
+              password: vine.string().clone(),
+            })
+          ),
+        ])
+        .clone(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      contact:
+        | {
+            email: string
+          }
+        | {
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+    }>()
+  })
 })
 
 test.group('Types | Record', () => {
@@ -725,13 +930,31 @@ test.group('Types | Record', () => {
       }
     }>()
   })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine.schema({
+      /**
+       * @todo: Use union of types here
+       */
+      colors: vine.record(vine.string()).clone(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      colors: {
+        [K: string]: string
+      }
+    }>()
+  })
 })
 
 test.group('Types | Enum', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine.schema({
-      role: vine.enum(['admin', 'moderator', 'writer']),
-    })
+    const schema = vine
+      .schema({
+        role: vine.enum(['admin', 'moderator', 'writer']),
+      })
+      .clone()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -771,6 +994,25 @@ test.group('Types | Enum', () => {
     const schema = vine.schema({
       role: vine.enum(Role).nullable().optional(),
     })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      role: Role | null | undefined
+    }>()
+  })
+
+  test('clone types', ({ expectTypeOf }) => {
+    enum Role {
+      MODERATOR = 'moderator',
+      WRITER = 'writer',
+      ADMIN = 'admin',
+    }
+
+    const schema = vine
+      .schema({
+        role: vine.enum(Role).nullable().optional().clone(),
+      })
+      .clone()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
