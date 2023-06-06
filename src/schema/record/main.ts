@@ -10,9 +10,9 @@
 import camelcase from 'camelcase'
 import { RefsStore, RecordNode } from '@vinejs/compiler/types'
 
-import { BaseType } from '../base.js'
-import { ParserOptions, SchemaTypes } from '../../types.js'
+import { BaseType } from '../base/main.js'
 import { BRAND, CBRAND, PARSE } from '../../symbols.js'
+import { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 
 /**
  * VineRecord represents an object of key-value pair in which
@@ -24,9 +24,21 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
 > {
   #schema: Schema
 
-  constructor(schema: Schema) {
-    super()
+  constructor(schema: Schema, options?: FieldOptions, validations?: Validation<any>[]) {
+    super(options, validations)
     this.#schema = schema
+  }
+
+  /**
+   * Clones the VineRecord schema type. The applied options
+   * and validations are copied to the new instance
+   */
+  clone(): this {
+    return new VineRecord(
+      this.#schema.clone(),
+      this.cloneOptions(),
+      this.cloneValidations()
+    ) as this
   }
 
   /**
