@@ -14,7 +14,7 @@ import { errorMessages } from '../../defaults.js'
 /**
  * Enforce a minimum length on an array field
  */
-export const minLengthRule = createRule<{ expectedLength: number }>((value, options, ctx) => {
+export const minLengthRule = createRule<{ min: number }>((value, options, ctx) => {
   /**
    * Skip if the field is not valid.
    */
@@ -25,7 +25,7 @@ export const minLengthRule = createRule<{ expectedLength: number }>((value, opti
   /**
    * Value will always be an array if the field is valid.
    */
-  if ((value as unknown[]).length < options.expectedLength) {
+  if ((value as unknown[]).length < options.min) {
     ctx.report(errorMessages['array.minLength'], 'minLength', ctx, options)
   }
 })
@@ -33,7 +33,7 @@ export const minLengthRule = createRule<{ expectedLength: number }>((value, opti
 /**
  * Enforce a maximum length on an array field
  */
-export const maxLengthRule = createRule<{ expectedLength: number }>((value, options, ctx) => {
+export const maxLengthRule = createRule<{ max: number }>((value, options, ctx) => {
   /**
    * Skip if the field is not valid.
    */
@@ -44,7 +44,7 @@ export const maxLengthRule = createRule<{ expectedLength: number }>((value, opti
   /**
    * Value will always be an array if the field is valid.
    */
-  if ((value as unknown[]).length > options.expectedLength) {
+  if ((value as unknown[]).length > options.max) {
     ctx.report(errorMessages['array.maxLength'], 'maxLength', ctx, options)
   }
 })
@@ -52,7 +52,7 @@ export const maxLengthRule = createRule<{ expectedLength: number }>((value, opti
 /**
  * Enforce a fixed length on an array field
  */
-export const fixedLengthRule = createRule<{ expectedLength: number }>((value, options, ctx) => {
+export const fixedLengthRule = createRule<{ size: number }>((value, options, ctx) => {
   /**
    * Skip if the field is not valid.
    */
@@ -63,7 +63,7 @@ export const fixedLengthRule = createRule<{ expectedLength: number }>((value, op
   /**
    * Value will always be an array if the field is valid.
    */
-  if ((value as unknown[]).length !== options.expectedLength) {
+  if ((value as unknown[]).length !== options.size) {
     ctx.report(errorMessages['array.fixedLength'], 'fixedLength', ctx, options)
   }
 })

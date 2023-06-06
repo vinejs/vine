@@ -146,7 +146,7 @@ export class ValidatorFactory {
   ) {
     const errorReporter = this.#getReporter()
     const normalizedCtx: FieldContext = {
-      ...new ContextFactory().create('', value, errorReporter),
+      ...new ContextFactory().create('dummy', value, undefined, errorReporter),
       ...ctx,
     }
 
@@ -177,7 +177,7 @@ export class ValidatorFactory {
   ) {
     const errorReporter = this.#getReporter()
     const normalizedCtx: FieldContext = {
-      ...new ContextFactory().create('', value, errorReporter),
+      ...new ContextFactory().create('dummy', value, undefined, errorReporter),
       ...ctx,
     }
 

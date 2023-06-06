@@ -1,5 +1,6 @@
 import { assert } from '@japa/assert'
 import { pathToFileURL } from 'node:url'
+import { snapshot } from '@japa/snapshot'
 import { expectTypeOf } from '@japa/expect-type'
 import { specReporter } from '@japa/spec-reporter'
 import { runFailedTests } from '@japa/run-failed-tests'
@@ -31,7 +32,7 @@ configure({
         files: ['tests/integration/**/*.spec(.js|.ts)'],
       },
     ],
-    plugins: [assert(), runFailedTests(), expectTypeOf()],
+    plugins: [assert(), runFailedTests(), expectTypeOf(), snapshot()],
     reporters: [specReporter()],
     importer: (filePath) => import(pathToFileURL(filePath).href),
   },

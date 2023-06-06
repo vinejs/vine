@@ -15,7 +15,7 @@
   },
   "scripts": {
     "pretest": "npm run lint",
-    "test": "c8 npm run vscode:test",
+    "test": "c8 npm run quick:test",
     "clean": "del-cli build",
     "compile": "npm run lint && npm run clean && tsc",
     "build": "npm run compile",
@@ -34,28 +34,29 @@
   "author": "virk,vinejs",
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^17.6.0",
-    "@commitlint/config-conventional": "^17.6.0",
+    "@commitlint/cli": "^17.6.5",
+    "@commitlint/config-conventional": "^17.6.5",
     "@japa/assert": "^1.4.1",
     "@japa/expect-type": "^1.0.3",
     "@japa/run-failed-tests": "^1.1.1",
     "@japa/runner": "^2.5.1",
+    "@japa/snapshot": "^1.0.1-2",
     "@japa/spec-reporter": "^1.3.3",
-    "@swc/core": "^1.3.50",
-    "@types/node": "^20.1.2",
+    "@swc/core": "^1.3.62",
+    "@types/node": "^20.2.5",
     "benchmark": "^2.1.4",
-    "c8": "^7.13.0",
+    "c8": "^7.14.0",
     "del-cli": "^5.0.0",
-    "eslint": "^8.38.0",
+    "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-adonis": "^3.0.3",
     "eslint-plugin-prettier": "^4.2.1",
     "github-label-sync": "^2.3.1",
     "husky": "^8.0.3",
-    "np": "^7.7.0",
+    "np": "^8.0.2",
     "prettier": "^2.8.7",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4",
+    "typescript": "^5.1.3",
     "zod": "^3.21.4"
   },
   "eslintConfig": {
@@ -110,7 +111,8 @@
   },
   "dependencies": {
     "@poppinss/macroable": "^1.0.0-6",
-    "@vinejs/compiler": "file:../compiler",
-    "camelcase": "^7.0.1"
+    "@vinejs/compiler": "^1.2.0",
+    "camelcase": "^7.0.1",
+    "validator": "^13.9.0"
   }
 }

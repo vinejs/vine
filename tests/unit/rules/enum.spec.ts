@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { enumRule } from '../../../src/rules/enum.js'
+import { enumRule } from '../../../src/schema/enum/rules.js'
 import { ValidatorFactory } from '../../../factories/validator.js'
 
 test.group('Rules | enum', () => {
@@ -17,7 +17,7 @@ test.group('Rules | enum', () => {
     const value = 'foo'
 
     const validated = new ValidatorFactory().execute(validation, value)
-    validated.assertError('Invalid selection. Select from pre-defined choices')
+    validated.assertError('The selected dummy is invalid')
   })
 
   test('do not validate when value is undefined', () => {
@@ -41,7 +41,7 @@ test.group('Rules | enum', () => {
     const value = ''
 
     const validated = new ValidatorFactory().execute(validation, value)
-    validated.assertError('Invalid selection. Select from pre-defined choices')
+    validated.assertError('The selected dummy is invalid')
   })
 
   test('pass validation when value is a subset of choices', () => {

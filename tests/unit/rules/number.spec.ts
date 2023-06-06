@@ -23,14 +23,14 @@ test.group('Number | number', () => {
     const number = numberRule()
     const validated = validator.execute(number, 'foo')
 
-    validated.assertError('The value must be a number')
+    validated.assertError('The dummy field must be a number')
   })
 
   test('pass validation when value is a number', () => {
     const number = numberRule()
     const validated = validator.execute(number, 22)
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput(22)
   })
 
@@ -38,7 +38,7 @@ test.group('Number | number', () => {
     const number = numberRule()
     const validated = validator.execute(number, '22')
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput(22)
   })
 })
@@ -50,7 +50,7 @@ test.group('Number | min', () => {
     const validated = validator.execute([number, min], 'foo')
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value must be a number')
+    validated.assertError('The dummy field must be a number')
   })
 
   test('report error when value is less than the minimum value', () => {
@@ -59,7 +59,7 @@ test.group('Number | min', () => {
     const validated = validator.execute([number, min], 12)
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value of field must be at least 18')
+    validated.assertError('The dummy field must be at least 18')
   })
 
   test('pass validation when value is same or greater than the minimum value', () => {
@@ -78,7 +78,7 @@ test.group('Number | max', () => {
     const validated = validator.execute([number, max], 'foo')
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value must be a number')
+    validated.assertError('The dummy field must be a number')
   })
 
   test('report error when value is greater than the maximum value', () => {
@@ -87,7 +87,7 @@ test.group('Number | max', () => {
     const validated = validator.execute([number, max], 72)
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value of field must not be greater than 60')
+    validated.assertError('The dummy field must not be greater than 60')
   })
 
   test('pass validation when value is same or less than the minimum value', () => {
@@ -106,7 +106,7 @@ test.group('Number | range', () => {
     const validated = validator.execute([number, range], 'foo')
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value must be a number')
+    validated.assertError('The dummy field must be a number')
   })
 
   test('report error when value is greater than the maximum value', () => {
@@ -115,7 +115,7 @@ test.group('Number | range', () => {
     const validated = validator.execute([number, range], 72)
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value of field must be between 18 and 60')
+    validated.assertError('The dummy field must be between 18 and 60')
   })
 
   test('report error when value is less than the minimum value', () => {
@@ -124,7 +124,7 @@ test.group('Number | range', () => {
     const validated = validator.execute([number, range], 12)
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value of field must be between 18 and 60')
+    validated.assertError('The dummy field must be between 18 and 60')
   })
 
   test('pass validation when value is under the range', () => {
@@ -144,7 +144,7 @@ test.group('Number | positive', () => {
     const validated = validator.execute([number, positive], 'foo')
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value must be a number')
+    validated.assertError('The dummy field must be a number')
   })
 
   test('report error when value is negative', () => {
@@ -153,11 +153,11 @@ test.group('Number | positive', () => {
 
     const validated = validator.execute([number, positive], -10)
     validated.assertErrorsCount(1)
-    validated.assertError('The value of field must be a positive number')
+    validated.assertError('The dummy field must be positive')
 
     const validated1 = validator.execute([number, positive], '-10')
     validated1.assertErrorsCount(1)
-    validated1.assertError('The value of field must be a positive number')
+    validated1.assertError('The dummy field must be positive')
   })
 
   test('pass validation when value is positive', () => {
@@ -176,7 +176,7 @@ test.group('Number | negative', () => {
     const validated = validator.execute([number, negative], 'foo')
 
     validated.assertErrorsCount(1)
-    validated.assertError('The value must be a number')
+    validated.assertError('The dummy field must be a number')
   })
 
   test('report error when value is positive', () => {
@@ -185,11 +185,11 @@ test.group('Number | negative', () => {
 
     const validated = validator.execute([number, negative], 0)
     validated.assertErrorsCount(1)
-    validated.assertError('The value of field must be a negative number')
+    validated.assertError('The dummy field must be negative')
 
     const validated1 = validator.execute([number, negative], '10')
     validated1.assertErrorsCount(1)
-    validated1.assertError('The value of field must be a negative number')
+    validated1.assertError('The dummy field must be negative')
   })
 
   test('pass validation when value is negative', () => {

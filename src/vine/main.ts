@@ -11,12 +11,20 @@ import { Compiler, refsBuilder } from '@vinejs/compiler'
 
 import { PARSE } from '../symbols.js'
 import { helpers } from './helpers.js'
-import { VineRoot } from '../schema/root.js'
 import { createRule } from './create_rule.js'
+import { errorMessages } from '../defaults.js'
 import { SchemaBuilder } from '../schema/builder.js'
 import { SimpleErrorReporter } from '../reporters/simple_error_reporter.js'
 import { SimpleMessagesProvider } from '../messages_provider/simple_messages_provider.js'
-import type { Infer, MessagesProviderContact, ValidationOptions, VineOptions } from '../types.js'
+
+import type {
+  Infer,
+  VineOptions,
+  SchemaTypes,
+  ValidationFields,
+  ValidationOptions,
+  ValidationMessages,
+} from '../types.js'
 
 export class Vine extends SchemaBuilder {
   /**
@@ -24,8 +32,8 @@ export class Vine extends SchemaBuilder {
    */
   #options: VineOptions = {
     convertEmptyStringsToNull: false,
-    errorReporter: (messageProvider) => new SimpleErrorReporter(messageProvider),
-    messagesProvider: (messages) => new SimpleMessagesProvider(messages),
+    errorReporter: () => new SimpleErrorReporter(),
+    messagesProvider: (messages) => new SimpleMessagesProvider(messages, {}),
   }
 
   /**
@@ -42,7 +50,7 @@ export class Vine extends SchemaBuilder {
   /**
    * Parses schema to compiler nodes.
    */
-  #parse(schema: VineRoot<any, any, any>) {
+  #parse(schema: SchemaTypes) {
     const refs = refsBuilder()
     return {
       compilerNode: {
@@ -54,23 +62,28 @@ export class Vine extends SchemaBuilder {
   }
 
   /**
-   * Creates an instance of the messages provider with the given
-   * messages
+   * Creates an instance of the pre-configured messages provider
    */
-  getMessagesProvider(messages: Record<string, any>) {
-    return this.#options.messagesProvider(messages)
+  getMessagesProvider(messages: ValidationMessages, fields: ValidationFields) {
+    return this.#options.messagesProvider(messages, fields)
   }
 
   /**
-   * Creates an instance of error reporter
+   * Creates an instance of the pre-configured error reporter.
    */
-  getErrorReporter(messagesProvider: MessagesProviderContact) {
-    return this.#options.errorReporter(messagesProvider)
+  getErrorReporter() {
+    return this.#options.errorReporter()
   }
 
   /**
    * Configure vine. The options are applied globally and impacts
-   * all the schemas
+   * all the schemas.
+   *
+   * ```ts
+   * vine.configure({
+   *   convertEmptyStringsToNull: true,
+   * })
+   * ```
    */
   configure(options: Partial<VineOptions>) {
     Object.assign(this.#options, options)
@@ -78,36 +91,75 @@ export class Vine extends SchemaBuilder {
 
   /**
    * Pre-compiles a schema into a validation function.
+   *
+   * ```ts
+   * const validate = vine.compile(schema)
+   * await validate({ data })
+   * ```
    */
-  compile<Schema extends VineRoot<any, any, any>>(schema: Schema) {
+  compile<Schema extends SchemaTypes>(schema: Schema) {
     const { compilerNode, refs } = this.#parse(schema)
-    const errorReporterFactory = this.#options.errorReporter
-    const messagesProviderFactory = this.#options.messagesProvider
-    const validateFn = new Compiler(compilerNode, this.#options).compile()
+    const globalErrorReporter = this.#options.errorReporter
+    const globalMessagesProvider = this.#options.messagesProvider
+
+    const validateFn = new Compiler(compilerNode, {
+      convertEmptyStringsToNull: this.#options.convertEmptyStringsToNull,
+      messages: {
+        required: errorMessages.required,
+        array: errorMessages.array,
+        object: errorMessages.object,
+      },
+    }).compile()
 
     /**
-     * Validate input data against a pre-defined Vine schema
+     * Validate input data against a pre-defined vine schema. Optionally,
+     * you can define error messages, fields, a custom messages provider,
+     * or an error reporter.
+     *
+     * ```ts
+     * await validate({ data })
+     * await validate({ data, messages, fields })
+     *
+     * await validate({ data, messages, fields }, {
+     *   errorReporter
+     * })
+     * ```
      */
-    return function validate(options: ValidationOptions): Promise<Infer<Schema>> {
-      const errorReporter =
-        'errorReporter' in options
-          ? options.errorReporter!
-          : errorReporterFactory(
-              'messagesProvider' in options
-                ? options.messagesProvider
-                : messagesProviderFactory('messages' in options ? options.messages : {})
-            )
+    return function validate(
+      options: ValidationOptions,
+      vineOptions?: VineOptions
+    ): Promise<Infer<Schema>> {
+      const errorReporter = vineOptions?.errorReporter || globalErrorReporter
+      const messagesProvider = vineOptions?.messagesProvider || globalMessagesProvider
 
-      return validateFn(options.data, {}, refs, errorReporter)
+      return validateFn(
+        options.data,
+        {},
+        refs,
+        messagesProvider(options.messages || {}, options.fields || {}),
+        errorReporter()
+      )
     }
   }
 
   /**
-   * Validate data against a pre-compiled schema
+   * Validate data against a schema. Optionally, you can define
+   * error messages, fields, a custom messages provider,
+   * or an error reporter.
+   *
+   * ```ts
+   * await vine.validate({ schema, data })
+   * await vine.validate({ schema, data, messages, fields })
+   *
+   * await vine.validate({ schema, data, messages, fields }, {
+   *   errorReporter
+   * })
+   * ```
    */
-  validate<Schema extends VineRoot<any, any, any>>(
-    options: ValidationOptions & { schema: Schema }
+  validate<Schema extends SchemaTypes>(
+    options: ValidationOptions & { schema: Schema },
+    vineOptions?: VineOptions
   ): Promise<Infer<Schema>> {
-    return this.compile(options.schema)(options)
+    return this.compile(options.schema)(options, vineOptions)
   }
 }

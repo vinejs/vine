@@ -20,87 +20,87 @@ import {
 
 test.group('Array | minLength', () => {
   test('skip when field is invalid', () => {
-    const minLength = minLengthRule({ expectedLength: 2 })
+    const minLength = minLengthRule({ min: 2 })
     const validated = validator.execute(minLength, 'foo', { isValid: false })
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput('foo')
   })
 
   test('report when array length is less than the expected length', () => {
-    const minLength = minLengthRule({ expectedLength: 2 })
+    const minLength = minLengthRule({ min: 2 })
     const validated = validator.execute(minLength, ['foo'])
 
-    validated.assertError('The field must have atleast 2 items')
+    validated.assertError('The dummy field must have at least 2 items')
   })
 
   test('pass validation when length is same or greater than expected length', () => {
-    const minLength = minLengthRule({ expectedLength: 2 })
+    const minLength = minLengthRule({ min: 2 })
     const validated = validator.execute(minLength, ['foo', 'bar'])
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
 
     const validated1 = validator.execute(minLength, ['foo', 'bar', 'baz'])
-    validated1.assertDoesNotHaveErrors()
+    validated1.assertSucceeded()
     validated1.assertOutput(['foo', 'bar', 'baz'])
   })
 })
 
 test.group('Array | maxLength', () => {
   test('skip when field is invalid', () => {
-    const maxLength = maxLengthRule({ expectedLength: 2 })
+    const maxLength = maxLengthRule({ max: 2 })
     const validated = validator.execute(maxLength, 'foo', { isValid: false })
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput('foo')
   })
 
   test('report when array length is greater than the expected length', () => {
-    const maxLength = maxLengthRule({ expectedLength: 2 })
+    const maxLength = maxLengthRule({ max: 2 })
     const validated = validator.execute(maxLength, ['foo', 'bar', 'baz'])
 
-    validated.assertError('The field must not have more than 2 items')
+    validated.assertError('The dummy field must not have more than 2 items')
   })
 
   test('pass validation when length is same or less than expected length', () => {
-    const maxLength = maxLengthRule({ expectedLength: 2 })
+    const maxLength = maxLengthRule({ max: 2 })
     const validated = validator.execute(maxLength, ['foo', 'bar'])
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
 
     const validated1 = validator.execute(maxLength, ['foo'])
-    validated1.assertDoesNotHaveErrors()
+    validated1.assertSucceeded()
     validated1.assertOutput(['foo'])
   })
 })
 
 test.group('Array | fixedLength', () => {
   test('skip when field is invalid', () => {
-    const fixedLength = fixedLengthRule({ expectedLength: 2 })
+    const fixedLength = fixedLengthRule({ size: 2 })
     const validated = validator.execute(fixedLength, 'foo', { isValid: false })
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput('foo')
   })
 
   test('report when array length is greater than the expected length', () => {
-    const fixedLength = fixedLengthRule({ expectedLength: 2 })
+    const fixedLength = fixedLengthRule({ size: 2 })
     const validated = validator.execute(fixedLength, ['foo', 'bar', 'baz'])
 
-    validated.assertError('The field must have exactly 2 items')
+    validated.assertError('The dummy field must contain 2 items')
   })
 
   test('report when array length is less than the expected length', () => {
-    const fixedLength = fixedLengthRule({ expectedLength: 2 })
+    const fixedLength = fixedLengthRule({ size: 2 })
     const validated = validator.execute(fixedLength, ['foo'])
 
-    validated.assertError('The field must have exactly 2 items')
+    validated.assertError('The dummy field must contain 2 items')
   })
 
   test('pass validation when length is same as the expected length', () => {
-    const maxLength = maxLengthRule({ expectedLength: 2 })
+    const maxLength = fixedLengthRule({ size: 2 })
     const validated = validator.execute(maxLength, ['foo', 'bar'])
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
   })
 })
@@ -110,7 +110,7 @@ test.group('Array | notEmpty', () => {
     const notEmpty = notEmptyRule()
     const validated = validator.execute(notEmpty, 'foo', { isValid: false })
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput('foo')
   })
 
@@ -118,13 +118,13 @@ test.group('Array | notEmpty', () => {
     const notEmpty = notEmptyRule()
     const validated = validator.execute(notEmpty, [])
 
-    validated.assertError('The field must have one or more items')
+    validated.assertError('The dummy field must not be empty')
   })
 
   test('pass validation when array has one or more items', () => {
     const notEmpty = notEmptyRule()
     const validated = validator.execute(notEmpty, ['foo', 'bar'])
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
   })
 })
@@ -134,7 +134,7 @@ test.group('Array | distinct', () => {
     const distinct = distinctRule({})
     const validated = validator.execute(distinct, 'foo', { isValid: false })
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
     validated.assertOutput('foo')
   })
 
@@ -142,31 +142,31 @@ test.group('Array | distinct', () => {
     const distinct = distinctRule({})
     const validated = validator.execute(distinct, [])
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
   })
 
   test('pass validation when array has unique items', () => {
     const distinct = distinctRule({})
     const validated = validator.execute(distinct, ['foo', 'bar', 'baz'])
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
 
     const validated1 = validator.execute(distinct, [11, 12, 13])
-    validated1.assertDoesNotHaveErrors()
+    validated1.assertSucceeded()
 
     const validated2 = validator.execute(distinct, [true, false])
-    validated2.assertDoesNotHaveErrors()
+    validated2.assertSucceeded()
   })
 
   test('report error when array has duplicates', () => {
     const distinct = distinctRule({})
     const validated = validator.execute(distinct, ['foo', 'bar', 'foo'])
-    validated.assertError('The field has one or more duplicate items')
+    validated.assertError('The dummy field has duplicate values')
 
     const validated1 = validator.execute(distinct, [11, 12, 11])
-    validated1.assertError('The field has one or more duplicate items')
+    validated1.assertError('The dummy field has duplicate values')
 
     const validated2 = validator.execute(distinct, [true, true])
-    validated2.assertError('The field has one or more duplicate items')
+    validated2.assertError('The dummy field has duplicate values')
   })
 
   test('pass validation when array of objects have unique items', () => {
@@ -180,7 +180,7 @@ test.group('Array | distinct', () => {
       },
     ])
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
   })
 
   test('report error when array of objects has duplicate items', () => {
@@ -193,7 +193,7 @@ test.group('Array | distinct', () => {
         email: 'foo@bar.com',
       },
     ])
-    validated.assertError('The field has one or more duplicate items')
+    validated.assertError('The dummy field has duplicate values')
   })
 
   test('pass validation when object has unique items for a composite key', () => {
@@ -209,7 +209,7 @@ test.group('Array | distinct', () => {
       },
     ])
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
   })
 
   test('report error when object has duplicate items for a composite key', () => {
@@ -225,7 +225,7 @@ test.group('Array | distinct', () => {
       },
     ])
 
-    validated.assertError('The field has one or more duplicate items')
+    validated.assertError('The dummy field has duplicate values')
   })
 
   test('skip when one or more fields are missing in objects', () => {
@@ -239,7 +239,7 @@ test.group('Array | distinct', () => {
       },
     ])
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
   })
 
   test('skip when array elements are not objects', () => {
@@ -251,7 +251,7 @@ test.group('Array | distinct', () => {
       'foo@bar.com',
     ])
 
-    validated.assertDoesNotHaveErrors()
+    validated.assertSucceeded()
   })
 })
 

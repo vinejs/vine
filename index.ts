@@ -7,4 +7,4 @@
  * file that was distributed with this source code.
  */
 
-export { defaultErrorMessages } from './src/error_messages.js'
+export { defaultErrorMessages } from './src/defaults.js'

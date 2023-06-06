@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { booleanRule } from './rules.js'
 import { BaseLiteralType } from '../base/literal.js'
-import { booleanRule } from '../../rules/primitives.js'
 import type { FieldOptions, Validation } from '../../types.js'
 
 /**
