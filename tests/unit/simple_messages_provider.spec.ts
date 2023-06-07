@@ -141,4 +141,18 @@ test.group('Simple messages provider | interpolation', () => {
       'The scores field must have 11 items'
     )
   })
+
+  test('replace missing values with undefined', ({ assert }) => {
+    const provider = new SimpleMessagesProvider(
+      {
+        min: 'The {{ field }} field must have {{ items.min }} items',
+      },
+      {}
+    )
+
+    assert.equal(
+      provider.getMessage('Enter value', 'min', context.create('scores', undefined), {}),
+      'The scores field must have undefined items'
+    )
+  })
 })
