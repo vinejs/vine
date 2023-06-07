@@ -15,54 +15,34 @@ import { BaseType } from '../base/main.js'
 import { GroupConditional } from './conditional.js'
 import { BRAND, CBRAND, PARSE } from '../../symbols.js'
 import type {
-  Parser,
   Validation,
   SchemaTypes,
-  RuleBuilder,
   FieldOptions,
   ParserOptions,
+  ConstructableSchema,
 } from '../../types.js'
 
 /**
  * Converts schema properties to camelCase
  */
-export class VineCamelCaseObject<Schema extends VineObject<any, any, any>> extends BaseType<
-  Schema[typeof CBRAND],
-  Schema[typeof CBRAND]
-> {
+export class VineCamelCaseObject<Schema extends VineObject<any, any, any>>
+  implements ConstructableSchema<Schema[typeof CBRAND], Schema[typeof CBRAND]>
+{
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [BRAND]: Schema[typeof CBRAND];
+  declare [CBRAND]: Schema[typeof CBRAND]
+
   #schema: Schema
 
   constructor(schema: Schema) {
-    super()
     this.#schema = schema
   }
 
   /**
-   * @inheritdoc
-   */
-  parse(callback: Parser): this {
-    this.#schema.parse(callback)
-    return this
-  }
-
-  /**
-   * @inheritdoc
-   */
-  use(validation: Validation<any> | RuleBuilder): this {
-    this.#schema.use(validation)
-    return this
-  }
-
-  /**
-   * @inheritdoc
-   */
-  bail(state: boolean): this {
-    this.#schema.bail(state)
-    return this
-  }
-
-  /**
-   * Clone top-level object
+   * Clone object
    */
   clone(): this {
     return new VineCamelCaseObject<Schema>(this.#schema.clone()) as this
