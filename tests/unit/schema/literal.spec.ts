@@ -119,6 +119,26 @@ test.group('VineLiteral', () => {
       ],
     })
   })
+
+  test('apply parser', ({ assert }) => {
+    const schema = vine.literal(22).parse(() => {})
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+  })
 })
 
 test.group('VineLiteral | clone', () => {
@@ -309,6 +329,45 @@ test.group('VineLiteral | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
+  test('clone and apply parser', ({ assert }) => {
+    const schema = vine.literal(22)
+    const schema1 = schema.clone().parse(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
         },
       ],
     })
