@@ -21,7 +21,18 @@ import {
 test.group('Array | minLength', () => {
   test('skip when field is invalid', () => {
     const minLength = minLengthRule({ min: 2 })
-    const validated = validator.execute(minLength, 'foo', { isValid: false })
+    const validated = validator.withContext({ isValid: false }).execute(minLength, 'foo')
+
+    validated.assertSucceeded()
+    validated.assertOutput('foo')
+  })
+
+  test('skip when field is invalid and bail mode is disabled', () => {
+    const minLength = minLengthRule({ min: 2 })
+    const validated = validator
+      .withContext({ isValid: false })
+      .bail(false)
+      .execute(minLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -49,7 +60,18 @@ test.group('Array | minLength', () => {
 test.group('Array | maxLength', () => {
   test('skip when field is invalid', () => {
     const maxLength = maxLengthRule({ max: 2 })
-    const validated = validator.execute(maxLength, 'foo', { isValid: false })
+    const validated = validator.withContext({ isValid: false }).execute(maxLength, 'foo')
+
+    validated.assertSucceeded()
+    validated.assertOutput('foo')
+  })
+
+  test('skip when field is invalid and bail mode is disabled', () => {
+    const maxLength = maxLengthRule({ max: 2 })
+    const validated = validator
+      .withContext({ isValid: false })
+      .bail(false)
+      .execute(maxLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -77,7 +99,18 @@ test.group('Array | maxLength', () => {
 test.group('Array | fixedLength', () => {
   test('skip when field is invalid', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
-    const validated = validator.execute(fixedLength, 'foo', { isValid: false })
+    const validated = validator.withContext({ isValid: false }).execute(fixedLength, 'foo')
+
+    validated.assertSucceeded()
+    validated.assertOutput('foo')
+  })
+
+  test('skip when field is invalid and bail mode is disabled', () => {
+    const fixedLength = fixedLengthRule({ size: 2 })
+    const validated = validator
+      .withContext({ isValid: false })
+      .bail(false)
+      .execute(fixedLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -108,7 +141,15 @@ test.group('Array | fixedLength', () => {
 test.group('Array | notEmpty', () => {
   test('skip when field is invalid', () => {
     const notEmpty = notEmptyRule()
-    const validated = validator.execute(notEmpty, 'foo', { isValid: false })
+    const validated = validator.withContext({ isValid: false }).execute(notEmpty, 'foo')
+
+    validated.assertSucceeded()
+    validated.assertOutput('foo')
+  })
+
+  test('skip when field is invalid and bail mode is disabled', () => {
+    const notEmpty = notEmptyRule()
+    const validated = validator.withContext({ isValid: false }).bail(false).execute(notEmpty, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -132,7 +173,15 @@ test.group('Array | notEmpty', () => {
 test.group('Array | distinct', () => {
   test('skip when field is invalid', () => {
     const distinct = distinctRule({})
-    const validated = validator.execute(distinct, 'foo', { isValid: false })
+    const validated = validator.withContext({ isValid: false }).execute(distinct, 'foo')
+
+    validated.assertSucceeded()
+    validated.assertOutput('foo')
+  })
+
+  test('skip when field is invalid and bail mode is disabled', () => {
+    const distinct = distinctRule({})
+    const validated = validator.withContext({ isValid: false }).bail(false).execute(distinct, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -258,7 +307,13 @@ test.group('Array | distinct', () => {
 test.group('Array | compact', () => {
   test('skip when field is invalid', () => {
     const compact = compactRule()
-    const validated = validator.execute(compact, 'foo', { isValid: false })
+    const validated = validator.withContext({ isValid: false }).execute(compact, 'foo')
+    validated.assertOutput('foo')
+  })
+
+  test('skip when field is invalid and bail mode is disabled', () => {
+    const compact = compactRule()
+    const validated = validator.withContext({ isValid: false }).bail(false).execute(compact, 'foo')
     validated.assertOutput('foo')
   })
 

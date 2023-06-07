@@ -128,6 +128,14 @@ class ValidationResult {
  * during tests
  */
 export class ValidatorFactory {
+  #ctx?: Partial<FieldContext>
+  #bail?: boolean
+
+  constructor(ctx?: Partial<FieldContext>, bail?: boolean) {
+    this.#ctx = ctx
+    this.#bail = bail
+  }
+
   /**
    * Creates an instance of the error reporter required
    * to report errors.
@@ -137,17 +145,28 @@ export class ValidatorFactory {
   }
 
   /**
+   * Define field context for the validation
+   */
+  withContext(ctx: Partial<FieldContext>) {
+    return new ValidatorFactory(ctx, this.#bail)
+  }
+
+  /**
+   * Toggle bail mode for the validation
+   */
+  bail(state: boolean) {
+    return new ValidatorFactory(this.#ctx, state)
+  }
+
+  /**
    * Executes a validation against the provided value
    */
-  execute(
-    validation: Validation<any> | Validation<any>[],
-    value: any,
-    ctx: Partial<FieldContext> = {}
-  ) {
+  execute(validation: Validation<any> | Validation<any>[], value: any) {
     const errorReporter = this.#getReporter()
+    const bail = this.#bail === false ? false : true
     const normalizedCtx: FieldContext = {
       ...new ContextFactory().create('dummy', value, undefined, errorReporter),
-      ...ctx,
+      ...this.#ctx,
     }
 
     const validations = Array.isArray(validation) ? validation : [validation]
@@ -158,7 +177,7 @@ export class ValidatorFactory {
         )
       }
 
-      if ((normalizedCtx.isDefined || one.rule.implicit) && normalizedCtx.isValid) {
+      if ((normalizedCtx.isDefined || one.rule.implicit) && (normalizedCtx.isValid || !bail)) {
         one.rule.validator(value, one.options, normalizedCtx)
       }
     }
@@ -170,20 +189,17 @@ export class ValidatorFactory {
    * Executes an async validation against the provided
    * value
    */
-  async executeAsync(
-    validation: Validation<any> | Validation<any>[],
-    value: any,
-    ctx: Partial<FieldContext> = {}
-  ) {
+  async executeAsync(validation: Validation<any> | Validation<any>[], value: any) {
     const errorReporter = this.#getReporter()
+    const bail = this.#bail === false ? false : true
     const normalizedCtx: FieldContext = {
       ...new ContextFactory().create('dummy', value, undefined, errorReporter),
-      ...ctx,
+      ...this.#ctx,
     }
 
     const validations = Array.isArray(validation) ? validation : [validation]
     for (let one of validations) {
-      if ((normalizedCtx.isDefined || one.rule.implicit) && normalizedCtx.isValid) {
+      if ((normalizedCtx.isDefined || one.rule.implicit) && (normalizedCtx.isValid || !bail)) {
         await one.rule.validator(value, one.options, normalizedCtx)
       }
     }

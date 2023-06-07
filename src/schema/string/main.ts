@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import { stringRule } from './rules.js'
 import { BaseLiteralType } from '../base/literal.js'
 import type { FieldOptions, Validation } from '../../types.js'
+import { emailRule, mobileRule, stringRule } from './rules.js'
 
 /**
  * VineString represents a string value in the validation schema.
@@ -25,5 +25,13 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   clone(): this {
     return new VineString(this.cloneOptions(), this.cloneValidations()) as this
+  }
+
+  email(...args: Parameters<typeof emailRule>) {
+    return this.use(emailRule(...args))
+  }
+
+  mobile(...args: Parameters<typeof mobileRule>) {
+    return this.use(mobileRule(...args))
   }
 }

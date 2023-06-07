@@ -52,6 +52,30 @@ test.group('Simple error reporter', () => {
     ])
   })
 
+  test('report array index when field is an array member', ({ assert }) => {
+    const reporter = new SimpleErrorReporter()
+    const ctx = context.create('username', '')
+    reporter.report('Scores are required', 'required', {
+      ...ctx,
+      ...{
+        isArrayMember: true,
+        fieldName: 0,
+        wildCardPath: 'scores.*',
+        parent: [],
+      },
+    })
+
+    assert.isTrue(reporter.hasErrors)
+    assert.deepEqual(reporter.errors, [
+      {
+        field: 'scores.*',
+        message: 'Scores are required',
+        index: 0,
+        rule: 'required',
+      },
+    ])
+  })
+
   test('convert errors to an instance of validation error', ({ assert }) => {
     const reporter = new SimpleErrorReporter()
     const ctx = context.create('username', '')

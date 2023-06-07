@@ -19,6 +19,19 @@ import type {
 import type { ValidationError } from './errors/validation_error.js'
 import type { BRAND, CBRAND, PARSE, VALIDATION } from './symbols.js'
 
+import type { IsEmailOptions } from 'validator/lib/isEmail.js'
+import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+
+/**
+ * Options accepted by the mobile number validation
+ */
+export type MobileOptions = { locales?: MobilePhoneLocale[] } & IsMobilePhoneOptions
+
+/**
+ * Options accepted by the email address validation
+ */
+export type EmailOptions = IsEmailOptions
+
 /**
  * Re-exporting selected types from compiler
  */
