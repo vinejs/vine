@@ -11,7 +11,7 @@ import { test } from '@japa/runner'
 import vine from '../../../index.js'
 
 test.group('Boolean', () => {
-  test('fail when when is not a boolean', async ({ assert }) => {
+  test('fail when value is not a boolean', async ({ assert }) => {
     const schema = vine.object({
       is_admin: vine.boolean(),
     })

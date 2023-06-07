@@ -51,4 +51,12 @@ test.group('Rules | enum', () => {
     const validated = new ValidatorFactory().execute(validation, value)
     validated.assertErrorsCount(0)
   })
+
+  test('compute choices from a callback', () => {
+    const validation = enumRule({ choices: () => ['admin', 'moderator', 'guest'] })
+    const value = 'admin'
+
+    const validated = new ValidatorFactory().execute(validation, value)
+    validated.assertErrorsCount(0)
+  })
 })

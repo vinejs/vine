@@ -119,7 +119,7 @@
   "dependencies": {
     "@poppinss/macroable": "^1.0.0-6",
     "@types/validator": "^13.7.17",
-    "@vinejs/compiler": "^1.2.0",
+    "@vinejs/compiler": "^1.2.1",
     "camelcase": "^7.0.1",
     "validator": "^13.9.0"
   }

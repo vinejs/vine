@@ -119,6 +119,26 @@ test.group('VineEnum', () => {
       ],
     })
   })
+
+  test('apply parser', ({ assert }) => {
+    const schema = vine.enum(['guest', 'admin', 'moderator']).parse(() => {})
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+  })
 })
 
 test.group('VineEnum | clone', () => {
@@ -309,6 +329,44 @@ test.group('VineEnum | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
+  test('clone and apply parser', ({ assert }) => {
+    const schema = vine.enum(['guest', 'admin', 'moderator'])
+    const schema1 = schema.clone().parse(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
         },
       ],
     })

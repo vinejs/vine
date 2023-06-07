@@ -23,7 +23,7 @@ import { VineLiteral } from './literal/main.js'
 import { CamelCase } from './camelcase_types.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
-import type { EnumLike, SchemaTypes } from '../types.js'
+import type { EnumLike, FieldContext, SchemaTypes } from '../types.js'
 
 /**
  * Schema builder exposes methods to construct a Vine schema. You may
@@ -116,10 +116,12 @@ export class SchemaBuilder extends Macroable {
   /**
    * Define a field whose value matches the enum choices.
    */
-  enum<const Values extends readonly unknown[]>(values: Values): VineEnum<Values>
+  enum<const Values extends readonly unknown[]>(
+    values: Values | ((ctx: FieldContext) => Values)
+  ): VineEnum<Values>
   enum<Values extends EnumLike>(values: Values): VineNativeEnum<Values>
   enum<Values extends readonly unknown[] | EnumLike>(values: Values): any {
-    if (Array.isArray(values)) {
+    if (Array.isArray(values) || typeof values === 'function') {
       return new VineEnum(values)
     }
     return new VineNativeEnum(values as EnumLike)

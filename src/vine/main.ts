@@ -33,7 +33,7 @@ export class Vine extends SchemaBuilder {
   #options: VineOptions = {
     convertEmptyStringsToNull: false,
     errorReporter: () => new SimpleErrorReporter(),
-    messagesProvider: (messages) => new SimpleMessagesProvider(messages, {}),
+    messagesProvider: (messages, fields) => new SimpleMessagesProvider(messages, fields),
   }
 
   /**
