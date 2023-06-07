@@ -42,7 +42,8 @@ export const errorMessages = {
   'range': 'The {{ field }} field must be between {{ min }} and {{ max }}',
   'positive': 'The {{ field }} field must be positive',
   'negative': 'The {{ field }} field must be negative',
-  'decimal': 'The {{ field }} field must have {{ value }} decimal places',
+  'decimal': 'The {{ field }} field must have {{ digits }} decimal places',
+  'withoutDecimals': 'The {{ field }} field must be an integer',
 
   'accepted': 'The {{ field }} field must be accepted',
 

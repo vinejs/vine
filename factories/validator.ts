@@ -178,7 +178,7 @@ export class ValidatorFactory {
       }
 
       if ((normalizedCtx.isDefined || one.rule.implicit) && (normalizedCtx.isValid || !bail)) {
-        one.rule.validator(value, one.options, normalizedCtx)
+        one.rule.validator(normalizedCtx.value, one.options, normalizedCtx)
       }
     }
 
@@ -200,7 +200,7 @@ export class ValidatorFactory {
     const validations = Array.isArray(validation) ? validation : [validation]
     for (let one of validations) {
       if ((normalizedCtx.isDefined || one.rule.implicit) && (normalizedCtx.isValid || !bail)) {
-        await one.rule.validator(value, one.options, normalizedCtx)
+        await one.rule.validator(normalizedCtx.value, one.options, normalizedCtx)
       }
     }
 

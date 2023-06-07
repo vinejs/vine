@@ -17,7 +17,11 @@ import { errorMessages } from '../../defaults.js'
  */
 export const numberRule = createRule((value, _, ctx) => {
   const valueAsNumber = helpers.asNumber(value)
-  if (Number.isNaN(valueAsNumber)) {
+  if (
+    Number.isNaN(valueAsNumber) ||
+    valueAsNumber === Number.POSITIVE_INFINITY ||
+    valueAsNumber === Number.NEGATIVE_INFINITY
+  ) {
     ctx.report(errorMessages.number, 'number', ctx)
     return
   }
@@ -102,5 +106,42 @@ export const negativeRule = createRule<undefined>((value, _, ctx) => {
 
   if ((value as number) >= 0) {
     ctx.report(errorMessages.negative, 'negative', ctx)
+  }
+})
+
+/**
+ * Enforce the value to have a fixed or range of decimals
+ */
+export const decimalRule = createRule<{ range: [number, number?] }>((value, options, ctx) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!ctx.isValid) {
+    return
+  }
+
+  if (
+    !helpers.isDecimal(String(value), {
+      force_decimal: options.range[0] !== 0,
+      decimal_digits: options.range.join(','),
+    })
+  ) {
+    ctx.report(errorMessages.decimal, 'decimal', ctx, { digits: options.range.join('-') })
+  }
+})
+
+/**
+ * Enforce the value to not have decimal places
+ */
+export const withoutDecimalsRule = createRule((value, _, ctx) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!ctx.isValid) {
+    return
+  }
+
+  if (!Number.isInteger(value)) {
+    ctx.report(errorMessages.withoutDecimals, 'withoutDecimals', ctx)
   }
 })

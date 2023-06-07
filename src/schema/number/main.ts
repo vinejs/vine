@@ -9,7 +9,16 @@
 
 import { BaseLiteralType } from '../base/literal.js'
 import { FieldOptions, Validation } from '../../types.js'
-import { maxRule, minRule, negativeRule, numberRule, positiveRule, rangeRule } from './rules.js'
+import {
+  maxRule,
+  minRule,
+  rangeRule,
+  numberRule,
+  decimalRule,
+  negativeRule,
+  positiveRule,
+  withoutDecimalsRule,
+} from './rules.js'
 
 /**
  * VineNumber represents a numeric value in the validation schema.
@@ -52,6 +61,21 @@ export class VineNumber extends BaseLiteralType<number, number> {
    */
   negative() {
     return this.use(negativeRule())
+  }
+
+  /**
+   * Enforce the value to have fixed or range
+   * of decimal places
+   */
+  decimal(range: number | [number, number]) {
+    return this.use(decimalRule({ range: Array.isArray(range) ? range : [range] }))
+  }
+
+  /**
+   * Enforce the value to be an integer (aka without decimals)
+   */
+  withoutDecimals() {
+    return this.use(withoutDecimalsRule())
   }
 
   /**

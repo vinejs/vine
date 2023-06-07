@@ -12,6 +12,15 @@ import { refsBuilder } from '@vinejs/compiler'
 
 import { PARSE } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
+import {
+  maxRule,
+  minRule,
+  rangeRule,
+  decimalRule,
+  negativeRule,
+  positiveRule,
+  withoutDecimalsRule,
+} from '../../../src/schema/number/rules.js'
 
 const vine = new Vine()
 
@@ -146,6 +155,26 @@ test.group('VineNumber', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
+  test('apply parser', ({ assert }) => {
+    const schema = vine.number().parse(() => {})
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
         },
       ],
     })
@@ -395,6 +424,310 @@ test.group('VineNumber | clone', () => {
           ruleFnId: 'ref://1',
         },
       ],
+    })
+  })
+
+  test('clone and apply parser', ({ assert }) => {
+    const schema = vine.number()
+    const schema1 = schema.clone().parse(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+  })
+})
+
+test.group('VineNumber | applying rules', () => {
+  test('apply min rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().min(18)
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const min = minRule({ min: 18 })
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: min.rule.validator,
+      options: min.options,
+    })
+  })
+
+  test('apply max rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().max(18)
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const max = maxRule({ max: 18 })
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: max.rule.validator,
+      options: max.options,
+    })
+  })
+
+  test('apply range rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().range([18, 60])
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const range = rangeRule({ min: 18, max: 60 })
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: range.rule.validator,
+      options: range.options,
+    })
+  })
+
+  test('apply positive rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().positive()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const positive = positiveRule()
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: positive.rule.validator,
+      options: positive.options,
+    })
+  })
+
+  test('apply negative rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().negative()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const negative = negativeRule()
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: negative.rule.validator,
+      options: negative.options,
+    })
+  })
+
+  test('apply decimal rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().decimal([0, 2])
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const decimal = decimalRule({ range: [0, 2] })
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: decimal.rule.validator,
+      options: decimal.options,
+    })
+  })
+
+  test('apply decimal rule with fixed value', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().decimal(2)
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const decimal = decimalRule({ range: [2] })
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: decimal.rule.validator,
+      options: decimal.options,
+    })
+  })
+
+  test('apply withoutDecimals rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.number().withoutDecimals()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const withoutDecimals = withoutDecimalsRule()
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: withoutDecimals.rule.validator,
+      options: withoutDecimals.options,
     })
   })
 })
