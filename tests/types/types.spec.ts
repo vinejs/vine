@@ -1107,3 +1107,76 @@ test.group('Types | Enum', () => {
     }>()
   })
 })
+
+test.group('Types | Accepted', () => {
+  test('infer types', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        terms_and_conditions: vine.accepted(),
+      })
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      terms_and_conditions: true
+    }>()
+  })
+
+  test('infer types with nullable fields', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        terms_and_conditions: vine.accepted().nullable(),
+      })
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      terms_and_conditions: true | null
+    }>()
+  })
+
+  test('infer types with optional fields', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        terms_and_conditions: vine.accepted().nullable().optional(),
+      })
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      terms_and_conditions: true | null | undefined
+    }>()
+  })
+
+  test('infer types with transformer', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        terms_and_conditions: vine
+          .accepted()
+          .nullable()
+          .optional()
+          .transform(() => {
+            return true
+          }),
+      })
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      terms_and_conditions: boolean
+    }>()
+  })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        terms_and_conditions: vine.accepted().clone().nullable().optional(),
+      })
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      terms_and_conditions: true | null | undefined
+    }>()
+  })
+})

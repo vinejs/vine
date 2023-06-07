@@ -24,6 +24,7 @@ import { CamelCase } from './camelcase_types.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
 import type { EnumLike, FieldContext, SchemaTypes } from '../types.js'
+import { VineAccepted } from './accepted/main.js'
 
 /**
  * Schema builder exposes methods to construct a Vine schema. You may
@@ -52,6 +53,13 @@ export class SchemaBuilder extends Macroable {
    */
   boolean(options?: { strict: boolean }) {
     return new VineBoolean(options)
+  }
+
+  /**
+   * Validate a checkbox to be checked
+   */
+  accepted() {
+    return new VineAccepted()
   }
 
   /**
