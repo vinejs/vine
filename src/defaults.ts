@@ -33,6 +33,7 @@ export const errorMessages = {
   'notIn': 'The selected {{ field }} is invalid',
   'ipAddress': 'The {{ field }} field must be a valid IP address',
   'uuid': 'The {{ field }} field must be a valid UUID',
+  'hexCode': 'The {{ field }} field must be a valid hex color code',
 
   'boolean': 'The value must be a boolean',
 

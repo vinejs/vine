@@ -9,7 +9,7 @@
 
 import { BaseLiteralType } from '../base/literal.js'
 import type { FieldOptions, Validation } from '../../types.js'
-import { emailRule, mobileRule, stringRule } from './rules.js'
+import { emailRule, hexCodeRule, mobileRule, stringRule } from './rules.js'
 
 /**
  * VineString represents a string value in the validation schema.
@@ -33,5 +33,9 @@ export class VineString extends BaseLiteralType<string, string> {
 
   mobile(...args: Parameters<typeof mobileRule>) {
     return this.use(mobileRule(...args))
+  }
+
+  hexCode() {
+    return this.use(hexCodeRule())
   }
 }

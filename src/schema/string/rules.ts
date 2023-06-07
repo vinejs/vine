@@ -44,3 +44,13 @@ export const mobileRule = createRule<
     ctx.report(errorMessages.mobile, 'mobile', ctx)
   }
 })
+
+export const hexCodeRule = createRule((value, _, ctx) => {
+  if (!ctx.isValid) {
+    return
+  }
+
+  if (!helpers.isHexColor(value as string)) {
+    ctx.report(errorMessages.hexCode, 'hexCode', ctx)
+  }
+})

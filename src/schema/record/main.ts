@@ -1,5 +1,5 @@
 /*
- * vinejs
+ * @vinejs/vine
  *
  * (c) VineJS
  *
@@ -12,7 +12,8 @@ import { RefsStore, RecordNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
 import { BRAND, CBRAND, PARSE } from '../../symbols.js'
-import { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from './rules.js'
 
 /**
  * VineRecord represents an object of key-value pair in which
@@ -30,6 +31,34 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
   }
 
   /**
+   * Enforce a minimum length on an object field
+   */
+  minLength(expectedLength: number) {
+    return this.use(minLengthRule({ min: expectedLength }))
+  }
+
+  /**
+   * Enforce a maximum length on an object field
+   */
+  maxLength(expectedLength: number) {
+    return this.use(maxLengthRule({ max: expectedLength }))
+  }
+
+  /**
+   * Enforce a fixed length on an object field
+   */
+  fixedLength(expectedLength: number) {
+    return this.use(fixedLengthRule({ size: expectedLength }))
+  }
+
+  /**
+   * Register a callback to validate the object keys
+   */
+  validateKeys(...args: Parameters<typeof validateKeysRule>) {
+    return this.use(validateKeysRule(...args))
+  }
+
+  /**
    * Clones the VineRecord schema type. The applied options
    * and validations are copied to the new instance
    */
@@ -42,7 +71,7 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
   }
 
   /**
-   * Compiles to array data type
+   * Compiles to record data type
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): RecordNode {
     return {
