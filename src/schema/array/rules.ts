@@ -8,8 +8,8 @@
  */
 
 import { helpers } from '../../vine/helpers.js'
-import { createRule } from '../../vine/create_rule.js'
 import { errorMessages } from '../../defaults.js'
+import { createRule } from '../../vine/create_rule.js'
 
 /**
  * Enforce a minimum length on an array field
@@ -98,43 +98,11 @@ export const distinctRule = createRule<{ fields?: string | string[] }>((value, o
     return
   }
 
-  const uniqueItems: Set<any> = new Set()
-
   /**
-   * Check for duplicates when no fields are provided
+   * Value will always be an array if the field is valid.
    */
-  if (!options.fields) {
-    for (let item of value as any[]) {
-      if (helpers.exists(item)) {
-        if (uniqueItems.has(item)) {
-          ctx.report(errorMessages.distinct, 'distinct', ctx, options)
-          return
-        } else {
-          uniqueItems.add(item)
-        }
-      }
-    }
-    return
-  }
-
-  /**
-   * Checking for duplicates when one or more fields are mentioned
-   */
-  const fields = Array.isArray(options.fields) ? options.fields : [options.fields]
-  for (let item of value as any[]) {
-    /**
-     * Only process item, if it is not null or undefined
-     */
-    if (helpers.isObject(item) && helpers.hasKeys(item, fields)) {
-      const element = fields.map((field) => item[field]).join('_')
-
-      if (uniqueItems.has(element)) {
-        ctx.report(errorMessages.distinct, 'distinct', ctx, options)
-        return
-      } else {
-        uniqueItems.add(element)
-      }
-    }
+  if (!helpers.isDistinct(value as any[], options.fields)) {
+    ctx.report(errorMessages.distinct, 'distinct', ctx, options)
   }
 })
 
