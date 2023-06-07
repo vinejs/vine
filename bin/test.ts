@@ -1,10 +1,31 @@
-import { assert } from '@japa/assert'
+import { Assert, assert } from '@japa/assert'
 import { pathToFileURL } from 'node:url'
 import { snapshot } from '@japa/snapshot'
 import { expectTypeOf } from '@japa/expect-type'
 import { specReporter } from '@japa/spec-reporter'
 import { runFailedTests } from '@japa/run-failed-tests'
 import { processCliArgs, configure, run } from '@japa/runner'
+import { ValidationError } from '../src/errors/validation_error.js'
+
+Assert.macro('validationErrors', async function (promiseLike, messages) {
+  let hasFailed = false
+
+  try {
+    await promiseLike
+  } catch (error) {
+    hasFailed = true
+    this.instanceOf(error, ValidationError)
+    this.deepEqual(error.messages, messages)
+  }
+
+  if (!hasFailed) {
+    throw new Error('Expected validation to fail, but passed')
+  }
+})
+
+Assert.macro('validationOutput', async function (promiseLike, messages) {
+  this.deepEqual(await promiseLike, messages)
+})
 
 /*
 |--------------------------------------------------------------------------

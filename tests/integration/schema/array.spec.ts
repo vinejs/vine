@@ -12,8 +12,6 @@ import vine from '../../../index.js'
 
 test.group('Array | array of numbers', () => {
   test('fail when array does not have numbers', async ({ assert }) => {
-    assert.plan(1)
-
     const schema = vine.object({
       categories: vine.array(vine.number()),
     })
@@ -22,24 +20,20 @@ test.group('Array | array of numbers', () => {
       categories: [1, 'foo', 'bar', 11],
     }
 
-    try {
-      await vine.validate({ schema, data })
-    } catch (error) {
-      assert.deepEqual(error.messages, [
-        {
-          field: 'categories.*',
-          index: 1,
-          message: 'The 1 field must be a number',
-          rule: 'number',
-        },
-        {
-          field: 'categories.*',
-          index: 2,
-          message: 'The 2 field must be a number',
-          rule: 'number',
-        },
-      ])
-    }
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'categories.*',
+        index: 1,
+        message: 'The 1 field must be a number',
+        rule: 'number',
+      },
+      {
+        field: 'categories.*',
+        index: 2,
+        message: 'The 2 field must be a number',
+        rule: 'number',
+      },
+    ])
   })
 
   test('pass when array has numbers and numerical strings', async ({ assert }) => {
@@ -51,7 +45,7 @@ test.group('Array | array of numbers', () => {
       categories: [1, '2', '20', 11],
     }
 
-    assert.deepEqual(await vine.validate({ schema, data }), {
+    await assert.validationOutput(vine.validate({ schema, data }), {
       categories: [1, 2, 20, 11],
     })
   })
@@ -59,8 +53,6 @@ test.group('Array | array of numbers', () => {
 
 test.group('Array | array of objects', () => {
   test('fail when array does not have an object', async ({ assert }) => {
-    assert.plan(1)
-
     const schema = vine.object({
       contacts: vine.array(
         vine.object({
@@ -74,18 +66,14 @@ test.group('Array | array of objects', () => {
       contacts: ['foo'],
     }
 
-    try {
-      await vine.validate({ schema, data })
-    } catch (error) {
-      assert.deepEqual(error.messages, [
-        {
-          field: 'contacts.*',
-          index: 0,
-          message: 'The 0 field must be an object',
-          rule: 'object',
-        },
-      ])
-    }
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'contacts.*',
+        index: 0,
+        message: 'The 0 field must be an object',
+        rule: 'object',
+      },
+    ])
   })
 
   test('pass when array has objects matching the desired shape', async ({ assert }) => {
@@ -105,7 +93,7 @@ test.group('Array | array of objects', () => {
       ],
     }
 
-    assert.deepEqual(await vine.validate({ schema, data }), data)
+    await assert.validationOutput(vine.validate({ schema, data }), data)
   })
 })
 
@@ -152,12 +140,10 @@ test.group('Array | array of unions', () => {
       contacts: ['foo'],
     }
 
-    assert.deepEqual(await vine.validate({ schema, data }), { contacts: [] })
+    await assert.validationOutput(vine.validate({ schema, data }), { contacts: [] })
   })
 
   test('fail when union reports an error', async ({ assert }) => {
-    assert.plan(1)
-
     /**
      * Re-usable helper to check if the field value
      * is an object and has a matching type
@@ -207,23 +193,17 @@ test.group('Array | array of unions', () => {
       contacts: ['foo'],
     }
 
-    try {
-      await vine.validate({ schema, data })
-    } catch (error) {
-      assert.deepEqual(error.messages, [
-        {
-          field: 'contacts.*',
-          index: 0,
-          message: 'Invalid contact. Either provide an email or a phone number',
-          rule: 'unknown_contact_type',
-        },
-      ])
-    }
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'contacts.*',
+        index: 0,
+        message: 'Invalid contact. Either provide an email or a phone number',
+        rule: 'unknown_contact_type',
+      },
+    ])
   })
 
   test('fail when union schema reports error', async ({ assert }) => {
-    assert.plan(1)
-
     /**
      * Re-usable helper to check if the field value
      * is an object and has a matching type
@@ -278,17 +258,13 @@ test.group('Array | array of unions', () => {
       ],
     }
 
-    try {
-      await vine.validate({ schema, data })
-    } catch (error) {
-      assert.deepEqual(error.messages, [
-        {
-          field: 'contacts.*.email',
-          message: 'The email field must be a valid email address',
-          rule: 'email',
-        },
-      ])
-    }
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'contacts.*.email',
+        message: 'The email field must be a valid email address',
+        rule: 'email',
+      },
+    ])
   })
 
   test('pass when union schema is valid', async ({ assert }) => {
@@ -342,12 +318,12 @@ test.group('Array | array of unions', () => {
     const data = {
       contacts: [
         {
-          type: 'email',
+          type: 'email' as const,
           email: 'foo@bar.com',
         },
       ],
     }
 
-    assert.deepEqual(await vine.validate({ schema, data }), data)
+    await assert.validationOutput(vine.validate({ schema, data }), data)
   })
 })

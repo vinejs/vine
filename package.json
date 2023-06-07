@@ -69,6 +69,9 @@
       "prettier"
     ],
     "rules": {
+      "@typescript-eslint/no-floating-promises": [
+        "error"
+      ],
       "prettier/prettier": [
         "error",
         {
