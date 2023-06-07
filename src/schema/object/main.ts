@@ -11,33 +11,21 @@ import camelcase from 'camelcase'
 import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 import { ObjectGroup } from './group.js'
-import { BaseType } from '../base/main.js'
 import { GroupConditional } from './conditional.js'
 import { BRAND, CBRAND, PARSE } from '../../symbols.js'
-import type {
-  Validation,
-  SchemaTypes,
-  FieldOptions,
-  ParserOptions,
-  ConstructableSchema,
-} from '../../types.js'
+import { BaseModifiersType, BaseType } from '../base/main.js'
+import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../../types.js'
 
 /**
  * Converts schema properties to camelCase
  */
-export class VineCamelCaseObject<Schema extends VineObject<any, any, any>>
-  implements ConstructableSchema<Schema[typeof CBRAND], Schema[typeof CBRAND]>
-{
-  /**
-   * The output value of the field. The property points to a type only
-   * and not the real value.
-   */
-  declare [BRAND]: Schema[typeof CBRAND];
-  declare [CBRAND]: Schema[typeof CBRAND]
-
+export class VineCamelCaseObject<
+  Schema extends VineObject<any, any, any>
+> extends BaseModifiersType<Schema[typeof CBRAND], Schema[typeof CBRAND]> {
   #schema: Schema
 
   constructor(schema: Schema) {
+    super()
     this.#schema = schema
   }
 

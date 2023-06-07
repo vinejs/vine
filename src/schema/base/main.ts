@@ -22,7 +22,7 @@ import type {
 /**
  * Base schema type with only modifiers applicable on all the schema types.
  */
-abstract class BaseModifiersType<Output, CamelCaseOutput>
+export abstract class BaseModifiersType<Output, CamelCaseOutput>
   implements ConstructableSchema<Output, CamelCaseOutput>
 {
   /**

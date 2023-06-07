@@ -1610,6 +1610,188 @@ test.group('VineObject', () => {
       properties: [],
     })
   })
+
+  test('apply nullable modifier after camelcase modifier', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine
+      .object({
+        post_id: vine.number(),
+        user: vine.object({
+          user_name: vine.string(),
+          pass_word: vine.string(),
+        }),
+      })
+      .toCamelCase()
+      .nullable()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'post_id',
+          propertyName: 'postId',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+        },
+        {
+          type: 'object',
+          fieldName: 'user',
+          propertyName: 'user',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          allowUnknownProperties: false,
+          validations: [],
+          groups: [],
+          parseFnId: undefined,
+          properties: [
+            {
+              type: 'literal',
+              fieldName: 'user_name',
+              propertyName: 'userName',
+              bail: true,
+              allowNull: false,
+              isOptional: false,
+              parseFnId: undefined,
+              validations: [
+                {
+                  implicit: false,
+                  isAsync: false,
+                  ruleFnId: 'ref://2',
+                },
+              ],
+            },
+            {
+              type: 'literal',
+              fieldName: 'pass_word',
+              propertyName: 'passWord',
+              bail: true,
+              allowNull: false,
+              isOptional: false,
+              parseFnId: undefined,
+              validations: [
+                {
+                  implicit: false,
+                  isAsync: false,
+                  ruleFnId: 'ref://3',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+  })
+
+  test('apply optional modifier after camelcase modifier', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine
+      .object({
+        post_id: vine.number(),
+        user: vine.object({
+          user_name: vine.string(),
+          pass_word: vine.string(),
+        }),
+      })
+      .toCamelCase()
+      .optional()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: true,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'post_id',
+          propertyName: 'postId',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+        },
+        {
+          type: 'object',
+          fieldName: 'user',
+          propertyName: 'user',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          allowUnknownProperties: false,
+          validations: [],
+          groups: [],
+          parseFnId: undefined,
+          properties: [
+            {
+              type: 'literal',
+              fieldName: 'user_name',
+              propertyName: 'userName',
+              bail: true,
+              allowNull: false,
+              isOptional: false,
+              parseFnId: undefined,
+              validations: [
+                {
+                  implicit: false,
+                  isAsync: false,
+                  ruleFnId: 'ref://2',
+                },
+              ],
+            },
+            {
+              type: 'literal',
+              fieldName: 'pass_word',
+              propertyName: 'passWord',
+              bail: true,
+              allowNull: false,
+              isOptional: false,
+              parseFnId: undefined,
+              validations: [
+                {
+                  implicit: false,
+                  isAsync: false,
+                  ruleFnId: 'ref://3',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+  })
 })
 
 test.group('VineObject | clone', () => {
