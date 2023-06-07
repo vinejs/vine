@@ -111,7 +111,9 @@
     ],
     "exclude": [
       "tests/**",
-      "factories/**"
+      "factories/**",
+      "bin/**",
+      "benchmarks/**"
     ]
   },
   "dependencies": {

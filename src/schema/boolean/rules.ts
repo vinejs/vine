@@ -14,9 +14,9 @@ import { createRule } from '../../vine/create_rule.js'
 /**
  * Validates the value to be a boolean
  */
-export const booleanRule = createRule((value, _, ctx) => {
-  const valueAsBoolean = helpers.asBoolean(value)
-  if (valueAsBoolean === null) {
+export const booleanRule = createRule<{ strict?: boolean }>((value, options, ctx) => {
+  const valueAsBoolean = options.strict === true ? value : helpers.asBoolean(value)
+  if (typeof valueAsBoolean !== 'boolean') {
     ctx.report(errorMessages.boolean, 'boolean', ctx)
     return
   }

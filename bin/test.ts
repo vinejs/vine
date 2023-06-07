@@ -67,4 +67,5 @@ configure({
 | The following "run" method is required to execute all the tests.
 |
 */
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 run()

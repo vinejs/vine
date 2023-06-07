@@ -201,12 +201,13 @@ export abstract class BaseLiteralType<Output, CamelCaseOutput> extends BaseModif
    */
   protected validations: Validation<any>[]
 
-  constructor(options?: FieldOptions, validations?: Validation<any>[]) {
+  constructor(options?: Partial<FieldOptions>, validations?: Validation<any>[]) {
     super()
-    this.options = options || {
+    this.options = {
       bail: true,
       allowNull: false,
       isOptional: false,
+      ...options,
     }
 
     this.validations = validations || []

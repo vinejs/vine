@@ -12,6 +12,7 @@ import { refsBuilder } from '@vinejs/compiler'
 
 import { PARSE } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
+import { booleanRule } from '../../../src/schema/boolean/rules.js'
 
 const vine = new Vine()
 
@@ -33,6 +34,33 @@ test.group('VineBoolean', () => {
           ruleFnId: 'ref://1',
         },
       ],
+    })
+  })
+
+  test('create boolean schema in strict mode', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.boolean({ strict: true })
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+
+    const rule = booleanRule({ strict: true })
+    assert.deepEqual(refs.toJSON()['ref://1'], {
+      validator: rule.rule.validator,
+      options: rule.options,
     })
   })
 
@@ -94,6 +122,26 @@ test.group('VineBoolean', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
+  test('apply parser', ({ assert }) => {
+    const schema = vine.boolean().parse(() => {})
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
         },
       ],
     })
@@ -311,6 +359,94 @@ test.group('VineBoolean | clone', () => {
           ruleFnId: 'ref://1',
         },
       ],
+    })
+  })
+
+  test('clone and apply parser', ({ assert }) => {
+    const schema = vine.boolean()
+    const schema1 = schema.clone().parse(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: 'ref://1',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+  })
+
+  test('clone strict mode boolean', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.boolean({ strict: true })
+    const schema1 = schema.clone()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+    assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const rule = booleanRule({ strict: true })
+    assert.deepEqual(refs.toJSON()['ref://1'], {
+      validator: rule.rule.validator,
+      options: rule.options,
+    })
+
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: rule.rule.validator,
+      options: rule.options,
     })
   })
 })

@@ -33,19 +33,27 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema({ data }).then(() => deferred.resolve())
+      vineSchema({ data })
+        .then(() => deferred.resolve())
+        .catch(console.log)
     },
   })
   .add('Zod', {
     defer: true,
     fn: function (deferred: any) {
-      zodSchema.parseAsync(data).then(() => deferred.resolve())
+      zodSchema
+        .parseAsync(data)
+        .then(() => deferred.resolve())
+        .catch(console.log)
     },
   })
   .add('Yup', {
     defer: true,
     fn: function (deferred: any) {
-      yupSchema.validate(data).then(() => deferred.resolve())
+      yupSchema
+        .validate(data)
+        .then(() => deferred.resolve())
+        .catch(console.log)
     },
   })
   .on('cycle', function (event: any) {

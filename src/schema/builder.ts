@@ -50,8 +50,8 @@ export class SchemaBuilder extends Macroable {
   /**
    * Define a boolean value
    */
-  boolean() {
-    return new VineBoolean()
+  boolean(options?: { strict: boolean }) {
+    return new VineBoolean(options)
   }
 
   /**
