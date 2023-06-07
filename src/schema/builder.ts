@@ -9,6 +9,7 @@
 
 import Macroable from '@poppinss/macroable'
 
+import { VineAny } from './any/main.js'
 import { VineEnum } from './enum/main.js'
 import { union } from './union/builder.js'
 import { VineTuple } from './tuple/main.js'
@@ -21,10 +22,10 @@ import { VineNumber } from './number/main.js'
 import { VineBoolean } from './boolean/main.js'
 import { VineLiteral } from './literal/main.js'
 import { CamelCase } from './camelcase_types.js'
+import { VineAccepted } from './accepted/main.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
 import type { EnumLike, FieldContext, SchemaTypes } from '../types.js'
-import { VineAccepted } from './accepted/main.js'
 
 /**
  * Schema builder exposes methods to construct a Vine schema. You may
@@ -133,5 +134,12 @@ export class SchemaBuilder extends Macroable {
       return new VineEnum(values)
     }
     return new VineNativeEnum(values as EnumLike)
+  }
+
+  /**
+   * Allow the field value to be anything
+   */
+  any() {
+    return new VineAny()
   }
 }

@@ -1110,11 +1110,9 @@ test.group('Types | Enum', () => {
 
 test.group('Types | Accepted', () => {
   test('infer types', ({ expectTypeOf }) => {
-    const schema = vine
-      .object({
-        terms_and_conditions: vine.accepted(),
-      })
-      .clone()
+    const schema = vine.object({
+      terms_and_conditions: vine.accepted(),
+    })
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1123,11 +1121,9 @@ test.group('Types | Accepted', () => {
   })
 
   test('infer types with nullable fields', ({ expectTypeOf }) => {
-    const schema = vine
-      .object({
-        terms_and_conditions: vine.accepted().nullable(),
-      })
-      .clone()
+    const schema = vine.object({
+      terms_and_conditions: vine.accepted().nullable(),
+    })
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1136,11 +1132,9 @@ test.group('Types | Accepted', () => {
   })
 
   test('infer types with optional fields', ({ expectTypeOf }) => {
-    const schema = vine
-      .object({
-        terms_and_conditions: vine.accepted().nullable().optional(),
-      })
-      .clone()
+    const schema = vine.object({
+      terms_and_conditions: vine.accepted().nullable().optional(),
+    })
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1149,17 +1143,15 @@ test.group('Types | Accepted', () => {
   })
 
   test('infer types with transformer', ({ expectTypeOf }) => {
-    const schema = vine
-      .object({
-        terms_and_conditions: vine
-          .accepted()
-          .nullable()
-          .optional()
-          .transform(() => {
-            return true
-          }),
-      })
-      .clone()
+    const schema = vine.object({
+      terms_and_conditions: vine
+        .accepted()
+        .nullable()
+        .optional()
+        .transform(() => {
+          return true
+        }),
+    })
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1168,15 +1160,77 @@ test.group('Types | Accepted', () => {
   })
 
   test('clone types', ({ expectTypeOf }) => {
-    const schema = vine
-      .object({
-        terms_and_conditions: vine.accepted().clone().nullable().optional(),
-      })
-      .clone()
+    const schema = vine.object({
+      terms_and_conditions: vine.accepted().clone().nullable().optional(),
+    })
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       terms_and_conditions: true | null | undefined
+    }>()
+  })
+})
+
+test.group('Types | Any', () => {
+  test('infer types', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      secret_message: vine.any(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
+  })
+
+  test('infer types with nullable fields', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      secret_message: vine.any().nullable(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
+  })
+
+  test('infer types with optional fields', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      secret_message: vine.any().optional().nullable(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
+  })
+
+  test('infer types with transformer', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      secret_message: vine.any().transform(() => {
+        return '1234'
+      }),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      secret_message: string
+    }>()
+  })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      secret_message: vine
+        .any()
+        .transform(() => {
+          return '1234'
+        })
+        .clone(),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      secret_message: string
     }>()
   })
 })
