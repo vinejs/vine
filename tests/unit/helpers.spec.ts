@@ -105,10 +105,8 @@ test.group('Vine Helpers', () => {
     assert.equal(vine.helpers.asBoolean('0'), false)
     assert.isNull(vine.helpers.asBoolean('foo'))
   })
-})
 
-test.group('Helpers | activeURL', () => {
-  test('return {result} for {url}')
+  test('DNS: return {result} for {url}')
     .with([
       {
         url: 'foo',
