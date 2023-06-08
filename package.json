@@ -17,6 +17,8 @@
     "pretest": "npm run lint",
     "test": "c8 npm run quick:test",
     "clean": "del-cli build",
+    "prebenchmark": "npm run build",
+    "benchmark": "node build/benchmarks/flat_object.js && node build/benchmarks/nested_object.js && node build/benchmarks/array.js && node build/benchmarks/union.js",
     "compile": "npm run lint && npm run clean && tsc",
     "build": "npm run compile",
     "release": "np",

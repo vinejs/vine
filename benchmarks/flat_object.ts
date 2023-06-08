@@ -28,6 +28,10 @@ const vineSchema = vine.compile(
   })
 )
 
+console.log('===============================')
+console.log('Benchmarking with flat object')
+console.log('===============================')
+
 const suite = new Benchmark.Suite()
 suite
   .add('Vine', {

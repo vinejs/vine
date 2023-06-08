@@ -18,6 +18,46 @@
 
 </div>
 
+## Benchmarks
+Following are results of the benchmarks performed between Yup, Zod and VineJS.
+
+- **Machine**: Apple M1 - 16GB Ram
+- **Node.js version**: v20.2.0
+- **Running benchmarks**: You can run benchmarks on your computer by executing `npm run benchmark` script.
+
+```
+===============================
+Benchmarking with flat object
+===============================
+Vine x 9,208,428 ops/sec ±0.99% (86 runs sampled)
+Zod x 1,158,997 ops/sec ±0.89% (87 runs sampled)
+Yup x 413,173 ops/sec ±0.59% (90 runs sampled)
+Fastest is Vine
+
+=================================
+Benchmarking with nested object
+=================================
+Vine x 8,157,981 ops/sec ±0.34% (89 runs sampled)
+Zod x 558,226 ops/sec ±0.38% (87 runs sampled)
+Yup x 192,073 ops/sec ±1.19% (90 runs sampled)
+Fastest is Vine
+
+======================
+Benchmarking arrays
+======================
+Vine x 6,816,681 ops/sec ±1.65% (90 runs sampled)
+Zod x 420,825 ops/sec ±0.35% (91 runs sampled)
+Yup x 119,343 ops/sec ±0.38% (91 runs sampled)
+Fastest is Vine
+
+=======================
+Benchmarking unions
+=======================
+Vine x 8,791,274 ops/sec ±0.65% (85 runs sampled)
+Zod x 184,658 ops/sec ±0.53% (85 runs sampled)
+Fastest is Vine
+```
+
 <div align="center">
   <h3>
     <a href="https://vinejs.dev">

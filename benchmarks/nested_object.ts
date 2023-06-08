@@ -46,6 +46,10 @@ const vineSchema = vine.compile(
   })
 )
 
+console.log('=================================')
+console.log('Benchmarking with nested object')
+console.log('=================================')
+
 const suite = new Benchmark.Suite()
 suite
   .add('Vine', {

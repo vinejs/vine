@@ -44,6 +44,10 @@ const vineSchema = vine.compile(
   })
 )
 
+console.log('=======================')
+console.log('Benchmarking unions')
+console.log('=======================')
+
 const suite = new Benchmark.Suite()
 suite
   .add('Vine', {
