@@ -56,7 +56,7 @@ export class SimpleErrorReporter implements ErrorReporterContract {
       error.meta = meta
     }
     if (ctx.isArrayMember) {
-      error.index = ctx.fieldName
+      error.index = ctx.fieldName as number
     }
 
     this.hasErrors = true
