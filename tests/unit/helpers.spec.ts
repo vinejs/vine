@@ -106,6 +106,18 @@ test.group('Vine Helpers', () => {
     assert.isNull(vine.helpers.asBoolean('foo'))
   })
 
+  test('check if the value is missing', ({ assert }) => {
+    assert.isTrue(vine.helpers.isMissing(null))
+    assert.isTrue(vine.helpers.isMissing(undefined))
+    assert.isFalse(vine.helpers.isMissing(''))
+  })
+
+  test('check if the value exists', ({ assert }) => {
+    assert.isFalse(vine.helpers.exists(null))
+    assert.isFalse(vine.helpers.exists(undefined))
+    assert.isTrue(vine.helpers.exists(''))
+  })
+
   test('DNS: return {result} for {url}')
     .with([
       {
