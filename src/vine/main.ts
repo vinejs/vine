@@ -26,6 +26,8 @@ import type {
   ValidationMessages,
 } from '../types.js'
 
+const NOOP_OBJECT = {}
+
 export class Vine extends SchemaBuilder {
   /**
    * Configuration options.
@@ -136,7 +138,7 @@ export class Vine extends SchemaBuilder {
         options.data,
         {},
         refs,
-        messagesProvider(options.messages || {}, options.fields || {}),
+        messagesProvider(options.messages || NOOP_OBJECT, options.fields || NOOP_OBJECT),
         errorReporter()
       )
     }
