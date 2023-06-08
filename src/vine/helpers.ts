@@ -8,6 +8,7 @@
  */
 
 import validator from 'validator'
+import { resolve4, resolve6 } from 'node:dns/promises'
 
 const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
 const BOOLEAN_NEGATIVES = ['0', 0, 'false', false]
@@ -145,7 +146,23 @@ export const helpers = {
   isSlug: validator.default.isSlug,
   isDecimal: validator.default.isDecimal,
 
-  isActiveURL: (url: string) => {},
+  /**
+   * Check if a URL has valid `A` or `AAAA` DNS records
+   */
+  isActiveURL: async (url: string) => {
+    try {
+      const { hostname } = new URL(url)
+      const v6Addresses = await resolve6(hostname)
+      if (v6Addresses.length) {
+        return true
+      }
+
+      const v4Addresses = await resolve4(hostname)
+      return v4Addresses.length
+    } catch {
+      return false
+    }
+  },
 
   /**
    * Check if all the elements inside the dataset are unique.

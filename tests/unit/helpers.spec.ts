@@ -106,3 +106,32 @@ test.group('Vine Helpers', () => {
     assert.isNull(vine.helpers.asBoolean('foo'))
   })
 })
+
+test.group('Helpers | activeURL', () => {
+  test('return {result} for {url}')
+    .with([
+      {
+        url: 'foo',
+        result: false,
+      },
+      {
+        url: 'https://foo',
+        result: false,
+      },
+      {
+        url: 'http://google.com',
+        result: true,
+      },
+      {
+        url: 'http://www.google.com',
+        result: true,
+      },
+      {
+        url: 'http://www.google.com/terms',
+        result: true,
+      },
+    ])
+    .run(async ({ assert }, { url, result }) => {
+      assert.equal(await vine.helpers.isActiveURL(url), result)
+    })
+})
