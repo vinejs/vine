@@ -19,6 +19,13 @@ export class VineEnum<const Values extends readonly unknown[]> extends BaseLiter
   Values[number],
   Values[number]
 > {
+  /**
+   * Default collection of enum rules
+   */
+  static rules = {
+    enum: enumRule,
+  }
+
   #values: Values
 
   constructor(values: Values, options?: FieldOptions, validations?: Validation<any>[]) {

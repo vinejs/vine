@@ -23,6 +23,16 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
   { [K: string]: Schema[typeof BRAND] },
   { [K: string]: Schema[typeof CBRAND] }
 > {
+  /**
+   * Default collection of record rules
+   */
+  static rules = {
+    maxLength: maxLengthRule,
+    minLength: minLengthRule,
+    fixedLength: fixedLengthRule,
+    validateKeys: validateKeysRule,
+  }
+
   #schema: Schema
 
   constructor(schema: Schema, options?: FieldOptions, validations?: Validation<any>[]) {

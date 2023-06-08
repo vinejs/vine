@@ -24,6 +24,20 @@ import {
  * VineNumber represents a numeric value in the validation schema.
  */
 export class VineNumber extends BaseLiteralType<number, number> {
+  /**
+   * Default collection of number rules
+   */
+  static rules = {
+    max: maxRule,
+    min: minRule,
+    range: rangeRule,
+    number: numberRule,
+    decimal: decimalRule,
+    negative: negativeRule,
+    positive: positiveRule,
+    withoutDecimals: withoutDecimalsRule,
+  }
+
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations || [numberRule()])
   }

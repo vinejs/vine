@@ -15,6 +15,13 @@ import type { FieldOptions, Validation } from '../../types.js'
  * VineBoolean represents a boolean value in the validation schema.
  */
 export class VineBoolean extends BaseLiteralType<boolean, boolean> {
+  /**
+   * Default collection of boolean rules
+   */
+  static rules = {
+    boolean: booleanRule,
+  }
+
   protected declare options: FieldOptions & { strict?: boolean }
 
   constructor(

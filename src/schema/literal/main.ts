@@ -15,6 +15,13 @@ import type { FieldOptions, Validation } from '../../types.js'
  * VineLiteral represents a type that matches an exact value
  */
 export class VineLiteral<Value> extends BaseLiteralType<Value, Value> {
+  /**
+   * Default collection of literal rules
+   */
+  static rules = {
+    equals: equalsRule,
+  }
+
   #value: Value
 
   constructor(value: Value, options?: FieldOptions, validations?: Validation<any>[]) {

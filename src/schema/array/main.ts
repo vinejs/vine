@@ -31,6 +31,18 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
   Schema[typeof BRAND][],
   Schema[typeof CBRAND][]
 > {
+  /**
+   * Default collection of array rules
+   */
+  static rules = {
+    compact: compactRule,
+    notEmpty: notEmptyRule,
+    distinct: distinctRule,
+    minLength: minLengthRule,
+    maxLength: maxLengthRule,
+    fixedLength: fixedLengthRule,
+  }
+
   #schema: Schema
 
   constructor(schema: Schema, options?: FieldOptions, validations?: Validation<any>[]) {
