@@ -3838,4 +3838,150 @@ test.group('VineObject | clone', () => {
       ],
     })
   })
+
+  test('apply nullable modifier and clone', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine
+      .object({
+        username: vine.string(),
+      })
+      .nullable()
+
+    const schema1 = schema.clone().optional()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://2',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
+
+  test('apply optional modifier and clone', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine
+      .object({
+        username: vine.string(),
+      })
+      .optional()
+
+    const schema1 = schema.clone().nullable()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: true,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://2',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
 })

@@ -10,8 +10,10 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
+import { PARSE, VALIDATION } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
+import { RuleBuilder } from '../../../src/types.js'
+import { createRule } from '../../../src/vine/create_rule.js'
 
 const vine = new Vine()
 
@@ -311,6 +313,164 @@ test.group('VineString | clone', () => {
           ruleFnId: 'ref://1',
         },
       ],
+    })
+  })
+
+  test('apply nullable modifier and clone', ({ assert }) => {
+    const schema = vine.string().nullable()
+    const schema1 = schema.clone().optional()
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: true,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: true,
+      isOptional: true,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
+  test('apply optional modifier and clone', ({ assert }) => {
+    const schema = vine.string().optional()
+    const schema1 = schema.clone().nullable()
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: true,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: true,
+      isOptional: true,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
+  test('apply transform modifier and clone', ({ assert }) => {
+    const schema = vine.string().transform(() => {})
+    const schema1 = schema.clone().nullable()
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      transformFnId: 'ref://2',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: true,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      transformFnId: 'ref://2',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+})
+
+test.group('VineString | applying rules', () => {
+  test('register rule via rule builder', ({ assert }) => {
+    const passwordRule = createRule(() => {})
+    class Password implements RuleBuilder {
+      [VALIDATION]() {
+        return passwordRule()
+      }
+    }
+
+    const refs = refsBuilder()
+    const password = new Password()
+    const schema = vine.string().use(password)
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: passwordRule().rule.validator,
+      options: passwordRule().options,
     })
   })
 })

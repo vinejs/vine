@@ -127,7 +127,7 @@ export class Vine extends SchemaBuilder {
      */
     return function validate(
       options: ValidationOptions,
-      vineOptions?: VineOptions
+      vineOptions?: Partial<VineOptions>
     ): Promise<Infer<Schema>> {
       const errorReporter = vineOptions?.errorReporter || globalErrorReporter
       const messagesProvider = vineOptions?.messagesProvider || globalMessagesProvider
@@ -158,7 +158,7 @@ export class Vine extends SchemaBuilder {
    */
   validate<Schema extends SchemaTypes>(
     options: ValidationOptions & { schema: Schema },
-    vineOptions?: VineOptions
+    vineOptions?: Partial<VineOptions>
   ): Promise<Infer<Schema>> {
     return this.compile(options.schema)(options, vineOptions)
   }

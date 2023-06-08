@@ -924,6 +924,258 @@ test.group('VineRecord | clone', () => {
       },
     })
   })
+
+  test('apply nullable modifier and clone', ({ assert }) => {
+    const schema = vine
+      .record(
+        vine.object({
+          username: vine.string(),
+          password: vine.string(),
+        })
+      )
+      .nullable()
+
+    const schema1 = schema.clone().optional()
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'record',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: false,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'record',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+  })
+
+  test('apply optional modifier and clone', ({ assert }) => {
+    const schema = vine
+      .record(
+        vine.object({
+          username: vine.string(),
+          password: vine.string(),
+        })
+      )
+      .optional()
+
+    const schema1 = schema.clone().nullable()
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'record',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: true,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'record',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+  })
 })
 
 test.group('VineRecord | applying rules', () => {

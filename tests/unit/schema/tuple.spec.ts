@@ -821,4 +821,136 @@ test.group('VineTuple | clone', () => {
       ],
     })
   })
+
+  test('allow nullable modifier and clone', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.tuple([vine.string()]).nullable()
+    const schema1 = schema.clone().optional()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'tuple',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: '0',
+          propertyName: '0',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'tuple',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      allowUnknownProperties: false,
+      validations: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: '0',
+          propertyName: '0',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://2',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
+
+  test('allow optional modifier and clone', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.tuple([vine.string()]).optional()
+    const schema1 = schema.clone().nullable()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'tuple',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: true,
+      allowUnknownProperties: false,
+      validations: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: '0',
+          propertyName: '0',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'tuple',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      allowUnknownProperties: false,
+      validations: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: '0',
+          propertyName: '0',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://2',
+            },
+          ],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
 })

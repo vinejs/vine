@@ -10,7 +10,7 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
+import { PARSE, VALIDATION } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
 import {
   compactRule,
@@ -20,6 +20,7 @@ import {
   minLengthRule,
   fixedLengthRule,
 } from '../../../src/schema/array/rules.js'
+import { RuleBuilder } from '../../../src/types.js'
 
 const vine = new Vine()
 
@@ -1274,6 +1275,258 @@ test.group('VineArray | clone', () => {
       },
     })
   })
+
+  test('apply nullable modifier and clone', ({ assert }) => {
+    const schema = vine
+      .array(
+        vine.object({
+          username: vine.string(),
+          password: vine.string(),
+        })
+      )
+      .nullable()
+
+    const schema1 = schema.clone().optional()
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'array',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: false,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'array',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+  })
+
+  test('apply optional modifier and clone', ({ assert }) => {
+    const schema = vine
+      .array(
+        vine.object({
+          username: vine.string(),
+          password: vine.string(),
+        })
+      )
+      .optional()
+
+    const schema1 = schema.clone().nullable()
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'array',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: true,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'array',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: true,
+      isOptional: true,
+      validations: [],
+      parseFnId: undefined,
+      each: {
+        type: 'object',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        allowUnknownProperties: false,
+        validations: [],
+        groups: [],
+        parseFnId: undefined,
+        properties: [
+          {
+            type: 'literal',
+            fieldName: 'username',
+            propertyName: 'username',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://1',
+              },
+            ],
+          },
+          {
+            type: 'literal',
+            fieldName: 'password',
+            propertyName: 'password',
+            bail: true,
+            allowNull: false,
+            isOptional: false,
+            parseFnId: undefined,
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://2',
+              },
+            ],
+          },
+        ],
+      },
+    })
+  })
 })
 
 test.group('VineArray | applying rules', () => {
@@ -1535,6 +1788,57 @@ test.group('VineArray | applying rules', () => {
     })
 
     const minLength = compactRule()
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: minLength.rule.validator,
+      options: minLength.options,
+    })
+  })
+
+  test('register rule via rule builder', ({ assert }) => {
+    const refs = refsBuilder()
+
+    class LengthAwareValidator implements RuleBuilder {
+      [VALIDATION]() {
+        return minLengthRule({ min: 2 })
+      }
+    }
+
+    const schema = vine.array(vine.string()).use(new LengthAwareValidator())
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'array',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+      parseFnId: undefined,
+      each: {
+        type: 'literal',
+        fieldName: '*',
+        propertyName: '*',
+        bail: true,
+        allowNull: false,
+        isOptional: false,
+        parseFnId: undefined,
+        validations: [
+          {
+            implicit: false,
+            isAsync: false,
+            ruleFnId: 'ref://1',
+          },
+        ],
+      },
+    })
+
+    const minLength = minLengthRule({ min: 2 })
     assert.deepEqual(refs.toJSON()['ref://2'], {
       validator: minLength.rule.validator,
       options: minLength.options,
