@@ -136,7 +136,6 @@ export const helpers = {
   isUUID: validator.default.isUUID,
   isAscii: validator.default.isAscii,
   isCreditCard: validator.default.isCreditCard,
-  isHexColor: validator.default.isHexColor,
   isIBAN: validator.default.isIBAN,
   isJWT: validator.default.isJWT,
   isLatLong: validator.default.isLatLong,
@@ -145,6 +144,18 @@ export const helpers = {
   isPostalCode: validator.default.isPostalCode,
   isSlug: validator.default.isSlug,
   isDecimal: validator.default.isDecimal,
+  mobileLocales: validator.default.isMobilePhoneLocales,
+  postalCodeLocales: validator.default.isPostalCodeLocales,
+
+  /**
+   * Check if the value is a valid color hexcode
+   */
+  isHexColor: (value: string) => {
+    if (!value.startsWith('#')) {
+      return false
+    }
+    return validator.default.isHexColor(value)
+  },
 
   /**
    * Check if a URL has valid `A` or `AAAA` DNS records
