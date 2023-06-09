@@ -8,6 +8,18 @@
  */
 
 import { Vine } from './src/vine/main.js'
+export { VineAny } from './src/schema/any/main.js'
+export { VineEnum } from './src/schema/enum/main.js'
+export { VineTuple } from './src/schema/tuple/main.js'
+export { VineUnion } from './src/schema/union/main.js'
+export { VineArray } from './src/schema/array/main.js'
+export { VineString } from './src/schema/string/main.js'
+export { VineNumber } from './src/schema/number/main.js'
+export { VineRecord } from './src/schema/record/main.js'
+export { VineObject } from './src/schema/object/main.js'
+export { VineLiteral } from './src/schema/literal/main.js'
+export { VineBoolean } from './src/schema/boolean/main.js'
+export { VineAccepted } from './src/schema/accepted/main.js'
 
 const vine = new Vine()
 export default vine
