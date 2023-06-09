@@ -8,6 +8,9 @@
  */
 
 import { Vine } from './src/vine/main.js'
+
+export * as symbols from './src/symbols.js'
+export * as errors from './src/errors/main.js'
 export { VineAny } from './src/schema/any/main.js'
 export { VineEnum } from './src/schema/enum/main.js'
 export { VineTuple } from './src/schema/tuple/main.js'
