@@ -10,7 +10,7 @@
 import camelcase from 'camelcase'
 import type { LiteralNode, RefsStore } from '@vinejs/compiler/types'
 
-import { BRAND, CBRAND, PARSE, VALIDATION } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE, VALIDATION } from '../../symbols.js'
 import type {
   Parser,
   Validation,
@@ -42,8 +42,8 @@ abstract class BaseModifiersType<Output, CamelCaseOutput>
    * The output value of the field. The property points to a type only
    * and not the real value.
    */
-  declare [BRAND]: Output;
-  declare [CBRAND]: CamelCaseOutput
+  declare [OTYPE]: Output;
+  declare [COTYPE]: CamelCaseOutput
 
   /**
    * Mark the field under validation as optional. An optional
@@ -79,8 +79,8 @@ abstract class BaseModifiersType<Output, CamelCaseOutput>
  * Modifies the schema type to allow null values
  */
 class NullableModifier<Schema extends BaseModifiersType<any, any>> extends BaseModifiersType<
-  Schema[typeof BRAND] | null,
-  Schema[typeof CBRAND] | null
+  Schema[typeof OTYPE] | null,
+  Schema[typeof COTYPE] | null
 > {
   #parent: Schema
   constructor(parent: Schema) {
@@ -110,8 +110,8 @@ class NullableModifier<Schema extends BaseModifiersType<any, any>> extends BaseM
  * Modifies the schema type to allow undefined values
  */
 class OptionalModifier<Schema extends BaseModifiersType<any, any>> extends BaseModifiersType<
-  Schema[typeof BRAND] | undefined,
-  Schema[typeof CBRAND] | undefined
+  Schema[typeof OTYPE] | undefined,
+  Schema[typeof COTYPE] | undefined
 > {
   #parent: Schema
   constructor(parent: Schema) {
@@ -148,8 +148,8 @@ class TransformModifier<
    * The output value of the field. The property points to a type only
    * and not the real value.
    */
-  declare [BRAND]: Output;
-  declare [CBRAND]: Output
+  declare [OTYPE]: Output;
+  declare [COTYPE]: Output
 
   #parent: Schema
   #transform: Transformer<Schema, Output>

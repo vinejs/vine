@@ -8,22 +8,44 @@
  */
 
 import { BaseLiteralType } from '../base/literal.js'
+import { IS_OF_TYPE, UNIQUE_NAME } from '../../symbols.js'
 import type { FieldOptions, Validation } from '../../types.js'
-import { emailRule, hexCodeRule, mobileRule, stringRule } from './rules.js'
+import { emailRule, hexCodeRule, mobileRule, stringRule, urlRule } from './rules.js'
 
 /**
  * VineString represents a string value in the validation schema.
  */
 export class VineString extends BaseLiteralType<string, string> {
   static rules = {
+    url: urlRule,
     email: emailRule,
     string: stringRule,
     mobile: mobileRule,
     hexCode: hexCodeRule,
+  };
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.string';
+
+  /**
+   * Checks if the value is of string type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return typeof value === 'string'
   }
 
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations || [stringRule()])
+  }
+
+  /**
+   * Validates the value to be a valid URL
+   */
+  url(...args: Parameters<typeof urlRule>) {
+    return this.use(urlRule(...args))
   }
 
   /**

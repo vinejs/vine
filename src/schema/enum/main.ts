@@ -9,7 +9,7 @@
 
 import { enumRule } from './rules.js'
 import { BaseLiteralType } from '../base/literal.js'
-import type { FieldOptions, Validation } from '../../types.js'
+import type { FieldContext, FieldOptions, Validation } from '../../types.js'
 
 /**
  * VineEnum represents a enum data type that performs validation
@@ -26,9 +26,13 @@ export class VineEnum<const Values extends readonly unknown[]> extends BaseLiter
     enum: enumRule,
   }
 
-  #values: Values
+  #values: Values | ((ctx: FieldContext) => Values)
 
-  constructor(values: Values, options?: FieldOptions, validations?: Validation<any>[]) {
+  constructor(
+    values: Values | ((ctx: FieldContext) => Values),
+    options?: FieldOptions,
+    validations?: Validation<any>[]
+  ) {
     super(options, validations || [enumRule({ choices: values })])
     this.#values = values
   }

@@ -7,8 +7,11 @@
  * file that was distributed with this source code.
  */
 
+import { helpers } from '../../vine/helpers.js'
 import { BaseLiteralType } from '../base/literal.js'
 import { FieldOptions, Validation } from '../../types.js'
+import { IS_OF_TYPE, UNIQUE_NAME } from '../../symbols.js'
+
 import {
   maxRule,
   minRule,
@@ -36,6 +39,20 @@ export class VineNumber extends BaseLiteralType<number, number> {
     negative: negativeRule,
     positive: positiveRule,
     withoutDecimals: withoutDecimalsRule,
+  };
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.number';
+
+  /**
+   * Checks if the value is of number type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    const valueAsNumber = helpers.asNumber(value)
+    return !Number.isNaN(valueAsNumber)
   }
 
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {

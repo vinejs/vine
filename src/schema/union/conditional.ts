@@ -9,7 +9,7 @@
 
 import { ConditionalFn, RefsStore, UnionNode } from '@vinejs/compiler/types'
 
-import { BRAND, CBRAND, PARSE } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, SchemaTypes } from '../../types.js'
 
 /**
@@ -17,8 +17,8 @@ import type { ParserOptions, SchemaTypes } from '../../types.js'
  * with a schema
  */
 export class UnionConditional<Schema extends SchemaTypes> {
-  declare [BRAND]: Schema[typeof BRAND];
-  declare [CBRAND]: Schema[typeof CBRAND]
+  declare [OTYPE]: Schema[typeof OTYPE];
+  declare [COTYPE]: Schema[typeof COTYPE]
 
   /**
    * Properties to merge when conditonal is true

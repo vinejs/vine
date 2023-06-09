@@ -9,7 +9,7 @@
 
 import type { ConditionalFn, ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 
-import { BRAND, CBRAND, PARSE } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, SchemaTypes } from '../../types.js'
 
 /**
@@ -21,8 +21,8 @@ export class GroupConditional<
   Output,
   CamelCaseOutput
 > {
-  declare [BRAND]: Output;
-  declare [CBRAND]: CamelCaseOutput
+  declare [OTYPE]: Output;
+  declare [COTYPE]: CamelCaseOutput
 
   /**
    * Properties to merge when conditonal is true

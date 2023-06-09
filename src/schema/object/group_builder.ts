@@ -8,7 +8,7 @@
  */
 
 import { ObjectGroup } from './group.js'
-import { BRAND, CBRAND } from '../../symbols.js'
+import { OTYPE, COTYPE } from '../../symbols.js'
 import { CamelCase } from '../camelcase_types.js'
 import { GroupConditional } from './conditional.js'
 import type { FieldContext, SchemaTypes } from '../../types.js'
@@ -33,10 +33,10 @@ group.if = function groupIf<Properties extends Record<string, SchemaTypes>>(
   return new GroupConditional<
     Properties,
     {
-      [K in keyof Properties]: Properties[K][typeof BRAND]
+      [K in keyof Properties]: Properties[K][typeof OTYPE]
     },
     {
-      [K in keyof Properties as CamelCase<K & string>]: Properties[K][typeof CBRAND]
+      [K in keyof Properties as CamelCase<K & string>]: Properties[K][typeof COTYPE]
     }
   >(conditon, properties)
 }
@@ -50,10 +50,10 @@ group.else = function groupElse<Properties extends Record<string, SchemaTypes>>(
   return new GroupConditional<
     Properties,
     {
-      [K in keyof Properties]: Properties[K][typeof BRAND]
+      [K in keyof Properties]: Properties[K][typeof OTYPE]
     },
     {
-      [K in keyof Properties as CamelCase<K & string>]: Properties[K][typeof CBRAND]
+      [K in keyof Properties as CamelCase<K & string>]: Properties[K][typeof COTYPE]
     }
   >(() => true, properties)
 }

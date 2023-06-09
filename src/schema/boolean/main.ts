@@ -8,7 +8,9 @@
  */
 
 import { booleanRule } from './rules.js'
+import { helpers } from '../../vine/helpers.js'
 import { BaseLiteralType } from '../base/literal.js'
+import { IS_OF_TYPE, UNIQUE_NAME } from '../../symbols.js'
 import type { FieldOptions, Validation } from '../../types.js'
 
 /**
@@ -22,7 +24,21 @@ export class VineBoolean extends BaseLiteralType<boolean, boolean> {
     boolean: booleanRule,
   }
 
-  protected declare options: FieldOptions & { strict?: boolean }
+  protected declare options: FieldOptions & { strict?: boolean };
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.boolean';
+
+  /**
+   * Checks if the value is of boolean type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    const valueAsBoolean = this.options.strict === true ? value : helpers.asBoolean(value)
+    return typeof valueAsBoolean === 'boolean'
+  }
 
   constructor(
     options?: Partial<FieldOptions> & { strict?: boolean },

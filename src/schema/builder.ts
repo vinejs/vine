@@ -14,7 +14,6 @@ import { VineEnum } from './enum/main.js'
 import { union } from './union/builder.js'
 import { VineTuple } from './tuple/main.js'
 import { VineArray } from './array/main.js'
-import { BRAND, CBRAND } from '../symbols.js'
 import { VineObject } from './object/main.js'
 import { VineRecord } from './record/main.js'
 import { VineString } from './string/main.js'
@@ -25,6 +24,8 @@ import { CamelCase } from './camelcase_types.js'
 import { VineAccepted } from './accepted/main.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
+import { VineUnionOfTypes } from './union_of_types/main.js'
+import { OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
 import type { EnumLike, FieldContext, SchemaTypes } from '../types.js'
 
 /**
@@ -86,10 +87,10 @@ export class SchemaBuilder extends Macroable {
     return new VineObject<
       Properties,
       {
-        [K in keyof Properties]: Properties[K][typeof BRAND]
+        [K in keyof Properties]: Properties[K][typeof OTYPE]
       },
       {
-        [K in keyof Properties as CamelCase<K & string>]: Properties[K][typeof CBRAND]
+        [K in keyof Properties as CamelCase<K & string>]: Properties[K][typeof COTYPE]
       }
     >(properties)
   }
@@ -108,8 +109,8 @@ export class SchemaBuilder extends Macroable {
   tuple<Schema extends SchemaTypes[]>(schemas: [...Schema]) {
     return new VineTuple<
       Schema,
-      { [K in keyof Schema]: Schema[K][typeof BRAND] },
-      { [K in keyof Schema]: Schema[K][typeof CBRAND] }
+      { [K in keyof Schema]: Schema[K][typeof OTYPE] },
+      { [K in keyof Schema]: Schema[K][typeof COTYPE] }
     >(schemas)
   }
 
@@ -141,5 +142,29 @@ export class SchemaBuilder extends Macroable {
    */
   any() {
     return new VineAny()
+  }
+
+  /**
+   * Define a union of unique schema types.
+   */
+  unionOfTypes<Schema extends SchemaTypes>(schemas: Schema[]) {
+    const schemasInUse: Set<string> = new Set()
+    schemas.forEach((schema, index) => {
+      if (!schema[IS_OF_TYPE] || !schema[UNIQUE_NAME]) {
+        throw new Error(
+          `Cannot use "${schema.constructor.name}". The schema type is not compatible for use with "unionOfTypes"`
+        )
+      }
+
+      if (schemasInUse.has(schema[UNIQUE_NAME])) {
+        throw new Error(
+          `Cannot use "${schema.constructor.name}". Duplicate schema type at "${index}" position`
+        )
+      }
+
+      schemasInUse.add(schema[UNIQUE_NAME])
+    })
+    schemasInUse.clear()
+    return new VineUnionOfTypes(schemas)
   }
 }

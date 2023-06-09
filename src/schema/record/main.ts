@@ -11,7 +11,7 @@ import camelcase from 'camelcase'
 import { RefsStore, RecordNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
-import { BRAND, CBRAND, PARSE } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
 import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from './rules.js'
 
@@ -20,8 +20,8 @@ import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from 
  * keys are unknown
  */
 export class VineRecord<Schema extends SchemaTypes> extends BaseType<
-  { [K: string]: Schema[typeof BRAND] },
-  { [K: string]: Schema[typeof CBRAND] }
+  { [K: string]: Schema[typeof OTYPE] },
+  { [K: string]: Schema[typeof COTYPE] }
 > {
   /**
    * Default collection of record rules
@@ -33,7 +33,20 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
     validateKeys: validateKeysRule,
   }
 
-  #schema: Schema
+  #schema: Schema;
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.object';
+
+  /**
+   * Checks if the value is of object type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return value !== null && typeof value === 'object' && !Array.isArray(value)
+  }
 
   constructor(schema: Schema, options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations)

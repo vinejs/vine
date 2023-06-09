@@ -11,7 +11,7 @@ import { ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 
 import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
 import { GroupConditional } from './conditional.js'
-import { BRAND, CBRAND, PARSE } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
 
 /**
  * Object group represents a group with multiple conditionals, where each
@@ -19,8 +19,8 @@ import { BRAND, CBRAND, PARSE } from '../../symbols.js'
  * existing object.
  */
 export class ObjectGroup<Conditional extends GroupConditional<any, any, any>> {
-  declare [BRAND]: Conditional[typeof BRAND];
-  declare [CBRAND]: Conditional[typeof CBRAND]
+  declare [OTYPE]: Conditional[typeof OTYPE];
+  declare [COTYPE]: Conditional[typeof COTYPE]
 
   #conditionals: Conditional[]
   #otherwiseCallback?: UnionNoMatchCallback<Record<string, unknown>>

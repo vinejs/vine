@@ -1234,3 +1234,29 @@ test.group('Types | Any', () => {
     }>()
   })
 })
+
+test.group('Types | UnionOfTypes', () => {
+  test('infer types', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([vine.boolean(), vine.string()]),
+    })
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      health_check: boolean | string
+    }>()
+  })
+
+  test('clone types', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        health_check: vine.unionOfTypes([vine.boolean(), vine.string()]),
+      })
+      .clone()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      health_check: boolean | string
+    }>()
+  })
+})

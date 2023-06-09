@@ -12,8 +12,8 @@ import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 import { ObjectGroup } from './group.js'
 import { GroupConditional } from './conditional.js'
-import { BRAND, CBRAND, PARSE } from '../../symbols.js'
 import { BaseModifiersType, BaseType } from '../base/main.js'
+import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
 import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../../types.js'
 
 /**
@@ -21,8 +21,21 @@ import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../..
  */
 export class VineCamelCaseObject<
   Schema extends VineObject<any, any, any>
-> extends BaseModifiersType<Schema[typeof CBRAND], Schema[typeof CBRAND]> {
-  #schema: Schema
+> extends BaseModifiersType<Schema[typeof COTYPE], Schema[typeof COTYPE]> {
+  #schema: Schema;
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.object';
+
+  /**
+   * Checks if the value is of object type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return value !== null && typeof value === 'object' && !Array.isArray(value)
+  }
 
   constructor(schema: Schema) {
     super()
@@ -110,12 +123,12 @@ export class VineObject<
    */
   merge<Group extends ObjectGroup<GroupConditional<any, any, any>>>(
     group: Group
-  ): VineObject<Properties, Output & Group[typeof BRAND], CamelCaseOutput & Group[typeof CBRAND]> {
+  ): VineObject<Properties, Output & Group[typeof OTYPE], CamelCaseOutput & Group[typeof COTYPE]> {
     this.#groups.push(group)
     return this as VineObject<
       Properties,
-      Output & Group[typeof BRAND],
-      CamelCaseOutput & Group[typeof CBRAND]
+      Output & Group[typeof OTYPE],
+      CamelCaseOutput & Group[typeof COTYPE]
     >
   }
 

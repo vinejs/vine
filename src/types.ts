@@ -17,8 +17,9 @@ import type {
   ErrorReporterContract as BaseReporter,
 } from '@vinejs/compiler/types'
 import type { ValidationError } from './errors/validation_error.js'
-import type { BRAND, CBRAND, PARSE, VALIDATION } from './symbols.js'
+import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE } from './symbols.js'
 
+import type { IsURLOptions } from 'validator/lib/isURL.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 
@@ -31,6 +32,11 @@ export type MobileOptions = { locales?: MobilePhoneLocale[] } & IsMobilePhoneOpt
  * Options accepted by the email address validation
  */
 export type EmailOptions = IsEmailOptions
+
+/**
+ * Options accepted by the URL validation
+ */
+export type URLOptions = IsURLOptions
 
 /**
  * Re-exporting selected types from compiler
@@ -60,10 +66,16 @@ export type ValidationFields = Record<string, string>
  * constructed for type inference and compiler output
  */
 export interface ConstructableSchema<Output, CamelCaseOutput> {
-  [BRAND]: Output
-  [CBRAND]: CamelCaseOutput
+  [OTYPE]: Output
+  [COTYPE]: CamelCaseOutput
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes
   clone(): this
+
+  /**
+   * Implement if you want schema type to be used with the unionOfTypes
+   */
+  [UNIQUE_NAME]?: string
+  [IS_OF_TYPE]?: (value: unknown, ctx: FieldContext) => boolean
 }
 export type SchemaTypes = ConstructableSchema<any, any>
 
@@ -124,7 +136,7 @@ export interface RuleBuilder {
  * The transform function to mutate the output value
  */
 export type Transformer<Schema extends SchemaTypes, Output> = TransformFn<
-  Exclude<Schema[typeof BRAND], undefined>,
+  Exclude<Schema[typeof OTYPE], undefined>,
   Output
 >
 
@@ -200,4 +212,4 @@ export type ValidationOptions = {
 /**
  * Infers the schema type
  */
-export type Infer<Schema extends ConstructableSchema<any, any>> = Schema[typeof BRAND]
+export type Infer<Schema extends ConstructableSchema<any, any>> = Schema[typeof OTYPE]

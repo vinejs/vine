@@ -12,7 +12,7 @@ import type { FieldContext } from '@vinejs/compiler/types'
 import { helpers } from '../../vine/helpers.js'
 import { errorMessages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
-import type { EmailOptions, MobileOptions } from '../../types.js'
+import type { EmailOptions, MobileOptions, URLOptions } from '../../types.js'
 
 /**
  * Validates the value to be a string
@@ -64,5 +64,18 @@ export const hexCodeRule = createRule((value, _, ctx) => {
 
   if (!helpers.isHexColor(value as string)) {
     ctx.report(errorMessages.hexCode, 'hexCode', ctx)
+  }
+})
+
+/**
+ * Validates the value to be a valid URL
+ */
+export const urlRule = createRule<URLOptions | undefined>((value, options, ctx) => {
+  if (!ctx.isValid) {
+    return
+  }
+
+  if (!helpers.isURL(value as string, options)) {
+    ctx.report(errorMessages.url, 'url', ctx)
   }
 })

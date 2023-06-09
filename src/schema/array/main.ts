@@ -11,7 +11,7 @@ import camelcase from 'camelcase'
 import { RefsStore, ArrayNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
-import { BRAND, CBRAND, PARSE } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
 import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 
 import {
@@ -28,8 +28,8 @@ import {
  * pipeline
  */
 export class VineArray<Schema extends SchemaTypes> extends BaseType<
-  Schema[typeof BRAND][],
-  Schema[typeof CBRAND][]
+  Schema[typeof OTYPE][],
+  Schema[typeof COTYPE][]
 > {
   /**
    * Default collection of array rules
@@ -43,7 +43,20 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
     fixedLength: fixedLengthRule,
   }
 
-  #schema: Schema
+  #schema: Schema;
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.array';
+
+  /**
+   * Checks if the value is of array type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return Array.isArray(value)
+  }
 
   constructor(schema: Schema, options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations)

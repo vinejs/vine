@@ -10,8 +10,8 @@
 import camelcase from 'camelcase'
 import { RefsStore, TupleNode } from '@vinejs/compiler/types'
 
-import { PARSE } from '../../symbols.js'
 import { BaseType } from '../base/main.js'
+import { IS_OF_TYPE, PARSE, UNIQUE_NAME } from '../../symbols.js'
 import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 
 /**
@@ -28,7 +28,20 @@ export class VineTuple<
   /**
    * Whether or not to allow unknown properties
    */
-  #allowUnknownProperties: boolean = false
+  #allowUnknownProperties: boolean = false;
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.array';
+
+  /**
+   * Checks if the value is of array type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return Array.isArray(value)
+  }
 
   constructor(schemas: [...Schema], options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations)

@@ -8,14 +8,13 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, UnionNode } from '@vinejs/compiler/types'
+import type { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
-import { UnionConditional } from './conditional.js'
-import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE, IS_OF_TYPE } from '../../symbols.js'
 import type {
-  ConstructableSchema,
-  ParserOptions,
   SchemaTypes,
+  ParserOptions,
+  ConstructableSchema,
   UnionNoMatchCallback,
 } from '../../types.js'
 
@@ -23,17 +22,17 @@ import type {
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
-  implements ConstructableSchema<Conditional[typeof OTYPE], Conditional[typeof COTYPE]>
+export class VineUnionOfTypes<Schema extends SchemaTypes>
+  implements ConstructableSchema<Schema[typeof OTYPE], Schema[typeof COTYPE]>
 {
-  declare [OTYPE]: Conditional[typeof OTYPE];
-  declare [COTYPE]: Conditional[typeof COTYPE]
+  declare [OTYPE]: Schema[typeof OTYPE];
+  declare [COTYPE]: Schema[typeof COTYPE]
 
-  #conditionals: Conditional[]
+  #schemas: Schema[]
   #otherwiseCallback?: UnionNoMatchCallback<Record<string, unknown>>
 
-  constructor(conditionals: Conditional[]) {
-    this.#conditionals = conditionals
+  constructor(schemas: Schema[]) {
+    this.#schemas = schemas
   }
 
   /**
@@ -46,10 +45,10 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
   }
 
   /**
-   * Clones the VineUnion schema type.
+   * Clones the VineUnionOfTypes schema type.
    */
   clone(): this {
-    const cloned = new VineUnion<Conditional>(this.#conditionals)
+    const cloned = new VineUnionOfTypes<Schema>(this.#schemas)
     if (this.#otherwiseCallback) {
       cloned.otherwise(this.#otherwiseCallback)
     }
@@ -68,9 +67,14 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
       elseConditionalFnRefId: this.#otherwiseCallback
         ? refs.trackConditional(this.#otherwiseCallback)
         : undefined,
-      conditions: this.#conditionals.map((conditional) =>
-        conditional[PARSE](propertyName, refs, options)
-      ),
+      conditions: this.#schemas.map((schema) => {
+        return {
+          conditionalFnRefId: refs.trackConditional((value, ctx) => {
+            return schema[IS_OF_TYPE]!(value, ctx)
+          }),
+          schema: schema[PARSE](propertyName, refs, options),
+        }
+      }),
     }
   }
 }
