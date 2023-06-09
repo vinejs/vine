@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
 import {
   maxRule,
   minRule,
@@ -178,6 +178,19 @@ test.group('VineNumber', () => {
         },
       ],
     })
+  })
+
+  test('check if value is a number using IS_OF_TYPE method', ({ assert }) => {
+    const schema = vine.number()
+
+    assert.isTrue(schema[IS_OF_TYPE]('1'))
+    assert.isTrue(schema[IS_OF_TYPE]('0'))
+    assert.isTrue(schema[IS_OF_TYPE](1))
+    assert.isTrue(schema[IS_OF_TYPE]('9.99'))
+    assert.isFalse(schema[IS_OF_TYPE]('foo'))
+    assert.isFalse(schema[IS_OF_TYPE](undefined))
+    assert.isFalse(schema[IS_OF_TYPE](null))
+    assert.isFalse(schema[IS_OF_TYPE]({}))
   })
 })
 

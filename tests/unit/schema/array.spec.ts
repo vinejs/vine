@@ -1,6 +1,6 @@
 /*
  * @vinejs/vine
- *
+
  * (c) VineJS
  *
  * For the full copyright and license information, please view the LICENSE
@@ -10,8 +10,9 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE, VALIDATION } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
+import type { RuleBuilder } from '../../../src/types.js'
+import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
 import {
   compactRule,
   distinctRule,
@@ -20,7 +21,6 @@ import {
   minLengthRule,
   fixedLengthRule,
 } from '../../../src/schema/array/rules.js'
-import { RuleBuilder } from '../../../src/types.js'
 
 const vine = new Vine()
 
@@ -509,6 +509,21 @@ test.group('VineArray', () => {
         ],
       },
     })
+  })
+
+  test('check if value is an array using IS_OF_TYPE method', ({ assert }) => {
+    const schema = vine.array(
+      vine.object({
+        username: vine.string(),
+        password: vine.string(),
+      })
+    )
+
+    assert.isTrue(schema[IS_OF_TYPE]([]))
+    assert.isFalse(schema[IS_OF_TYPE]({}))
+    assert.isFalse(schema[IS_OF_TYPE](null))
+    assert.isFalse(schema[IS_OF_TYPE](undefined))
+    assert.isFalse(schema[IS_OF_TYPE](''))
   })
 })
 

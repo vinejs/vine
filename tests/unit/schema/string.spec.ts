@@ -10,10 +10,10 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE, VALIDATION } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
 import { RuleBuilder } from '../../../src/types.js'
 import { createRule } from '../../../src/vine/create_rule.js'
+import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
 
 const vine = new Vine()
 
@@ -120,6 +120,17 @@ test.group('VineString', () => {
         },
       ],
     })
+  })
+
+  test('check if value is an object using IS_OF_TYPE method', ({ assert }) => {
+    const schema = vine.string()
+
+    assert.isTrue(schema[IS_OF_TYPE](''))
+    assert.isFalse(schema[IS_OF_TYPE]({}))
+    assert.isFalse(schema[IS_OF_TYPE](null))
+    assert.isFalse(schema[IS_OF_TYPE](undefined))
+    assert.isFalse(schema[IS_OF_TYPE]([]))
+    assert.isFalse(schema[IS_OF_TYPE](1))
   })
 })
 

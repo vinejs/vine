@@ -80,7 +80,20 @@ export class VineObject<
   /**
    * Whether or not to allow unknown properties
    */
-  #allowUnknownProperties: boolean = false
+  #allowUnknownProperties: boolean = false;
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  [UNIQUE_NAME] = 'types.object';
+
+  /**
+   * Checks if the value is of object type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return value !== null && typeof value === 'object' && !Array.isArray(value)
+  }
 
   constructor(properties: Properties, options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations)

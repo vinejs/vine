@@ -106,7 +106,7 @@ export const helpers = {
    * Returns NaN when unable to cast.
    */
   asNumber(value: any): number {
-    return Number(value)
+    return value === null ? Number.NaN : Number(value)
   },
 
   /**

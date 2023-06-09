@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
 
 const vine = new Vine()
 
@@ -293,6 +293,16 @@ test.group('VineTuple', () => {
         },
       ],
     })
+  })
+
+  test('check if value is an array using IS_OF_TYPE method', ({ assert }) => {
+    const schema = vine.tuple([])
+
+    assert.isTrue(schema[IS_OF_TYPE]([]))
+    assert.isFalse(schema[IS_OF_TYPE]({}))
+    assert.isFalse(schema[IS_OF_TYPE](null))
+    assert.isFalse(schema[IS_OF_TYPE](undefined))
+    assert.isFalse(schema[IS_OF_TYPE](''))
   })
 })
 

@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
 import { Vine } from '../../../src/vine/main.js'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
 import { booleanRule } from '../../../src/schema/boolean/rules.js'
 
 const vine = new Vine()
@@ -166,6 +166,33 @@ test.group('VineBoolean', () => {
         },
       ],
     })
+  })
+
+  test('check if value is a boolean using IS_OF_TYPE method', ({ assert }) => {
+    const schema = vine.boolean()
+    const schema1 = vine.boolean({ strict: true })
+
+    assert.isTrue(schema[IS_OF_TYPE](true))
+    assert.isTrue(schema[IS_OF_TYPE](false))
+    assert.isTrue(schema[IS_OF_TYPE](0))
+    assert.isTrue(schema[IS_OF_TYPE](1))
+    assert.isTrue(schema[IS_OF_TYPE]('true'))
+    assert.isTrue(schema[IS_OF_TYPE]('false'))
+    assert.isTrue(schema[IS_OF_TYPE]('on'))
+    assert.isFalse(schema[IS_OF_TYPE](null))
+    assert.isFalse(schema[IS_OF_TYPE](undefined))
+    assert.isFalse(schema[IS_OF_TYPE](''))
+
+    assert.isTrue(schema1[IS_OF_TYPE](true))
+    assert.isTrue(schema1[IS_OF_TYPE](false))
+    assert.isFalse(schema1[IS_OF_TYPE](0))
+    assert.isFalse(schema1[IS_OF_TYPE](1))
+    assert.isFalse(schema1[IS_OF_TYPE]('true'))
+    assert.isFalse(schema1[IS_OF_TYPE]('false'))
+    assert.isFalse(schema1[IS_OF_TYPE]('on'))
+    assert.isFalse(schema1[IS_OF_TYPE](null))
+    assert.isFalse(schema1[IS_OF_TYPE](undefined))
+    assert.isFalse(schema1[IS_OF_TYPE](''))
   })
 })
 
