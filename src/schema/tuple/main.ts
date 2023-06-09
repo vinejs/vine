@@ -33,7 +33,7 @@ export class VineTuple<
   /**
    * The property must be implemented for "unionOfTypes"
    */
-  [UNIQUE_NAME] = 'types.array';
+  [UNIQUE_NAME] = 'vine.array';
 
   /**
    * Checks if the value is of array type. The method must be

@@ -149,16 +149,16 @@ export class SchemaBuilder extends Macroable {
    */
   unionOfTypes<Schema extends SchemaTypes>(schemas: Schema[]) {
     const schemasInUse: Set<string> = new Set()
-    schemas.forEach((schema, index) => {
+    schemas.forEach((schema) => {
       if (!schema[IS_OF_TYPE] || !schema[UNIQUE_NAME]) {
         throw new Error(
-          `Cannot use "${schema.constructor.name}". The schema type is not compatible for use with "unionOfTypes"`
+          `Cannot use "${schema.constructor.name}". The schema type is not compatible for use with "vine.unionOfTypes"`
         )
       }
 
       if (schemasInUse.has(schema[UNIQUE_NAME])) {
         throw new Error(
-          `Cannot use "${schema.constructor.name}". Duplicate schema type at "${index}" position`
+          `Cannot use duplicate schema "${schema[UNIQUE_NAME]}". "vine.unionOfTypes" needs distinct schema types only`
         )
       }
 

@@ -27,7 +27,7 @@ export class VineString extends BaseLiteralType<string, string> {
   /**
    * The property must be implemented for "unionOfTypes"
    */
-  [UNIQUE_NAME] = 'types.string';
+  [UNIQUE_NAME] = 'vine.string';
 
   /**
    * Checks if the value is of string type. The method must be

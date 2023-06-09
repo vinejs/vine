@@ -64,4 +64,23 @@ test.group('UnionOfTypes', () => {
       },
     ])
   })
+
+  test('disallow duplicate types', async ({ assert }) => {
+    assert.throws(
+      () => vine.unionOfTypes([vine.string().email(), vine.string().url()]),
+      'Cannot use duplicate schema "vine.string". "vine.unionOfTypes" needs distinct schema types only'
+    )
+
+    assert.throws(
+      () => vine.unionOfTypes([vine.record(vine.string()), vine.record(vine.number())]),
+      'Cannot use duplicate schema "vine.object". "vine.unionOfTypes" needs distinct schema types only'
+    )
+  })
+
+  test('disallow union inside union of types', async ({ assert }) => {
+    assert.throws(
+      () => vine.unionOfTypes([vine.union([])]),
+      'Cannot use "VineUnion". The schema type is not compatible for use with "vine.unionOfTypes"'
+    )
+  })
 })

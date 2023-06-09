@@ -29,7 +29,7 @@ export class VineBoolean extends BaseLiteralType<boolean, boolean> {
   /**
    * The property must be implemented for "unionOfTypes"
    */
-  [UNIQUE_NAME] = 'types.boolean';
+  [UNIQUE_NAME] = 'vine.boolean';
 
   /**
    * Checks if the value is of boolean type. The method must be

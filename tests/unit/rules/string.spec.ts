@@ -9,7 +9,13 @@
 
 import { test } from '@japa/runner'
 import { validator } from '../../../factories/main.js'
-import { emailRule, hexCodeRule, mobileRule, stringRule } from '../../../src/schema/string/rules.js'
+import {
+  urlRule,
+  emailRule,
+  stringRule,
+  mobileRule,
+  hexCodeRule,
+} from '../../../src/schema/string/rules.js'
 
 test.group('String | string', () => {
   test('report when value is not a string', () => {
@@ -224,5 +230,52 @@ test.group('String | hexCode', () => {
     const sixDigits = validator.execute([string, hexCode], '#ffffff')
     sixDigits.assertSucceeded()
     sixDigits.assertOutput('#ffffff')
+  })
+})
+
+test.group('String | url', () => {
+  test('skip when field is invalid', () => {
+    const string = stringRule()
+    const rule = urlRule()
+    const validated = validator.execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('skip when field is invalid with bail mode disabled', () => {
+    const string = stringRule()
+    const rule = urlRule()
+    const validated = validator.bail(false).execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('fail when value is not a valid URL', () => {
+    const string = stringRule()
+    const url = urlRule()
+    const validated = validator.execute([string, url], '20202')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a valid URL')
+  })
+
+  test('pass validation when value is a valid URL', () => {
+    const string = stringRule()
+    const url = urlRule()
+    const validated = validator.execute([string, url], 'https://foo.com')
+
+    validated.assertSucceeded()
+    validated.assertOutput('https://foo.com')
+  })
+
+  test('define url options', () => {
+    const string = stringRule()
+    const url = urlRule({ allow_underscores: false })
+    const validated = validator.execute([string, url], 'https://foo_bar.com')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a valid URL')
   })
 })
