@@ -3,11 +3,13 @@ import Benchmark from 'benchmark'
 import { z } from 'zod'
 import vine from '../index.js'
 
-const data = {
-  contact: {
-    type: 'phone',
-    mobile_number: '9210210102',
-  },
+function getData() {
+  return {
+    contact: {
+      type: 'phone',
+      mobile_number: '9210210102',
+    },
+  }
 }
 
 const zodSchema = z.object({
@@ -53,7 +55,7 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema({ data })
+      vineSchema({ data: getData() })
         .then(() => deferred.resolve())
         .catch(console.log)
     },
@@ -62,7 +64,7 @@ suite
     defer: true,
     fn: function (deferred: any) {
       zodSchema
-        .parseAsync(data)
+        .parseAsync(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },

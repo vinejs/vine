@@ -4,17 +4,19 @@ import { z } from 'zod'
 import yup from 'yup'
 import vine from '../index.js'
 
-const data = {
-  contacts: [
-    {
-      type: 'email',
-      value: 'foo@bar.com',
-    },
-    {
-      type: 'phone',
-      value: '12345678',
-    },
-  ],
+function getData() {
+  return {
+    contacts: [
+      {
+        type: 'email',
+        value: 'foo@bar.com',
+      },
+      {
+        type: 'phone',
+        value: '12345678',
+      },
+    ],
+  }
 }
 
 const zodSchema = z.object({
@@ -61,7 +63,7 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema({ data })
+      vineSchema({ data: getData() })
         .then(() => deferred.resolve())
         .catch(console.log)
     },
@@ -70,7 +72,7 @@ suite
     defer: true,
     fn: function (deferred: any) {
       zodSchema
-        .parseAsync(data)
+        .parseAsync(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },
@@ -79,7 +81,7 @@ suite
     defer: true,
     fn: function (deferred: any) {
       yupSchema
-        .validate(data)
+        .validate(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },

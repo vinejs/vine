@@ -4,9 +4,11 @@ import { z } from 'zod'
 import yup from 'yup'
 import vine from '../index.js'
 
-const data = {
-  username: 'virk',
-  password: 'secret',
+function getData() {
+  return {
+    username: 'virk',
+    password: 'secret',
+  }
 }
 
 const zodSchema = z.object({
@@ -37,7 +39,7 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema({ data })
+      vineSchema({ data: getData() })
         .then(() => deferred.resolve())
         .catch(console.log)
     },
@@ -46,7 +48,7 @@ suite
     defer: true,
     fn: function (deferred: any) {
       zodSchema
-        .parseAsync(data)
+        .parseAsync(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },
@@ -55,7 +57,7 @@ suite
     defer: true,
     fn: function (deferred: any) {
       yupSchema
-        .validate(data)
+        .validate(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },
