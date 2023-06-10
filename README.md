@@ -45,8 +45,8 @@
 [gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/vinejs/vine/test.yml?style=for-the-badge
 [gh-workflow-url]: https://github.com/vinejs/vine/actions/workflows/test.yml "Github action"
 
-[npm-image]: https://img.shields.io/npm/v/vinejs/vine/latest.svg?style=for-the-badge&logo=npm
-[npm-url]: https://www.npmjs.com/package/vinejs/vine/v/latest "npm"
+[npm-image]: https://img.shields.io/npm/v/@vinejs/vine/latest.svg?style=for-the-badge&logo=npm
+[npm-url]: https://www.npmjs.com/package/@vinejs/vine/v/latest "npm"
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 
