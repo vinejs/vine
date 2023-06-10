@@ -127,5 +127,17 @@
     "@vinejs/compiler": "^1.2.1",
     "camelcase": "^7.0.1",
     "validator": "^13.9.0"
-  }
+  },
+  "types": "./build/index.d.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinejs/vine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vinejs/vine/issues"
+  },
+  "homepage": "https://github.com/vinejs/vine#readme"
 }
