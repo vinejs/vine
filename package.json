@@ -1,5 +1,5 @@
 {
-  "name": "vinejs",
+  "name": "@vinejs/vine",
   "version": "0.0.0",
   "description": "Form data validation library for Node.js",
   "type": "module",
