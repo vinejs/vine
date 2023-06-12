@@ -19,9 +19,9 @@ node build/benchmarks/flat_object.js
 ===============================
 Benchmarking with flat object
 ===============================
-Vine x 9,149,087 ops/sec ±0.35% (89 runs sampled)
-Zod x 1,167,525 ops/sec ±0.70% (85 runs sampled)
-Yup x 404,760 ops/sec ±0.38% (86 runs sampled)
+Vine x 9,451,180 ops/sec ±0.98% (88 runs sampled)
+Zod x 1,193,685 ops/sec ±0.33% (89 runs sampled)
+Yup x 410,183 ops/sec ±0.31% (89 runs sampled)
 Fastest is Vine
 ```
 
@@ -38,9 +38,9 @@ node build/benchmarks/nested_object.js
 =================================
 Benchmarking with nested object
 =================================
-Vine x 8,024,818 ops/sec ±0.26% (89 runs sampled)
-Zod x 553,710 ops/sec ±0.34% (88 runs sampled)
-Yup x 191,407 ops/sec ±0.26% (88 runs sampled)
+Vine x 8,424,483 ops/sec ±0.21% (88 runs sampled)
+Zod x 559,955 ops/sec ±0.28% (89 runs sampled)
+Yup x 190,961 ops/sec ±0.27% (90 runs sampled)
 Fastest is Vine
 ```
 
@@ -57,9 +57,9 @@ node build/benchmarks/array.js
 ======================
 Benchmarking arrays
 ======================
-Vine x 6,564,289 ops/sec ±0.29% (88 runs sampled)
-Zod x 410,636 ops/sec ±0.77% (87 runs sampled)
-Yup x 114,580 ops/sec ±0.31% (88 runs sampled)
+Vine x 6,864,364 ops/sec ±0.31% (90 runs sampled)
+Zod x 409,199 ops/sec ±0.28% (89 runs sampled)
+Yup x 115,652 ops/sec ±0.28% (89 runs sampled)
 Fastest is Vine
 ```
 
@@ -78,7 +78,7 @@ node build/benchmarks/union.js
 =======================
 Benchmarking unions
 =======================
-Vine x 8,407,062 ops/sec ±0.28% (87 runs sampled)
-Zod x 181,892 ops/sec ±0.34% (88 runs sampled)
+Vine x 9,033,819 ops/sec ±0.24% (87 runs sampled)
+Zod x 179,340 ops/sec ±0.35% (87 runs sampled)
 Fastest is Vine
 ```
