@@ -10,10 +10,9 @@
 import { Compiler, refsBuilder } from '@vinejs/compiler'
 import type { MessagesProviderContact, Refs } from '@vinejs/compiler/types'
 
-import { OTYPE, PARSE } from '../symbols.js'
 import { messages } from '../defaults.js'
-import { SimpleErrorReporter } from '../reporters/simple_error_reporter.js'
-import type { Infer, SchemaTypes, ValidationOptions } from '../types.js'
+import { OTYPE, PARSE } from '../symbols.js'
+import type { ErrorReporterContract, Infer, SchemaTypes, ValidationOptions } from '../types.js'
 
 /**
  * Error messages to share with the compiler
@@ -38,6 +37,11 @@ export class VineValidator<Schema extends SchemaTypes> {
    * Messages provider to use on the validator
    */
   messagesProvider: MessagesProviderContact
+
+  /**
+   * Error reporter to use on the validator
+   */
+  errorReporter: () => ErrorReporterContract
 
   /**
    * Parses schema to compiler nodes.
@@ -68,6 +72,7 @@ export class VineValidator<Schema extends SchemaTypes> {
     options: {
       convertEmptyStringsToNull: boolean
       messagesProvider: MessagesProviderContact
+      errorReporter: () => ErrorReporterContract
     }
   ) {
     const { compilerNode, refs } = this.#parse(schema)
@@ -78,6 +83,7 @@ export class VineValidator<Schema extends SchemaTypes> {
       messages: COMPILER_ERROR_MESSAGES,
     }).compile()
 
+    this.errorReporter = options.errorReporter
     this.messagesProvider = options.messagesProvider
   }
 
@@ -97,8 +103,14 @@ export class VineValidator<Schema extends SchemaTypes> {
    * ```
    */
   validate(data: any, options?: ValidationOptions): Promise<Infer<Schema>> {
-    const errorReporter = options?.errorReporter || new SimpleErrorReporter()
+    const errorReporter = options?.errorReporter || this.errorReporter
     const messagesProvider = options?.messagesProvider || this.messagesProvider
-    return this.#validateFn(data, options?.meta || {}, this.#refs, messagesProvider, errorReporter)
+    return this.#validateFn(
+      data,
+      options?.meta || {},
+      this.#refs,
+      messagesProvider,
+      errorReporter()
+    )
   }
 }

@@ -190,7 +190,7 @@ export type ValidationOptions = {
    * Validation errors are reported directly to an error reporter. The reporter
    * can decide how to format and output errors.
    */
-  errorReporter?: ErrorReporterContract
+  errorReporter?: () => ErrorReporterContract
 }
 
 /**

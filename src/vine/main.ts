@@ -14,7 +14,14 @@ import { SimpleMessagesProvider } from '../messages_provider/simple_messages_pro
 
 import { VineValidator } from './validator.js'
 import { fields, messages } from '../defaults.js'
-import type { Infer, MessagesProviderContact, SchemaTypes, ValidationOptions } from '../types.js'
+import type {
+  Infer,
+  SchemaTypes,
+  ValidationOptions,
+  ErrorReporterContract,
+  MessagesProviderContact,
+} from '../types.js'
+import { SimpleErrorReporter } from '../reporters/simple_error_reporter.js'
 
 /**
  * Validate user input with type-safety using a pre-compiled schema.
@@ -24,6 +31,11 @@ export class Vine extends SchemaBuilder {
    * Messages provider to use on the validator
    */
   messagesProvider: MessagesProviderContact = new SimpleMessagesProvider(messages, fields)
+
+  /**
+   * Error reporter to use on the validator
+   */
+  errorReporter: () => ErrorReporterContract = () => new SimpleErrorReporter()
 
   /**
    * Control whether or not to convert empty strings to null
@@ -53,6 +65,7 @@ export class Vine extends SchemaBuilder {
     return new VineValidator(schema, {
       convertEmptyStringsToNull: this.convertEmptyStringsToNull,
       messagesProvider: this.messagesProvider,
+      errorReporter: this.errorReporter,
     })
   }
 
