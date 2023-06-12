@@ -9,6 +9,7 @@
 
 import { Vine } from './src/vine/main.js'
 
+export { Vine }
 export * as symbols from './src/symbols.js'
 export * as errors from './src/errors/main.js'
 export { VineAny } from './src/schema/any/main.js'
