@@ -23,6 +23,8 @@ export { VineObject } from './src/schema/object/main.js'
 export { VineLiteral } from './src/schema/literal/main.js'
 export { VineBoolean } from './src/schema/boolean/main.js'
 export { VineAccepted } from './src/schema/accepted/main.js'
+export { BaseLiteralType } from './src/schema/base/literal.js'
+export { BaseType, BaseModifiersType } from './src/schema/base/main.js'
 
 const vine = new Vine()
 export default vine
