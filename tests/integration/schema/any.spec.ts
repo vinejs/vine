@@ -9,6 +9,7 @@
 
 import { test } from '@japa/runner'
 import vine from '../../../index.js'
+import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.js'
 
 test.group('Accepted', () => {
   test('fail when field is missing', async ({ assert }) => {
@@ -17,14 +18,18 @@ test.group('Accepted', () => {
     })
 
     const data = {}
+    const messagesProvider = new SimpleMessagesProvider(
+      {},
+      {
+        secret_message: 'message',
+      }
+    )
 
     await assert.validationErrors(
       vine.validate({
         schema,
         data,
-        fields: {
-          secret_message: 'message',
-        },
+        messagesProvider,
       }),
       [
         {

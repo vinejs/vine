@@ -55,7 +55,8 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema({ data: getData() })
+      vineSchema
+        .validate(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },

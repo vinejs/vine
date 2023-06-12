@@ -10,7 +10,7 @@
 import type { FieldContext } from '@vinejs/compiler/types'
 
 import { helpers } from '../../vine/helpers.js'
-import { errorMessages } from '../../defaults.js'
+import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 import type { EmailOptions, MobileOptions, URLOptions } from '../../types.js'
 
@@ -19,7 +19,7 @@ import type { EmailOptions, MobileOptions, URLOptions } from '../../types.js'
  */
 export const stringRule = createRule((value, _, ctx) => {
   if (typeof value !== 'string') {
-    ctx.report(errorMessages.string, 'string', ctx)
+    ctx.report(messages.string, 'string', ctx)
   }
 })
 
@@ -32,7 +32,7 @@ export const emailRule = createRule<EmailOptions | undefined>((value, options, c
   }
 
   if (!helpers.isEmail(value as string, options)) {
-    ctx.report(errorMessages.email, 'email', ctx)
+    ctx.report(messages.email, 'email', ctx)
   }
 })
 
@@ -50,7 +50,7 @@ export const mobileRule = createRule<
   const locales = normalizedOptions?.locales || 'any'
 
   if (!helpers.isMobilePhone(value as string, locales, normalizedOptions)) {
-    ctx.report(errorMessages.mobile, 'mobile', ctx)
+    ctx.report(messages.mobile, 'mobile', ctx)
   }
 })
 
@@ -63,7 +63,7 @@ export const hexCodeRule = createRule((value, _, ctx) => {
   }
 
   if (!helpers.isHexColor(value as string)) {
-    ctx.report(errorMessages.hexCode, 'hexCode', ctx)
+    ctx.report(messages.hexCode, 'hexCode', ctx)
   }
 })
 
@@ -76,6 +76,6 @@ export const urlRule = createRule<URLOptions | undefined>((value, options, ctx) 
   }
 
   if (!helpers.isURL(value as string, options)) {
-    ctx.report(errorMessages.url, 'url', ctx)
+    ctx.report(messages.url, 'url', ctx)
   }
 })

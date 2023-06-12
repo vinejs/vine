@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import { E_VALIDATION_ERROR } from '../errors/main.js'
 import { ValidationError } from '../errors/validation_error.js'
 import type { ErrorReporterContract, FieldContext } from '../types.js'
 
@@ -67,6 +68,6 @@ export class SimpleErrorReporter implements ErrorReporterContract {
    * Returns an instance of the validation error
    */
   createError(): ValidationError {
-    return new ValidationError(this.errors)
+    return new E_VALIDATION_ERROR(this.errors)
   }
 }

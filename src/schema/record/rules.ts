@@ -8,7 +8,7 @@
  */
 
 import { FieldContext } from '@vinejs/compiler/types'
-import { errorMessages } from '../../defaults.js'
+import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
@@ -26,7 +26,7 @@ export const minLengthRule = createRule<{ min: number }>((value, options, ctx) =
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length < options.min) {
-    ctx.report(errorMessages['record.minLength'], 'minLength', ctx, options)
+    ctx.report(messages['record.minLength'], 'minLength', ctx, options)
   }
 })
 
@@ -45,7 +45,7 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, ctx) =
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length > options.max) {
-    ctx.report(errorMessages['record.maxLength'], 'maxLength', ctx, options)
+    ctx.report(messages['record.maxLength'], 'maxLength', ctx, options)
   }
 })
 
@@ -64,7 +64,7 @@ export const fixedLengthRule = createRule<{ size: number }>((value, options, ctx
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length !== options.size) {
-    ctx.report(errorMessages['record.fixedLength'], 'fixedLength', ctx, options)
+    ctx.report(messages['record.fixedLength'], 'fixedLength', ctx, options)
   }
 })
 

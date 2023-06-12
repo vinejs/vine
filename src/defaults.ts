@@ -8,9 +8,9 @@
  */
 
 /**
- * Collection of default error messages used by VineJS core
+ * Collection of default error messages to use
  */
-export const errorMessages = {
+export const messages = {
   'required': 'The {{ field }} field must be defined',
 
   'string': 'The {{ field }} field must be a string',
@@ -68,3 +68,8 @@ export const errorMessages = {
 
   'tuple': 'The {{ field }} field must be an array',
 }
+
+/**
+ * Collection of default fields
+ */
+export const fields = {}

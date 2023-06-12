@@ -8,7 +8,7 @@
  */
 
 import { helpers } from '../../vine/helpers.js'
-import { errorMessages } from '../../defaults.js'
+import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
@@ -26,7 +26,7 @@ export const minLengthRule = createRule<{ min: number }>((value, options, ctx) =
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length < options.min) {
-    ctx.report(errorMessages['array.minLength'], 'minLength', ctx, options)
+    ctx.report(messages['array.minLength'], 'minLength', ctx, options)
   }
 })
 
@@ -45,7 +45,7 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, ctx) =
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length > options.max) {
-    ctx.report(errorMessages['array.maxLength'], 'maxLength', ctx, options)
+    ctx.report(messages['array.maxLength'], 'maxLength', ctx, options)
   }
 })
 
@@ -64,7 +64,7 @@ export const fixedLengthRule = createRule<{ size: number }>((value, options, ctx
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length !== options.size) {
-    ctx.report(errorMessages['array.fixedLength'], 'fixedLength', ctx, options)
+    ctx.report(messages['array.fixedLength'], 'fixedLength', ctx, options)
   }
 })
 
@@ -83,7 +83,7 @@ export const notEmptyRule = createRule<undefined>((value, _, ctx) => {
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length <= 0) {
-    ctx.report(errorMessages.notEmpty, 'notEmpty', ctx)
+    ctx.report(messages.notEmpty, 'notEmpty', ctx)
   }
 })
 
@@ -102,7 +102,7 @@ export const distinctRule = createRule<{ fields?: string | string[] }>((value, o
    * Value will always be an array if the field is valid.
    */
   if (!helpers.isDistinct(value as any[], options.fields)) {
-    ctx.report(errorMessages.distinct, 'distinct', ctx, options)
+    ctx.report(messages.distinct, 'distinct', ctx, options)
   }
 })
 

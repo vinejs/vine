@@ -12,4 +12,4 @@ import { ValidationError } from './validation_error.js'
 /**
  * Create an instance of validation error
  */
-export const E_VALIDATION_ERROR = (messages: any) => new ValidationError(messages)
+export const E_VALIDATION_ERROR = ValidationError

@@ -8,7 +8,7 @@
  */
 
 import { createRule } from '../../vine/create_rule.js'
-import { errorMessages } from '../../defaults.js'
+import { messages } from '../../defaults.js'
 import { FieldContext } from '@vinejs/compiler/types'
 
 /**
@@ -25,6 +25,6 @@ export const enumRule = createRule<{
    * options
    */
   if (!choices.includes(value)) {
-    ctx.report(errorMessages.enum, 'enum', ctx, { choices })
+    ctx.report(messages.enum, 'enum', ctx, { choices })
   }
 })

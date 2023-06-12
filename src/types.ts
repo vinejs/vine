@@ -175,41 +175,25 @@ export interface ErrorReporterContract extends BaseReporter {
 }
 
 /**
- * Options accepted by vine.configure and the validate
- * method.
+ * Options accepted during the validate call.
  */
-export type VineOptions = {
-  /**
-   * Normalize empty string values to null
-   */
-  convertEmptyStringsToNull: boolean
+export type ValidationOptions = {
+  meta?: Record<string, any>
 
   /**
    * Messages provider is used to resolve error messages during
    * the validation lifecycle
    */
-  messagesProvider: (
-    messages: ValidationMessages,
-    fields: ValidationFields
-  ) => MessagesProviderContact
+  messagesProvider?: MessagesProviderContact
 
   /**
    * Validation errors are reported directly to an error reporter. The reporter
    * can decide how to format and output errors.
    */
-  errorReporter: () => ErrorReporterContract
-}
-
-/**
- * Validation options accepted by the validate method
- */
-export type ValidationOptions = {
-  data: any
-  messages?: ValidationMessages
-  fields?: ValidationFields
+  errorReporter?: ErrorReporterContract
 }
 
 /**
  * Infers the schema type
  */
-export type Infer<Schema extends ConstructableSchema<any, any>> = Schema[typeof OTYPE]
+export type Infer<Schema extends { [OTYPE]: any }> = Schema[typeof OTYPE]

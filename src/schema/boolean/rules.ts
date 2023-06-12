@@ -8,7 +8,7 @@
  */
 
 import { helpers } from '../../vine/helpers.js'
-import { errorMessages } from '../../defaults.js'
+import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
@@ -17,7 +17,7 @@ import { createRule } from '../../vine/create_rule.js'
 export const booleanRule = createRule<{ strict?: boolean }>((value, options, ctx) => {
   const valueAsBoolean = options.strict === true ? value : helpers.asBoolean(value)
   if (typeof valueAsBoolean !== 'boolean') {
-    ctx.report(errorMessages.boolean, 'boolean', ctx)
+    ctx.report(messages.boolean, 'boolean', ctx)
     return
   }
 

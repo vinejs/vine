@@ -8,7 +8,7 @@
  */
 
 import { helpers } from '../../vine/helpers.js'
-import { errorMessages } from '../../defaults.js'
+import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
@@ -32,7 +32,7 @@ export const equalsRule = createRule<{ expectedValue: any }>((value, options, ct
    * Performing validation and reporting error
    */
   if (input !== options.expectedValue) {
-    ctx.report(errorMessages.literal, 'literal', ctx, options)
+    ctx.report(messages.literal, 'literal', ctx, options)
     return
   }
 

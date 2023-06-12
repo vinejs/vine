@@ -9,7 +9,7 @@
 
 import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
-import { errorMessages } from '../../defaults.js'
+import { messages } from '../../defaults.js'
 
 /**
  * Enforce the value to be a number or a string representation
@@ -22,7 +22,7 @@ export const numberRule = createRule((value, _, ctx) => {
     valueAsNumber === Number.POSITIVE_INFINITY ||
     valueAsNumber === Number.NEGATIVE_INFINITY
   ) {
-    ctx.report(errorMessages.number, 'number', ctx)
+    ctx.report(messages.number, 'number', ctx)
     return
   }
 
@@ -41,7 +41,7 @@ export const minRule = createRule<{ min: number }>((value, options, ctx) => {
   }
 
   if ((value as number) < options.min) {
-    ctx.report(errorMessages.min, 'min', ctx, options)
+    ctx.report(messages.min, 'min', ctx, options)
   }
 })
 
@@ -57,7 +57,7 @@ export const maxRule = createRule<{ max: number }>((value, options, ctx) => {
   }
 
   if ((value as number) > options.max) {
-    ctx.report(errorMessages.max, 'max', ctx, options)
+    ctx.report(messages.max, 'max', ctx, options)
   }
 })
 
@@ -73,7 +73,7 @@ export const rangeRule = createRule<{ min: number; max: number }>((value, option
   }
 
   if ((value as number) < options.min || (value as number) > options.max) {
-    ctx.report(errorMessages.range, 'range', ctx, options)
+    ctx.report(messages.range, 'range', ctx, options)
   }
 })
 
@@ -89,7 +89,7 @@ export const positiveRule = createRule((value, _, ctx) => {
   }
 
   if ((value as number) < 0) {
-    ctx.report(errorMessages.positive, 'positive', ctx)
+    ctx.report(messages.positive, 'positive', ctx)
   }
 })
 
@@ -105,7 +105,7 @@ export const negativeRule = createRule<undefined>((value, _, ctx) => {
   }
 
   if ((value as number) >= 0) {
-    ctx.report(errorMessages.negative, 'negative', ctx)
+    ctx.report(messages.negative, 'negative', ctx)
   }
 })
 
@@ -126,7 +126,7 @@ export const decimalRule = createRule<{ range: [number, number?] }>((value, opti
       decimal_digits: options.range.join(','),
     })
   ) {
-    ctx.report(errorMessages.decimal, 'decimal', ctx, { digits: options.range.join('-') })
+    ctx.report(messages.decimal, 'decimal', ctx, { digits: options.range.join('-') })
   }
 })
 
@@ -142,6 +142,6 @@ export const withoutDecimalsRule = createRule((value, _, ctx) => {
   }
 
   if (!Number.isInteger(value)) {
-    ctx.report(errorMessages.withoutDecimals, 'withoutDecimals', ctx)
+    ctx.report(messages.withoutDecimals, 'withoutDecimals', ctx)
   }
 })

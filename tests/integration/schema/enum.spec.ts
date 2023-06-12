@@ -9,6 +9,7 @@
 
 import { test } from '@japa/runner'
 import vine from '../../../index.js'
+import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.js'
 
 test.group('Enum', () => {
   test('fail when value is not a subset of choices', async ({ assert }) => {
@@ -116,19 +117,17 @@ test.group('Enum | Lazily compute enum choices', () => {
       banner_width: '640px',
     }
 
-    await assert.validationErrors(
-      vine.validate({ schema, data, fields: { banner_width: 'banner width' } }),
-      [
-        {
-          field: 'banner_width',
-          message: 'The selected banner width is invalid',
-          rule: 'enum',
-          meta: {
-            choices: ['1080px', '1280px'],
-          },
+    const messagesProvider = new SimpleMessagesProvider({}, { banner_width: 'banner width' })
+    await assert.validationErrors(vine.validate({ schema, data, messagesProvider }), [
+      {
+        field: 'banner_width',
+        message: 'The selected banner width is invalid',
+        rule: 'enum',
+        meta: {
+          choices: ['1080px', '1280px'],
         },
-      ]
-    )
+      },
+    ])
   })
 
   test('pass when value is a subset of choices', async ({ assert }) => {
@@ -148,9 +147,7 @@ test.group('Enum | Lazily compute enum choices', () => {
       banner_width: '640px',
     }
 
-    await assert.validationOutput(
-      vine.validate({ schema, data, fields: { banner_width: 'banner width' } }),
-      data
-    )
+    const messagesProvider = new SimpleMessagesProvider({}, { banner_width: 'banner width' })
+    await assert.validationOutput(vine.validate({ schema, data, messagesProvider }), data)
   })
 })

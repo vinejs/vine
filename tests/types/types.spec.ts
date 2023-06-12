@@ -1260,3 +1260,22 @@ test.group('Types | UnionOfTypes', () => {
     }>()
   })
 })
+
+test.group('Types | compiled schema', () => {
+  test('infer types from compiled schema', ({ expectTypeOf }) => {
+    const schema = vine.compile(
+      vine.object({
+        username: vine.string(),
+        email: vine.string(),
+        is_admin: vine.boolean(),
+      })
+    )
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      username: string
+      email: string
+      is_admin: boolean
+    }>()
+  })
+})
