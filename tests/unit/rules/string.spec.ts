@@ -15,6 +15,10 @@ import {
   stringRule,
   mobileRule,
   hexCodeRule,
+  activeUrlRule,
+  regexRule,
+  alphaRule,
+  alphaNumericRule,
 } from '../../../src/schema/string/rules.js'
 
 test.group('String | string', () => {
@@ -277,5 +281,229 @@ test.group('String | url', () => {
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a valid URL')
+  })
+})
+
+test.group('String | activeUrl', () => {
+  test('skip when field is invalid', async () => {
+    const string = stringRule()
+    const rule = activeUrlRule()
+    const validated = await validator.executeAsync([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('skip when field is invalid with bail mode disabled', async () => {
+    const string = stringRule()
+    const rule = activeUrlRule()
+    const validated = await validator.bail(false).executeAsync([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('fail when value is not a valid URL', async () => {
+    const string = stringRule()
+    const url = activeUrlRule()
+    const validated = await validator.executeAsync([string, url], '20202')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a valid URL')
+  })
+
+  test('fail when value is not an active URL', async () => {
+    const string = stringRule()
+    const url = activeUrlRule()
+    const validated = await validator.executeAsync([string, url], 'https://foo.com')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a valid URL')
+  })
+
+  test('pass validation when value is an active URL', async () => {
+    const string = stringRule()
+    const url = activeUrlRule()
+    const validated = await validator.executeAsync([string, url], 'https://google.com')
+
+    validated.assertSucceeded()
+    validated.assertOutput('https://google.com')
+  })
+})
+
+test.group('String | regex', () => {
+  test('skip when field is invalid', () => {
+    const string = stringRule()
+    const rule = regexRule(/^[a-zA-Z0-9]+$/)
+    const validated = validator.execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('skip when field is invalid with bail mode disabled', () => {
+    const string = stringRule()
+    const rule = regexRule(/^[a-zA-Z0-9]+$/)
+    const validated = validator.bail(false).execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('fail when value does not match the regular expression', () => {
+    const string = stringRule()
+    const rule = regexRule(/^[a-zA-Z0-9]+$/)
+    const validated = validator.execute([string, rule], 'foo_bar')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field format is invalid')
+  })
+
+  test('test against RegExp instance', () => {
+    const string = stringRule()
+    const rule = regexRule(new RegExp('^[a-zA-Z0-9]+$'))
+    const validated = validator.execute([string, rule], 'foo_bar')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field format is invalid')
+  })
+
+  test('pass when value matches the regular expression', () => {
+    const string = stringRule()
+    const rule = regexRule(new RegExp('^[a-zA-Z0-9]+$'))
+    const validated = validator.execute([string, rule], 'hello1234')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hello1234')
+  })
+})
+
+test.group('String | alpha', () => {
+  test('skip when field is invalid', () => {
+    const string = stringRule()
+    const rule = alphaRule()
+    const validated = validator.execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('skip when field is invalid with bail mode disabled', () => {
+    const string = stringRule()
+    const rule = alphaRule()
+    const validated = validator.bail(false).execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('fail when value contains characters other than letters', () => {
+    const string = stringRule()
+    const rule = alphaRule()
+    const validated = validator.execute([string, rule], 'foo_bar')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must contain only letters')
+  })
+
+  test('pass when value contains only letters', () => {
+    const string = stringRule()
+    const rule = alphaRule()
+    const validated = validator.execute([string, rule], 'hello')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hello')
+  })
+
+  test('pass when value contains only letters and spaces', () => {
+    const string = stringRule()
+    const rule = alphaRule({ allowSpaces: true })
+    const validated = validator.execute([string, rule], 'hell o')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hell o')
+  })
+
+  test('pass when value contains only letters and underscore', () => {
+    const string = stringRule()
+    const rule = alphaRule({ allowUnderscores: true })
+    const validated = validator.execute([string, rule], 'hell_o')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hell_o')
+  })
+
+  test('pass when value contains only letters and dashes', () => {
+    const string = stringRule()
+    const rule = alphaRule({ allowDashes: true })
+    const validated = validator.execute([string, rule], 'hell-o')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hell-o')
+  })
+})
+
+test.group('String | alphaNumeric', () => {
+  test('skip when field is invalid', () => {
+    const string = stringRule()
+    const rule = alphaNumericRule()
+    const validated = validator.execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('skip when field is invalid with bail mode disabled', () => {
+    const string = stringRule()
+    const rule = alphaNumericRule()
+    const validated = validator.bail(false).execute([string, rule], 22)
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a string')
+  })
+
+  test('fail when value contains characters other than letters', () => {
+    const string = stringRule()
+    const rule = alphaNumericRule()
+    const validated = validator.execute([string, rule], 'foo_bar')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must contain only letters and numbers')
+  })
+
+  test('pass when value contains only letters and numbers', () => {
+    const string = stringRule()
+    const rule = alphaNumericRule()
+    const validated = validator.execute([string, rule], 'hello1244')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hello1244')
+  })
+
+  test('pass when value contains only letters and spaces', () => {
+    const string = stringRule()
+    const rule = alphaNumericRule({ allowSpaces: true })
+    const validated = validator.execute([string, rule], 'hell o12')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hell o12')
+  })
+
+  test('pass when value contains only letters and underscore', () => {
+    const string = stringRule()
+    const rule = alphaNumericRule({ allowUnderscores: true })
+    const validated = validator.execute([string, rule], 'hell_o12')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hell_o12')
+  })
+
+  test('pass when value contains only letters and dashes', () => {
+    const string = stringRule()
+    const rule = alphaNumericRule({ allowDashes: true })
+    const validated = validator.execute([string, rule], 'hell-o12')
+
+    validated.assertSucceeded()
+    validated.assertOutput('hell-o12')
   })
 })

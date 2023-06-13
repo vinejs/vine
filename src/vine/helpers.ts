@@ -160,7 +160,7 @@ export const helpers = {
   /**
    * Check if a URL has valid `A` or `AAAA` DNS records
    */
-  isActiveURL: async (url: string) => {
+  isActiveURL: async (url: string): Promise<boolean> => {
     try {
       const { hostname } = new URL(url)
       const v6Addresses = await resolve6(hostname)
@@ -169,7 +169,7 @@ export const helpers = {
       }
 
       const v4Addresses = await resolve4(hostname)
-      return v4Addresses.length
+      return v4Addresses.length > 0
     } catch {
       return false
     }

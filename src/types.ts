@@ -39,6 +39,20 @@ export type EmailOptions = IsEmailOptions
 export type URLOptions = IsURLOptions
 
 /**
+ * Options accepted by the alpha rule
+ */
+export type AlphaOptions = {
+  allowSpaces?: boolean
+  allowUnderscores?: boolean
+  allowDashes?: boolean
+}
+
+/**
+ * Options accepted by the alpha numeric rule
+ */
+export type AlphaNumericOptions = AlphaOptions
+
+/**
  * Re-exporting selected types from compiler
  */
 export type {

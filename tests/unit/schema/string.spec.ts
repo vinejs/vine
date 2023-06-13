@@ -14,6 +14,14 @@ import { Vine } from '../../../src/vine/main.js'
 import { RuleBuilder } from '../../../src/types.js'
 import { createRule } from '../../../src/vine/create_rule.js'
 import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
+import {
+  urlRule,
+  emailRule,
+  alphaRule,
+  regexRule,
+  activeUrlRule,
+  alphaNumericRule,
+} from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
 
@@ -484,4 +492,68 @@ test.group('VineString | applying rules', () => {
       options: passwordRule().options,
     })
   })
+
+  test('apply {name} rule via schema API')
+    .with([
+      {
+        name: 'email',
+        schema: vine.string().email(),
+        rule: emailRule(),
+      },
+      {
+        name: 'regex',
+        schema: vine.string().regex(/^[a-zA-Z0-9]+$/),
+        rule: regexRule(/^[a-zA-Z0-9]+$/),
+      },
+      {
+        name: 'url',
+        schema: vine.string().url(),
+        rule: urlRule(),
+      },
+      {
+        name: 'activeUrl',
+        schema: vine.string().activeUrl(),
+        rule: activeUrlRule(),
+      },
+      {
+        name: 'alpha',
+        schema: vine.string().alpha(),
+        rule: alphaRule(),
+      },
+      {
+        name: 'alphaNumeric',
+        schema: vine.string().alphaNumeric(),
+        rule: alphaNumericRule(),
+      },
+    ])
+    .run(({ assert }, { schema, rule }) => {
+      const refs = refsBuilder()
+
+      assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+        type: 'literal',
+        fieldName: '*',
+        propertyName: '*',
+        allowNull: false,
+        isOptional: false,
+        bail: true,
+        parseFnId: undefined,
+        validations: [
+          {
+            implicit: false,
+            isAsync: false,
+            ruleFnId: 'ref://1',
+          },
+          {
+            implicit: false,
+            isAsync: rule.rule.isAsync,
+            ruleFnId: 'ref://2',
+          },
+        ],
+      })
+
+      assert.deepEqual(refs.toJSON()['ref://2'], {
+        validator: rule.rule.validator,
+        options: rule.options,
+      })
+    })
 })

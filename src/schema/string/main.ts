@@ -9,8 +9,18 @@
 
 import { BaseLiteralType } from '../base/literal.js'
 import { IS_OF_TYPE, UNIQUE_NAME } from '../../symbols.js'
-import type { FieldOptions, Validation } from '../../types.js'
-import { emailRule, hexCodeRule, mobileRule, stringRule, urlRule } from './rules.js'
+import type { AlphaNumericOptions, AlphaOptions, FieldOptions, Validation } from '../../types.js'
+import {
+  urlRule,
+  alphaRule,
+  emailRule,
+  regexRule,
+  mobileRule,
+  stringRule,
+  hexCodeRule,
+  activeUrlRule,
+  alphaNumericRule,
+} from './rules.js'
 
 /**
  * VineString represents a string value in the validation schema.
@@ -19,9 +29,13 @@ export class VineString extends BaseLiteralType<string, string> {
   static rules = {
     url: urlRule,
     email: emailRule,
+    alpha: alphaRule,
+    regex: regexRule,
     string: stringRule,
     mobile: mobileRule,
     hexCode: hexCodeRule,
+    activeUrl: activeUrlRule,
+    alphaNumeric: alphaNumericRule,
   };
 
   /**
@@ -49,6 +63,13 @@ export class VineString extends BaseLiteralType<string, string> {
   }
 
   /**
+   * Validates the value to be an active URL
+   */
+  activeUrl() {
+    return this.use(activeUrlRule())
+  }
+
+  /**
    * Validates the value to be a valid email address
    */
   email(...args: Parameters<typeof emailRule>) {
@@ -67,6 +88,28 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   hexCode() {
     return this.use(hexCodeRule())
+  }
+
+  /**
+   * Validates the value to be an active URL
+   */
+  regex(expression: RegExp) {
+    return this.use(regexRule(expression))
+  }
+
+  /**
+   * Validates the value to contain only letters
+   */
+  alpha(options?: AlphaOptions) {
+    return this.use(alphaRule(options))
+  }
+
+  /**
+   * Validates the value to contain only letters and
+   * numbers
+   */
+  alphaNumeric(options?: AlphaNumericOptions) {
+    return this.use(alphaNumericRule(options))
   }
 
   /**

@@ -12,7 +12,13 @@ import type { FieldContext } from '@vinejs/compiler/types'
 import { helpers } from '../../vine/helpers.js'
 import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
-import type { EmailOptions, MobileOptions, URLOptions } from '../../types.js'
+import type {
+  AlphaNumericOptions,
+  AlphaOptions,
+  EmailOptions,
+  MobileOptions,
+  URLOptions,
+} from '../../types.js'
 
 /**
  * Validates the value to be a string
@@ -55,6 +61,19 @@ export const mobileRule = createRule<
 })
 
 /**
+ * Validates the value against a regular expression
+ */
+export const regexRule = createRule<RegExp>((value, expression, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!expression.test(value as string)) {
+    field.report(messages.regex, 'regex', field)
+  }
+})
+
+/**
  * Validates the value to be a valid hex color code
  */
 export const hexCodeRule = createRule((value, _, field) => {
@@ -79,3 +98,72 @@ export const urlRule = createRule<URLOptions | undefined>((value, options, field
     field.report(messages.url, 'url', field)
   }
 })
+
+/**
+ * Validates the value to be an active URL
+ */
+export const activeUrlRule = createRule(async (value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!(await helpers.isActiveURL(value as string))) {
+    field.report(messages.activeUrl, 'activeUrl', field)
+  }
+})
+
+/**
+ * Validates the value to contain only letters
+ */
+export const alphaRule = createRule<AlphaOptions | undefined>((value, options, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  let characterSet = 'a-zA-Z'
+  if (options) {
+    if (options.allowSpaces) {
+      characterSet += '\\s'
+    }
+    if (options.allowDashes) {
+      characterSet += '-'
+    }
+    if (options.allowUnderscores) {
+      characterSet += '_'
+    }
+  }
+
+  const expression = new RegExp(`^[${characterSet}]+$`)
+  if (!expression.test(value as string)) {
+    field.report(messages.alpha, 'alpha', field)
+  }
+})
+
+/**
+ * Validates the value to contain only letters and numbers
+ */
+export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
+
+    let characterSet = 'a-zA-Z0-9'
+    if (options) {
+      if (options.allowSpaces) {
+        characterSet += '\\s'
+      }
+      if (options.allowDashes) {
+        characterSet += '-'
+      }
+      if (options.allowUnderscores) {
+        characterSet += '_'
+      }
+    }
+
+    const expression = new RegExp(`^[${characterSet}]+$`)
+    if (!expression.test(value as string)) {
+      field.report(messages.alphaNumeric, 'alphaNumeric', field)
+    }
+  }
+)
