@@ -278,8 +278,8 @@ test.group('VineObject | object group', () => {
           project_url: vine.string(),
         }),
       ])
-      .otherwise((_, ctx) => {
-        ctx.report('Missing type property', 'type', ctx)
+      .otherwise((_, field) => {
+        field.report('Missing type property', 'type', field)
       })
 
     const schema = vine.object({}).merge(fiscalHost)

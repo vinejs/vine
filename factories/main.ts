@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { ContextFactory } from './context.js'
+import { FieldFactory } from './field.js'
 import { ValidatorFactory } from './validator.js'
 
 /**
@@ -15,4 +15,4 @@ import { ValidatorFactory } from './validator.js'
  * rules.
  */
 export const validator = new ValidatorFactory()
-export const context = new ContextFactory()
+export const fieldContext = new FieldFactory()

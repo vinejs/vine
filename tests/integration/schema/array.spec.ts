@@ -177,11 +177,11 @@ test.group('Array | array of unions', () => {
         vine.union.if((value) => hasType(value, 'email'), emailContact),
         vine.union.if((value) => hasType(value, 'phone'), phoneContact),
       ])
-      .otherwise((_, ctx) => {
-        ctx.report(
+      .otherwise((_, field) => {
+        field.report(
           'Invalid contact. Either provide an email or a phone number',
           'unknown_contact_type',
-          ctx
+          field
         )
       })
 
@@ -237,11 +237,11 @@ test.group('Array | array of unions', () => {
         vine.union.if((value) => hasType(value, 'email'), emailContact),
         vine.union.if((value) => hasType(value, 'phone'), phoneContact),
       ])
-      .otherwise((_, ctx) => {
-        ctx.report(
+      .otherwise((_, field) => {
+        field.report(
           'Invalid contact. Either provide an email or a phone number',
           'unknown_contact_type',
-          ctx
+          field
         )
       })
 
@@ -303,11 +303,11 @@ test.group('Array | array of unions', () => {
         vine.union.if((value) => hasType(value, 'email'), emailContact),
         vine.union.if((value) => hasType(value, 'phone'), phoneContact),
       ])
-      .otherwise((_, ctx) => {
-        ctx.report(
+      .otherwise((_, field) => {
+        field.report(
           'Invalid contact. Either provide an email or a phone number',
           'unknown_contact_type',
-          ctx
+          field
         )
       })
 

@@ -8,15 +8,15 @@
  */
 
 import { test } from '@japa/runner'
-import { context } from '../../factories/main.js'
+import { fieldContext } from '../../factories/main.js'
 import { ValidationError } from '../../src/errors/validation_error.js'
 import { SimpleErrorReporter } from '../../src/reporters/simple_error_reporter.js'
 
 test.group('Simple error reporter', () => {
   test('collect reported errors', ({ assert }) => {
     const reporter = new SimpleErrorReporter()
-    const ctx = context.create('username', '')
-    reporter.report('The username field is required', 'required', ctx)
+    const field = fieldContext.create('username', '')
+    reporter.report('The username field is required', 'required', field)
 
     assert.isTrue(reporter.hasErrors)
     assert.deepEqual(reporter.errors, [
@@ -30,8 +30,8 @@ test.group('Simple error reporter', () => {
 
   test('collect error meta data', ({ assert }) => {
     const reporter = new SimpleErrorReporter()
-    const ctx = context.create('username', '')
-    reporter.report('The username field is required', 'required', ctx, {
+    const field = fieldContext.create('username', '')
+    reporter.report('The username field is required', 'required', field, {
       requiredWhen: {
         missing: 'email',
       },
@@ -54,9 +54,9 @@ test.group('Simple error reporter', () => {
 
   test('report array index when field is an array member', ({ assert }) => {
     const reporter = new SimpleErrorReporter()
-    const ctx = context.create('username', '')
+    const field = fieldContext.create('username', '')
     reporter.report('Scores are required', 'required', {
-      ...ctx,
+      ...field,
       ...{
         isArrayMember: true,
         name: 0,
@@ -78,8 +78,8 @@ test.group('Simple error reporter', () => {
 
   test('convert errors to an instance of validation error', ({ assert }) => {
     const reporter = new SimpleErrorReporter()
-    const ctx = context.create('username', '')
-    reporter.report('The username field is required', 'required', ctx, {
+    const field = fieldContext.create('username', '')
+    reporter.report('The username field is required', 'required', field, {
       requiredWhen: {
         missing: 'email',
       },

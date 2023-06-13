@@ -182,8 +182,8 @@ test.group('Record | validateKeys', () => {
   })
 
   test('fail validation when validate keys reports an error', () => {
-    const validateKeys = validateKeysRule((_, ctx) => {
-      ctx.report('Invalid keys', 'record.keys', ctx)
+    const validateKeys = validateKeysRule((_, field) => {
+      field.report('Invalid keys', 'record.keys', field)
     })
 
     const validated = validator.execute(validateKeys, {

@@ -50,9 +50,11 @@ test.group('UnionOfTypes', () => {
 
   test('report error using otherwise callback', async ({ assert }) => {
     const schema = vine.object({
-      health_check: vine.unionOfTypes([vine.boolean(), vine.string().url()]).otherwise((_, ctx) => {
-        ctx.report('The health_check url must be a boolean or string', 'invalid_url', ctx)
-      }),
+      health_check: vine
+        .unionOfTypes([vine.boolean(), vine.string().url()])
+        .otherwise((_, field) => {
+          field.report('The health_check url must be a boolean or string', 'invalid_url', field)
+        }),
     })
 
     const data = {}

@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { context } from '../../factories/main.js'
+import { fieldContext } from '../../factories/main.js'
 import { SimpleMessagesProvider } from '../../src/messages_provider/simple_messages_provider.js'
 
 test.group('Simple messages provider | resolving messages', () => {
@@ -21,7 +21,7 @@ test.group('Simple messages provider | resolving messages', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'required', context.create('username', undefined)),
+      provider.getMessage('Enter value', 'required', fieldContext.create('username', undefined)),
       'The field is required'
     )
   })
@@ -36,7 +36,7 @@ test.group('Simple messages provider | resolving messages', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'required', context.create('username', undefined)),
+      provider.getMessage('Enter value', 'required', fieldContext.create('username', undefined)),
       'Username is required'
     )
   })
@@ -50,7 +50,7 @@ test.group('Simple messages provider | resolving messages', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'required', context.create('email', undefined)),
+      provider.getMessage('Enter value', 'required', fieldContext.create('email', undefined)),
       'Enter value'
     )
   })
@@ -68,7 +68,7 @@ test.group('Simple messages provider | resolving fields', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'required', context.create('username', undefined)),
+      provider.getMessage('Enter value', 'required', fieldContext.create('username', undefined)),
       'The account id field is required'
     )
   })
@@ -85,7 +85,7 @@ test.group('Simple messages provider | resolving fields', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'required', context.create('username', undefined)),
+      provider.getMessage('Enter value', 'required', fieldContext.create('username', undefined)),
       'The account id is required'
     )
   })
@@ -101,7 +101,7 @@ test.group('Simple messages provider | resolving fields', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter {{ field }}', 'required', context.create('email', undefined)),
+      provider.getMessage('Enter {{ field }}', 'required', fieldContext.create('email', undefined)),
       'Enter email address'
     )
   })
@@ -117,7 +117,7 @@ test.group('Simple messages provider | interpolation', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'min', context.create('scores', undefined), {
+      provider.getMessage('Enter value', 'min', fieldContext.create('scores', undefined), {
         min: 11,
       }),
       'The scores field must have 11 items'
@@ -133,7 +133,7 @@ test.group('Simple messages provider | interpolation', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'min', context.create('scores', undefined), {
+      provider.getMessage('Enter value', 'min', fieldContext.create('scores', undefined), {
         items: {
           min: 11,
         },
@@ -151,7 +151,7 @@ test.group('Simple messages provider | interpolation', () => {
     )
 
     assert.equal(
-      provider.getMessage('Enter value', 'min', context.create('scores', undefined), {}),
+      provider.getMessage('Enter value', 'min', fieldContext.create('scores', undefined), {}),
       'The scores field must have undefined items'
     )
   })

@@ -9,7 +9,7 @@
 
 import { AssertionError, deepEqual } from 'node:assert'
 
-import { ContextFactory } from './context.js'
+import { FieldFactory } from './field.js'
 import type { FieldContext, Validation } from '../src/types.js'
 import { SimpleErrorReporter } from '../src/reporters/simple_error_reporter.js'
 
@@ -128,11 +128,11 @@ class ValidationResult {
  * during tests
  */
 export class ValidatorFactory {
-  #ctx?: Partial<FieldContext>
+  #field?: Partial<FieldContext>
   #bail?: boolean
 
-  constructor(ctx?: Partial<FieldContext>, bail?: boolean) {
-    this.#ctx = ctx
+  constructor(field?: Partial<FieldContext>, bail?: boolean) {
+    this.#field = field
     this.#bail = bail
   }
 
@@ -147,15 +147,15 @@ export class ValidatorFactory {
   /**
    * Define field context for the validation
    */
-  withContext(ctx: Partial<FieldContext>) {
-    return new ValidatorFactory(ctx, this.#bail)
+  withContext(field: Partial<FieldContext>) {
+    return new ValidatorFactory(field, this.#bail)
   }
 
   /**
    * Toggle bail mode for the validation
    */
   bail(state: boolean) {
-    return new ValidatorFactory(this.#ctx, state)
+    return new ValidatorFactory(this.#field, state)
   }
 
   /**
@@ -164,9 +164,9 @@ export class ValidatorFactory {
   execute(validation: Validation<any> | Validation<any>[], value: any) {
     const errorReporter = this.#getReporter()
     const bail = this.#bail === false ? false : true
-    const normalizedCtx: FieldContext = {
-      ...new ContextFactory().create('dummy', value, undefined, errorReporter),
-      ...this.#ctx,
+    const field: FieldContext = {
+      ...new FieldFactory().create('dummy', value, undefined, errorReporter),
+      ...this.#field,
     }
 
     const validations = Array.isArray(validation) ? validation : [validation]
@@ -177,12 +177,12 @@ export class ValidatorFactory {
         )
       }
 
-      if ((normalizedCtx.isDefined || one.rule.implicit) && (normalizedCtx.isValid || !bail)) {
-        one.rule.validator(normalizedCtx.value, one.options, normalizedCtx)
+      if ((field.isDefined || one.rule.implicit) && (field.isValid || !bail)) {
+        one.rule.validator(field.value, one.options, field)
       }
     }
 
-    return new ValidationResult(normalizedCtx.value, errorReporter)
+    return new ValidationResult(field.value, errorReporter)
   }
 
   /**
@@ -192,18 +192,18 @@ export class ValidatorFactory {
   async executeAsync(validation: Validation<any> | Validation<any>[], value: any) {
     const errorReporter = this.#getReporter()
     const bail = this.#bail === false ? false : true
-    const normalizedCtx: FieldContext = {
-      ...new ContextFactory().create('dummy', value, undefined, errorReporter),
-      ...this.#ctx,
+    const field: FieldContext = {
+      ...new FieldFactory().create('dummy', value, undefined, errorReporter),
+      ...this.#field,
     }
 
     const validations = Array.isArray(validation) ? validation : [validation]
     for (let one of validations) {
-      if ((normalizedCtx.isDefined || one.rule.implicit) && (normalizedCtx.isValid || !bail)) {
-        await one.rule.validator(normalizedCtx.value, one.options, normalizedCtx)
+      if ((field.isDefined || one.rule.implicit) && (field.isValid || !bail)) {
+        await one.rule.validator(field.value, one.options, field)
       }
     }
 
-    return new ValidationResult(normalizedCtx.value, errorReporter)
+    return new ValidationResult(field.value, errorReporter)
   }
 }

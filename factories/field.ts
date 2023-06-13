@@ -15,9 +15,9 @@ import { SimpleErrorReporter } from '../src/reporters/simple_error_reporter.js'
 import { SimpleMessagesProvider } from '../src/messages_provider/simple_messages_provider.js'
 
 /**
- * Exposes API to create a dummy context for a field
+ * Exposes API to create a dummy field context
  */
-export class ContextFactory {
+export class FieldFactory {
   create(
     fieldName: string,
     value: any,
