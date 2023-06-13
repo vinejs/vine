@@ -26,6 +26,8 @@ export { VineBoolean } from './src/schema/boolean/main.js'
 export { VineAccepted } from './src/schema/accepted/main.js'
 export { BaseLiteralType } from './src/schema/base/literal.js'
 export { BaseType, BaseModifiersType } from './src/schema/base/main.js'
+export { SimpleErrorReporter } from './src/reporters/simple_error_reporter.js'
+export { SimpleMessagesProvider } from './src/messages_provider/simple_messages_provider.js'
 
 const vine = new Vine()
 export default vine
