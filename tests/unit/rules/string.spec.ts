@@ -31,6 +31,7 @@ import {
   notSameAsRule,
   inRule,
   notInRule,
+  ipAddressRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -890,6 +891,60 @@ test.group('String | notIn', () => {
       {
         rule: notInRule({ list: () => ['admin', 'moderator', 'writer'] }),
         value: 'root',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | ipAddress', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: ipAddressRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: ipAddressRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: ipAddressRule(),
+        value: 'foobar',
+        error: 'The dummy field must be a valid IP address',
+      },
+      {
+        rule: ipAddressRule(),
+        value: '192.168.1.2',
+      },
+      {
+        rule: ipAddressRule(),
+        value: '::1234:5678',
+      },
+      {
+        rule: ipAddressRule({ version: 4 }),
+        value: '192.168.1.2',
+      },
+      {
+        rule: ipAddressRule({ version: 6 }),
+        value: '::1234:5678',
+      },
+      {
+        errorsCount: 1,
+        rule: ipAddressRule({ version: 6 }),
+        value: '192.168.1.2',
+        error: 'The dummy field must be a valid IP address',
+      },
+      {
+        errorsCount: 1,
+        rule: ipAddressRule({ version: 4 }),
+        value: '::1234:5678',
+        error: 'The dummy field must be a valid IP address',
       },
     ])
     .run(stringRuleValidator)

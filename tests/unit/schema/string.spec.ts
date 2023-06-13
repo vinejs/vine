@@ -25,6 +25,7 @@ import {
   sameAsRule,
   endsWithRule,
   notSameAsRule,
+  ipAddressRule,
   confirmedRule,
   activeUrlRule,
   maxLengthRule,
@@ -596,6 +597,16 @@ test.group('VineString | applying rules', () => {
         name: 'notIn',
         schema: vine.string().notIn(['admin']),
         rule: notInRule({ list: ['admin'] }),
+      },
+      {
+        name: 'ipAddress',
+        schema: vine.string().ipAddress(),
+        rule: ipAddressRule(),
+      },
+      {
+        name: 'ipAddress',
+        schema: vine.string().ipAddress(4),
+        rule: ipAddressRule({ version: 4 }),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

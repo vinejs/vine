@@ -63,6 +63,19 @@ export const mobileRule = createRule<
 })
 
 /**
+ * Validates the value to be a valid IP address.
+ */
+export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>((value, options, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!helpers.isIP(value as string, options?.version)) {
+    field.report(messages.ipAddress, 'ipAddress', field)
+  }
+})
+
+/**
  * Validates the value against a regular expression
  */
 export const regexRule = createRule<RegExp>((value, expression, field) => {

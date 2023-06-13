@@ -12,10 +12,10 @@ import { IS_OF_TYPE, UNIQUE_NAME } from '../../symbols.js'
 import type {
   Validation,
   AlphaOptions,
+  FieldContext,
   FieldOptions,
   AlphaNumericOptions,
   NormalizeEmailOptions,
-  FieldContext,
 } from '../../types.js'
 
 import {
@@ -31,6 +31,7 @@ import {
   stringRule,
   hexCodeRule,
   endsWithRule,
+  ipAddressRule,
   confirmedRule,
   notSameAsRule,
   activeUrlRule,
@@ -64,6 +65,7 @@ export class VineString extends BaseLiteralType<string, string> {
     minLength: minLengthRule,
     notSameAs: notSameAsRule,
     maxLength: maxLengthRule,
+    ipAddress: ipAddressRule,
     startsWith: startsWithRule,
     fixedLength: fixedLengthRule,
     alphaNumeric: alphaNumericRule,
@@ -113,6 +115,13 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   mobile(...args: Parameters<typeof mobileRule>) {
     return this.use(mobileRule(...args))
+  }
+
+  /**
+   * Validates the value to be a valid IP address.
+   */
+  ipAddress(version?: 4 | 6) {
+    return this.use(ipAddressRule(version ? { version } : undefined))
   }
 
   /**
