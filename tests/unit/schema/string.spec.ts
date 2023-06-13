@@ -24,6 +24,7 @@ import {
   minLengthRule,
   fixedLengthRule,
   alphaNumericRule,
+  confirmedRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -542,6 +543,11 @@ test.group('VineString | applying rules', () => {
         name: 'fixedLength',
         schema: vine.string().fixedLength(10),
         rule: fixedLengthRule({ size: 10 }),
+      },
+      {
+        name: 'confirmed',
+        schema: vine.string().confirmed(),
+        rule: confirmedRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

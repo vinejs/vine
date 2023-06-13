@@ -17,13 +17,14 @@ import {
   stringRule,
   mobileRule,
   hexCodeRule,
+  confirmedRule,
   activeUrlRule,
-  alphaNumericRule,
   minLengthRule,
   maxLengthRule,
   fixedLengthRule,
+  alphaNumericRule,
 } from '../../../src/schema/string/rules.js'
-import type { Validation } from '../../../src/types.js'
+import type { FieldContext, Validation } from '../../../src/types.js'
 
 type DataSet = {
   errorsCount?: number
@@ -32,6 +33,7 @@ type DataSet = {
   rule: Validation<any>
   value: any
   output?: any
+  field?: Partial<FieldContext>
 }
 
 /**
@@ -42,9 +44,11 @@ async function stringRuleValidator(_: any, dataset: DataSet) {
   const validated = dataset.rule.rule.isAsync
     ? await validator
         .bail(dataset.bail === false ? false : true)
+        .withContext(dataset.field || {})
         .executeAsync([string, dataset.rule], dataset.value)
     : validator
         .bail(dataset.bail === false ? false : true)
+        .withContext(dataset.field || {})
         .execute([string, dataset.rule], dataset.value)
 
   if (dataset.error && dataset.errorsCount) {
@@ -513,6 +517,61 @@ test.group('String | fixedLength', () => {
       {
         rule: fixedLengthRule({ size: 10 }),
         value: 'helloworld',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | confirmed', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: confirmedRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: confirmedRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: confirmedRule(),
+        value: 'foo',
+        error: 'The dummy field and dummy_confirmation field must be the same',
+      },
+      {
+        errorsCount: 1,
+        rule: confirmedRule(),
+        value: 'foo',
+        field: {
+          parent: {
+            dummy_confirmation: '',
+          },
+        },
+        error: 'The dummy field and dummy_confirmation field must be the same',
+      },
+      {
+        rule: confirmedRule(),
+        value: 'foo',
+        field: {
+          parent: {
+            dummy_confirmation: 'foo',
+          },
+        },
+      },
+      {
+        rule: confirmedRule({ confirmationField: 'dummyConfirmed' }),
+        value: 'foo',
+        field: {
+          parent: {
+            dummyConfirmed: 'foo',
+          },
+        },
       },
     ])
     .run(stringRuleValidator)

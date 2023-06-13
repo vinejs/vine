@@ -214,3 +214,29 @@ export const fixedLengthRule = createRule<{ size: number }>((value, options, fie
     field.report(messages.fixedLength, 'fixedLength', field, options)
   }
 })
+
+/**
+ * Ensure the field under validation is confirmed by
+ * having another field with the same name
+ */
+export const confirmedRule = createRule<{ confirmationField: string } | undefined>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
+
+    const otherField = options?.confirmationField || `${field.name}_confirmation`
+    const input = field.parent[otherField]
+
+    /**
+     * Performing validation and reporting error
+     */
+    if (input !== value) {
+      field.report(messages.confirmed, 'confirmed', field, { otherField })
+      return
+    }
+  }
+)

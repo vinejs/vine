@@ -18,11 +18,12 @@ import {
   mobileRule,
   stringRule,
   hexCodeRule,
+  confirmedRule,
   activeUrlRule,
-  alphaNumericRule,
   minLengthRule,
   maxLengthRule,
   fixedLengthRule,
+  alphaNumericRule,
 } from './rules.js'
 
 /**
@@ -37,6 +38,7 @@ export class VineString extends BaseLiteralType<string, string> {
     string: stringRule,
     mobile: mobileRule,
     hexCode: hexCodeRule,
+    confirmed: confirmedRule,
     activeUrl: activeUrlRule,
     minLength: minLengthRule,
     maxLength: maxLengthRule,
@@ -137,6 +139,14 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   fixedLength(expectedLength: number) {
     return this.use(fixedLengthRule({ size: expectedLength }))
+  }
+
+  /**
+   * Ensure the field under validation is confirmed by
+   * having another field with the same name.
+   */
+  confirmed(options?: { confirmationField: string }) {
+    return this.use(confirmedRule(options))
   }
 
   /**
