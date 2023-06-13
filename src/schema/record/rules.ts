@@ -14,11 +14,11 @@ import { createRule } from '../../vine/create_rule.js'
 /**
  * Enforce a minimum length on an object field
  */
-export const minLengthRule = createRule<{ min: number }>((value, options, ctx) => {
+export const minLengthRule = createRule<{ min: number }>((value, options, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
@@ -26,18 +26,18 @@ export const minLengthRule = createRule<{ min: number }>((value, options, ctx) =
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length < options.min) {
-    ctx.report(messages['record.minLength'], 'minLength', ctx, options)
+    field.report(messages['record.minLength'], 'minLength', field, options)
   }
 })
 
 /**
  * Enforce a maximum length on an object field
  */
-export const maxLengthRule = createRule<{ max: number }>((value, options, ctx) => {
+export const maxLengthRule = createRule<{ max: number }>((value, options, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
@@ -45,18 +45,18 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, ctx) =
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length > options.max) {
-    ctx.report(messages['record.maxLength'], 'maxLength', ctx, options)
+    field.report(messages['record.maxLength'], 'maxLength', field, options)
   }
 })
 
 /**
  * Enforce a fixed length on an object field
  */
-export const fixedLengthRule = createRule<{ size: number }>((value, options, ctx) => {
+export const fixedLengthRule = createRule<{ size: number }>((value, options, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
@@ -64,22 +64,22 @@ export const fixedLengthRule = createRule<{ size: number }>((value, options, ctx
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length !== options.size) {
-    ctx.report(messages['record.fixedLength'], 'fixedLength', ctx, options)
+    field.report(messages['record.fixedLength'], 'fixedLength', field, options)
   }
 })
 
 /**
  * Register a callback to validate the object keys
  */
-export const validateKeysRule = createRule<(keys: string[], ctx: FieldContext) => void>(
-  (value, callback, ctx) => {
+export const validateKeysRule = createRule<(keys: string[], field: FieldContext) => void>(
+  (value, callback, field) => {
     /**
      * Skip if the field is not valid.
      */
-    if (!ctx.isValid) {
+    if (!field.isValid) {
       return
     }
 
-    callback(Object.keys(value as Record<string, any>), ctx)
+    callback(Object.keys(value as Record<string, any>), field)
   }
 )

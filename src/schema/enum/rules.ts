@@ -16,15 +16,15 @@ import { FieldContext } from '@vinejs/compiler/types'
  * from the pre-defined choices.
  */
 export const enumRule = createRule<{
-  choices: readonly any[] | ((ctx: FieldContext) => readonly any[])
-}>((value, options, ctx) => {
-  const choices = typeof options.choices === 'function' ? options.choices(ctx) : options.choices
+  choices: readonly any[] | ((field: FieldContext) => readonly any[])
+}>((value, options, field) => {
+  const choices = typeof options.choices === 'function' ? options.choices(field) : options.choices
 
   /**
    * Report error when value is not part of the pre-defined
    * options
    */
   if (!choices.includes(value)) {
-    ctx.report(messages.enum, 'enum', ctx, { choices })
+    field.report(messages.enum, 'enum', field, { choices })
   }
 })

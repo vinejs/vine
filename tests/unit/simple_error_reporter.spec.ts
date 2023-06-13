@@ -59,7 +59,7 @@ test.group('Simple error reporter', () => {
       ...ctx,
       ...{
         isArrayMember: true,
-        fieldName: 0,
+        name: 0,
         wildCardPath: 'scores.*',
         parent: [],
       },

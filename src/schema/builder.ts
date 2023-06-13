@@ -127,7 +127,7 @@ export class SchemaBuilder extends Macroable {
    * Define a field whose value matches the enum choices.
    */
   enum<const Values extends readonly unknown[]>(
-    values: Values | ((ctx: FieldContext) => Values)
+    values: Values | ((field: FieldContext) => Values)
   ): VineEnum<Values>
   enum<Values extends EnumLike>(values: Values): VineNativeEnum<Values>
   enum<Values extends readonly unknown[] | EnumLike>(values: Values): any {

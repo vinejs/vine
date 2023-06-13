@@ -26,10 +26,10 @@ export class VineEnum<const Values extends readonly unknown[]> extends BaseLiter
     enum: enumRule,
   }
 
-  #values: Values | ((ctx: FieldContext) => Values)
+  #values: Values | ((field: FieldContext) => Values)
 
   constructor(
-    values: Values | ((ctx: FieldContext) => Values),
+    values: Values | ((field: FieldContext) => Values),
     options?: FieldOptions,
     validations?: Validation<any>[]
   ) {

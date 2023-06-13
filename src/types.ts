@@ -75,7 +75,7 @@ export interface ConstructableSchema<Output, CamelCaseOutput> {
    * Implement if you want schema type to be used with the unionOfTypes
    */
   [UNIQUE_NAME]?: string
-  [IS_OF_TYPE]?: (value: unknown, ctx: FieldContext) => boolean
+  [IS_OF_TYPE]?: (value: unknown, field: FieldContext) => boolean
 }
 export type SchemaTypes = ConstructableSchema<any, any>
 
@@ -90,7 +90,7 @@ export type SchemaTypes = ConstructableSchema<any, any>
 export type Validator<Options extends any> = (
   value: unknown,
   options: Options,
-  ctx: FieldContext
+  field: FieldContext
 ) => any | Promise<any>
 
 /**
@@ -165,7 +165,7 @@ export type ParserOptions = {
 /**
  * Method to invoke when union has no match
  */
-export type UnionNoMatchCallback<Input> = (value: Input, ctx: FieldContext) => any
+export type UnionNoMatchCallback<Input> = (value: Input, field: FieldContext) => any
 
 /**
  * Error reporters must implement the reporter contract interface

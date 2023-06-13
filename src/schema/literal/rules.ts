@@ -15,7 +15,7 @@ import { createRule } from '../../vine/create_rule.js'
  * Verifies two equals are equal considering the HTML forms
  * serialization behavior.
  */
-export const equalsRule = createRule<{ expectedValue: any }>((value, options, ctx) => {
+export const equalsRule = createRule<{ expectedValue: any }>((value, options, field) => {
   let input = value
 
   /**
@@ -32,12 +32,12 @@ export const equalsRule = createRule<{ expectedValue: any }>((value, options, ct
    * Performing validation and reporting error
    */
   if (input !== options.expectedValue) {
-    ctx.report(messages.literal, 'literal', ctx, options)
+    field.report(messages.literal, 'literal', field, options)
     return
   }
 
   /**
    * Mutating input with normalized value
    */
-  ctx.mutate(input, ctx)
+  field.mutate(input, field)
 })

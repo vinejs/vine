@@ -46,18 +46,23 @@ export class SimpleErrorReporter implements ErrorReporterContract {
   /**
    * Report an error.
    */
-  report(message: string, rule: string, ctx: FieldContext, meta?: Record<string, any> | undefined) {
+  report(
+    message: string,
+    rule: string,
+    field: FieldContext,
+    meta?: Record<string, any> | undefined
+  ) {
     const error: SimpleError = {
       message,
       rule,
-      field: ctx.wildCardPath,
+      field: field.wildCardPath,
     }
 
     if (meta) {
       error.meta = meta
     }
-    if (ctx.isArrayMember) {
-      error.index = ctx.fieldName as number
+    if (field.isArrayMember) {
+      error.index = field.name as number
     }
 
     this.hasErrors = true

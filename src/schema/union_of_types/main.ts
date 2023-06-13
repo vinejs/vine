@@ -69,8 +69,8 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
         : undefined,
       conditions: this.#schemas.map((schema) => {
         return {
-          conditionalFnRefId: refs.trackConditional((value, ctx) => {
-            return schema[IS_OF_TYPE]!(value, ctx)
+          conditionalFnRefId: refs.trackConditional((value, field) => {
+            return schema[IS_OF_TYPE]!(value, field)
           }),
           schema: schema[PARSE](propertyName, refs, options),
         }

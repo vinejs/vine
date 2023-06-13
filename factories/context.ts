@@ -7,9 +7,10 @@
  * file that was distributed with this source code.
  */
 
+import { ErrorReporterContract } from '@vinejs/compiler/types'
+
 import { helpers } from '../src/vine/helpers.js'
 import type { FieldContext, MessagesProviderContact } from '../src/types.js'
-import { ErrorReporterContract } from '@vinejs/compiler/types'
 import { SimpleErrorReporter } from '../src/reporters/simple_error_reporter.js'
 import { SimpleMessagesProvider } from '../src/messages_provider/simple_messages_provider.js'
 
@@ -31,7 +32,7 @@ export class ContextFactory {
       isArrayMember: false,
       parent: { [fieldName]: value } as any,
       data: { [fieldName]: value },
-      fieldName: fieldName as any,
+      name: fieldName as any,
       wildCardPath: fieldName,
       isDefined: helpers.exists(value),
       isValid: true,

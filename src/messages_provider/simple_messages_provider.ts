@@ -54,16 +54,16 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
   /**
    * Returns a validation message for a given field + rule.
    */
-  getMessage(rawMessage: string, rule: string, ctx: FieldContext, args?: Record<string, any>) {
-    const field = this.#fields[ctx.fieldName] || ctx.fieldName
+  getMessage(rawMessage: string, rule: string, field: FieldContext, args?: Record<string, any>) {
+    const fieldName = this.#fields[field.name] || field.name
 
     /**
      * 1st priority is given to the field messages
      */
-    const fieldMessage = this.#messages[`${ctx.wildCardPath}.${rule}`]
+    const fieldMessage = this.#messages[`${field.wildCardPath}.${rule}`]
     if (fieldMessage) {
       return this.#interpolate(fieldMessage, {
-        field,
+        field: fieldName,
         ...args,
       })
     }
@@ -74,7 +74,7 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
     const ruleMessage = this.#messages[rule]
     if (ruleMessage) {
       return this.#interpolate(ruleMessage, {
-        field,
+        field: fieldName,
         ...args,
       })
     }
@@ -83,7 +83,7 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
      * Fallback to raw message
      */
     return this.#interpolate(rawMessage, {
-      field,
+      field: fieldName,
       ...args,
     })
   }

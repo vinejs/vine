@@ -27,7 +27,7 @@ export function group<Conditional extends GroupConditional<any, any, any>>(
  * Wrap object properties inside a conditonal
  */
 group.if = function groupIf<Properties extends Record<string, SchemaTypes>>(
-  conditon: (value: Record<string, unknown>, ctx: FieldContext) => any,
+  conditon: (value: Record<string, unknown>, field: FieldContext) => any,
   properties: Properties
 ) {
   return new GroupConditional<

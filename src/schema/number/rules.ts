@@ -15,108 +15,108 @@ import { messages } from '../../defaults.js'
  * Enforce the value to be a number or a string representation
  * of a number
  */
-export const numberRule = createRule((value, _, ctx) => {
+export const numberRule = createRule((value, _, field) => {
   const valueAsNumber = helpers.asNumber(value)
   if (
     Number.isNaN(valueAsNumber) ||
     valueAsNumber === Number.POSITIVE_INFINITY ||
     valueAsNumber === Number.NEGATIVE_INFINITY
   ) {
-    ctx.report(messages.number, 'number', ctx)
+    field.report(messages.number, 'number', field)
     return
   }
 
-  ctx.mutate(valueAsNumber, ctx)
+  field.mutate(valueAsNumber, field)
 })
 
 /**
  * Enforce a minimum value on a number field
  */
-export const minRule = createRule<{ min: number }>((value, options, ctx) => {
+export const minRule = createRule<{ min: number }>((value, options, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
   if ((value as number) < options.min) {
-    ctx.report(messages.min, 'min', ctx, options)
+    field.report(messages.min, 'min', field, options)
   }
 })
 
 /**
  * Enforce a maximum value on a number field
  */
-export const maxRule = createRule<{ max: number }>((value, options, ctx) => {
+export const maxRule = createRule<{ max: number }>((value, options, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
   if ((value as number) > options.max) {
-    ctx.report(messages.max, 'max', ctx, options)
+    field.report(messages.max, 'max', field, options)
   }
 })
 
 /**
  * Enforce a range of values on a number field.
  */
-export const rangeRule = createRule<{ min: number; max: number }>((value, options, ctx) => {
+export const rangeRule = createRule<{ min: number; max: number }>((value, options, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
   if ((value as number) < options.min || (value as number) > options.max) {
-    ctx.report(messages.range, 'range', ctx, options)
+    field.report(messages.range, 'range', field, options)
   }
 })
 
 /**
  * Enforce the value is a positive number
  */
-export const positiveRule = createRule((value, _, ctx) => {
+export const positiveRule = createRule((value, _, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
   if ((value as number) < 0) {
-    ctx.report(messages.positive, 'positive', ctx)
+    field.report(messages.positive, 'positive', field)
   }
 })
 
 /**
  * Enforce the value is a negative number
  */
-export const negativeRule = createRule<undefined>((value, _, ctx) => {
+export const negativeRule = createRule<undefined>((value, _, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
   if ((value as number) >= 0) {
-    ctx.report(messages.negative, 'negative', ctx)
+    field.report(messages.negative, 'negative', field)
   }
 })
 
 /**
  * Enforce the value to have a fixed or range of decimals
  */
-export const decimalRule = createRule<{ range: [number, number?] }>((value, options, ctx) => {
+export const decimalRule = createRule<{ range: [number, number?] }>((value, options, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
@@ -126,22 +126,22 @@ export const decimalRule = createRule<{ range: [number, number?] }>((value, opti
       decimal_digits: options.range.join(','),
     })
   ) {
-    ctx.report(messages.decimal, 'decimal', ctx, { digits: options.range.join('-') })
+    field.report(messages.decimal, 'decimal', field, { digits: options.range.join('-') })
   }
 })
 
 /**
  * Enforce the value to not have decimal places
  */
-export const withoutDecimalsRule = createRule((value, _, ctx) => {
+export const withoutDecimalsRule = createRule((value, _, field) => {
   /**
    * Skip if the field is not valid.
    */
-  if (!ctx.isValid) {
+  if (!field.isValid) {
     return
   }
 
   if (!Number.isInteger(value)) {
-    ctx.report(messages.withoutDecimals, 'withoutDecimals', ctx)
+    field.report(messages.withoutDecimals, 'withoutDecimals', field)
   }
 })

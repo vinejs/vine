@@ -23,7 +23,7 @@ export function union<Conditional extends UnionConditional<any>>(conditionals: C
  * Wrap object properties inside a conditonal
  */
 union.if = function unionIf<Schema extends SchemaTypes>(
-  conditon: (value: Record<string, unknown>, ctx: FieldContext) => any,
+  conditon: (value: Record<string, unknown>, field: FieldContext) => any,
   schema: Schema
 ) {
   return new UnionConditional<Schema>(conditon, schema)
