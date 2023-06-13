@@ -29,14 +29,14 @@ const vineSchema = vine.compile(
   vine.object({
     contact: vine.union([
       vine.union.if(
-        (value) => vine.helpers.isObject(value) && value.value === 'email',
+        (value) => vine.helpers.isObject(value) && value.type === 'email',
         vine.object({
           type: vine.literal('email'),
           email: vine.string(),
         })
       ),
       vine.union.if(
-        (value) => vine.helpers.isObject(value) && value.value === 'phone',
+        (value) => vine.helpers.isObject(value) && value.type === 'phone',
         vine.object({
           type: vine.literal('phone'),
           mobile_number: vine.string(),
