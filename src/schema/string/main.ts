@@ -9,7 +9,14 @@
 
 import { BaseLiteralType } from '../base/literal.js'
 import { IS_OF_TYPE, UNIQUE_NAME } from '../../symbols.js'
-import type { AlphaNumericOptions, AlphaOptions, FieldOptions, Validation } from '../../types.js'
+import type {
+  Validation,
+  AlphaOptions,
+  FieldOptions,
+  AlphaNumericOptions,
+  NormalizeEmailOptions,
+} from '../../types.js'
+
 import {
   urlRule,
   alphaRule,
@@ -24,6 +31,8 @@ import {
   maxLengthRule,
   fixedLengthRule,
   alphaNumericRule,
+  trimRule,
+  normalizeEmailRule,
 } from './rules.js'
 
 /**
@@ -32,6 +41,7 @@ import {
 export class VineString extends BaseLiteralType<string, string> {
   static rules = {
     url: urlRule,
+    trim: trimRule,
     email: emailRule,
     alpha: alphaRule,
     regex: regexRule,
@@ -44,6 +54,7 @@ export class VineString extends BaseLiteralType<string, string> {
     maxLength: maxLengthRule,
     fixedLength: fixedLengthRule,
     alphaNumeric: alphaNumericRule,
+    normalizeEmail: normalizeEmailRule,
   };
 
   /**
@@ -147,6 +158,20 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   confirmed(options?: { confirmationField: string }) {
     return this.use(confirmedRule(options))
+  }
+
+  /**
+   * Trims whitespaces around the string value
+   */
+  trim() {
+    return this.use(trimRule())
+  }
+
+  /**
+   * Normalizes the email address
+   */
+  normalizeEmail(options?: NormalizeEmailOptions) {
+    return this.use(normalizeEmailRule(options))
   }
 
   /**

@@ -17,14 +17,16 @@ import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
 import {
   urlRule,
   emailRule,
+  trimRule,
   alphaRule,
   regexRule,
+  confirmedRule,
   activeUrlRule,
   maxLengthRule,
   minLengthRule,
   fixedLengthRule,
   alphaNumericRule,
-  confirmedRule,
+  normalizeEmailRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -548,6 +550,16 @@ test.group('VineString | applying rules', () => {
         name: 'confirmed',
         schema: vine.string().confirmed(),
         rule: confirmedRule(),
+      },
+      {
+        name: 'trim',
+        schema: vine.string().trim(),
+        rule: trimRule(),
+      },
+      {
+        name: 'normalizeEmail',
+        schema: vine.string().normalizeEmail(),
+        rule: normalizeEmailRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

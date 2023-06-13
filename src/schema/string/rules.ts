@@ -7,17 +7,19 @@
  * file that was distributed with this source code.
  */
 
+import validator from 'validator'
 import type { FieldContext } from '@vinejs/compiler/types'
 
 import { helpers } from '../../vine/helpers.js'
 import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 import type {
-  AlphaNumericOptions,
+  URLOptions,
   AlphaOptions,
   EmailOptions,
   MobileOptions,
-  URLOptions,
+  AlphaNumericOptions,
+  NormalizeEmailOptions,
 } from '../../types.js'
 
 /**
@@ -238,5 +240,29 @@ export const confirmedRule = createRule<{ confirmationField: string } | undefine
       field.report(messages.confirmed, 'confirmed', field, { otherField })
       return
     }
+  }
+)
+
+/**
+ * Trims whitespaces around the string value
+ */
+export const trimRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  field.mutate((value as string).trim(), field)
+})
+
+/**
+ * Normalizes the email address
+ */
+export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
+
+    field.mutate(validator.default.normalizeEmail(value as string, options), field)
   }
 )

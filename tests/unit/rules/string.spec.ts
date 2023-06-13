@@ -23,6 +23,8 @@ import {
   maxLengthRule,
   fixedLengthRule,
   alphaNumericRule,
+  trimRule,
+  normalizeEmailRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -56,7 +58,7 @@ async function stringRuleValidator(_: any, dataset: DataSet) {
     validated.assertError(dataset.error)
   } else {
     validated.assertSucceeded()
-    validated.assertOutput(dataset.value)
+    validated.assertOutput(dataset.output || dataset.value)
   }
 }
 
@@ -572,6 +574,66 @@ test.group('String | confirmed', () => {
             dummyConfirmed: 'foo',
           },
         },
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | trim', () => {
+  test('trim whitespaces from: {value} to {output}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: trimRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: trimRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        rule: trimRule(),
+        value: ' hello worl  ',
+        output: 'hello worl',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | normalizeEmail', () => {
+  test('normalize email: {value} to {output}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: normalizeEmailRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: normalizeEmailRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        rule: normalizeEmailRule(),
+        value: 'FOO@bar.com',
+        output: 'foo@bar.com',
+      },
+      {
+        rule: normalizeEmailRule(),
+        value: 'foo.bar@gmail.com',
+        output: 'foobar@gmail.com',
+      },
+      {
+        rule: normalizeEmailRule({ gmail_remove_dots: false }),
+        value: 'foo.bar@gmail.com',
+        output: 'foo.bar@gmail.com',
       },
     ])
     .run(stringRuleValidator)

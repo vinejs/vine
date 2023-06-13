@@ -21,6 +21,7 @@ import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE } from '
 
 import type { IsURLOptions } from 'validator/lib/isURL.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
+import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 
 /**
@@ -32,6 +33,11 @@ export type MobileOptions = { locales?: MobilePhoneLocale[] } & IsMobilePhoneOpt
  * Options accepted by the email address validation
  */
 export type EmailOptions = IsEmailOptions
+
+/**
+ * Options accepted by the normalize email
+ */
+export { NormalizeEmailOptions }
 
 /**
  * Options accepted by the URL validation

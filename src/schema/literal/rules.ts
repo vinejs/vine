@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import { helpers } from '../../vine/helpers.js'
 import { messages } from '../../defaults.js'
+import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
