@@ -20,15 +20,17 @@ import {
   trimRule,
   alphaRule,
   regexRule,
+  sameAsRule,
+  endsWithRule,
+  notSameAsRule,
   confirmedRule,
   activeUrlRule,
   maxLengthRule,
   minLengthRule,
+  startsWithRule,
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
-  startsWithRule,
-  endsWithRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -572,6 +574,16 @@ test.group('VineString | applying rules', () => {
         name: 'endsWith',
         schema: vine.string().endsWith('foo'),
         rule: endsWithRule({ substring: 'foo' }),
+      },
+      {
+        name: 'sameAs',
+        schema: vine.string().sameAs('password'),
+        rule: sameAsRule({ otherField: 'password' }),
+      },
+      {
+        name: 'notSameAs',
+        schema: vine.string().notSameAs('password'),
+        rule: notSameAsRule({ otherField: 'password' }),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

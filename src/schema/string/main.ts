@@ -19,22 +19,24 @@ import type {
 
 import {
   urlRule,
+  trimRule,
   alphaRule,
   emailRule,
   regexRule,
+  sameAsRule,
   mobileRule,
   stringRule,
   hexCodeRule,
+  endsWithRule,
   confirmedRule,
+  notSameAsRule,
   activeUrlRule,
   minLengthRule,
   maxLengthRule,
+  startsWithRule,
   fixedLengthRule,
   alphaNumericRule,
-  trimRule,
   normalizeEmailRule,
-  endsWithRule,
-  startsWithRule,
 } from './rules.js'
 
 /**
@@ -47,13 +49,15 @@ export class VineString extends BaseLiteralType<string, string> {
     email: emailRule,
     alpha: alphaRule,
     regex: regexRule,
-    string: stringRule,
+    sameAs: sameAsRule,
     mobile: mobileRule,
+    string: stringRule,
     hexCode: hexCodeRule,
     endsWith: endsWithRule,
     confirmed: confirmedRule,
     activeUrl: activeUrlRule,
     minLength: minLengthRule,
+    notSameAs: notSameAsRule,
     maxLength: maxLengthRule,
     startsWith: startsWithRule,
     fixedLength: fixedLengthRule,
@@ -190,6 +194,20 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   endsWith(substring: string) {
     return this.use(endsWithRule({ substring }))
+  }
+
+  /**
+   * Ensure the value ends with the pre-defined substring
+   */
+  sameAs(otherField: string) {
+    return this.use(sameAsRule({ otherField }))
+  }
+
+  /**
+   * Ensure the value ends with the pre-defined substring
+   */
+  notSameAs(otherField: string) {
+    return this.use(notSameAsRule({ otherField }))
   }
 
   /**

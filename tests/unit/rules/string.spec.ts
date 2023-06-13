@@ -27,6 +27,8 @@ import {
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
+  sameAsRule,
+  notSameAsRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -696,6 +698,116 @@ test.group('String | endsWith', () => {
       {
         rule: endsWithRule({ substring: 'foo' }),
         value: 'world foo',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | sameAs', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: sameAsRule({ otherField: 'password' }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: sameAsRule({ otherField: 'password' }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: sameAsRule({ otherField: 'password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+        },
+        error: 'The password_confirmation field and password field must be the same',
+      },
+      {
+        errorsCount: 1,
+        rule: sameAsRule({ otherField: 'password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: '',
+          },
+        },
+        error: 'The password_confirmation field and password field must be the same',
+      },
+      {
+        rule: sameAsRule({ otherField: 'password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: 'foo',
+          },
+        },
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | notSameAs', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: notSameAsRule({ otherField: 'password' }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: notSameAsRule({ otherField: 'password' }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        rule: notSameAsRule({ otherField: 'password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+        },
+      },
+      {
+        errorsCount: 1,
+        rule: notSameAsRule({ otherField: 'password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: 'foo',
+          },
+        },
+        error: 'The password_confirmation field and password field must be different',
+      },
+      {
+        rule: notSameAsRule({ otherField: 'password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: 'bar',
+          },
+        },
+      },
+      {
+        rule: notSameAsRule({ otherField: 'password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: '',
+          },
+        },
       },
     ])
     .run(stringRuleValidator)

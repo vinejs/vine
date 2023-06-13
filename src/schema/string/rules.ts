@@ -250,6 +250,50 @@ export const startsWithRule = createRule<{ substring: string }>((value, options,
 })
 
 /**
+ * Ensure the field's value under validation is the same as the other field's value
+ */
+export const sameAsRule = createRule<{ otherField: string }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  const input = field.parent[options.otherField]
+
+  /**
+   * Performing validation and reporting error
+   */
+  if (input !== value) {
+    field.report(messages.sameAs, 'sameAs', field, options)
+    return
+  }
+})
+
+/**
+ * Ensure the field's value under validation is different from another field's value
+ */
+export const notSameAsRule = createRule<{ otherField: string }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  const input = field.parent[options.otherField]
+
+  /**
+   * Performing validation and reporting error
+   */
+  if (input === value) {
+    field.report(messages.notSameAs, 'notSameAs', field, options)
+    return
+  }
+})
+
+/**
  * Ensure the field under validation is confirmed by
  * having another field with the same name
  */
