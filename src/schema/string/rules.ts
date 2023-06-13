@@ -342,3 +342,51 @@ export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
     field.mutate(validator.default.normalizeEmail(value as string, options), field)
   }
 )
+
+/**
+ * Ensure the field's value under validation is a subset of the pre-defined list.
+ */
+export const inRule = createRule<{ choices: string[] | ((field: FieldContext) => string[]) }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
+
+    const choices = typeof options.choices === 'function' ? options.choices(field) : options.choices
+
+    /**
+     * Performing validation and reporting error
+     */
+    if (!choices.includes(value as string)) {
+      field.report(messages.in, 'in', field, options)
+      return
+    }
+  }
+)
+
+/**
+ * Ensure the field's value under validation is not inside the pre-defined list.
+ */
+export const notInRule = createRule<{ list: string[] | ((field: FieldContext) => string[]) }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
+
+    const list = typeof options.list === 'function' ? options.list(field) : options.list
+
+    /**
+     * Performing validation and reporting error
+     */
+    if (list.includes(value as string)) {
+      field.report(messages.notIn, 'notIn', field, options)
+      return
+    }
+  }
+)

@@ -29,6 +29,8 @@ import {
   normalizeEmailRule,
   sameAsRule,
   notSameAsRule,
+  inRule,
+  notInRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -808,6 +810,86 @@ test.group('String | notSameAs', () => {
             password: '',
           },
         },
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | in', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: inRule({ choices: ['admin', 'moderator', 'writer'] }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: inRule({ choices: ['admin', 'moderator', 'writer'] }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: inRule({ choices: ['admin', 'moderator', 'writer'] }),
+        value: 'foo',
+        error: 'The selected dummy is invalid',
+      },
+      {
+        rule: inRule({ choices: ['admin', 'moderator', 'writer'] }),
+        value: 'admin',
+      },
+      {
+        errorsCount: 1,
+        rule: inRule({ choices: () => ['admin', 'moderator', 'writer'] }),
+        value: 'foo',
+        error: 'The selected dummy is invalid',
+      },
+      {
+        rule: inRule({ choices: () => ['admin', 'moderator', 'writer'] }),
+        value: 'admin',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | notIn', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: notInRule({ list: ['admin', 'moderator', 'writer'] }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: notInRule({ list: ['admin', 'moderator', 'writer'] }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: notInRule({ list: ['admin', 'moderator', 'writer'] }),
+        value: 'admin',
+        error: 'The selected dummy is invalid',
+      },
+      {
+        rule: notInRule({ list: ['admin', 'moderator', 'writer'] }),
+        value: 'root',
+      },
+      {
+        errorsCount: 1,
+        rule: notInRule({ list: () => ['admin', 'moderator', 'writer'] }),
+        value: 'admin',
+        error: 'The selected dummy is invalid',
+      },
+      {
+        rule: notInRule({ list: () => ['admin', 'moderator', 'writer'] }),
+        value: 'root',
       },
     ])
     .run(stringRuleValidator)

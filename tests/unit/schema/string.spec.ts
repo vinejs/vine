@@ -15,10 +15,12 @@ import { RuleBuilder } from '../../../src/types.js'
 import { createRule } from '../../../src/vine/create_rule.js'
 import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
 import {
+  inRule,
   urlRule,
   emailRule,
   trimRule,
   alphaRule,
+  notInRule,
   regexRule,
   sameAsRule,
   endsWithRule,
@@ -584,6 +586,16 @@ test.group('VineString | applying rules', () => {
         name: 'notSameAs',
         schema: vine.string().notSameAs('password'),
         rule: notSameAsRule({ otherField: 'password' }),
+      },
+      {
+        name: 'in',
+        schema: vine.string().in(['admin']),
+        rule: inRule({ choices: ['admin'] }),
+      },
+      {
+        name: 'notIn',
+        schema: vine.string().notIn(['admin']),
+        rule: notInRule({ list: ['admin'] }),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

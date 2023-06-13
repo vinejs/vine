@@ -15,13 +15,16 @@ import type {
   FieldOptions,
   AlphaNumericOptions,
   NormalizeEmailOptions,
+  FieldContext,
 } from '../../types.js'
 
 import {
+  inRule,
   urlRule,
   trimRule,
   alphaRule,
   emailRule,
+  notInRule,
   regexRule,
   sameAsRule,
   mobileRule,
@@ -44,10 +47,12 @@ import {
  */
 export class VineString extends BaseLiteralType<string, string> {
   static rules = {
+    in: inRule,
     url: urlRule,
     trim: trimRule,
     email: emailRule,
     alpha: alphaRule,
+    notIn: notInRule,
     regex: regexRule,
     sameAs: sameAsRule,
     mobile: mobileRule,
@@ -208,6 +213,20 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   notSameAs(otherField: string) {
     return this.use(notSameAsRule({ otherField }))
+  }
+
+  /**
+   * Ensure the field's value under validation is a subset of the pre-defined list.
+   */
+  in(choices: string[] | ((field: FieldContext) => string[])) {
+    return this.use(inRule({ choices }))
+  }
+
+  /**
+   * Ensure the field's value under validation is not inside the pre-defined list.
+   */
+  notIn(list: string[] | ((field: FieldContext) => string[])) {
+    return this.use(notInRule({ list }))
   }
 
   /**
