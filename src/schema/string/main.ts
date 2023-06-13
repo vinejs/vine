@@ -33,6 +33,8 @@ import {
   alphaNumericRule,
   trimRule,
   normalizeEmailRule,
+  endsWithRule,
+  startsWithRule,
 } from './rules.js'
 
 /**
@@ -48,10 +50,12 @@ export class VineString extends BaseLiteralType<string, string> {
     string: stringRule,
     mobile: mobileRule,
     hexCode: hexCodeRule,
+    endsWith: endsWithRule,
     confirmed: confirmedRule,
     activeUrl: activeUrlRule,
     minLength: minLengthRule,
     maxLength: maxLengthRule,
+    startsWith: startsWithRule,
     fixedLength: fixedLengthRule,
     alphaNumeric: alphaNumericRule,
     normalizeEmail: normalizeEmailRule,
@@ -172,6 +176,20 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   normalizeEmail(options?: NormalizeEmailOptions) {
     return this.use(normalizeEmailRule(options))
+  }
+
+  /**
+   * Ensure the value starts with the pre-defined substring
+   */
+  startsWith(substring: string) {
+    return this.use(startsWithRule({ substring }))
+  }
+
+  /**
+   * Ensure the value ends with the pre-defined substring
+   */
+  endsWith(substring: string) {
+    return this.use(endsWithRule({ substring }))
   }
 
   /**

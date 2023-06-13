@@ -218,6 +218,38 @@ export const fixedLengthRule = createRule<{ size: number }>((value, options, fie
 })
 
 /**
+ * Ensure the value ends with the pre-defined substring
+ */
+export const endsWithRule = createRule<{ substring: string }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  if (!(value as string).endsWith(options.substring)) {
+    field.report(messages.endsWith, 'endsWith', field, options)
+  }
+})
+
+/**
+ * Ensure the value starts with the pre-defined substring
+ */
+export const startsWithRule = createRule<{ substring: string }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  if (!(value as string).startsWith(options.substring)) {
+    field.report(messages.startsWith, 'startsWith', field, options)
+  }
+})
+
+/**
  * Ensure the field under validation is confirmed by
  * having another field with the same name
  */

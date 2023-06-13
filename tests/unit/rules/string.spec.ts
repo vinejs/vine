@@ -11,19 +11,21 @@ import { test } from '@japa/runner'
 import { validator } from '../../../factories/main.js'
 import {
   urlRule,
+  trimRule,
   regexRule,
   alphaRule,
   emailRule,
   stringRule,
   mobileRule,
   hexCodeRule,
+  endsWithRule,
   confirmedRule,
   activeUrlRule,
   minLengthRule,
   maxLengthRule,
+  startsWithRule,
   fixedLengthRule,
   alphaNumericRule,
-  trimRule,
   normalizeEmailRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
@@ -634,6 +636,66 @@ test.group('String | normalizeEmail', () => {
         rule: normalizeEmailRule({ gmail_remove_dots: false }),
         value: 'foo.bar@gmail.com',
         output: 'foo.bar@gmail.com',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | startsWith', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: startsWithRule({ substring: 'foo' }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: startsWithRule({ substring: 'foo' }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: startsWithRule({ substring: 'foo' }),
+        value: 'hello world',
+        error: 'The dummy field must start with foo',
+      },
+      {
+        rule: startsWithRule({ substring: 'foo' }),
+        value: 'foo world',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | endsWith', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: endsWithRule({ substring: 'foo' }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: endsWithRule({ substring: 'foo' }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: endsWithRule({ substring: 'foo' }),
+        value: 'hello world',
+        error: 'The dummy field must end with foo',
+      },
+      {
+        rule: endsWithRule({ substring: 'foo' }),
+        value: 'world foo',
       },
     ])
     .run(stringRuleValidator)

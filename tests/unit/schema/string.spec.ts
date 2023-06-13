@@ -27,6 +27,8 @@ import {
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
+  startsWithRule,
+  endsWithRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -560,6 +562,16 @@ test.group('VineString | applying rules', () => {
         name: 'normalizeEmail',
         schema: vine.string().normalizeEmail(),
         rule: normalizeEmailRule(),
+      },
+      {
+        name: 'startsWith',
+        schema: vine.string().startsWith('foo'),
+        rule: startsWithRule({ substring: 'foo' }),
+      },
+      {
+        name: 'endsWith',
+        schema: vine.string().endsWith('foo'),
+        rule: endsWithRule({ substring: 'foo' }),
       },
     ])
     .run(({ assert }, { schema, rule }) => {
