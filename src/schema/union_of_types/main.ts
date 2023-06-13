@@ -10,6 +10,7 @@
 import camelcase from 'camelcase'
 import type { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
+import { messages } from '../../defaults.js'
 import { OTYPE, COTYPE, PARSE, IS_OF_TYPE } from '../../symbols.js'
 import type {
   SchemaTypes,
@@ -29,7 +30,9 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
   declare [COTYPE]: Schema[typeof COTYPE]
 
   #schemas: Schema[]
-  #otherwiseCallback?: UnionNoMatchCallback<Record<string, unknown>>
+  #otherwiseCallback: UnionNoMatchCallback<Record<string, unknown>> = (_, field) => {
+    field.report(messages.unionOfTypes, 'unionOfTypes', field)
+  }
 
   constructor(schemas: Schema[]) {
     this.#schemas = schemas
@@ -49,9 +52,7 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
    */
   clone(): this {
     const cloned = new VineUnionOfTypes<Schema>(this.#schemas)
-    if (this.#otherwiseCallback) {
-      cloned.otherwise(this.#otherwiseCallback)
-    }
+    cloned.otherwise(this.#otherwiseCallback)
 
     return cloned as this
   }
@@ -64,9 +65,7 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
       type: 'union',
       fieldName: propertyName,
       propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
-      elseConditionalFnRefId: this.#otherwiseCallback
-        ? refs.trackConditional(this.#otherwiseCallback)
-        : undefined,
+      elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
       conditions: this.#schemas.map((schema) => {
         return {
           conditionalFnRefId: refs.trackConditional((value, field) => {

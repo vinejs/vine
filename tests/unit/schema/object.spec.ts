@@ -264,10 +264,10 @@ test.group('VineObject', () => {
       groups: [
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://3',
           conditions: [
             {
-              conditionalFnRefId: 'ref://6',
+              conditionalFnRefId: 'ref://7',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -284,7 +284,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://3',
+                        ruleFnId: 'ref://4',
                       },
                     ],
                   },
@@ -300,7 +300,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://4',
+                        ruleFnId: 'ref://5',
                       },
                     ],
                   },
@@ -316,7 +316,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://5',
+                        ruleFnId: 'ref://6',
                       },
                     ],
                   },
@@ -324,7 +324,7 @@ test.group('VineObject', () => {
               },
             },
             {
-              conditionalFnRefId: 'ref://8',
+              conditionalFnRefId: 'ref://9',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -341,7 +341,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://7',
+                        ruleFnId: 'ref://8',
                       },
                     ],
                   },
@@ -433,10 +433,10 @@ test.group('VineObject', () => {
       groups: [
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://2',
           conditions: [
             {
-              conditionalFnRefId: 'ref://5',
+              conditionalFnRefId: 'ref://6',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -453,7 +453,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://2',
+                        ruleFnId: 'ref://3',
                       },
                     ],
                   },
@@ -469,7 +469,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://3',
+                        ruleFnId: 'ref://4',
                       },
                     ],
                   },
@@ -485,7 +485,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://4',
+                        ruleFnId: 'ref://5',
                       },
                     ],
                   },
@@ -493,7 +493,7 @@ test.group('VineObject', () => {
               },
             },
             {
-              conditionalFnRefId: 'ref://7',
+              conditionalFnRefId: 'ref://8',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -510,7 +510,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://6',
+                        ruleFnId: 'ref://7',
                       },
                     ],
                   },
@@ -521,10 +521,10 @@ test.group('VineObject', () => {
         },
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://9',
           conditions: [
             {
-              conditionalFnRefId: 'ref://11',
+              conditionalFnRefId: 'ref://13',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -533,38 +533,6 @@ test.group('VineObject', () => {
                     type: 'literal',
                     fieldName: 'monument',
                     propertyName: 'monument',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://8',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    fieldName: 'available_transport',
-                    propertyName: 'available_transport',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://9',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    fieldName: 'has_free_entry',
-                    propertyName: 'has_free_entry',
                     bail: true,
                     allowNull: false,
                     isOptional: false,
@@ -577,11 +545,43 @@ test.group('VineObject', () => {
                       },
                     ],
                   },
+                  {
+                    type: 'literal',
+                    fieldName: 'available_transport',
+                    propertyName: 'available_transport',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://11',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'has_free_entry',
+                    propertyName: 'has_free_entry',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://12',
+                      },
+                    ],
+                  },
                 ],
               },
             },
             {
-              conditionalFnRefId: 'ref://15',
+              conditionalFnRefId: 'ref://17',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -598,7 +598,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://12',
+                        ruleFnId: 'ref://14',
                       },
                     ],
                   },
@@ -614,7 +614,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://13',
+                        ruleFnId: 'ref://15',
                       },
                     ],
                   },
@@ -630,7 +630,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://14',
+                        ruleFnId: 'ref://16',
                       },
                     ],
                   },
@@ -662,7 +662,9 @@ test.group('VineObject', () => {
     })
   })
 
-  test('define otherwise callback', ({ assert }) => {
+  test('define custom otherwise callback', ({ assert }) => {
+    function failOtherwise() {}
+
     const hiringGuide = vine
       .group([
         vine.group.if((value) => vine.helpers.isTrue(value.is_hiring_guide), {
@@ -674,7 +676,7 @@ test.group('VineObject', () => {
           is_hiring_guide: vine.literal(false),
         }),
       ])
-      .otherwise(() => {})
+      .otherwise(failOtherwise)
 
     const schema = vine
       .object({
@@ -683,7 +685,9 @@ test.group('VineObject', () => {
       })
       .merge(hiringGuide)
 
-    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+    const refs = refsBuilder()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'object',
       fieldName: '*',
       propertyName: '*',
@@ -818,6 +822,7 @@ test.group('VineObject', () => {
         },
       ],
     })
+    assert.deepEqual(refs.toJSON()['ref://3'], failOtherwise)
   })
 
   test('create nested object', ({ assert }) => {
@@ -1103,10 +1108,10 @@ test.group('VineObject', () => {
       groups: [
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://3',
           conditions: [
             {
-              conditionalFnRefId: 'ref://6',
+              conditionalFnRefId: 'ref://7',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -1123,7 +1128,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://3',
+                        ruleFnId: 'ref://4',
                       },
                     ],
                   },
@@ -1139,7 +1144,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://4',
+                        ruleFnId: 'ref://5',
                       },
                     ],
                   },
@@ -1155,7 +1160,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://5',
+                        ruleFnId: 'ref://6',
                       },
                     ],
                   },
@@ -1163,7 +1168,7 @@ test.group('VineObject', () => {
               },
             },
             {
-              conditionalFnRefId: 'ref://8',
+              conditionalFnRefId: 'ref://9',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -1180,7 +1185,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://7',
+                        ruleFnId: 'ref://8',
                       },
                     ],
                   },
@@ -1273,10 +1278,10 @@ test.group('VineObject', () => {
       groups: [
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://2',
           conditions: [
             {
-              conditionalFnRefId: 'ref://5',
+              conditionalFnRefId: 'ref://6',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -1293,7 +1298,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://2',
+                        ruleFnId: 'ref://3',
                       },
                     ],
                   },
@@ -1309,7 +1314,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://3',
+                        ruleFnId: 'ref://4',
                       },
                     ],
                   },
@@ -1325,7 +1330,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://4',
+                        ruleFnId: 'ref://5',
                       },
                     ],
                   },
@@ -1333,7 +1338,7 @@ test.group('VineObject', () => {
               },
             },
             {
-              conditionalFnRefId: 'ref://7',
+              conditionalFnRefId: 'ref://8',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -1350,7 +1355,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://6',
+                        ruleFnId: 'ref://7',
                       },
                     ],
                   },
@@ -1361,10 +1366,10 @@ test.group('VineObject', () => {
         },
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://9',
           conditions: [
             {
-              conditionalFnRefId: 'ref://11',
+              conditionalFnRefId: 'ref://13',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -1373,38 +1378,6 @@ test.group('VineObject', () => {
                     type: 'literal',
                     fieldName: 'monument',
                     propertyName: 'monument',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://8',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    fieldName: 'available_transport',
-                    propertyName: 'availableTransport',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://9',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    fieldName: 'has_free_entry',
-                    propertyName: 'hasFreeEntry',
                     bail: true,
                     allowNull: false,
                     isOptional: false,
@@ -1417,11 +1390,43 @@ test.group('VineObject', () => {
                       },
                     ],
                   },
+                  {
+                    type: 'literal',
+                    fieldName: 'available_transport',
+                    propertyName: 'availableTransport',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://11',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'has_free_entry',
+                    propertyName: 'hasFreeEntry',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://12',
+                      },
+                    ],
+                  },
                 ],
               },
             },
             {
-              conditionalFnRefId: 'ref://15',
+              conditionalFnRefId: 'ref://17',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -1438,7 +1443,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://12',
+                        ruleFnId: 'ref://14',
                       },
                     ],
                   },
@@ -1454,7 +1459,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://13',
+                        ruleFnId: 'ref://15',
                       },
                     ],
                   },
@@ -1470,7 +1475,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://14',
+                        ruleFnId: 'ref://16',
                       },
                     ],
                   },
@@ -2299,10 +2304,10 @@ test.group('VineObject | clone', () => {
       groups: [
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://3',
           conditions: [
             {
-              conditionalFnRefId: 'ref://6',
+              conditionalFnRefId: 'ref://7',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -2319,7 +2324,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://3',
+                        ruleFnId: 'ref://4',
                       },
                     ],
                   },
@@ -2335,7 +2340,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://4',
+                        ruleFnId: 'ref://5',
                       },
                     ],
                   },
@@ -2351,7 +2356,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://5',
+                        ruleFnId: 'ref://6',
                       },
                     ],
                   },
@@ -2359,7 +2364,7 @@ test.group('VineObject | clone', () => {
               },
             },
             {
-              conditionalFnRefId: 'ref://8',
+              conditionalFnRefId: 'ref://9',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -2376,7 +2381,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://7',
+                        ruleFnId: 'ref://8',
                       },
                     ],
                   },
@@ -2467,10 +2472,10 @@ test.group('VineObject | clone', () => {
       groups: [
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://2',
           conditions: [
             {
-              conditionalFnRefId: 'ref://5',
+              conditionalFnRefId: 'ref://6',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -2487,7 +2492,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://2',
+                        ruleFnId: 'ref://3',
                       },
                     ],
                   },
@@ -2503,7 +2508,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://3',
+                        ruleFnId: 'ref://4',
                       },
                     ],
                   },
@@ -2519,7 +2524,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://4',
+                        ruleFnId: 'ref://5',
                       },
                     ],
                   },
@@ -2527,7 +2532,7 @@ test.group('VineObject | clone', () => {
               },
             },
             {
-              conditionalFnRefId: 'ref://7',
+              conditionalFnRefId: 'ref://8',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -2544,7 +2549,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://6',
+                        ruleFnId: 'ref://7',
                       },
                     ],
                   },
@@ -2587,10 +2592,10 @@ test.group('VineObject | clone', () => {
       groups: [
         {
           type: 'group',
-          elseConditionalFnRefId: undefined,
+          elseConditionalFnRefId: 'ref://2',
           conditions: [
             {
-              conditionalFnRefId: 'ref://5',
+              conditionalFnRefId: 'ref://6',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -2599,22 +2604,6 @@ test.group('VineObject | clone', () => {
                     type: 'literal',
                     fieldName: 'monument',
                     propertyName: 'monument',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://2',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    fieldName: 'available_transport',
-                    propertyName: 'available_transport',
                     bail: true,
                     allowNull: false,
                     isOptional: false,
@@ -2629,8 +2618,8 @@ test.group('VineObject | clone', () => {
                   },
                   {
                     type: 'literal',
-                    fieldName: 'has_free_entry',
-                    propertyName: 'has_free_entry',
+                    fieldName: 'available_transport',
+                    propertyName: 'available_transport',
                     bail: true,
                     allowNull: false,
                     isOptional: false,
@@ -2643,11 +2632,27 @@ test.group('VineObject | clone', () => {
                       },
                     ],
                   },
+                  {
+                    type: 'literal',
+                    fieldName: 'has_free_entry',
+                    propertyName: 'has_free_entry',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://5',
+                      },
+                    ],
+                  },
                 ],
               },
             },
             {
-              conditionalFnRefId: 'ref://9',
+              conditionalFnRefId: 'ref://10',
               schema: {
                 type: 'sub_object',
                 groups: [],
@@ -2664,7 +2669,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://6',
+                        ruleFnId: 'ref://7',
                       },
                     ],
                   },
@@ -2680,7 +2685,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://7',
+                        ruleFnId: 'ref://8',
                       },
                     ],
                   },
@@ -2696,7 +2701,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
-                        ruleFnId: 'ref://8',
+                        ruleFnId: 'ref://9',
                       },
                     ],
                   },
@@ -3033,6 +3038,8 @@ test.group('VineObject | clone', () => {
   })
 
   test('clone group', ({ assert }) => {
+    function failOtherwise() {}
+
     const hiringGuide = vine.group([
       vine.group.if((value) => vine.helpers.isTrue(value.is_hiring_guide), {
         is_hiring_guide: vine.literal(true),
@@ -3049,146 +3056,13 @@ test.group('VineObject | clone', () => {
       password: vine.string(),
     })
 
-    const schema1 = schema.clone().merge(hiringGuide.clone().otherwise(() => {}))
+    const schema1 = schema.clone().merge(hiringGuide.clone().otherwise(failOtherwise))
     schema.merge(hiringGuide)
 
-    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
-      type: 'object',
-      fieldName: '*',
-      propertyName: '*',
-      bail: true,
-      allowNull: false,
-      isOptional: false,
-      allowUnknownProperties: false,
-      validations: [],
-      groups: [
-        {
-          type: 'group',
-          elseConditionalFnRefId: undefined,
-          conditions: [
-            {
-              conditionalFnRefId: 'ref://6',
-              schema: {
-                type: 'sub_object',
-                groups: [],
-                properties: [
-                  {
-                    type: 'literal',
-                    fieldName: 'is_hiring_guide',
-                    propertyName: 'is_hiring_guide',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://3',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    fieldName: 'name',
-                    propertyName: 'name',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://4',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    fieldName: 'price',
-                    propertyName: 'price',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-            {
-              conditionalFnRefId: 'ref://8',
-              schema: {
-                type: 'sub_object',
-                groups: [],
-                properties: [
-                  {
-                    type: 'literal',
-                    fieldName: 'is_hiring_guide',
-                    propertyName: 'is_hiring_guide',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://7',
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      ],
-      parseFnId: undefined,
-      properties: [
-        {
-          type: 'literal',
-          fieldName: 'username',
-          propertyName: 'username',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
-        },
-        {
-          type: 'literal',
-          fieldName: 'password',
-          propertyName: 'password',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
-        },
-      ],
-    })
+    const refs = refsBuilder()
+    const refs1 = refsBuilder()
 
-    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'object',
       fieldName: '*',
       propertyName: '*',
@@ -3323,6 +3197,144 @@ test.group('VineObject | clone', () => {
         },
       ],
     })
+
+    assert.deepEqual(schema1[PARSE]('*', refs1, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [
+        {
+          type: 'group',
+          elseConditionalFnRefId: 'ref://3',
+          conditions: [
+            {
+              conditionalFnRefId: 'ref://7',
+              schema: {
+                type: 'sub_object',
+                groups: [],
+                properties: [
+                  {
+                    type: 'literal',
+                    fieldName: 'is_hiring_guide',
+                    propertyName: 'is_hiring_guide',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://4',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'name',
+                    propertyName: 'name',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://5',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'literal',
+                    fieldName: 'price',
+                    propertyName: 'price',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://6',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+            {
+              conditionalFnRefId: 'ref://9',
+              schema: {
+                type: 'sub_object',
+                groups: [],
+                properties: [
+                  {
+                    type: 'literal',
+                    fieldName: 'is_hiring_guide',
+                    propertyName: 'is_hiring_guide',
+                    bail: true,
+                    allowNull: false,
+                    isOptional: false,
+                    parseFnId: undefined,
+                    validations: [
+                      {
+                        implicit: false,
+                        isAsync: false,
+                        ruleFnId: 'ref://8',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      ],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://1',
+            },
+          ],
+        },
+        {
+          type: 'literal',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          parseFnId: undefined,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              ruleFnId: 'ref://2',
+            },
+          ],
+        },
+      ],
+    })
+
+    assert.notDeepEqual(refs.toJSON()['ref://3'], refs1.toJSON()['ref://3'])
   })
 
   test('define otherwise callback and clone group', ({ assert }) => {

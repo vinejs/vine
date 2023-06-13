@@ -26,7 +26,7 @@ export const minLengthRule = createRule<{ min: number }>((value, options, field)
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length < options.min) {
-    field.report(messages['array.minLength'], 'minLength', field, options)
+    field.report(messages['array.minLength'], 'array.minLength', field, options)
   }
 })
 
@@ -45,7 +45,7 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, field)
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length > options.max) {
-    field.report(messages['array.maxLength'], 'maxLength', field, options)
+    field.report(messages['array.maxLength'], 'array.maxLength', field, options)
   }
 })
 
@@ -64,7 +64,7 @@ export const fixedLengthRule = createRule<{ size: number }>((value, options, fie
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length !== options.size) {
-    field.report(messages['array.fixedLength'], 'fixedLength', field, options)
+    field.report(messages['array.fixedLength'], 'array.fixedLength', field, options)
   }
 })
 

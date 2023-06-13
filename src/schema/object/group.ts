@@ -9,9 +9,10 @@
 
 import { ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 
-import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
+import { messages } from '../../defaults.js'
 import { GroupConditional } from './conditional.js'
 import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
+import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
 
 /**
  * Object group represents a group with multiple conditionals, where each
@@ -23,7 +24,9 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any>> {
   declare [COTYPE]: Conditional[typeof COTYPE]
 
   #conditionals: Conditional[]
-  #otherwiseCallback?: UnionNoMatchCallback<Record<string, unknown>>
+  #otherwiseCallback: UnionNoMatchCallback<Record<string, unknown>> = (_, field) => {
+    field.report(messages.unionGroup, 'unionGroup', field)
+  }
 
   constructor(conditionals: Conditional[]) {
     this.#conditionals = conditionals
@@ -34,10 +37,7 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any>> {
    */
   clone(): this {
     const cloned = new ObjectGroup<Conditional>(this.#conditionals)
-    if (this.#otherwiseCallback) {
-      cloned.otherwise(this.#otherwiseCallback)
-    }
-
+    cloned.otherwise(this.#otherwiseCallback)
     return cloned as this
   }
 
@@ -56,9 +56,7 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any>> {
   [PARSE](refs: RefsStore, options: ParserOptions): ObjectGroupNode {
     return {
       type: 'group',
-      elseConditionalFnRefId: this.#otherwiseCallback
-        ? refs.trackConditional(this.#otherwiseCallback)
-        : undefined,
+      elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
       conditions: this.#conditionals.map((conditional) => conditional[PARSE](refs, options)),
     }
   }

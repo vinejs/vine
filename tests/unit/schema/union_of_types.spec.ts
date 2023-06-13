@@ -25,7 +25,7 @@ test.group('Vine UnionOfTypes', () => {
       propertyName: '*',
       conditions: [
         {
-          conditionalFnRefId: 'ref://1',
+          conditionalFnRefId: 'ref://2',
           schema: {
             allowNull: false,
             bail: true,
@@ -38,13 +38,13 @@ test.group('Vine UnionOfTypes', () => {
               {
                 implicit: false,
                 isAsync: false,
-                ruleFnId: 'ref://2',
+                ruleFnId: 'ref://3',
               },
             ],
           },
         },
         {
-          conditionalFnRefId: 'ref://3',
+          conditionalFnRefId: 'ref://4',
           schema: {
             allowNull: false,
             bail: true,
@@ -57,13 +57,13 @@ test.group('Vine UnionOfTypes', () => {
               {
                 implicit: false,
                 isAsync: false,
-                ruleFnId: 'ref://4',
+                ruleFnId: 'ref://5',
               },
             ],
           },
         },
       ],
-      elseConditionalFnRefId: undefined,
+      elseConditionalFnRefId: 'ref://1',
     })
   })
 
@@ -77,7 +77,7 @@ test.group('Vine UnionOfTypes', () => {
       propertyName: '*',
       conditions: [
         {
-          conditionalFnRefId: 'ref://1',
+          conditionalFnRefId: 'ref://2',
           schema: {
             allowNull: false,
             bail: true,
@@ -90,13 +90,13 @@ test.group('Vine UnionOfTypes', () => {
               {
                 implicit: false,
                 isAsync: false,
-                ruleFnId: 'ref://2',
+                ruleFnId: 'ref://3',
               },
             ],
           },
         },
         {
-          conditionalFnRefId: 'ref://3',
+          conditionalFnRefId: 'ref://4',
           schema: {
             allowNull: false,
             bail: true,
@@ -109,13 +109,13 @@ test.group('Vine UnionOfTypes', () => {
               {
                 implicit: false,
                 isAsync: false,
-                ruleFnId: 'ref://4',
+                ruleFnId: 'ref://5',
               },
             ],
           },
         },
       ],
-      elseConditionalFnRefId: undefined,
+      elseConditionalFnRefId: 'ref://1',
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'union',
@@ -174,7 +174,7 @@ test.group('Vine UnionOfTypes', () => {
       propertyName: 'healthCheck',
       conditions: [
         {
-          conditionalFnRefId: 'ref://1',
+          conditionalFnRefId: 'ref://2',
           schema: {
             allowNull: false,
             bail: true,
@@ -187,13 +187,13 @@ test.group('Vine UnionOfTypes', () => {
               {
                 implicit: false,
                 isAsync: false,
-                ruleFnId: 'ref://2',
+                ruleFnId: 'ref://3',
               },
             ],
           },
         },
         {
-          conditionalFnRefId: 'ref://3',
+          conditionalFnRefId: 'ref://4',
           schema: {
             allowNull: false,
             bail: true,
@@ -206,13 +206,13 @@ test.group('Vine UnionOfTypes', () => {
               {
                 implicit: false,
                 isAsync: false,
-                ruleFnId: 'ref://4',
+                ruleFnId: 'ref://5',
               },
             ],
           },
         },
       ],
-      elseConditionalFnRefId: undefined,
+      elseConditionalFnRefId: 'ref://1',
     })
   })
 

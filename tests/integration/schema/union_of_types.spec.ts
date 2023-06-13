@@ -11,13 +11,19 @@ import { test } from '@japa/runner'
 import vine from '../../../index.js'
 
 test.group('UnionOfTypes', () => {
-  test('bypass when none of the union conditions match', async ({ assert }) => {
+  test('report error when none of the unions match', async ({ assert }) => {
     const schema = vine.object({
       health_check: vine.unionOfTypes([vine.boolean(), vine.string().url()]),
     })
 
     const data = {}
-    await assert.validationOutput(vine.validate({ schema, data }), {})
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        rule: 'unionOfTypes',
+        field: 'health_check',
+        message: 'Invalid value provided for health_check field',
+      },
+    ])
   })
 
   test('report error when union schema reports error', async ({ assert }) => {

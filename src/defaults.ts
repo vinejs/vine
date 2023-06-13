@@ -67,9 +67,14 @@ export const messages = {
   'record.fixedLength': 'The {{ field }} field must contain {{ size }} items',
 
   'tuple': 'The {{ field }} field must be an array',
+  'union': 'Invalid value provided for {{ field }} field',
+  'unionGroup': 'Invalid value provided for {{ field }} field',
+  'unionOfTypes': 'Invalid value provided for {{ field }} field',
 }
 
 /**
  * Collection of default fields
  */
-export const fields = {}
+export const fields = {
+  '': 'data',
+}

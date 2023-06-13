@@ -21,7 +21,7 @@ test.group('VineObject | flat object', () => {
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
         field: '',
-        message: 'The  field must be an object',
+        message: 'The data field must be an object',
         rule: 'object',
       },
     ])
@@ -115,7 +115,7 @@ test.group('VineObject | allow unknown properties', () => {
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
         field: '',
-        message: 'The  field must be an object',
+        message: 'The data field must be an object',
         rule: 'object',
       },
     ])
@@ -240,7 +240,7 @@ test.group('VineObject | object group', () => {
     })
   })
 
-  test('pass when none of the group conditions match', async ({ assert }) => {
+  test('fail when none of the group conditions match', async ({ assert }) => {
     const fiscalHost = vine.group([
       vine.group.if((data) => data.type === 'stripe', {
         type: vine.literal('stripe'),
@@ -259,7 +259,13 @@ test.group('VineObject | object group', () => {
     const schema = vine.object({}).merge(fiscalHost)
 
     const data = {}
-    await assert.validationOutput(vine.validate({ schema, data }), {})
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: '',
+        message: 'Invalid value provided for data field',
+        rule: 'unionGroup',
+      },
+    ])
   })
 
   test('fail when group reports an error', async ({ assert }) => {

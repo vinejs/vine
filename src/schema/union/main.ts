@@ -10,6 +10,7 @@
 import camelcase from 'camelcase'
 import { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
+import { messages } from '../../defaults.js'
 import { UnionConditional } from './conditional.js'
 import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type {
@@ -30,7 +31,9 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
   declare [COTYPE]: Conditional[typeof COTYPE]
 
   #conditionals: Conditional[]
-  #otherwiseCallback?: UnionNoMatchCallback<Record<string, unknown>>
+  #otherwiseCallback: UnionNoMatchCallback<Record<string, unknown>> = (_, field) => {
+    field.report(messages.union, 'union', field)
+  }
 
   constructor(conditionals: Conditional[]) {
     this.#conditionals = conditionals
@@ -50,9 +53,7 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
    */
   clone(): this {
     const cloned = new VineUnion<Conditional>(this.#conditionals)
-    if (this.#otherwiseCallback) {
-      cloned.otherwise(this.#otherwiseCallback)
-    }
+    cloned.otherwise(this.#otherwiseCallback)
 
     return cloned as this
   }
@@ -65,9 +66,7 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
       type: 'union',
       fieldName: propertyName,
       propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
-      elseConditionalFnRefId: this.#otherwiseCallback
-        ? refs.trackConditional(this.#otherwiseCallback)
-        : undefined,
+      elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
       conditions: this.#conditionals.map((conditional) =>
         conditional[PARSE](propertyName, refs, options)
       ),

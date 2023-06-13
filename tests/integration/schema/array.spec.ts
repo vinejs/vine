@@ -98,7 +98,7 @@ test.group('Array | array of objects', () => {
 })
 
 test.group('Array | array of unions', () => {
-  test('pass when none of the union conditions match', async ({ assert }) => {
+  test('fail when none of the conditions match', async ({ assert }) => {
     /**
      * Re-usable helper to check if the field value
      * is an object and has a matching type
@@ -140,7 +140,14 @@ test.group('Array | array of unions', () => {
       contacts: ['foo'],
     }
 
-    await assert.validationOutput(vine.validate({ schema, data }), { contacts: [] })
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'contacts.*',
+        index: 0,
+        message: 'Invalid value provided for 0 field',
+        rule: 'union',
+      },
+    ])
   })
 
   test('fail when union reports an error', async ({ assert }) => {

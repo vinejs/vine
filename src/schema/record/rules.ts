@@ -26,7 +26,7 @@ export const minLengthRule = createRule<{ min: number }>((value, options, field)
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length < options.min) {
-    field.report(messages['record.minLength'], 'minLength', field, options)
+    field.report(messages['record.minLength'], 'record.minLength', field, options)
   }
 })
 
@@ -45,7 +45,7 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, field)
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length > options.max) {
-    field.report(messages['record.maxLength'], 'maxLength', field, options)
+    field.report(messages['record.maxLength'], 'record.maxLength', field, options)
   }
 })
 
@@ -64,7 +64,7 @@ export const fixedLengthRule = createRule<{ size: number }>((value, options, fie
    * Value will always be an object if the field is valid.
    */
   if (Object.keys(value as Record<string, any>).length !== options.size) {
-    field.report(messages['record.fixedLength'], 'fixedLength', field, options)
+    field.report(messages['record.fixedLength'], 'record.fixedLength', field, options)
   }
 })
 
