@@ -20,6 +20,9 @@ import {
   alphaRule,
   regexRule,
   activeUrlRule,
+  maxLengthRule,
+  minLengthRule,
+  fixedLengthRule,
   alphaNumericRule,
 } from '../../../src/schema/string/rules.js'
 
@@ -524,6 +527,21 @@ test.group('VineString | applying rules', () => {
         name: 'alphaNumeric',
         schema: vine.string().alphaNumeric(),
         rule: alphaNumericRule(),
+      },
+      {
+        name: 'maxLength',
+        schema: vine.string().maxLength(10),
+        rule: maxLengthRule({ max: 10 }),
+      },
+      {
+        name: 'minLength',
+        schema: vine.string().minLength(10),
+        rule: minLengthRule({ min: 10 }),
+      },
+      {
+        name: 'fixedLength',
+        schema: vine.string().fixedLength(10),
+        rule: fixedLengthRule({ size: 10 }),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

@@ -19,6 +19,9 @@ import {
   hexCodeRule,
   activeUrlRule,
   alphaNumericRule,
+  minLengthRule,
+  maxLengthRule,
+  fixedLengthRule,
 } from '../../../src/schema/string/rules.js'
 import type { Validation } from '../../../src/types.js'
 
@@ -414,6 +417,102 @@ test.group('String | alphaNumeric', () => {
       {
         rule: alphaNumericRule({ allowDashes: true }),
         value: 'hello-1244',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | minLength', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: minLengthRule({ min: 10 }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: minLengthRule({ min: 10 }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: minLengthRule({ min: 10 }),
+        value: 'foo_bar',
+        error: 'The dummy field must have at least 10 characters',
+      },
+      {
+        rule: minLengthRule({ min: 10 }),
+        value: 'hello_universe',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | maxLength', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: maxLengthRule({ max: 10 }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: maxLengthRule({ max: 10 }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: maxLengthRule({ max: 10 }),
+        value: 'hello_universe',
+        error: 'The dummy field must not be greater than 10 characters',
+      },
+      {
+        rule: maxLengthRule({ max: 10 }),
+        value: 'foo_bar',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | fixedLength', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: fixedLengthRule({ size: 10 }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: fixedLengthRule({ size: 10 }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: fixedLengthRule({ size: 10 }),
+        value: 'hello_universe',
+        error: 'The dummy field must be 10 characters long',
+      },
+      {
+        errorsCount: 1,
+        rule: fixedLengthRule({ size: 10 }),
+        value: 'foo',
+        error: 'The dummy field must be 10 characters long',
+      },
+      {
+        rule: fixedLengthRule({ size: 10 }),
+        value: 'helloworld',
       },
     ])
     .run(stringRuleValidator)

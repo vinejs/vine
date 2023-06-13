@@ -166,10 +166,11 @@ export const helpers = {
       const v6Addresses = await resolve6(hostname)
       if (v6Addresses.length) {
         return true
+        /* c8 ignore next 4 */
+      } else {
+        const v4Addresses = await resolve4(hostname)
+        return v4Addresses.length > 0
       }
-
-      const v4Addresses = await resolve4(hostname)
-      return v4Addresses.length > 0
     } catch {
       return false
     }

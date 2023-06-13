@@ -167,3 +167,50 @@ export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
     }
   }
 )
+
+/**
+ * Enforce a minimum length on a string field
+ */
+export const minLengthRule = createRule<{ min: number }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+  if ((value as string).length < options.min) {
+    field.report(messages.minLength, 'minLength', field, options)
+  }
+})
+
+/**
+ * Enforce a maximum length on a string field
+ */
+export const maxLengthRule = createRule<{ max: number }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  if ((value as string).length > options.max) {
+    field.report(messages.maxLength, 'maxLength', field, options)
+  }
+})
+
+/**
+ * Enforce a fixed length on a string field
+ */
+export const fixedLengthRule = createRule<{ size: number }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  if ((value as string).length !== options.size) {
+    field.report(messages.fixedLength, 'fixedLength', field, options)
+  }
+})

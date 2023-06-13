@@ -20,6 +20,9 @@ import {
   hexCodeRule,
   activeUrlRule,
   alphaNumericRule,
+  minLengthRule,
+  maxLengthRule,
+  fixedLengthRule,
 } from './rules.js'
 
 /**
@@ -35,6 +38,9 @@ export class VineString extends BaseLiteralType<string, string> {
     mobile: mobileRule,
     hexCode: hexCodeRule,
     activeUrl: activeUrlRule,
+    minLength: minLengthRule,
+    maxLength: maxLengthRule,
+    fixedLength: fixedLengthRule,
     alphaNumeric: alphaNumericRule,
   };
 
@@ -110,6 +116,27 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   alphaNumeric(options?: AlphaNumericOptions) {
     return this.use(alphaNumericRule(options))
+  }
+
+  /**
+   * Enforce a minimum length on a string field
+   */
+  minLength(expectedLength: number) {
+    return this.use(minLengthRule({ min: expectedLength }))
+  }
+
+  /**
+   * Enforce a maximum length on a string field
+   */
+  maxLength(expectedLength: number) {
+    return this.use(maxLengthRule({ max: expectedLength }))
+  }
+
+  /**
+   * Enforce a fixed length on a string field
+   */
+  fixedLength(expectedLength: number) {
+    return this.use(fixedLengthRule({ size: expectedLength }))
   }
 
   /**
