@@ -21,6 +21,7 @@ import type {
 import {
   inRule,
   urlRule,
+  uuidRule,
   trimRule,
   alphaRule,
   emailRule,
@@ -53,6 +54,7 @@ export class VineString extends BaseLiteralType<string, string> {
   static rules = {
     in: inRule,
     url: urlRule,
+    uuid: uuidRule,
     trim: trimRule,
     email: emailRule,
     alpha: alphaRule,
@@ -263,6 +265,13 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   postalCode(...args: Parameters<typeof postalCodeRule>) {
     return this.use(postalCodeRule(...args))
+  }
+
+  /**
+   * Validates the value to be a valid UUID
+   */
+  uuid(...args: Parameters<typeof uuidRule>) {
+    return this.use(uuidRule(...args))
   }
 
   /**

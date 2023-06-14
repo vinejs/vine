@@ -37,6 +37,7 @@ import {
   creditCardRule,
   passportRule,
   postalCodeRule,
+  uuidRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -625,6 +626,11 @@ test.group('VineString | applying rules', () => {
         name: 'postalCode',
         schema: vine.string().postalCode({ countryCode: ['IN'] }),
         rule: postalCodeRule({ countryCode: ['IN'] }),
+      },
+      {
+        name: 'uuid',
+        schema: vine.string().uuid(),
+        rule: uuidRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

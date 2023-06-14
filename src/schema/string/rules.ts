@@ -502,3 +502,27 @@ export const postalCodeRule = createRule<
     }
   }
 })
+
+/**
+ * Validates the value to be a valid UUID
+ */
+export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefined>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
+
+    if (!options || !options.version) {
+      if (!helpers.isUUID(value as string)) {
+        field.report(messages.uuid, 'uuid', field)
+      }
+    } else {
+      const matchesAnyVersion = options.version.find((version) =>
+        helpers.isUUID(value as string, version)
+      )
+      if (!matchesAnyVersion) {
+        field.report(messages.uuid, 'uuid', field, options)
+      }
+    }
+  }
+)

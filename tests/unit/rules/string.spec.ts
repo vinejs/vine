@@ -35,6 +35,7 @@ import {
   creditCardRule,
   passportRule,
   postalCodeRule,
+  uuidRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -1152,6 +1153,46 @@ test.group('String | postalCode', () => {
           return { countryCode: ['US', 'IN'] }
         }),
         value: '110001',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | uuid', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: uuidRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: uuidRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: uuidRule(),
+        value: '1999010301',
+        error: 'The dummy field must be a valid UUID',
+      },
+      {
+        rule: uuidRule(),
+        value: '71e4fbab-3498-447b-a97c-2c6060069678',
+      },
+      {
+        errorsCount: 1,
+        rule: uuidRule({ version: [1] }),
+        value: '71e4fbab-3498-447b-a97c-2c6060069678',
+        error: 'The dummy field must be a valid UUID',
+      },
+      {
+        rule: uuidRule({ version: [1, 4] }),
+        value: '71e4fbab-3498-447b-a97c-2c6060069678',
       },
     ])
     .run(stringRuleValidator)
