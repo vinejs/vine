@@ -40,6 +40,9 @@ import {
   ibanRule,
   jwtRule,
   coordinatesRule,
+  toUpperCaseRule,
+  toLowerCaseRule,
+  toCamelCaseRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -1328,6 +1331,81 @@ test.group('String | coordinates', () => {
       {
         rule: coordinatesRule(),
         value: '7.264394,165.058594',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | toUpperCase', () => {
+  test('convert {value} to {output}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: toUpperCaseRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: toUpperCaseRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        rule: toUpperCaseRule(),
+        value: 'hello world',
+        output: 'HELLO WORLD',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | toLowerCase', () => {
+  test('convert {value} to {output}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: toLowerCaseRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: toLowerCaseRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        rule: toLowerCaseRule(),
+        value: 'HELLO WORLD',
+        output: 'hello world',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | toCamelCase', () => {
+  test('convert {value} to {output}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: toCamelCaseRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: toCamelCaseRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        rule: toCamelCaseRule(),
+        value: 'HELLO WORLD',
+        output: 'helloWorld',
       },
     ])
     .run(stringRuleValidator)

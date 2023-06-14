@@ -42,6 +42,9 @@ import {
   ibanRule,
   jwtRule,
   coordinatesRule,
+  toUpperCaseRule,
+  toLowerCaseRule,
+  toCamelCaseRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -655,6 +658,21 @@ test.group('VineString | applying rules', () => {
         name: 'coordinates',
         schema: vine.string().coordinates(),
         rule: coordinatesRule(),
+      },
+      {
+        name: 'toUpperCase',
+        schema: vine.string().toUpperCase(),
+        rule: toUpperCaseRule(),
+      },
+      {
+        name: 'toLowerCase',
+        schema: vine.string().toLowerCase(),
+        rule: toLowerCaseRule(),
+      },
+      {
+        name: 'toCamelCase',
+        schema: vine.string().toCamelCase(),
+        rule: toCamelCaseRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

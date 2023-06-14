@@ -24,6 +24,7 @@ import type {
   AlphaNumericOptions,
   NormalizeEmailOptions,
 } from '../../types.js'
+import camelcase from 'camelcase'
 
 /**
  * Validates the value to be a string
@@ -358,6 +359,43 @@ export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
     field.mutate(validator.default.normalizeEmail(value as string, options), field)
   }
 )
+
+/**
+ * Converts the field value to UPPERCASE.
+ */
+export const toUpperCaseRule = createRule<string | string[] | undefined>(
+  (value, locales, field) => {
+    if (!field.isValid) {
+      return
+    }
+
+    field.mutate((value as string).toLocaleUpperCase(locales), field)
+  }
+)
+
+/**
+ * Converts the field value to lowercase.
+ */
+export const toLowerCaseRule = createRule<string | string[] | undefined>(
+  (value, locales, field) => {
+    if (!field.isValid) {
+      return
+    }
+
+    field.mutate((value as string).toLocaleLowerCase(locales), field)
+  }
+)
+
+/**
+ * Converts the field value to camelCase.
+ */
+export const toCamelCaseRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  field.mutate(camelcase(value as string), field)
+})
 
 /**
  * Ensure the field's value under validation is a subset of the pre-defined list.

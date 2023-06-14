@@ -49,6 +49,9 @@ import {
   ibanRule,
   jwtRule,
   coordinatesRule,
+  toUpperCaseRule,
+  toLowerCaseRule,
+  toCamelCaseRule,
 } from './rules.js'
 
 /**
@@ -86,6 +89,9 @@ export class VineString extends BaseLiteralType<string, string> {
     coordinates: coordinatesRule,
     alphaNumeric: alphaNumericRule,
     normalizeEmail: normalizeEmailRule,
+    toUpperCase: toUpperCaseRule,
+    toLowerCase: toLowerCaseRule,
+    toCamelCase: toCamelCaseRule,
   };
 
   /**
@@ -210,6 +216,27 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   normalizeEmail(options?: NormalizeEmailOptions) {
     return this.use(normalizeEmailRule(options))
+  }
+
+  /**
+   * Converts the field value to UPPERCASE.
+   */
+  toUpperCase() {
+    return this.use(toUpperCaseRule())
+  }
+
+  /**
+   * Converts the field value to lowercase.
+   */
+  toLowerCase() {
+    return this.use(toLowerCaseRule())
+  }
+
+  /**
+   * Converts the field value to camelCase.
+   */
+  toCamelCase() {
+    return this.use(toCamelCaseRule())
   }
 
   /**
