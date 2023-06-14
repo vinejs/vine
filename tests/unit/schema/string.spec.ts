@@ -38,6 +38,10 @@ import {
   passportRule,
   postalCodeRule,
   uuidRule,
+  asciiRule,
+  ibanRule,
+  jwtRule,
+  coordinatesRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -631,6 +635,26 @@ test.group('VineString | applying rules', () => {
         name: 'uuid',
         schema: vine.string().uuid(),
         rule: uuidRule(),
+      },
+      {
+        name: 'ascii',
+        schema: vine.string().ascii(),
+        rule: asciiRule(),
+      },
+      {
+        name: 'iban',
+        schema: vine.string().iban(),
+        rule: ibanRule(),
+      },
+      {
+        name: 'jwt',
+        schema: vine.string().jwt(),
+        rule: jwtRule(),
+      },
+      {
+        name: 'coordinates',
+        schema: vine.string().coordinates(),
+        rule: coordinatesRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

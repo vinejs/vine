@@ -526,3 +526,55 @@ export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefin
     }
   }
 )
+
+/**
+ * Validates the value contains ASCII characters only
+ */
+export const asciiRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!helpers.isAscii(value as string)) {
+    field.report(messages.ascii, 'ascii', field)
+  }
+})
+
+/**
+ * Validates the value to be a valid IBAN number
+ */
+export const ibanRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!helpers.isIBAN(value as string)) {
+    field.report(messages.iban, 'iban', field)
+  }
+})
+
+/**
+ * Validates the value to be a valid JWT token
+ */
+export const jwtRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!helpers.isJWT(value as string)) {
+    field.report(messages.jwt, 'jwt', field)
+  }
+})
+
+/**
+ * Ensure the value is a string with latitude and longitude coordinates
+ */
+export const coordinatesRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!helpers.isLatLong(value as string)) {
+    field.report(messages.coordinates, 'coordinates', field)
+  }
+})

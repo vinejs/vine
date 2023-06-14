@@ -36,6 +36,10 @@ import {
   passportRule,
   postalCodeRule,
   uuidRule,
+  asciiRule,
+  ibanRule,
+  jwtRule,
+  coordinatesRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -1193,6 +1197,137 @@ test.group('String | uuid', () => {
       {
         rule: uuidRule({ version: [1, 4] }),
         value: '71e4fbab-3498-447b-a97c-2c6060069678',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | ascii', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: asciiRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: asciiRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: asciiRule(),
+        value: '１２３456',
+        error: 'The dummy field must only contain ASCII characters',
+      },
+      {
+        rule: asciiRule(),
+        value: 'foobar',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | iban', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: ibanRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: ibanRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: ibanRule(),
+        value: 'foobar',
+        error: 'The dummy field must be a valid IBAN number',
+      },
+      {
+        rule: ibanRule(),
+        value: 'GB94BARC10201530093459',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | jwt', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: jwtRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: jwtRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: jwtRule(),
+        value: 'foobar',
+        error: 'The dummy field must be a valid JWT token',
+      },
+      {
+        rule: jwtRule(),
+        value:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | coordinates', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: coordinatesRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: coordinatesRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: coordinatesRule(),
+        value: 'helloworld',
+        error: 'The dummy field must contain latitude and longitude coordinates',
+      },
+      {
+        errorsCount: 1,
+        rule: coordinatesRule(),
+        value: 'hello,world',
+        error: 'The dummy field must contain latitude and longitude coordinates',
+      },
+      {
+        rule: coordinatesRule(),
+        value: '(7.264394, 165.058594)',
+      },
+      {
+        rule: coordinatesRule(),
+        value: '7.264394,165.058594',
       },
     ])
     .run(stringRuleValidator)

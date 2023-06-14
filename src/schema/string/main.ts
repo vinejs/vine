@@ -45,6 +45,10 @@ import {
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
+  asciiRule,
+  ibanRule,
+  jwtRule,
+  coordinatesRule,
 } from './rules.js'
 
 /**
@@ -53,11 +57,14 @@ import {
 export class VineString extends BaseLiteralType<string, string> {
   static rules = {
     in: inRule,
+    jwt: jwtRule,
     url: urlRule,
+    iban: ibanRule,
     uuid: uuidRule,
     trim: trimRule,
     email: emailRule,
     alpha: alphaRule,
+    ascii: asciiRule,
     notIn: notInRule,
     regex: regexRule,
     sameAs: sameAsRule,
@@ -76,6 +83,7 @@ export class VineString extends BaseLiteralType<string, string> {
     postalCode: postalCodeRule,
     startsWith: startsWithRule,
     fixedLength: fixedLengthRule,
+    coordinates: coordinatesRule,
     alphaNumeric: alphaNumericRule,
     normalizeEmail: normalizeEmailRule,
   };
@@ -272,6 +280,35 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   uuid(...args: Parameters<typeof uuidRule>) {
     return this.use(uuidRule(...args))
+  }
+
+  /**
+   * Validates the value contains ASCII characters only
+   */
+  ascii() {
+    return this.use(asciiRule())
+  }
+
+  /**
+   * Validates the value to be a valid IBAN number
+   */
+  iban() {
+    return this.use(ibanRule())
+  }
+
+  /**
+   * Validates the value to be a valid JWT token
+   */
+
+  jwt() {
+    return this.use(jwtRule())
+  }
+
+  /**
+   * Ensure the value is a string with latitude and longitude coordinates
+   */
+  coordinates() {
+    return this.use(coordinatesRule())
   }
 
   /**
