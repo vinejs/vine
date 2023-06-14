@@ -44,7 +44,6 @@ import {
   toLowerCaseRule,
   toCamelCaseRule,
   escapeRule,
-  encodeRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -1432,37 +1431,7 @@ test.group('String | escape', () => {
       {
         rule: escapeRule(),
         value: '<h1> Hello world </h1>',
-        output: '&lt;h1&gt; Hello world &lt;/h1&gt;',
-      },
-    ])
-    .run(stringRuleValidator)
-})
-
-test.group('String | encode', () => {
-  test('convert {value} to {output}')
-    .with([
-      {
-        errorsCount: 1,
-        rule: encodeRule(),
-        value: 22,
-        error: 'The dummy field must be a string',
-      },
-      {
-        errorsCount: 1,
-        rule: encodeRule(),
-        value: 22,
-        bail: false,
-        error: 'The dummy field must be a string',
-      },
-      {
-        rule: encodeRule(),
-        value: 'foo © and & ampersand',
-        output: 'foo &#xA9; and &#x26; ampersand',
-      },
-      {
-        rule: encodeRule({ allowUnsafeSymbols: true }),
-        value: 'foo © and & ampersand',
-        output: 'foo &#xA9; and & ampersand',
+        output: '&lt;h1&gt; Hello world &lt;&#x2F;h1&gt;',
       },
     ])
     .run(stringRuleValidator)

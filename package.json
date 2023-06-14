@@ -124,11 +124,9 @@
   },
   "dependencies": {
     "@poppinss/macroable": "^1.0.0-6",
-    "@types/he": "^1.2.0",
     "@types/validator": "^13.7.17",
     "@vinejs/compiler": "^2.0.1",
     "camelcase": "^7.0.1",
-    "he": "^1.2.0",
     "normalize-url": "^8.0.0",
     "validator": "^13.9.0"
   },

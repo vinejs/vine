@@ -29,6 +29,7 @@ import {
   regexRule,
   sameAsRule,
   mobileRule,
+  escapeRule,
   stringRule,
   hexCodeRule,
   passportRule,
@@ -52,10 +53,7 @@ import {
   toUpperCaseRule,
   toLowerCaseRule,
   toCamelCaseRule,
-  escapeRule,
-  encodeRule,
 } from './rules.js'
-import { EncodeOptions } from 'he'
 
 /**
  * VineString represents a string value in the validation schema.
@@ -96,7 +94,6 @@ export class VineString extends BaseLiteralType<string, string> {
     toLowerCase: toLowerCaseRule,
     toCamelCase: toCamelCaseRule,
     escape: escapeRule,
-    encode: encodeRule,
   };
 
   /**
@@ -249,13 +246,6 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   escape() {
     return this.use(escapeRule())
-  }
-
-  /**
-   * Encode non-ASCII symbols
-   */
-  encode(options?: EncodeOptions) {
-    return this.use(encodeRule(options))
   }
 
   /**

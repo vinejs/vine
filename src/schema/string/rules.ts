@@ -7,7 +7,6 @@
  * file that was distributed with this source code.
  */
 
-import he, { EncodeOptions } from 'he'
 import validator from 'validator'
 import type { FieldContext } from '@vinejs/compiler/types'
 
@@ -406,18 +405,7 @@ export const escapeRule = createRule((value, _, field) => {
     return
   }
 
-  field.mutate(he.escape(value as string), field)
-})
-
-/**
- * Encode non-ASCII symbols
- */
-export const encodeRule = createRule<EncodeOptions | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
-
-  field.mutate(he.encode(value as string, options), field)
+  field.mutate(validator.default.escape(value as string), field)
 })
 
 /**

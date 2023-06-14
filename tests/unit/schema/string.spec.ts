@@ -46,7 +46,6 @@ import {
   toLowerCaseRule,
   toCamelCaseRule,
   escapeRule,
-  encodeRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -680,11 +679,6 @@ test.group('VineString | applying rules', () => {
         name: 'escape',
         schema: vine.string().escape(),
         rule: escapeRule(),
-      },
-      {
-        name: 'encode',
-        schema: vine.string().encode(),
-        rule: encodeRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {
