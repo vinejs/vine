@@ -32,6 +32,7 @@ import {
   inRule,
   notInRule,
   ipAddressRule,
+  creditCardRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -945,6 +946,78 @@ test.group('String | ipAddress', () => {
         rule: ipAddressRule({ version: 4 }),
         value: '::1234:5678',
         error: 'The dummy field must be a valid IP address',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | isCreditCard', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: creditCardRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: creditCardRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: creditCardRule(),
+        value: '123456789',
+        error: 'The dummy field must be a valid credit card number',
+      },
+      {
+        rule: creditCardRule(),
+        value: '30569309025904',
+      },
+      {
+        errorsCount: 1,
+        rule: creditCardRule({ provider: ['amex'] }),
+        value: '30569309025904',
+        error: 'The dummy field must be a valid amex card number',
+      },
+      {
+        errorsCount: 1,
+        rule: creditCardRule({ provider: ['amex', 'visa'] }),
+        value: '30569309025904',
+        error: 'The dummy field must be a valid amex/visa card number',
+      },
+      {
+        rule: creditCardRule({ provider: ['amex', 'visa', 'dinersclub'] }),
+        value: '30569309025904',
+      },
+      {
+        rule: creditCardRule(() => {}),
+        value: '30569309025904',
+      },
+      {
+        errorsCount: 1,
+        rule: creditCardRule(() => {
+          return { provider: ['amex'] }
+        }),
+        value: '30569309025904',
+        error: 'The dummy field must be a valid amex card number',
+      },
+      {
+        errorsCount: 1,
+        rule: creditCardRule(() => {
+          return { provider: ['amex', 'visa'] }
+        }),
+        value: '30569309025904',
+        error: 'The dummy field must be a valid amex/visa card number',
+      },
+      {
+        rule: creditCardRule(() => {
+          return { provider: ['amex', 'visa', 'dinersclub'] }
+        }),
+        value: '30569309025904',
       },
     ])
     .run(stringRuleValidator)

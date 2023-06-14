@@ -34,6 +34,7 @@ import {
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
+  creditCardRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -607,6 +608,11 @@ test.group('VineString | applying rules', () => {
         name: 'ipAddress',
         schema: vine.string().ipAddress(4),
         rule: ipAddressRule({ version: 4 }),
+      },
+      {
+        name: 'creditCard',
+        schema: vine.string().creditCard(),
+        rule: creditCardRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

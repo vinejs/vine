@@ -45,6 +45,13 @@ export { NormalizeEmailOptions }
 export type URLOptions = IsURLOptions
 
 /**
+ * Options accepted by the credit card validation
+ */
+export type CreditCardOptions = {
+  provider: ('amex' | 'dinersclub' | 'discover' | 'jcb' | 'mastercard' | 'unionpay' | 'visa')[]
+}
+
+/**
  * Options accepted by the alpha rule
  */
 export type AlphaOptions = {

@@ -20,6 +20,7 @@ import type {
   MobileOptions,
   AlphaNumericOptions,
   NormalizeEmailOptions,
+  CreditCardOptions,
 } from '../../types.js'
 
 /**
@@ -403,3 +404,42 @@ export const notInRule = createRule<{ list: string[] | ((field: FieldContext) =>
     }
   }
 )
+
+/**
+ * Validates the value to be a valid credit card number
+ */
+export const creditCardRule = createRule<
+  CreditCardOptions | undefined | ((field: FieldContext) => CreditCardOptions | void | undefined)
+>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  const providers = options
+    ? typeof options === 'function'
+      ? options(field)?.provider || []
+      : options.provider
+    : []
+
+  if (!providers.length) {
+    if (!helpers.isCreditCard(value as string)) {
+      field.report(messages.creditCard, 'creditCard', field, {
+        providersList: 'credit',
+      })
+    }
+  } else {
+    const matchesAnyProvider = providers.find((provider) =>
+      helpers.isCreditCard(value as string, { provider })
+    )
+
+    if (!matchesAnyProvider) {
+      field.report(messages.creditCard, 'creditCard', field, {
+        providers: providers,
+        providersList: providers.join('/'),
+      })
+    }
+  }
+})

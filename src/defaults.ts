@@ -16,6 +16,7 @@ export const messages = {
   'string': 'The {{ field }} field must be a string',
   'email': 'The {{ field }} field must be a valid email address',
   'mobile': 'The {{ field }} field must be a valid mobile phone number',
+  'creditCard': 'The {{ field }} field must be a valid {{ providersList }} card number',
   'regex': 'The {{ field }} field format is invalid',
   'url': 'The {{ field }} field must be a valid URL',
   'activeUrl': 'The {{ field }} field must be a valid URL',

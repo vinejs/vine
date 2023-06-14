@@ -41,6 +41,7 @@ import {
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
+  creditCardRule,
 } from './rules.js'
 
 /**
@@ -66,6 +67,7 @@ export class VineString extends BaseLiteralType<string, string> {
     notSameAs: notSameAsRule,
     maxLength: maxLengthRule,
     ipAddress: ipAddressRule,
+    creditCard: creditCardRule,
     startsWith: startsWithRule,
     fixedLength: fixedLengthRule,
     alphaNumeric: alphaNumericRule,
@@ -236,6 +238,13 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   notIn(list: string[] | ((field: FieldContext) => string[])) {
     return this.use(notInRule({ list }))
+  }
+
+  /**
+   * Validates the value to be a valid credit card number
+   */
+  creditCard(...args: Parameters<typeof creditCardRule>) {
+    return this.use(creditCardRule(...args))
   }
 
   /**
