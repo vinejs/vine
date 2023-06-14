@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+import he, { EncodeOptions } from 'he'
 import validator from 'validator'
 import type { FieldContext } from '@vinejs/compiler/types'
 
@@ -395,6 +396,28 @@ export const toCamelCaseRule = createRule((value, _, field) => {
   }
 
   field.mutate(camelcase(value as string), field)
+})
+
+/**
+ * Escape string for HTML entities
+ */
+export const escapeRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  field.mutate(he.escape(value as string), field)
+})
+
+/**
+ * Encode non-ASCII symbols
+ */
+export const encodeRule = createRule<EncodeOptions | undefined>((value, options, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  field.mutate(he.encode(value as string, options), field)
 })
 
 /**
