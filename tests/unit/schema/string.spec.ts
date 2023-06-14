@@ -35,6 +35,7 @@ import {
   alphaNumericRule,
   normalizeEmailRule,
   creditCardRule,
+  passportRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -613,6 +614,11 @@ test.group('VineString | applying rules', () => {
         name: 'creditCard',
         schema: vine.string().creditCard(),
         rule: creditCardRule(),
+      },
+      {
+        name: 'passport',
+        schema: vine.string().passport({ countryCode: ['IN'] }),
+        rule: passportRule({ countryCode: ['IN'] }),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

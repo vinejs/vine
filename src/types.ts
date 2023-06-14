@@ -16,12 +16,13 @@ import type {
   MessagesProviderContact,
   ErrorReporterContract as BaseReporter,
 } from '@vinejs/compiler/types'
-import type { ValidationError } from './errors/validation_error.js'
-import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE } from './symbols.js'
 
+import type { helpers } from './vine/helpers.js'
+import type { ValidationError } from './errors/validation_error.js'
 import type { IsURLOptions } from 'validator/lib/isURL.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
+import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE } from './symbols.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 
 /**
@@ -49,6 +50,13 @@ export type URLOptions = IsURLOptions
  */
 export type CreditCardOptions = {
   provider: ('amex' | 'dinersclub' | 'discover' | 'jcb' | 'mastercard' | 'unionpay' | 'visa')[]
+}
+
+/**
+ * Options accepted by the passport validation
+ */
+export type PassportOptions = {
+  countryCode: (typeof helpers)['passportCountryCodes'][number][]
 }
 
 /**

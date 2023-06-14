@@ -30,6 +30,7 @@ import {
   mobileRule,
   stringRule,
   hexCodeRule,
+  passportRule,
   endsWithRule,
   ipAddressRule,
   confirmedRule,
@@ -38,10 +39,10 @@ import {
   minLengthRule,
   maxLengthRule,
   startsWithRule,
+  creditCardRule,
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
-  creditCardRule,
 } from './rules.js'
 
 /**
@@ -60,6 +61,7 @@ export class VineString extends BaseLiteralType<string, string> {
     mobile: mobileRule,
     string: stringRule,
     hexCode: hexCodeRule,
+    passport: passportRule,
     endsWith: endsWithRule,
     confirmed: confirmedRule,
     activeUrl: activeUrlRule,
@@ -245,6 +247,13 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   creditCard(...args: Parameters<typeof creditCardRule>) {
     return this.use(creditCardRule(...args))
+  }
+
+  /**
+   * Validates the value to be a valid passport number
+   */
+  passport(...args: Parameters<typeof passportRule>) {
+    return this.use(passportRule(...args))
   }
 
   /**

@@ -21,6 +21,7 @@ import type {
   AlphaNumericOptions,
   NormalizeEmailOptions,
   CreditCardOptions,
+  PassportOptions,
 } from '../../types.js'
 
 /**
@@ -441,5 +442,29 @@ export const creditCardRule = createRule<
         providersList: providers.join('/'),
       })
     }
+  }
+})
+
+/**
+ * Validates the value to be a valid passport number
+ */
+export const passportRule = createRule<
+  PassportOptions | ((field: FieldContext) => PassportOptions)
+>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  const countryCodes =
+    typeof options === 'function' ? options(field).countryCode : options.countryCode
+
+  const matchesAnyProvider = countryCodes.find((countryCode) =>
+    helpers.isPassportNumber(value as string, countryCode)
+  )
+  if (!matchesAnyProvider) {
+    field.report(messages.passport, 'passport', field, { countryCodes })
   }
 })

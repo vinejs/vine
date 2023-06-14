@@ -33,6 +33,7 @@ import {
   notInRule,
   ipAddressRule,
   creditCardRule,
+  passportRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -951,7 +952,7 @@ test.group('String | ipAddress', () => {
     .run(stringRuleValidator)
 })
 
-test.group('String | isCreditCard', () => {
+test.group('String | creditCard', () => {
   test('validate {value}')
     .with([
       {
@@ -1018,6 +1019,74 @@ test.group('String | isCreditCard', () => {
           return { provider: ['amex', 'visa', 'dinersclub'] }
         }),
         value: '30569309025904',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | passport', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: passportRule({ countryCode: ['IN'] }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: passportRule({ countryCode: ['IN'] }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: passportRule({ countryCode: ['IN'] }),
+        value: '1999010301',
+        error: 'The dummy field must be a valid passport number',
+      },
+      {
+        rule: passportRule({ countryCode: ['IN'] }),
+        value: 'J8369854',
+      },
+      {
+        rule: passportRule({ countryCode: ['US'] }),
+        value: 'J8369854',
+        errorsCount: 1,
+        error: 'The dummy field must be a valid passport number',
+      },
+      {
+        rule: passportRule({ countryCode: ['IN', 'US'] }),
+        value: 'J8369854',
+      },
+      {
+        errorsCount: 1,
+        rule: passportRule(() => {
+          return { countryCode: ['IN'] }
+        }),
+        value: '1999010301',
+        error: 'The dummy field must be a valid passport number',
+      },
+      {
+        rule: passportRule(() => {
+          return { countryCode: ['IN'] }
+        }),
+        value: 'J8369854',
+      },
+      {
+        rule: passportRule(() => {
+          return { countryCode: ['US'] }
+        }),
+        value: 'J8369854',
+        errorsCount: 1,
+        error: 'The dummy field must be a valid passport number',
+      },
+      {
+        rule: passportRule(() => {
+          return { countryCode: ['IN', 'US'] }
+        }),
+        value: 'J8369854',
       },
     ])
     .run(stringRuleValidator)
