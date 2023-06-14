@@ -21,10 +21,12 @@ import type {
   PassportOptions,
   CreditCardOptions,
   PostalCodeOptions,
+  NormalizeUrlOptions,
   AlphaNumericOptions,
   NormalizeEmailOptions,
 } from '../../types.js'
 import camelcase from 'camelcase'
+import normalizeUrl from 'normalize-url'
 
 /**
  * Validates the value to be a string
@@ -59,7 +61,7 @@ export const mobileRule = createRule<
   }
 
   const normalizedOptions = options && typeof options === 'function' ? options(field) : options
-  const locales = normalizedOptions?.locales || 'any'
+  const locales = normalizedOptions?.locale || 'any'
 
   if (!helpers.isMobilePhone(value as string, locales, normalizedOptions)) {
     field.report(messages.mobile, 'mobile', field)
@@ -407,6 +409,19 @@ export const escapeRule = createRule((value, _, field) => {
 
   field.mutate(validator.default.escape(value as string), field)
 })
+
+/**
+ * Normalize a URL
+ */
+export const normalizeUrlRule = createRule<undefined | NormalizeUrlOptions>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
+
+    field.mutate(normalizeUrl(value as string, options), field)
+  }
+)
 
 /**
  * Ensure the field's value under validation is a subset of the pre-defined list.

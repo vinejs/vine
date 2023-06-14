@@ -53,6 +53,7 @@ import {
   toUpperCaseRule,
   toLowerCaseRule,
   toCamelCaseRule,
+  normalizeUrlRule,
 } from './rules.js'
 
 /**
@@ -71,6 +72,7 @@ export class VineString extends BaseLiteralType<string, string> {
     ascii: asciiRule,
     notIn: notInRule,
     regex: regexRule,
+    escape: escapeRule,
     sameAs: sameAsRule,
     mobile: mobileRule,
     string: stringRule,
@@ -86,14 +88,14 @@ export class VineString extends BaseLiteralType<string, string> {
     creditCard: creditCardRule,
     postalCode: postalCodeRule,
     startsWith: startsWithRule,
-    fixedLength: fixedLengthRule,
-    coordinates: coordinatesRule,
-    alphaNumeric: alphaNumericRule,
-    normalizeEmail: normalizeEmailRule,
     toUpperCase: toUpperCaseRule,
     toLowerCase: toLowerCaseRule,
     toCamelCase: toCamelCaseRule,
-    escape: escapeRule,
+    fixedLength: fixedLengthRule,
+    coordinates: coordinatesRule,
+    normalizeUrl: normalizeUrlRule,
+    alphaNumeric: alphaNumericRule,
+    normalizeEmail: normalizeEmailRule,
   };
 
   /**
@@ -246,6 +248,13 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   escape() {
     return this.use(escapeRule())
+  }
+
+  /**
+   * Normalize a URL
+   */
+  normalizeUrl(...args: Parameters<typeof normalizeUrlRule>) {
+    return this.use(normalizeUrlRule(...args))
   }
 
   /**

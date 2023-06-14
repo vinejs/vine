@@ -16,19 +16,20 @@ import type {
   MessagesProviderContact,
   ErrorReporterContract as BaseReporter,
 } from '@vinejs/compiler/types'
-
-import type { helpers } from './vine/helpers.js'
-import type { ValidationError } from './errors/validation_error.js'
+import type { Options as UrlOptions } from 'normalize-url'
 import type { IsURLOptions } from 'validator/lib/isURL.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
-import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE } from './symbols.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+
+import type { helpers } from './vine/helpers.js'
+import type { ValidationError } from './errors/validation_error.js'
+import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE } from './symbols.js'
 
 /**
  * Options accepted by the mobile number validation
  */
-export type MobileOptions = { locales?: MobilePhoneLocale[] } & IsMobilePhoneOptions
+export type MobileOptions = { locale?: MobilePhoneLocale[] } & IsMobilePhoneOptions
 
 /**
  * Options accepted by the email address validation
@@ -74,6 +75,8 @@ export type AlphaOptions = {
   allowUnderscores?: boolean
   allowDashes?: boolean
 }
+
+export type NormalizeUrlOptions = UrlOptions
 
 /**
  * Options accepted by the alpha numeric rule

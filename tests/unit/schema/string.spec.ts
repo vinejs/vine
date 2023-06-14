@@ -46,6 +46,8 @@ import {
   toLowerCaseRule,
   toCamelCaseRule,
   escapeRule,
+  normalizeUrlRule,
+  mobileRule,
 } from '../../../src/schema/string/rules.js'
 
 const vine = new Vine()
@@ -546,6 +548,11 @@ test.group('VineString | applying rules', () => {
         rule: alphaRule(),
       },
       {
+        name: 'mobile',
+        schema: vine.string().mobile(),
+        rule: mobileRule(),
+      },
+      {
         name: 'alphaNumeric',
         schema: vine.string().alphaNumeric(),
         rule: alphaNumericRule(),
@@ -679,6 +686,11 @@ test.group('VineString | applying rules', () => {
         name: 'escape',
         schema: vine.string().escape(),
         rule: escapeRule(),
+      },
+      {
+        name: 'normalizeUrl',
+        schema: vine.string().normalizeUrl(),
+        rule: normalizeUrlRule(),
       },
     ])
     .run(({ assert }, { schema, rule }) => {

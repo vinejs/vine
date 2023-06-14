@@ -44,6 +44,7 @@ import {
   toLowerCaseRule,
   toCamelCaseRule,
   escapeRule,
+  normalizeUrlRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -161,39 +162,39 @@ test.group('String | mobile', () => {
       },
       {
         errorsCount: 1,
-        rule: mobileRule({ locales: ['en-IN'] }),
+        rule: mobileRule({ locale: ['en-IN'] }),
         value: '(555) 555-1234',
         error: 'The dummy field must be a valid mobile phone number',
       },
       {
-        rule: mobileRule({ locales: ['en-IN'] }),
+        rule: mobileRule({ locale: ['en-IN'] }),
         value: '9883443344',
       },
       {
-        rule: mobileRule({ locales: ['en-IN', 'en-US'] }),
+        rule: mobileRule({ locale: ['en-IN', 'en-US'] }),
         value: '(555) 555-1234',
       },
       {
-        rule: mobileRule({ locales: ['en-IN', 'en-US'] }),
+        rule: mobileRule({ locale: ['en-IN', 'en-US'] }),
         value: '9883443344',
       },
       {
-        rule: mobileRule({ locales: ['en-IN', 'en-US'], strictMode: true }),
+        rule: mobileRule({ locale: ['en-IN', 'en-US'], strictMode: true }),
         value: '+1 (555) 555-1234',
       },
       {
-        rule: mobileRule({ locales: ['en-IN', 'en-US'], strictMode: true }),
+        rule: mobileRule({ locale: ['en-IN', 'en-US'], strictMode: true }),
         value: '+919883443344',
       },
       {
         rule: mobileRule(() => {
-          return { locales: ['en-IN', 'en-US'] }
+          return { locale: ['en-IN', 'en-US'] }
         }),
         value: '(555) 555-1234',
       },
       {
         rule: mobileRule(() => {
-          return { locales: ['en-IN', 'en-US'] }
+          return { locale: ['en-IN', 'en-US'] }
         }),
         value: '9883443344',
       },
@@ -1432,6 +1433,36 @@ test.group('String | escape', () => {
         rule: escapeRule(),
         value: '<h1> Hello world </h1>',
         output: '&lt;h1&gt; Hello world &lt;&#x2F;h1&gt;',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | normalizeUrl', () => {
+  test('convert {value} to {output}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: normalizeUrlRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: normalizeUrlRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        rule: normalizeUrlRule(),
+        value: 'foobar',
+        output: 'http://foobar',
+      },
+      {
+        rule: normalizeUrlRule({ stripWWW: true }),
+        value: 'www.foo.com',
+        output: 'http://foo.com',
       },
     ])
     .run(stringRuleValidator)
