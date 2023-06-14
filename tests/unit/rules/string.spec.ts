@@ -34,6 +34,7 @@ import {
   ipAddressRule,
   creditCardRule,
   passportRule,
+  postalCodeRule,
 } from '../../../src/schema/string/rules.js'
 import type { FieldContext, Validation } from '../../../src/types.js'
 
@@ -1087,6 +1088,70 @@ test.group('String | passport', () => {
           return { countryCode: ['IN', 'US'] }
         }),
         value: 'J8369854',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | postalCode', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: postalCodeRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: postalCodeRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: postalCodeRule(),
+        value: '1999010301',
+        error: 'The dummy field must be a valid postal code',
+      },
+      {
+        rule: postalCodeRule(),
+        value: '110001',
+      },
+      {
+        errorsCount: 1,
+        rule: postalCodeRule({ countryCode: ['US'] }),
+        value: '110001',
+        error: 'The dummy field must be a valid postal code',
+      },
+      {
+        rule: postalCodeRule({ countryCode: ['US', 'IN'] }),
+        value: '110001',
+      },
+      {
+        errorsCount: 1,
+        rule: postalCodeRule(() => {}),
+        value: '1999010301',
+        error: 'The dummy field must be a valid postal code',
+      },
+      {
+        rule: postalCodeRule(() => {}),
+        value: '110001',
+      },
+      {
+        errorsCount: 1,
+        rule: postalCodeRule(() => {
+          return { countryCode: ['US'] }
+        }),
+        value: '110001',
+        error: 'The dummy field must be a valid postal code',
+      },
+      {
+        rule: postalCodeRule(() => {
+          return { countryCode: ['US', 'IN'] }
+        }),
+        value: '110001',
       },
     ])
     .run(stringRuleValidator)

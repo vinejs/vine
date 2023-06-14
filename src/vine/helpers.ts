@@ -145,7 +145,7 @@ export const helpers = {
   isSlug: validator.default.isSlug,
   isDecimal: validator.default.isDecimal,
   mobileLocales: validator.default.isMobilePhoneLocales,
-  postalCodeLocales: validator.default.isPostalCodeLocales,
+  postalCountryCodes: validator.default.isPostalCodeLocales,
   passportCountryCodes: [
     'AM',
     'AR',

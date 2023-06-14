@@ -18,10 +18,11 @@ import type {
   AlphaOptions,
   EmailOptions,
   MobileOptions,
+  PassportOptions,
+  CreditCardOptions,
+  PostalCodeOptions,
   AlphaNumericOptions,
   NormalizeEmailOptions,
-  CreditCardOptions,
-  PassportOptions,
 } from '../../types.js'
 
 /**
@@ -461,10 +462,43 @@ export const passportRule = createRule<
   const countryCodes =
     typeof options === 'function' ? options(field).countryCode : options.countryCode
 
-  const matchesAnyProvider = countryCodes.find((countryCode) =>
+  const matchesAnyCountryCode = countryCodes.find((countryCode) =>
     helpers.isPassportNumber(value as string, countryCode)
   )
-  if (!matchesAnyProvider) {
+  if (!matchesAnyCountryCode) {
     field.report(messages.passport, 'passport', field, { countryCodes })
+  }
+})
+
+/**
+ * Validates the value to be a valid postal code
+ */
+export const postalCodeRule = createRule<
+  PostalCodeOptions | undefined | ((field: FieldContext) => PostalCodeOptions | void | undefined)
+>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  const countryCodes = options
+    ? typeof options === 'function'
+      ? options(field)?.countryCode || []
+      : options.countryCode
+    : []
+
+  if (!countryCodes.length) {
+    if (!helpers.isPostalCode(value as string, 'any')) {
+      field.report(messages.postalCode, 'postalCode', field)
+    }
+  } else {
+    const matchesAnyCountryCode = countryCodes.find((countryCode) =>
+      helpers.isPostalCode(value as string, countryCode)
+    )
+    if (!matchesAnyCountryCode) {
+      field.report(messages.postalCode, 'postalCode', field, { countryCodes })
+    }
   }
 })

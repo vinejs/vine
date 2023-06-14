@@ -40,6 +40,7 @@ import {
   maxLengthRule,
   startsWithRule,
   creditCardRule,
+  postalCodeRule,
   fixedLengthRule,
   alphaNumericRule,
   normalizeEmailRule,
@@ -70,6 +71,7 @@ export class VineString extends BaseLiteralType<string, string> {
     maxLength: maxLengthRule,
     ipAddress: ipAddressRule,
     creditCard: creditCardRule,
+    postalCode: postalCodeRule,
     startsWith: startsWithRule,
     fixedLength: fixedLengthRule,
     alphaNumeric: alphaNumericRule,
@@ -254,6 +256,13 @@ export class VineString extends BaseLiteralType<string, string> {
    */
   passport(...args: Parameters<typeof passportRule>) {
     return this.use(passportRule(...args))
+  }
+
+  /**
+   * Validates the value to be a valid postal code
+   */
+  postalCode(...args: Parameters<typeof postalCodeRule>) {
+    return this.use(postalCodeRule(...args))
   }
 
   /**

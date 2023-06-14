@@ -60,6 +60,13 @@ export type PassportOptions = {
 }
 
 /**
+ * Options accepted by the postal code validation
+ */
+export type PostalCodeOptions = {
+  countryCode: (typeof helpers)['postalCountryCodes'][number][]
+}
+
+/**
  * Options accepted by the alpha rule
  */
 export type AlphaOptions = {
