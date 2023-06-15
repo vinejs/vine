@@ -67,8 +67,8 @@ export class SchemaBuilder extends Macroable {
   /**
    * Define a number value
    */
-  number() {
-    return new VineNumber()
+  number(options?: { strict: boolean }) {
+    return new VineNumber(options)
   }
 
   /**

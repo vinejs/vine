@@ -27,6 +27,8 @@ import {
  * VineNumber represents a numeric value in the validation schema.
  */
 export class VineNumber extends BaseLiteralType<number, number> {
+  protected declare options: FieldOptions & { strict?: boolean }
+
   /**
    * Default collection of number rules
    */
@@ -55,8 +57,11 @@ export class VineNumber extends BaseLiteralType<number, number> {
     return !Number.isNaN(valueAsNumber)
   }
 
-  constructor(options?: FieldOptions, validations?: Validation<any>[]) {
-    super(options, validations || [numberRule()])
+  constructor(
+    options?: Partial<FieldOptions> & { strict?: boolean },
+    validations?: Validation<any>[]
+  ) {
+    super(options, validations || [numberRule(options || {})])
   }
 
   /**

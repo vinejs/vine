@@ -22,14 +22,14 @@ import {
 
 test.group('Number | number', () => {
   test('report when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const validated = validator.execute(number, 'foo')
 
     validated.assertError('The dummy field must be a number')
   })
 
   test('pass validation when value is a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const validated = validator.execute(number, 22)
 
     validated.assertSucceeded()
@@ -37,15 +37,27 @@ test.group('Number | number', () => {
   })
 
   test('pass validation when value is a string representation of a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const validated = validator.execute(number, '22')
 
     validated.assertSucceeded()
     validated.assertOutput(22)
   })
 
+  test('disallow string representation in strict mode', () => {
+    const number = numberRule({ strict: true })
+
+    const validated = validator.execute(number, '22')
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+
+    const withNaN = validator.execute(number, Number.NaN)
+    withNaN.assertErrorsCount(1)
+    withNaN.assertError('The dummy field must be a number')
+  })
+
   test('report when value is an infinite number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const validated = validator.execute(
       number,
       '3177777777777777777777777777777777777777777777777777777777777777777777777770000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999991111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
@@ -55,7 +67,7 @@ test.group('Number | number', () => {
   })
 
   test('report when value is a negative infinite number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const validated = validator.execute(
       number,
       '-3177777777777777777777777777777777777777777777777777777777777777777777777770000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999991111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
@@ -67,7 +79,7 @@ test.group('Number | number', () => {
 
 test.group('Number | min', () => {
   test('skip validation when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const min = minRule({ min: 18 })
     const validated = validator.execute([number, min], 'foo')
 
@@ -76,7 +88,7 @@ test.group('Number | min', () => {
   })
 
   test('skip validation when value is not a number with bail mode disabled', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const min = minRule({ min: 18 })
     const validated = validator.bail(false).execute([number, min], 'foo')
 
@@ -85,7 +97,7 @@ test.group('Number | min', () => {
   })
 
   test('report error when value is less than the minimum value', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const min = minRule({ min: 18 })
     const validated = validator.execute([number, min], 12)
 
@@ -94,7 +106,7 @@ test.group('Number | min', () => {
   })
 
   test('pass validation when value is same or greater than the minimum value', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const min = minRule({ min: 18 })
 
     validator.execute([number, min], 18).assertErrorsCount(0)
@@ -104,7 +116,7 @@ test.group('Number | min', () => {
 
 test.group('Number | max', () => {
   test('skip validation when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const max = maxRule({ max: 60 })
     const validated = validator.execute([number, max], 'foo')
 
@@ -113,7 +125,7 @@ test.group('Number | max', () => {
   })
 
   test('skip validation when value is not a number with bail mode disabled', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const max = maxRule({ max: 60 })
     const validated = validator.bail(false).execute([number, max], 'foo')
 
@@ -122,7 +134,7 @@ test.group('Number | max', () => {
   })
 
   test('report error when value is greater than the maximum value', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const max = maxRule({ max: 60 })
     const validated = validator.execute([number, max], 72)
 
@@ -131,7 +143,7 @@ test.group('Number | max', () => {
   })
 
   test('pass validation when value is same or less than the minimum value', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const max = maxRule({ max: 60 })
 
     validator.execute([number, max], 60).assertErrorsCount(0)
@@ -141,7 +153,7 @@ test.group('Number | max', () => {
 
 test.group('Number | range', () => {
   test('skip validation when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
     const validated = validator.execute([number, range], 'foo')
 
@@ -150,7 +162,7 @@ test.group('Number | range', () => {
   })
 
   test('skip validation when value is not a number with bail mode disabled', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
     const validated = validator.bail(false).execute([number, range], 'foo')
 
@@ -159,7 +171,7 @@ test.group('Number | range', () => {
   })
 
   test('report error when value is greater than the maximum value', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
     const validated = validator.execute([number, range], 72)
 
@@ -168,7 +180,7 @@ test.group('Number | range', () => {
   })
 
   test('report error when value is less than the minimum value', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
     const validated = validator.execute([number, range], 12)
 
@@ -177,7 +189,7 @@ test.group('Number | range', () => {
   })
 
   test('pass validation when value is under the range', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
 
     validator.execute([number, range], 18).assertErrorsCount(0)
@@ -188,7 +200,7 @@ test.group('Number | range', () => {
 
 test.group('Number | positive', () => {
   test('skip validation when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const positive = positiveRule()
     const validated = validator.execute([number, positive], 'foo')
 
@@ -197,7 +209,7 @@ test.group('Number | positive', () => {
   })
 
   test('skip validation when value is not a number with bail mode disabled', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const positive = positiveRule()
     const validated = validator.bail(false).execute([number, positive], 'foo')
 
@@ -206,7 +218,7 @@ test.group('Number | positive', () => {
   })
 
   test('report error when value is negative', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const positive = positiveRule()
 
     const validated = validator.execute([number, positive], -10)
@@ -219,7 +231,7 @@ test.group('Number | positive', () => {
   })
 
   test('pass validation when value is positive', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const positive = positiveRule()
 
     validator.execute([number, positive], 10).assertErrorsCount(0)
@@ -229,7 +241,7 @@ test.group('Number | positive', () => {
 
 test.group('Number | negative', () => {
   test('skip validation when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const negative = negativeRule()
     const validated = validator.execute([number, negative], 'foo')
 
@@ -238,7 +250,7 @@ test.group('Number | negative', () => {
   })
 
   test('skip validation when value is not a number with bail mode disabled', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const negative = negativeRule()
     const validated = validator.bail(false).execute([number, negative], 'foo')
 
@@ -247,7 +259,7 @@ test.group('Number | negative', () => {
   })
 
   test('report error when value is positive', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const negative = negativeRule()
 
     const validated = validator.execute([number, negative], 0)
@@ -260,7 +272,7 @@ test.group('Number | negative', () => {
   })
 
   test('pass validation when value is negative', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const negative = negativeRule()
 
     validator.execute([number, negative], '-10').assertErrorsCount(0)
@@ -270,7 +282,7 @@ test.group('Number | negative', () => {
 
 test.group('Number | decimals', () => {
   test('skip validation when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [0, 2] })
     const validated = validator.execute([number, decimal], 'foo')
 
@@ -279,7 +291,7 @@ test.group('Number | decimals', () => {
   })
 
   test('skip validation when value is not a number with bail mode disabled', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [0, 2] })
     const validated = validator.bail(false).execute([number, decimal], 'foo')
 
@@ -288,7 +300,7 @@ test.group('Number | decimals', () => {
   })
 
   test('report error when value has less than fixed decimal places', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [2] })
     const validated = validator.execute([number, decimal], '9')
 
@@ -297,7 +309,7 @@ test.group('Number | decimals', () => {
   })
 
   test('report error when value has more than fixed decimal places', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [2] })
     const validated = validator.execute([number, decimal], '9.9899')
 
@@ -306,7 +318,7 @@ test.group('Number | decimals', () => {
   })
 
   test('work fine when value has exact decimal places', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [2] })
     const validated = validator.execute([number, decimal], '9.99')
 
@@ -315,7 +327,7 @@ test.group('Number | decimals', () => {
   })
 
   test('report error when value has less than the range of decimal places', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [2, 4] })
     const validated = validator.execute([number, decimal], '9')
 
@@ -324,7 +336,7 @@ test.group('Number | decimals', () => {
   })
 
   test('report error when value has more than the range of decimal places', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [2, 4] })
     const validated = validator.execute([number, decimal], '9.90009')
 
@@ -333,7 +345,7 @@ test.group('Number | decimals', () => {
   })
 
   test('work fine when value decimal places are in range', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const decimal = decimalRule({ range: [0, 2] })
 
     const validated = validator.execute([number, decimal], '9.99')
@@ -348,7 +360,7 @@ test.group('Number | decimals', () => {
 
 test.group('Number | withoutDecimals', () => {
   test('skip validation when value is not a number', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
     const validated = validator.execute([number, withoutDecimals], 'foo')
 
@@ -357,7 +369,7 @@ test.group('Number | withoutDecimals', () => {
   })
 
   test('skip validation when value is not a number with bail mode disabled', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
     const validated = validator.bail(false).execute([number, withoutDecimals], 'foo')
 
@@ -366,7 +378,7 @@ test.group('Number | withoutDecimals', () => {
   })
 
   test('report error when value has decimal places', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
     const validated = validator.execute([number, withoutDecimals], '18.11')
 
@@ -375,7 +387,7 @@ test.group('Number | withoutDecimals', () => {
   })
 
   test('work fine when value is an integer', () => {
-    const number = numberRule()
+    const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
     const validated = validator.execute([number, withoutDecimals], '18.00')
 
