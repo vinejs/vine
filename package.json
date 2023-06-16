@@ -6,12 +6,14 @@
   "main": "build/index.js",
   "files": [
     "build/src",
+    "build/factories",
     "build/index.d.ts",
     "build/index.js"
   ],
   "exports": {
     ".": "./build/index.js",
     "./defaults": "./build/src/defaults.js",
+    "./factories": "./build/factories/main.js",
     "./types": "./build/src/types.js"
   },
   "engines": {
