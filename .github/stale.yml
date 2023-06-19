@@ -5,8 +5,7 @@ daysUntilStale: 60
 daysUntilClose: 7
 
 # Issues with these labels will never be considered stale
-exemptLabels:
-  - 'Type: Security'
+exemptLabels: ['Type: Security', 'Type: Collection']
 
 # Label to use when marking an issue as stale
 staleLabel: 'Status: Abandoned'
