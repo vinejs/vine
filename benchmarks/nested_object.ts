@@ -3,6 +3,8 @@ import Benchmark from 'benchmark'
 import { z } from 'zod'
 import yup from 'yup'
 import vine from '../index.js'
+import Joi from 'joi'
+import Ajv, { AsyncSchema } from 'ajv'
 
 function getData() {
   return {
@@ -48,6 +50,44 @@ const vineSchema = vine.compile(
   })
 )
 
+const joiSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+  contact: Joi.object({
+    name: Joi.string().required(),
+    address: Joi.string(),
+  }).required(),
+}).required()
+
+const ajv = new Ajv.default()
+interface AjvData {
+  username: string
+  password: string
+  contact: {
+    name: string
+    address?: string
+  }
+}
+const ajvSchema: AsyncSchema = {
+  $async: true,
+  type: 'object',
+  properties: {
+    username: { type: 'string', nullable: false },
+    password: { type: 'string', nullable: false },
+    contact: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', nullable: false },
+        address: { type: 'string' },
+      },
+      required: ['name'],
+    },
+  },
+  required: ['username', 'password', 'contact'],
+  additionalProperties: false,
+}
+const ajvValidator = ajv.compile<AjvData>(ajvSchema)
+
 console.log('=================================')
 console.log('Benchmarking with nested object')
 console.log('=================================')
@@ -77,6 +117,23 @@ suite
     fn: function (deferred: any) {
       yupSchema
         .validate(getData())
+        .then(() => deferred.resolve())
+        .catch(console.log)
+    },
+  })
+  .add('Joi', {
+    defer: true,
+    fn: function (deferred: any) {
+      joiSchema
+        .validateAsync(getData())
+        .then(() => deferred.resolve())
+        .catch(console.log)
+    },
+  })
+  .add('Ajv', {
+    defer: true,
+    fn: function (deferred: any) {
+      ajvValidator(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },
