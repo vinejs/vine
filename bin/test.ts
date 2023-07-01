@@ -1,13 +1,9 @@
 import { Assert, assert } from '@japa/assert'
-import { pathToFileURL } from 'node:url'
-import { snapshot } from '@japa/snapshot'
 import { expectTypeOf } from '@japa/expect-type'
-import { specReporter } from '@japa/spec-reporter'
-import { runFailedTests } from '@japa/run-failed-tests'
-import { processCliArgs, configure, run } from '@japa/runner'
+import { processCLIArgs, configure, run } from '@japa/runner'
 import { ValidationError } from '../src/errors/validation_error.js'
 
-Assert.macro('validationErrors', async function (promiseLike, messages) {
+Assert.macro('validationErrors', async function (this: Assert, promiseLike, messages) {
   let hasFailed = false
 
   try {
@@ -23,7 +19,7 @@ Assert.macro('validationErrors', async function (promiseLike, messages) {
   }
 })
 
-Assert.macro('validationOutput', async function (promiseLike, messages) {
+Assert.macro('validationOutput', async function (this: Assert, promiseLike, messages) {
   this.deepEqual(await promiseLike, messages)
 })
 
@@ -40,23 +36,19 @@ Assert.macro('validationOutput', async function (promiseLike, messages) {
 |
 | Please consult japa.dev/runner-config for the config docs.
 */
+processCLIArgs(process.argv.slice(2))
 configure({
-  ...processCliArgs(process.argv.slice(2)),
-  ...{
-    suites: [
-      {
-        name: 'unit',
-        files: ['tests/unit/**/*.spec(.js|.ts)'],
-      },
-      {
-        name: 'integration',
-        files: ['tests/integration/**/*.spec(.js|.ts)'],
-      },
-    ],
-    plugins: [assert(), runFailedTests(), expectTypeOf(), snapshot()],
-    reporters: [specReporter()],
-    importer: (filePath) => import(pathToFileURL(filePath).href),
-  },
+  suites: [
+    {
+      name: 'unit',
+      files: ['tests/unit/**/*.spec(.js|.ts)'],
+    },
+    {
+      name: 'integration',
+      files: ['tests/integration/**/*.spec(.js|.ts)'],
+    },
+  ],
+  plugins: [assert(), expectTypeOf()],
 })
 
 /*
