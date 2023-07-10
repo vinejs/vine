@@ -12,7 +12,13 @@ import type { MessagesProviderContact, Refs } from '@vinejs/compiler/types'
 
 import { messages } from '../defaults.js'
 import { OTYPE, PARSE } from '../symbols.js'
-import type { ErrorReporterContract, Infer, SchemaTypes, ValidationOptions } from '../types.js'
+import type {
+  Infer,
+  SchemaTypes,
+  MetaDataValidator,
+  ValidationOptions,
+  ErrorReporterContract,
+} from '../types.js'
 
 /**
  * Error messages to share with the compiler
@@ -27,11 +33,19 @@ const COMPILER_ERROR_MESSAGES = {
  * Vine Validator exposes the API to validate data using a pre-compiled
  * schema.
  */
-export class VineValidator<Schema extends SchemaTypes> {
+export class VineValidator<
+  Schema extends SchemaTypes,
+  MetaData extends undefined | Record<string, any>
+> {
   /**
    * Reference to static types
    */
   declare [OTYPE]: Schema[typeof OTYPE]
+
+  /**
+   * Validator to use to validate metadata
+   */
+  #metaDataValidator?: MetaDataValidator
 
   /**
    * Messages provider to use on the validator
@@ -71,6 +85,7 @@ export class VineValidator<Schema extends SchemaTypes> {
     schema: Schema,
     options: {
       convertEmptyStringsToNull: boolean
+      metaDataValidator?: MetaDataValidator
       messagesProvider: MessagesProviderContact
       errorReporter: () => ErrorReporterContract
     }
@@ -85,6 +100,7 @@ export class VineValidator<Schema extends SchemaTypes> {
 
     this.errorReporter = options.errorReporter
     this.messagesProvider = options.messagesProvider
+    this.#metaDataValidator = options.metaDataValidator
   }
 
   /**
@@ -102,7 +118,16 @@ export class VineValidator<Schema extends SchemaTypes> {
    * })
    * ```
    */
-  validate(data: any, options?: ValidationOptions): Promise<Infer<Schema>> {
+  validate(
+    data: any,
+    ...[options]: [undefined] extends MetaData
+      ? [options?: ValidationOptions<MetaData> | undefined]
+      : [options: ValidationOptions<MetaData>]
+  ): Promise<Infer<Schema>> {
+    if (options?.meta && this.#metaDataValidator) {
+      this.#metaDataValidator(options.meta)
+    }
+
     const errorReporter = options?.errorReporter || this.errorReporter
     const messagesProvider = options?.messagesProvider || this.messagesProvider
     return this.#validateFn(

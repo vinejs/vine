@@ -220,11 +220,15 @@ export interface ErrorReporterContract extends BaseReporter {
 }
 
 /**
+ * The validator function to validate metadata given to a validation
+ * pipeline
+ */
+export type MetaDataValidator = (meta: Record<string, any>) => void
+
+/**
  * Options accepted during the validate call.
  */
-export type ValidationOptions = {
-  meta?: Record<string, any>
-
+export type ValidationOptions<MetaData extends Record<string, any> | undefined> = {
   /**
    * Messages provider is used to resolve error messages during
    * the validation lifecycle
@@ -236,7 +240,13 @@ export type ValidationOptions = {
    * can decide how to format and output errors.
    */
   errorReporter?: () => ErrorReporterContract
-}
+} & ([undefined] extends MetaData
+  ? {
+      meta?: MetaData
+    }
+  : {
+      meta: MetaData
+    })
 
 /**
  * Infers the schema type

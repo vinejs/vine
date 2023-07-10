@@ -9,7 +9,7 @@
 
 import { test } from '@japa/runner'
 import { Vine } from '../../src/vine/main.js'
-import { Infer } from '../../src/types.js'
+import { Infer, ValidationOptions } from '../../src/types.js'
 
 const vine = new Vine()
 
@@ -347,16 +347,18 @@ test.group('Types | Object groups', () => {
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
-      | {
-          visitor_name: string
-          hiring_guide: true
-          guide_name: string
-          fees: string
-        }
-      | {
-          visitor_name: string
-          hiring_guide: false
-        }
+      {
+        visitor_name: string
+      } & (
+        | {
+            hiring_guide: true
+            guide_name: string
+            fees: string
+          }
+        | {
+            hiring_guide: false
+          }
+      )
     >()
   })
 
@@ -381,16 +383,18 @@ test.group('Types | Object groups', () => {
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
-      | {
+      | ({
           visitor_name: string
-          hiring_guide: true
-          guide_name: string
-          fees: string
-        }
-      | {
-          visitor_name: string
-          hiring_guide: false
-        }
+        } & (
+          | {
+              hiring_guide: true
+              guide_name: string
+              fees: string
+            }
+          | {
+              hiring_guide: false
+            }
+        ))
       | null
     >()
   })
@@ -416,16 +420,18 @@ test.group('Types | Object groups', () => {
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
-      | {
+      | ({
           visitor_name: string
-          hiring_guide: true
-          guide_name: string
-          fees: string
-        }
-      | {
-          visitor_name: string
-          hiring_guide: false
-        }
+        } & (
+          | {
+              hiring_guide: true
+              guide_name: string
+              fees: string
+            }
+          | {
+              hiring_guide: false
+            }
+        ))
       | undefined
     >()
   })
@@ -512,16 +518,18 @@ test.group('Types | Object groups', () => {
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
-      | {
-          visitorName: string
-          hiringGuide: true
-          guideName: string
-          fees: string
-        }
-      | {
-          visitorName: string
-          hiringGuide: false
-        }
+      {
+        visitorName: string
+      } & (
+        | {
+            hiringGuide: true
+            guideName: string
+            fees: string
+          }
+        | {
+            hiringGuide: false
+          }
+      )
     >()
   })
 
@@ -547,18 +555,18 @@ test.group('Types | Object groups', () => {
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
-      | ((
+      | (({
+          visitor_name: string
+        } & (
           | {
-              visitor_name: string
               hiring_guide: true
               guide_name: string
               fees: string
             }
           | {
-              visitor_name: string
               hiring_guide: false
             }
-        ) & { [K: string]: unknown })
+        )) & { [K: string]: unknown })
       | undefined
     >()
   })
@@ -586,18 +594,18 @@ test.group('Types | Object groups', () => {
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
-      | ((
+      | (({
+          visitor_name: string
+        } & (
           | {
-              visitor_name: string
               hiring_guide: true
               guide_name: string
               fees: string
             }
           | {
-              visitor_name: string
               hiring_guide: false
             }
-        ) & { [K: string]: unknown })
+        )) & { [K: string]: unknown })
       | undefined
     >()
   })
@@ -1277,5 +1285,26 @@ test.group('Types | compiled schema', () => {
       email: string
       is_admin: boolean
     }>()
+  })
+
+  test('ensure type-safety for metadata', ({ expectTypeOf }) => {
+    const schema = vine.withMetaData<{ userId: number }>().compile(
+      vine.object({
+        username: vine.string(),
+        email: vine.string(),
+        is_admin: vine.boolean(),
+      })
+    )
+
+    // @ts-expect-error
+    schema.validate({})
+    // @ts-expect-error
+    schema.validate({}, {})
+    // @ts-expect-error
+    schema.validate({}, { meta: { foo: 'bar' } })
+
+    expectTypeOf<typeof schema.validate>().parameters.toEqualTypeOf<
+      [any, ValidationOptions<{ userId: number }>]
+    >
   })
 })
