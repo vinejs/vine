@@ -1,6 +1,6 @@
 {
   "name": "@vinejs/vine",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Form data validation library for Node.js",
   "type": "module",
   "main": "build/index.js",
