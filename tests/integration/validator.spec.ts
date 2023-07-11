@@ -8,7 +8,18 @@
  */
 
 import { test } from '@japa/runner'
-import vine, { VineArray, VineBoolean, VineEnum, VineLiteral, VineNumber, VineObject, VineRecord, VineString, VineTuple } from '../../index.js'
+import vine, {
+  Vine,
+  VineEnum,
+  VineTuple,
+  VineArray,
+  VineNumber,
+  VineObject,
+  VineRecord,
+  VineString,
+  VineLiteral,
+  VineBoolean,
+} from '../../index.js'
 
 test.group('Validator | metadata', () => {
   test('pass metadata to the validation pipeline', async ({ assert }) => {
@@ -175,5 +186,13 @@ test.group('Validator | extend schema classes', () => {
     })
 
     assert.isTrue((vine.enum(['guest', 'moderator', 'admin']) as any).hasMultipleOptions())
+  })
+
+  test('extend Vine class', ({ assert }) => {
+    Vine.macro('money' as any, function (this: Vine) {
+      return true
+    })
+
+    assert.isTrue((vine as any).money())
   })
 })
