@@ -28,6 +28,13 @@ export class VineEnum<const Values extends readonly unknown[]> extends BaseLiter
 
   #values: Values | ((field: FieldContext) => Values)
 
+  /**
+   * Returns the enum choices
+   */
+  getChoices() {
+    return this.#values
+  }
+
   constructor(
     values: Values | ((field: FieldContext) => Values),
     options?: FieldOptions,

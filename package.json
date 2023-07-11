@@ -33,7 +33,7 @@
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
     "sync-labels": "github-label-sync --labels .github/labels.json vinejs/vine",
-    "quick:test": "node --loader=ts-node/esm bin/test.ts"
+    "quick:test": "node --loader=ts-node/esm --enable-source-maps bin/test.ts"
   },
   "publishConfig": {
     "access": "public",

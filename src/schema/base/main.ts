@@ -18,11 +18,13 @@ import type {
   ParserOptions,
   ConstructableSchema,
 } from '../../types.js'
+import Macroable from '@poppinss/macroable'
 
 /**
  * Base schema type with only modifiers applicable on all the schema types.
  */
 export abstract class BaseModifiersType<Output, CamelCaseOutput>
+  extends Macroable
   implements ConstructableSchema<Output, CamelCaseOutput>
 {
   /**
