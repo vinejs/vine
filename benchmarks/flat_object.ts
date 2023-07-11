@@ -3,6 +3,8 @@ import Benchmark from 'benchmark'
 import { z } from 'zod'
 import yup from 'yup'
 import vine from '../index.js'
+import Joi from 'joi'
+import Ajv, { AsyncSchema } from 'ajv'
 
 function getData() {
   return {
@@ -29,6 +31,28 @@ const vineSchema = vine.compile(
     password: vine.string(),
   })
 )
+
+const joiSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+}).required()
+
+const ajv = new Ajv.default()
+interface AjvData {
+  username: string
+  password: string
+}
+const ajvSchema: AsyncSchema = {
+  $async: true,
+  type: 'object',
+  properties: {
+    username: { type: 'string', nullable: false },
+    password: { type: 'string', nullable: false },
+  },
+  required: ['username', 'password'],
+  additionalProperties: false,
+}
+const ajvValidator = ajv.compile<AjvData>(ajvSchema)
 
 console.log('===============================')
 console.log('Benchmarking with flat object')
@@ -59,6 +83,23 @@ suite
     fn: function (deferred: any) {
       yupSchema
         .validate(getData())
+        .then(() => deferred.resolve())
+        .catch(console.log)
+    },
+  })
+  .add('Joi', {
+    defer: true,
+    fn: function (deferred: any) {
+      joiSchema
+        .validateAsync(getData())
+        .then(() => deferred.resolve())
+        .catch(console.log)
+    },
+  })
+  .add('Ajv', {
+    defer: true,
+    fn: function (deferred: any) {
+      ajvValidator(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },
