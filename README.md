@@ -43,15 +43,11 @@
 ![](https://github.com/thetutlage/static/blob/main/sponsorkit/sponsors.png?raw=true)
 
 [gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/vinejs/vine/test.yml?style=for-the-badge
-[gh-workflow-url]: https://github.com/vinejs/vine/actions/workflows/test.yml "Github action"
-
+[gh-workflow-url]: https://github.com/vinejs/vine/actions/workflows/test.yml 'Github action'
 [npm-image]: https://img.shields.io/npm/v/@vinejs/vine/latest.svg?style=for-the-badge&logo=npm
-[npm-url]: https://www.npmjs.com/package/@vinejs/vine/v/latest "npm"
-
+[npm-url]: https://www.npmjs.com/package/@vinejs/vine/v/latest 'npm'
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
-
 [license-url]: LICENSE.md
 [license-image]: https://img.shields.io/github/license/vinejs/vine?style=for-the-badge
-
 [snyk-image]: https://img.shields.io/snyk/vulnerabilities/github/vinejs/vine?label=Snyk%20Vulnerabilities&style=for-the-badge
-[snyk-url]: https://snyk.io/test/github/vinejs/vine?targetFile=package.json "snyk"
+[snyk-url]: https://snyk.io/test/github/vinejs/vine?targetFile=package.json 'snyk'

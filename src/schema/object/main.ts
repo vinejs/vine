@@ -20,7 +20,7 @@ import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../..
  * Converts schema properties to camelCase
  */
 export class VineCamelCaseObject<
-  Schema extends VineObject<any, any, any>
+  Schema extends VineObject<any, any, any>,
 > extends BaseModifiersType<Schema[typeof COTYPE], Schema[typeof COTYPE]> {
   #schema: Schema;
 
@@ -65,7 +65,7 @@ export class VineCamelCaseObject<
 export class VineObject<
   Properties extends Record<string, SchemaTypes>,
   Output,
-  CamelCaseOutput
+  CamelCaseOutput,
 > extends BaseType<Output, CamelCaseOutput> {
   /**
    * Object properties

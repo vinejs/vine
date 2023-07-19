@@ -144,7 +144,7 @@ class OptionalModifier<Schema extends BaseModifiersType<any, any>> extends BaseM
  */
 class TransformModifier<
   Schema extends BaseModifiersType<any, any>,
-  Output
+  Output,
 > extends BaseModifiersType<Output, Output> {
   /**
    * The output value of the field. The property points to a type only

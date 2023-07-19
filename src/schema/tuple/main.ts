@@ -21,7 +21,7 @@ import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../..
 export class VineTuple<
   Schema extends SchemaTypes[],
   Output extends any[],
-  CamelCaseOutput extends any[]
+  CamelCaseOutput extends any[],
 > extends BaseType<Output, CamelCaseOutput> {
   #schemas: [...Schema]
 

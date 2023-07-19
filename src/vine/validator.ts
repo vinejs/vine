@@ -35,7 +35,7 @@ const COMPILER_ERROR_MESSAGES = {
  */
 export class VineValidator<
   Schema extends SchemaTypes,
-  MetaData extends undefined | Record<string, any>
+  MetaData extends undefined | Record<string, any>,
 > {
   /**
    * Reference to static types

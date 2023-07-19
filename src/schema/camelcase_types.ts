@@ -21,7 +21,7 @@ type WordInPascalCase<Type> = Capitalize<WordInCamelCase<Uncapitalize<Type & str
 
 type WordInCamelCase<
   Type,
-  Character extends string = ''
+  Character extends string = '',
 > = Type extends `${Character}${infer NextCharacter}${infer _}`
   ? NextCharacter extends Capitalize<NextCharacter>
     ? Character
@@ -45,7 +45,7 @@ type IsPascalCase<Type> = Type extends Capitalize<Type & string> ? true : false
 /** snake_case, CONSTANT_CASE, kebab-case or COBOL-CASE */
 type SeparatorCaseParser<
   Type,
-  Tuple extends readonly any[] = []
+  Tuple extends readonly any[] = [],
 > = Type extends `${infer Word}${Separator}${infer Tail}`
   ? SeparatorCaseParser<Tail, [...Tuple, Lowercase<Word>]>
   : Type extends `${infer Word}`
@@ -80,7 +80,7 @@ type SplitAnyCase<Type> = IncludesSeparator<Type> extends true
 
 type PascalCapitalizer<Type, Tuple extends readonly any[] = []> = Type extends [
   infer Head,
-  ...infer Tail
+  ...infer Tail,
 ]
   ? Head extends string
     ? PascalCapitalizer<Tail, [...Tuple, Capitalize<Head>]>
