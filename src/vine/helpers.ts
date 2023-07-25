@@ -7,7 +7,28 @@
  * file that was distributed with this source code.
  */
 
-import validator from 'validator'
+import isEmail from 'validator/lib/isEmail.js'
+import isURL from 'validator/lib/isURL.js'
+import isAlpha from 'validator/lib/isAlpha.js'
+import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
+import isIP from 'validator/lib/isIP.js'
+import isUUID from 'validator/lib/isUUID.js'
+import isAscii from 'validator/lib/isAscii.js'
+import isCreditCard from 'validator/lib/isCreditCard.js'
+import isIBAN from 'validator/lib/isIBAN.js'
+import isJWT from 'validator/lib/isJWT.js'
+import isLatLong from 'validator/lib/isLatLong.js'
+import isPassportNumber from 'validator/lib/isPassportNumber.js'
+import isSlug from 'validator/lib/isSlug.js'
+import isDecimal from 'validator/lib/isDecimal.js'
+import isHexColor from 'validator/lib/isHexColor.js'
+import isMobilePhone, { type MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+import isPostalCode, { type PostalCodeLocale } from 'validator/lib/isPostalCode.js'
+// @ts-ignore type missing from @types/validator
+import { locales as mobilePhoneLocales } from 'validator/lib/isMobilePhone.js'
+// @ts-ignore type missing from @types/validator
+import { locales as postalCodeLocales } from 'validator/lib/isPostalCode.js'
+
 import { resolve4, resolve6 } from 'node:dns/promises'
 
 const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
@@ -128,24 +149,24 @@ export const helpers = {
     return null
   },
 
-  isEmail: validator.default.isEmail,
-  isURL: validator.default.isURL,
-  isAlpha: validator.default.isAlpha,
-  isAlphaNumeric: validator.default.isAlphanumeric,
-  isIP: validator.default.isIP,
-  isUUID: validator.default.isUUID,
-  isAscii: validator.default.isAscii,
-  isCreditCard: validator.default.isCreditCard,
-  isIBAN: validator.default.isIBAN,
-  isJWT: validator.default.isJWT,
-  isLatLong: validator.default.isLatLong,
-  isMobilePhone: validator.default.isMobilePhone,
-  isPassportNumber: validator.default.isPassportNumber,
-  isPostalCode: validator.default.isPostalCode,
-  isSlug: validator.default.isSlug,
-  isDecimal: validator.default.isDecimal,
-  mobileLocales: validator.default.isMobilePhoneLocales,
-  postalCountryCodes: validator.default.isPostalCodeLocales,
+  isEmail: isEmail.default,
+  isURL: isURL.default,
+  isAlpha: isAlpha.default,
+  isAlphaNumeric: isAlphanumeric.default,
+  isIP: isIP.default,
+  isUUID: isUUID.default,
+  isAscii: isAscii.default,
+  isCreditCard: isCreditCard.default,
+  isIBAN: isIBAN.default,
+  isJWT: isJWT.default,
+  isLatLong: isLatLong.default,
+  isMobilePhone: isMobilePhone.default,
+  isPassportNumber: isPassportNumber.default,
+  isPostalCode: isPostalCode.default,
+  isSlug: isSlug.default,
+  isDecimal: isDecimal.default,
+  mobileLocales: mobilePhoneLocales as MobilePhoneLocale[],
+  postalCountryCodes: postalCodeLocales as PostalCodeLocale[],
   passportCountryCodes: [
     'AM',
     'AR',
@@ -213,7 +234,7 @@ export const helpers = {
     if (!value.startsWith('#')) {
       return false
     }
-    return validator.default.isHexColor(value)
+    return isHexColor.default(value)
   },
 
   /**
