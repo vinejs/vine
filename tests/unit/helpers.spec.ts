@@ -152,7 +152,7 @@ test.group('Vine Helpers', () => {
 
   test('postalCountryCodes contains the list of postal country codes', ({ assert }) => {
     const codes = vine.helpers.postalCountryCodes
-    assert.containsSubset(codes, ['FR', 'UK', 'IT'])
+    assert.containsSubset(codes, ['FR', 'GB', 'IT'])
   })
 
   test('validator.js functions are working', ({ assert }) => {
