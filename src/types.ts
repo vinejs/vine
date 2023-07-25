@@ -21,6 +21,7 @@ import type { IsURLOptions } from 'validator/lib/isURL.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
 
 import type { helpers } from './vine/helpers.js'
 import type { ValidationError } from './errors/validation_error.js'
@@ -64,7 +65,7 @@ export type PassportOptions = {
  * Options accepted by the postal code validation
  */
 export type PostalCodeOptions = {
-  countryCode: (typeof helpers)['postalCountryCodes'][number][]
+  countryCode: PostalCodeLocale[]
 }
 
 /**

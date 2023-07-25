@@ -7,7 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import validator from 'validator'
+import normalizeEmail from 'validator/lib/normalizeEmail.js'
+import escape from 'validator/lib/escape.js'
 import type { FieldContext } from '@vinejs/compiler/types'
 
 import { helpers } from '../../vine/helpers.js'
@@ -358,7 +359,7 @@ export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
       return
     }
 
-    field.mutate(validator.default.normalizeEmail(value as string, options), field)
+    field.mutate(normalizeEmail.default(value as string, options), field)
   }
 )
 
@@ -407,7 +408,7 @@ export const escapeRule = createRule((value, _, field) => {
     return
   }
 
-  field.mutate(validator.default.escape(value as string), field)
+  field.mutate(escape.default(value as string), field)
 })
 
 /**
