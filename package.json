@@ -1,9 +1,12 @@
 {
   "name": "@vinejs/vine",
-  "version": "1.5.3",
   "description": "Form data validation library for Node.js",
-  "type": "module",
+  "version": "1.5.3",
+  "engines": {
+    "node": ">=18.16.0"
+  },
   "main": "build/index.js",
+  "type": "module",
   "files": [
     "build"
   ],
@@ -12,9 +15,6 @@
     "./defaults": "./build/src/defaults.js",
     "./factories": "./build/factories/main.js",
     "./types": "./build/src/types.js"
-  },
-  "engines": {
-    "node": ">=18.16.0"
   },
   "scripts": {
     "pretest": "npm run lint",
@@ -32,13 +32,6 @@
     "sync-labels": "github-label-sync --labels .github/labels.json vinejs/vine",
     "quick:test": "node --loader=ts-node/esm --enable-source-maps bin/test.ts"
   },
-  "publishConfig": {
-    "access": "public",
-    "tag": "latest"
-  },
-  "keywords": [],
-  "author": "virk,vinejs",
-  "license": "MIT",
   "devDependencies": {
     "@adonisjs/eslint-config": "^1.1.8",
     "@adonisjs/prettier-config": "^1.1.8",
@@ -64,10 +57,38 @@
     "yup": "^1.2.0",
     "zod": "^3.21.4"
   },
+  "dependencies": {
+    "@poppinss/macroable": "^1.0.0-6",
+    "@types/validator": "^13.7.17",
+    "@vinejs/compiler": "^2.1.2",
+    "camelcase": "^7.0.1",
+    "normalize-url": "^8.0.0",
+    "validator": "^13.9.0"
+  },
+  "author": "virk,vinejs",
+  "license": "MIT",
+  "homepage": "https://github.com/vinejs/vine#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinejs/vine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vinejs/vine/issues"
+  },
+  "keywords": [],
+  "types": "./build/index.d.ts",
+  "eslintConfig": {
+    "extends": "@adonisjs/eslint-config/package"
+  },
+  "prettier": "@adonisjs/prettier-config",
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
   },
   "np": {
     "message": "chore(release): %s",
@@ -87,30 +108,9 @@
       "benchmarks/**"
     ]
   },
-  "dependencies": {
-    "@poppinss/macroable": "^1.0.0-6",
-    "@types/validator": "^13.7.17",
-    "@vinejs/compiler": "^2.1.2",
-    "camelcase": "^7.0.1",
-    "normalize-url": "^8.0.0",
-    "validator": "^13.9.0"
-  },
-  "types": "./build/index.d.ts",
   "directories": {
     "test": "tests"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vinejs/vine.git"
-  },
-  "bugs": {
-    "url": "https://github.com/vinejs/vine/issues"
-  },
-  "homepage": "https://github.com/vinejs/vine#readme",
-  "eslintConfig": {
-    "extends": "@adonisjs/eslint-config/package"
-  },
-  "prettier": "@adonisjs/prettier-config",
   "tsup": {
     "entry": [
       "./index.ts",
