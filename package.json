@@ -23,7 +23,7 @@
     "prebenchmark": "npm run build",
     "benchmark": "node build/benchmarks/flat_object.js && node build/benchmarks/nested_object.js && node build/benchmarks/array.js && node build/benchmarks/union.js",
     "typecheck": "tsc --noEmit",
-    "compile": "npm run lint && npm run clean && tsup",
+    "compile": "npm run lint && npm run clean && tsup-node",
     "build": "npm run compile",
     "release": "np",
     "version": "npm run build",
