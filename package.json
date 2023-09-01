@@ -61,7 +61,7 @@
     "@poppinss/macroable": "^1.0.0-7",
     "@types/validator": "^13.7.17",
     "@vinejs/compiler": "^2.2.0",
-    "camelcase": "^7.0.1",
+    "camelcase": "^8.0.0",
     "normalize-url": "^8.0.0",
     "validator": "^13.9.0"
   },
