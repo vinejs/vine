@@ -87,4 +87,11 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
       ...args,
     })
   }
+
+  toJSON() {
+    return {
+      messages: this.#messages,
+      fields: this.#fields,
+    }
+  }
 }
