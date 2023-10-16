@@ -171,7 +171,7 @@ test.group('Simple messages provider', () => {
       }
     )
 
-    assert.equal(provider.toJSON(), {
+    assert.deepEqual(provider.toJSON(), {
       messages: {
         required: 'The {{ field }} field is required',
         string: 'The value of {{ field }} field must be a string',
