@@ -35,8 +35,8 @@ type IncludesSeparator<Type> = Type extends `${string}${Separator}${string}` ? t
 type IsOneWord<Type> = Type extends Lowercase<Type & string>
   ? true
   : Type extends Uppercase<Type & string>
-  ? true
-  : false
+    ? true
+    : false
 
 type IsCamelCase<Type> = Type extends Uncapitalize<Type & string> ? true : false
 
@@ -49,34 +49,34 @@ type SeparatorCaseParser<
 > = Type extends `${infer Word}${Separator}${infer Tail}`
   ? SeparatorCaseParser<Tail, [...Tuple, Lowercase<Word>]>
   : Type extends `${infer Word}`
-  ? [...Tuple, Lowercase<Word>]
-  : Tuple
+    ? [...Tuple, Lowercase<Word>]
+    : Tuple
 
 type CamelCaseParser<Type, Tuple extends readonly any[] = []> = Type extends ''
   ? Tuple
   : Type extends `${WordInCamelCase<Type & string>}${infer Tail}`
-  ? Type extends `${infer Word}${Tail}`
-    ? CamelCaseParser<Uncapitalize<Tail>, [...Tuple, Lowercase<Word>]>
+    ? Type extends `${infer Word}${Tail}`
+      ? CamelCaseParser<Uncapitalize<Tail>, [...Tuple, Lowercase<Word>]>
+      : never
     : never
-  : never
 
 type PascalCaseParser<Type, Tuple extends readonly any[] = []> = Type extends ''
   ? Tuple
   : Type extends `${WordInPascalCase<Type & string>}${infer Tail}`
-  ? Type extends `${infer Word}${Tail}`
-    ? PascalCaseParser<Tail, [...Tuple, Lowercase<Word>]>
+    ? Type extends `${infer Word}${Tail}`
+      ? PascalCaseParser<Tail, [...Tuple, Lowercase<Word>]>
+      : never
     : never
-  : never
 
 type SplitAnyCase<Type> = IncludesSeparator<Type> extends true
   ? SeparatorCaseParser<Type>
   : IsOneWord<Type> extends true
-  ? [Lowercase<Type & string>]
-  : IsCamelCase<Type> extends true
-  ? CamelCaseParser<Type>
-  : IsPascalCase<Type> extends true
-  ? PascalCaseParser<Type>
-  : []
+    ? [Lowercase<Type & string>]
+    : IsCamelCase<Type> extends true
+      ? CamelCaseParser<Type>
+      : IsPascalCase<Type> extends true
+        ? PascalCaseParser<Type>
+        : []
 
 type PascalCapitalizer<Type, Tuple extends readonly any[] = []> = Type extends [
   infer Head,
