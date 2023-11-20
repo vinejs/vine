@@ -19,18 +19,19 @@
   "scripts": {
     "pretest": "npm run lint",
     "test": "c8 npm run quick:test",
+    "quick:test": "node --loader=ts-node/esm --enable-source-maps bin/test.ts",
     "clean": "del-cli build",
-    "prebenchmark": "npm run build",
-    "benchmark": "node build/benchmarks/flat_object.js && node build/benchmarks/nested_object.js && node build/benchmarks/array.js && node build/benchmarks/union.js",
     "typecheck": "tsc --noEmit",
-    "compile": "npm run lint && npm run clean && tsup-node",
+    "precompile": "npm run lint && npm run clean",
+    "compile": "tsup-node && tsc --emitDeclarationOnly --declaration",
     "build": "npm run compile",
     "release": "np",
     "version": "npm run build",
+    "prepublishOnly": "npm run build",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
-    "sync-labels": "github-label-sync --labels .github/labels.json vinejs/vine",
-    "quick:test": "node --loader=ts-node/esm --enable-source-maps bin/test.ts"
+    "benchmark": "node build/benchmarks/flat_object.js && node build/benchmarks/nested_object.js && node build/benchmarks/array.js && node build/benchmarks/union.js",
+    "sync-labels": "github-label-sync --labels .github/labels.json vinejs/vine"
   },
   "devDependencies": {
     "@adonisjs/eslint-config": "^1.1.8",
@@ -38,9 +39,9 @@
     "@adonisjs/tsconfig": "^1.1.8",
     "@commitlint/cli": "^18.4.2",
     "@commitlint/config-conventional": "^18.4.2",
-    "@japa/assert": "^2.0.0-1",
-    "@japa/expect-type": "^2.0.0-0",
-    "@japa/runner": "^3.0.0-6",
+    "@japa/assert": "^2.0.1",
+    "@japa/expect-type": "^2.0.0",
+    "@japa/runner": "^3.0.5",
     "@swc/core": "^1.3.96",
     "@types/node": "^20.9.2",
     "benchmark": "^2.1.4",
@@ -58,7 +59,7 @@
     "zod": "^3.22.4"
   },
   "dependencies": {
-    "@poppinss/macroable": "^1.0.0-7",
+    "@poppinss/macroable": "^1.0.0",
     "@types/validator": "^13.11.6",
     "@vinejs/compiler": "^2.3.0",
     "camelcase": "^8.0.0",
@@ -116,12 +117,17 @@
       "./index.ts",
       "./src/defaults.ts",
       "./factories/main.ts",
-      "./src/types.ts"
+      "./src/types.ts",
+      "./benchmarks/flat_object.ts",
+      "./benchmarks/nested_object.ts",
+      "./benchmarks/array.ts",
+      "./benchmarks/union.ts"
     ],
     "outDir": "./build",
     "clean": true,
     "format": "esm",
-    "dts": true,
+    "dts": false,
+    "sourcemap": true,
     "target": "esnext"
   }
 }
