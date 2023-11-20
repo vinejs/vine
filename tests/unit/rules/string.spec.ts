@@ -766,6 +766,44 @@ test.group('String | sameAs', () => {
           },
         },
       },
+      {
+        errorsCount: 1,
+        rule: sameAsRule({ otherField: 'old.password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {},
+        },
+        error: 'The password_confirmation field and old.password field must be the same',
+      },
+      {
+        errorsCount: 1,
+        rule: sameAsRule({ otherField: 'old.password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {},
+          data: {
+            old: {
+              password: 'bar',
+            },
+          },
+        },
+        error: 'The password_confirmation field and old.password field must be the same',
+      },
+      {
+        rule: sameAsRule({ otherField: 'old.password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {},
+          data: {
+            old: {
+              password: 'foo',
+            },
+          },
+        },
+      },
     ])
     .run(stringRuleValidator)
 })
@@ -823,6 +861,49 @@ test.group('String | notSameAs', () => {
           parent: {
             password: '',
           },
+        },
+      },
+      {
+        errorsCount: 1,
+        rule: notSameAsRule({ otherField: 'old.password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: '',
+          },
+          data: {
+            old: {
+              password: 'foo',
+            },
+          },
+        },
+        error: 'The password_confirmation field and old.password field must be different',
+      },
+      {
+        rule: notSameAsRule({ otherField: 'old.password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: '',
+          },
+          data: {
+            old: {
+              password: 'bar',
+            },
+          },
+        },
+      },
+      {
+        rule: notSameAsRule({ otherField: 'old.password' }),
+        value: 'foo',
+        field: {
+          name: 'password_confirmation',
+          parent: {
+            password: '',
+          },
+          data: {},
         },
       },
     ])

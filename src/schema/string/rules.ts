@@ -7,12 +7,15 @@
  * file that was distributed with this source code.
  */
 
-import normalizeEmail from 'validator/lib/normalizeEmail.js'
+import delve from 'dlv'
+import camelcase from 'camelcase'
+import normalizeUrl from 'normalize-url'
 import escape from 'validator/lib/escape.js'
 import type { FieldContext } from '@vinejs/compiler/types'
+import normalizeEmail from 'validator/lib/normalizeEmail.js'
 
-import { helpers } from '../../vine/helpers.js'
 import { messages } from '../../defaults.js'
+import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 import type {
   URLOptions,
@@ -26,8 +29,18 @@ import type {
   AlphaNumericOptions,
   NormalizeEmailOptions,
 } from '../../types.js'
-import camelcase from 'camelcase'
-import normalizeUrl from 'normalize-url'
+
+/**
+ * Returns the nested value from the field root
+ * object or the sibling value from the field
+ * parent object
+ */
+function getNestedValue(key: string, field: FieldContext) {
+  if (key.indexOf('.') > -1) {
+    return delve(field.data, key)
+  }
+  return field.parent[key]
+}
 
 /**
  * Validates the value to be a string
@@ -280,7 +293,7 @@ export const sameAsRule = createRule<{ otherField: string }>((value, options, fi
     return
   }
 
-  const input = field.parent[options.otherField]
+  const input = getNestedValue(options.otherField, field)
 
   /**
    * Performing validation and reporting error
@@ -302,7 +315,7 @@ export const notSameAsRule = createRule<{ otherField: string }>((value, options,
     return
   }
 
-  const input = field.parent[options.otherField]
+  const input = getNestedValue(options.otherField, field)
 
   /**
    * Performing validation and reporting error
