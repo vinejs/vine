@@ -16,6 +16,8 @@ import {
   beforeRule,
   sameAsRule,
   equalsRule,
+  weekendRule,
+  weekdayRule,
   notSameAsRule,
   afterFieldRule,
   beforeFieldRule,
@@ -1444,6 +1446,97 @@ test.group('Date | beforeOrSameAs', () => {
         },
       })
       .execute([date, beforeOrSameAs], '2023/01/20')
+
+    validated.assertSucceeded()
+  })
+})
+
+test.group('Date | weekend', () => {
+  test('skip validation when value is not a valid date', () => {
+    const date = dateRule({})
+    const weekend = weekendRule()
+    const validated = validator.execute([date, weekend], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a datetime value')
+  })
+
+  test('skip validation when value is not a valid date with bail mode disabled', () => {
+    const date = dateRule({})
+    const weekend = weekendRule()
+    const validated = validator.bail(false).execute([date, weekend], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a datetime value')
+  })
+
+  test('report error when date is not a weekend', () => {
+    const date = dateRule({ formats: ['YYYY-MM-DD'] })
+    const weekend = weekendRule()
+    const validated = validator.execute([date, weekend], '2023-11-21')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field is not a weekend')
+  })
+
+  test('pass when date falls on Saturday', () => {
+    const date = dateRule({ formats: ['YYYY-MM-DD'] })
+    const weekend = weekendRule()
+    const validated = validator.execute([date, weekend], '2023-11-18')
+
+    validated.assertSucceeded()
+  })
+
+  test('pass when date falls on Sunday', () => {
+    const date = dateRule({ formats: ['YYYY-MM-DD'] })
+    const weekend = weekendRule()
+    const validated = validator.execute([date, weekend], '2023-11-19')
+
+    validated.assertSucceeded()
+  })
+})
+
+test.group('Date | weekday', () => {
+  test('skip validation when value is not a valid date', () => {
+    const date = dateRule({})
+    const weekday = weekdayRule()
+    const validated = validator.execute([date, weekday], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a datetime value')
+  })
+
+  test('skip validation when value is not a valid date with bail mode disabled', () => {
+    const date = dateRule({})
+    const weekday = weekdayRule()
+    const validated = validator.bail(false).execute([date, weekday], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a datetime value')
+  })
+
+  test('report error when date falls on Saturday', () => {
+    const date = dateRule({ formats: ['YYYY-MM-DD'] })
+    const weekday = weekdayRule()
+    const validated = validator.execute([date, weekday], '2023-11-18')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field is not a weekday')
+  })
+
+  test('report error when date falls on Sunday', () => {
+    const date = dateRule({ formats: ['YYYY-MM-DD'] })
+    const weekday = weekdayRule()
+    const validated = validator.execute([date, weekday], '2023-11-19')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field is not a weekday')
+  })
+
+  test('pass when date falls on a Weekday', () => {
+    const date = dateRule({ formats: ['YYYY-MM-DD'] })
+    const weekday = weekdayRule()
+    const validated = validator.execute([date, weekday], '2023-11-21')
 
     validated.assertSucceeded()
   })

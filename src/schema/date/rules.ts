@@ -547,3 +547,35 @@ export const beforeOrSameAsRule = createRule<
     })
   }
 })
+
+/**
+ * The weekend rule ensures the date falls on a weekend
+ */
+export const weekendRule = createRule((_, __, field) => {
+  if (!field.meta.$value) {
+    return
+  }
+
+  const dateTime = field.meta.$value as Dayjs
+  const day = dateTime.day()
+
+  if (day !== 0 && day !== 6) {
+    field.report(messages['date.weekend'], 'date.weekend', field)
+  }
+})
+
+/**
+ * The weekday rule ensures the date falls on a weekday
+ */
+export const weekdayRule = createRule((_, __, field) => {
+  if (!field.meta.$value) {
+    return
+  }
+
+  const dateTime = field.meta.$value as Dayjs
+  const day = dateTime.day()
+
+  if (day === 0 || day === 6) {
+    field.report(messages['date.weekday'], 'date.weekday', field)
+  }
+})

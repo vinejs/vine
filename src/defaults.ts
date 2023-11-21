@@ -92,6 +92,9 @@ export const messages = {
   'date.afterOrSameAs': 'The {{ field }} field must be a date after or same as {{ otherField }}',
   'date.beforeField': 'The {{ field }} field must be a date before {{ otherField }}',
   'date.beforeOrSameAs': 'The {{ field }} field must be a date before or same as {{ otherField }}',
+
+  'date.weekend': 'The {{ field }} field is not a weekend',
+  'date.weekday': 'The {{ field }} field is not a weekday',
 }
 
 /**

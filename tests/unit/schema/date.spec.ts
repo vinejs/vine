@@ -17,6 +17,8 @@ import {
   beforeRule,
   sameAsRule,
   equalsRule,
+  weekendRule,
+  weekdayRule,
   notSameAsRule,
   afterFieldRule,
   beforeFieldRule,
@@ -837,6 +839,72 @@ test.group('VineDate | applying rules', () => {
     assert.deepEqual(refs.toJSON()['ref://2'], {
       validator: beforeOrSameAs.rule.validator,
       options: beforeOrSameAs.options,
+    })
+  })
+
+  test('apply weekend rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.date().weekend()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const weekend = weekendRule()
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: weekend.rule.validator,
+      options: weekend.options,
+    })
+  })
+
+  test('apply weekday rule', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.date().weekday()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'literal',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      parseFnId: undefined,
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+      ],
+    })
+
+    const weekday = weekdayRule()
+    assert.deepEqual(refs.toJSON()['ref://2'], {
+      validator: weekday.rule.validator,
+      options: weekday.options,
     })
   })
 })

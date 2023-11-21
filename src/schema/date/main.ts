@@ -16,6 +16,8 @@ import {
   beforeRule,
   sameAsRule,
   equalsRule,
+  weekendRule,
+  weekdayRule,
   notSameAsRule,
   afterFieldRule,
   beforeFieldRule,
@@ -53,6 +55,8 @@ export class VineDate extends BaseLiteralType<Date, Date> {
     afterOrSameAs: afterOrSameAsRule,
     beforeField: beforeFieldRule,
     beforeOrSameAs: beforeOrSameAsRule,
+    weekend: weekendRule,
+    weekday: weekdayRule,
   };
 
   /**
@@ -218,6 +222,20 @@ export class VineDate extends BaseLiteralType<Date, Date> {
    */
   beforeOrSameAs(otherField: string, options?: DateEqualsOptions): this {
     return this.use(beforeOrSameAsRule({ otherField, ...options }))
+  }
+
+  /**
+   * The weekend rule ensures the date falls on a weekend
+   */
+  weekend(): this {
+    return this.use(weekendRule())
+  }
+
+  /**
+   * The weekday rule ensures the date falls on a weekday
+   */
+  weekday(): this {
+    return this.use(weekdayRule())
   }
 
   /**
