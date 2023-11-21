@@ -7,29 +7,31 @@
  * file that was distributed with this source code.
  */
 
-import isEmail from 'validator/lib/isEmail.js'
-import isURL from 'validator/lib/isURL.js'
-import isAlpha from 'validator/lib/isAlpha.js'
-import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
+import delve from 'dlv'
 import isIP from 'validator/lib/isIP.js'
+import isJWT from 'validator/lib/isJWT.js'
+import isURL from 'validator/lib/isURL.js'
+import isSlug from 'validator/lib/isSlug.js'
+import isIBAN from 'validator/lib/isIBAN.js'
 import isUUID from 'validator/lib/isUUID.js'
 import isAscii from 'validator/lib/isAscii.js'
-import isCreditCard from 'validator/lib/isCreditCard.js'
-import isIBAN from 'validator/lib/isIBAN.js'
-import isJWT from 'validator/lib/isJWT.js'
+import isEmail from 'validator/lib/isEmail.js'
+import isAlpha from 'validator/lib/isAlpha.js'
 import isLatLong from 'validator/lib/isLatLong.js'
-import isPassportNumber from 'validator/lib/isPassportNumber.js'
-import isSlug from 'validator/lib/isSlug.js'
 import isDecimal from 'validator/lib/isDecimal.js'
 import isHexColor from 'validator/lib/isHexColor.js'
-import isMobilePhone, { type MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+import { resolve4, resolve6 } from 'node:dns/promises'
+import isCreditCard from 'validator/lib/isCreditCard.js'
+import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
+import isPassportNumber from 'validator/lib/isPassportNumber.js'
 import isPostalCode, { type PostalCodeLocale } from 'validator/lib/isPostalCode.js'
+import isMobilePhone, { type MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 // @ts-ignore type missing from @types/validator
 import { locales as mobilePhoneLocales } from 'validator/lib/isMobilePhone.js'
 // @ts-ignore type missing from @types/validator
 import { locales as postalCodeLocales } from 'validator/lib/isPostalCode.js'
 
-import { resolve4, resolve6 } from 'node:dns/promises'
+import type { FieldContext } from '../types.js'
 
 const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
 const BOOLEAN_NEGATIVES = ['0', 0, 'false', false]
@@ -332,5 +334,17 @@ export const helpers = {
     }
 
     return true
+  },
+
+  /**
+   * Returns the nested value from the field root
+   * object or the sibling value from the field
+   * parent object
+   */
+  getNestedValue(key: string, field: FieldContext) {
+    if (key.indexOf('.') > -1) {
+      return delve(field.data, key)
+    }
+    return field.parent[key]
   },
 }

@@ -7,6 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import type dayjs from 'dayjs'
+import type { Options as UrlOptions } from 'normalize-url'
+import type { IsURLOptions } from 'validator/lib/isURL.js'
+import type { IsEmailOptions } from 'validator/lib/isEmail.js'
+import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
+import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
+import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 import type {
   ParseFn,
   RefsStore,
@@ -16,12 +23,6 @@ import type {
   MessagesProviderContact,
   ErrorReporterContract as BaseReporter,
 } from '@vinejs/compiler/types'
-import type { Options as UrlOptions } from 'normalize-url'
-import type { IsURLOptions } from 'validator/lib/isURL.js'
-import type { IsEmailOptions } from 'validator/lib/isEmail.js'
-import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
-import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
-import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
 
 import type { helpers } from './vine/helpers.js'
 import type { ValidationError } from './errors/validation_error.js'
@@ -199,6 +200,22 @@ export type FieldOptions = {
   bail: boolean
   isOptional: boolean
   parse?: Parser
+}
+
+/**
+ * A set of options accepted by the date field
+ */
+export type DateFieldOptions = {
+  formats?: dayjs.OptionType
+}
+
+/**
+ * A set of options accepted by the equals rule
+ * on the date field
+ */
+export type DateEqualsOptions = {
+  compare?: dayjs.OpUnitType
+  format?: dayjs.OptionType
 }
 
 /**

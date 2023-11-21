@@ -7,7 +7,6 @@
  * file that was distributed with this source code.
  */
 
-import delve from 'dlv'
 import camelcase from 'camelcase'
 import normalizeUrl from 'normalize-url'
 import escape from 'validator/lib/escape.js'
@@ -29,18 +28,6 @@ import type {
   AlphaNumericOptions,
   NormalizeEmailOptions,
 } from '../../types.js'
-
-/**
- * Returns the nested value from the field root
- * object or the sibling value from the field
- * parent object
- */
-function getNestedValue(key: string, field: FieldContext) {
-  if (key.indexOf('.') > -1) {
-    return delve(field.data, key)
-  }
-  return field.parent[key]
-}
 
 /**
  * Validates the value to be a string
@@ -293,7 +280,7 @@ export const sameAsRule = createRule<{ otherField: string }>((value, options, fi
     return
   }
 
-  const input = getNestedValue(options.otherField, field)
+  const input = helpers.getNestedValue(options.otherField, field)
 
   /**
    * Performing validation and reporting error
@@ -315,7 +302,7 @@ export const notSameAsRule = createRule<{ otherField: string }>((value, options,
     return
   }
 
-  const input = getNestedValue(options.otherField, field)
+  const input = helpers.getNestedValue(options.otherField, field)
 
   /**
    * Performing validation and reporting error
