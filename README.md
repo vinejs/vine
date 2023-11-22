@@ -12,7 +12,7 @@
 
 <div align="center">
 
-[![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url] [![snyk-image]][snyk-url]
+[![gh-workflow-image]][gh-workflow-url] [![npm-image]][npm-url] ![][typescript-image] [![license-image]][license-url]
 
 </div>
 
@@ -49,5 +49,3 @@
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [license-url]: LICENSE.md
 [license-image]: https://img.shields.io/github/license/vinejs/vine?style=for-the-badge
-[snyk-image]: https://img.shields.io/snyk/vulnerabilities/github/vinejs/vine?label=Snyk%20Vulnerabilities&style=for-the-badge
-[snyk-url]: https://snyk.io/test/github/vinejs/vine?targetFile=package.json 'snyk'
