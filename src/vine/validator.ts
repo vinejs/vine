@@ -124,15 +124,16 @@ export class VineValidator<
       ? [options?: ValidationOptions<MetaData> | undefined]
       : [options: ValidationOptions<MetaData>]
   ): Promise<Infer<Schema>> {
-    if (options?.meta && this.#metaDataValidator) {
-      this.#metaDataValidator(options.meta)
+    let normalizedOptions = options || ({} as ValidationOptions<MetaData>)
+    if (normalizedOptions.meta && this.#metaDataValidator) {
+      this.#metaDataValidator(normalizedOptions.meta)
     }
 
-    const errorReporter = options?.errorReporter || this.errorReporter
-    const messagesProvider = options?.messagesProvider || this.messagesProvider
+    const errorReporter = normalizedOptions.errorReporter || this.errorReporter
+    const messagesProvider = normalizedOptions.messagesProvider || this.messagesProvider
     return this.#validateFn(
       data,
-      options?.meta || {},
+      normalizedOptions.meta || {},
       this.#refs,
       messagesProvider,
       errorReporter()
