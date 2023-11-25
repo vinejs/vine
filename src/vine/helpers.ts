@@ -20,7 +20,6 @@ import isAlpha from 'validator/lib/isAlpha.js'
 import isLatLong from 'validator/lib/isLatLong.js'
 import isDecimal from 'validator/lib/isDecimal.js'
 import isHexColor from 'validator/lib/isHexColor.js'
-import { resolve4, resolve6 } from 'node:dns/promises'
 import isCreditCard from 'validator/lib/isCreditCard.js'
 import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
 import isPassportNumber from 'validator/lib/isPassportNumber.js'
@@ -243,6 +242,8 @@ export const helpers = {
    * Check if a URL has valid `A` or `AAAA` DNS records
    */
   isActiveURL: async (url: string): Promise<boolean> => {
+    const { resolve4, resolve6 } = await import('node:dns/promises')
+
     try {
       const { hostname } = new URL(url)
       const v6Addresses = await resolve6(hostname)
