@@ -63,28 +63,19 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema
-        .validate(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      vineSchema.validate(getData()).then(() => deferred.resolve())
     },
   })
   .add('Zod', {
     defer: true,
     fn: function (deferred: any) {
-      zodSchema
-        .parseAsync(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      zodSchema.parseAsync(getData()).then(() => deferred.resolve())
     },
   })
   .add('Yup', {
     defer: true,
     fn: function (deferred: any) {
-      yupSchema
-        .validate(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      yupSchema.validate(getData()).then(() => deferred.resolve())
     },
   })
   .on('cycle', function (event: any) {
@@ -93,4 +84,4 @@ suite
   .on('complete', function (this: any) {
     console.log('Fastest is ' + this.filter('fastest').map('name'))
   })
-  .run({ async: false })
+  .run({ async: true })
