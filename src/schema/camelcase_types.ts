@@ -32,11 +32,12 @@ type Separator = '_' | '-'
 
 type IncludesSeparator<Type> = Type extends `${string}${Separator}${string}` ? true : false
 
-type IsOneWord<Type> = Type extends Lowercase<Type & string>
-  ? true
-  : Type extends Uppercase<Type & string>
+type IsOneWord<Type> =
+  Type extends Lowercase<Type & string>
     ? true
-    : false
+    : Type extends Uppercase<Type & string>
+      ? true
+      : false
 
 type IsCamelCase<Type> = Type extends Uncapitalize<Type & string> ? true : false
 
@@ -68,15 +69,16 @@ type PascalCaseParser<Type, Tuple extends readonly any[] = []> = Type extends ''
       : never
     : never
 
-type SplitAnyCase<Type> = IncludesSeparator<Type> extends true
-  ? SeparatorCaseParser<Type>
-  : IsOneWord<Type> extends true
-    ? [Lowercase<Type & string>]
-    : IsCamelCase<Type> extends true
-      ? CamelCaseParser<Type>
-      : IsPascalCase<Type> extends true
-        ? PascalCaseParser<Type>
-        : []
+type SplitAnyCase<Type> =
+  IncludesSeparator<Type> extends true
+    ? SeparatorCaseParser<Type>
+    : IsOneWord<Type> extends true
+      ? [Lowercase<Type & string>]
+      : IsCamelCase<Type> extends true
+        ? CamelCaseParser<Type>
+        : IsPascalCase<Type> extends true
+          ? PascalCaseParser<Type>
+          : []
 
 type PascalCapitalizer<Type, Tuple extends readonly any[] = []> = Type extends [
   infer Head,
@@ -97,6 +99,5 @@ type Join<Type, JoinedString extends string = ''> = Type extends [infer Head, ..
     : Join<Tail>
   : JoinedString
 
-export type CamelCase<Type> = IsStringLiteral<Type> extends true
-  ? Join<CamelCapitalizer<SplitAnyCase<Type>>>
-  : Type
+export type CamelCase<Type> =
+  IsStringLiteral<Type> extends true ? Join<CamelCapitalizer<SplitAnyCase<Type>>> : Type
