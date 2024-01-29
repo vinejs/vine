@@ -13,9 +13,9 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore.js'
 import customParseFormat from 'dayjs/plugin/customParseFormat.js'
 
 import { messages } from '../../defaults.js'
+import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 import type { DateEqualsOptions, DateFieldOptions, FieldContext } from '../../types.js'
-import { helpers } from '../../vine/helpers.js'
 
 export const DEFAULT_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss']
 
@@ -31,13 +31,39 @@ dayjs.extend(isSameOrBefore)
  * as per the expected date-time format.
  */
 export const dateRule = createRule<Partial<DateFieldOptions>>((value, options, field) => {
-  if (typeof value !== 'string') {
+  if (typeof value !== 'string' && typeof value !== 'number') {
     field.report(messages.date, 'date', field)
     return
   }
 
-  const formats = options.formats || DEFAULT_DATE_FORMATS
-  const dateTime = dayjs(value, formats, true)
+  let isTimestampAllowed = false
+  let formats: DateEqualsOptions['format'] = options.formats || DEFAULT_DATE_FORMATS
+
+  /**
+   * DayJS mutates the formats property under the hood. There
+   * we have to create a shallow clone before passing formats.
+   *
+   * https://github.com/iamkun/dayjs/issues/2136
+   */
+  if (Array.isArray(formats)) {
+    formats = [...formats]
+    isTimestampAllowed = formats.includes('x')
+  } else if (typeof formats !== 'string') {
+    formats = { ...formats }
+    isTimestampAllowed = formats.format === 'x'
+  }
+
+  const valueAsNumber = isTimestampAllowed ? helpers.asNumber(value) : value
+
+  /**
+   * The timestamp validation does not work with formats array
+   * when using "customFormatsPlugin". Therefore we have
+   * to create dayjs instance without formats option
+   */
+  const dateTime =
+    isTimestampAllowed && !Number.isNaN(valueAsNumber)
+      ? dayjs(valueAsNumber)
+      : dayjs(value, formats, true)
 
   /**
    * Ensure post parsing the datetime instance is valid
