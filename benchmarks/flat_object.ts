@@ -3,6 +3,7 @@ import Benchmark from 'benchmark'
 import { z } from 'zod'
 import * as yup from 'yup'
 import vine from '../index.js'
+import * as valibot from 'valibot'
 
 function getData() {
   return {
@@ -30,6 +31,11 @@ const vineSchema = vine.compile(
   })
 )
 
+const valibotSchema = valibot.object({
+  username: valibot.string(),
+  password: valibot.string(),
+})
+
 console.log('===============================')
 console.log('Benchmarking with flat object')
 console.log('===============================')
@@ -52,6 +58,12 @@ suite
     defer: true,
     fn: function (deferred: any) {
       yupSchema.validate(getData()).then(() => deferred.resolve())
+    },
+  })
+  .add('Valibot', {
+    defer: true,
+    fn: function (deferred: any) {
+      valibot.parseAsync(valibotSchema, getData()).then(() => deferred.resolve())
     },
   })
   .on('cycle', function (event: any) {
