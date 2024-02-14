@@ -1,8 +1,9 @@
 // @ts-ignore
 import Benchmark from 'benchmark'
 import { z } from 'zod'
-import yup from 'yup'
+import * as yup from 'yup'
 import vine from '../index.js'
+import * as valibot from 'valibot'
 
 function getData() {
   return {
@@ -54,6 +55,15 @@ const vineSchema = vine.compile(
   })
 )
 
+const valibotSchema = valibot.object({
+  contacts: valibot.array(
+    valibot.object({
+      type: valibot.string(),
+      value: valibot.string(),
+    })
+  ),
+})
+
 console.log('======================')
 console.log('Benchmarking arrays')
 console.log('======================')
@@ -76,6 +86,12 @@ suite
     defer: true,
     fn: function (deferred: any) {
       yupSchema.validate(getData()).then(() => deferred.resolve())
+    },
+  })
+  .add('Valibot', {
+    defer: true,
+    fn: function (deferred: any) {
+      valibot.parseAsync(valibotSchema, getData()).then(() => deferred.resolve())
     },
   })
   .on('cycle', function (event: any) {

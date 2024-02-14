@@ -1,8 +1,9 @@
 // @ts-ignore
 import Benchmark from 'benchmark'
 import { z } from 'zod'
-import yup from 'yup'
+import * as yup from 'yup'
 import vine from '../index.js'
+import * as valibot from 'valibot'
 
 function getData() {
   return {
@@ -48,6 +49,15 @@ const vineSchema = vine.compile(
   })
 )
 
+const valibotSchame = valibot.object({
+  username: valibot.string(),
+  password: valibot.string(),
+  contact: valibot.object({
+    name: valibot.string(),
+    address: valibot.optional(valibot.string()),
+  }),
+})
+
 console.log('=================================')
 console.log('Benchmarking with nested object')
 console.log('=================================')
@@ -70,6 +80,12 @@ suite
     defer: true,
     fn: function (deferred: any) {
       yupSchema.validate(getData()).then(() => deferred.resolve())
+    },
+  })
+  .add('Valibot', {
+    defer: true,
+    fn: function (deferred: any) {
+      valibot.parseAsync(valibotSchame, getData()).then(() => deferred.resolve())
     },
   })
   .on('cycle', function (event: any) {

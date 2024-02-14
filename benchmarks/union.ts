@@ -2,6 +2,7 @@
 import Benchmark from 'benchmark'
 import { z } from 'zod'
 import vine from '../index.js'
+import * as valibot from 'valibot'
 
 function getData() {
   return {
@@ -46,6 +47,19 @@ const vineSchema = vine.compile(
   })
 )
 
+const valibotSchema = valibot.object({
+  contact: valibot.union([
+    valibot.object({
+      type: valibot.literal('email'),
+      email: valibot.string(),
+    }),
+    valibot.object({
+      type: valibot.literal('phone'),
+      mobile_number: valibot.string(),
+    }),
+  ]),
+})
+
 console.log('=======================')
 console.log('Benchmarking unions')
 console.log('=======================')
@@ -62,6 +76,12 @@ suite
     defer: true,
     fn: function (deferred: any) {
       zodSchema.parseAsync(getData()).then(() => deferred.resolve())
+    },
+  })
+  .add('Valibot', {
+    defer: true,
+    fn: function (deferred: any) {
+      valibot.parseAsync(valibotSchema, getData()).then(() => deferred.resolve())
     },
   })
   .on('cycle', function (event: any) {
