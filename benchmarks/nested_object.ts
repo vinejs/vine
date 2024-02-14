@@ -1,7 +1,7 @@
 // @ts-ignore
 import Benchmark from 'benchmark'
 import { z } from 'zod'
-import yup from 'yup'
+import * as yup from 'yup'
 import vine from '../index.js'
 
 function getData() {
