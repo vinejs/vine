@@ -4,6 +4,8 @@ import { z } from 'zod'
 import * as yup from 'yup'
 import vine from '../index.js'
 import * as valibot from 'valibot'
+import Joi from 'joi'
+import Ajv, { AsyncSchema } from 'ajv'
 
 function getData() {
   return {
@@ -36,6 +38,28 @@ const valibotSchema = valibot.object({
   password: valibot.string(),
 })
 
+const joiSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+}).required()
+
+const ajv = new Ajv.default()
+interface AjvData {
+  username: string
+  password: string
+}
+const ajvSchema: AsyncSchema = {
+  $async: true,
+  type: 'object',
+  properties: {
+    username: { type: 'string', nullable: false },
+    password: { type: 'string', nullable: false },
+  },
+  required: ['username', 'password'],
+  additionalProperties: false,
+}
+const ajvValidator = ajv.compile<AjvData>(ajvSchema)
+
 console.log('===============================')
 console.log('Benchmarking with flat object')
 console.log('===============================')
@@ -64,6 +88,23 @@ suite
     defer: true,
     fn: function (deferred: any) {
       valibot.parseAsync(valibotSchema, getData()).then(() => deferred.resolve())
+    },
+  })
+  .add('Joi', {
+    defer: true,
+    fn: function (deferred: any) {
+      joiSchema
+        .validateAsync(getData())
+        .then(() => deferred.resolve())
+        .catch(console.log)
+    },
+  })
+  .add('Ajv', {
+    defer: true,
+    fn: function (deferred: any) {
+      ajvValidator(getData())
+        .then(() => deferred.resolve())
+        .catch(console.log)
     },
   })
   .on('cycle', function (event: any) {
