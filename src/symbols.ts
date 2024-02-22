@@ -10,7 +10,7 @@
 /**
  * The symbol to define a unique name for the schema type
  */
-export const UNIQUE_NAME = Symbol.for('schema_nme')
+export const UNIQUE_NAME = Symbol.for('schema_name')
 
 /**
  * The symbol to check if a value is of the given schema
