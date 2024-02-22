@@ -156,3 +156,31 @@ test.group('Simple messages provider | interpolation', () => {
     )
   })
 })
+
+test.group('Simple messages provider', () => {
+  test('serialize to json', ({ assert }) => {
+    const provider = new SimpleMessagesProvider(
+      {
+        required: 'The {{ field }} field is required',
+        string: 'The value of {{ field }} field must be a string',
+        email: 'The value is not a valid email address',
+      },
+      {
+        first_name: 'first name',
+        last_name: 'last name',
+      }
+    )
+
+    assert.deepEqual(provider.toJSON(), {
+      messages: {
+        required: 'The {{ field }} field is required',
+        string: 'The value of {{ field }} field must be a string',
+        email: 'The value is not a valid email address',
+      },
+      fields: {
+        first_name: 'first name',
+        last_name: 'last name',
+      },
+    })
+  })
+})

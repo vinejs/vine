@@ -22,9 +22,9 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
   #messages: ValidationMessages
   #fields: ValidationFields
 
-  constructor(messages: ValidationMessages, fields: ValidationFields) {
+  constructor(messages: ValidationMessages, fields?: ValidationFields) {
     this.#messages = messages
-    this.#fields = fields
+    this.#fields = fields || {}
   }
 
   /**
@@ -86,5 +86,12 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
       field: fieldName,
       ...args,
     })
+  }
+
+  toJSON() {
+    return {
+      messages: this.#messages,
+      fields: this.#fields,
+    }
   }
 }

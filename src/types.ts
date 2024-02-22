@@ -7,6 +7,13 @@
  * file that was distributed with this source code.
  */
 
+import type dayjs from 'dayjs'
+import type { Options as UrlOptions } from 'normalize-url'
+import type { IsURLOptions } from 'validator/lib/isURL.js'
+import type { IsEmailOptions } from 'validator/lib/isEmail.js'
+import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
+import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
+import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 import type {
   ParseFn,
   RefsStore,
@@ -16,11 +23,6 @@ import type {
   MessagesProviderContact,
   ErrorReporterContract as BaseReporter,
 } from '@vinejs/compiler/types'
-import type { Options as UrlOptions } from 'normalize-url'
-import type { IsURLOptions } from 'validator/lib/isURL.js'
-import type { IsEmailOptions } from 'validator/lib/isEmail.js'
-import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
-import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 
 import type { helpers } from './vine/helpers.js'
 import type { ValidationError } from './errors/validation_error.js'
@@ -64,7 +66,7 @@ export type PassportOptions = {
  * Options accepted by the postal code validation
  */
 export type PostalCodeOptions = {
-  countryCode: (typeof helpers)['postalCountryCodes'][number][]
+  countryCode: PostalCodeLocale[]
 }
 
 /**
@@ -201,6 +203,22 @@ export type FieldOptions = {
 }
 
 /**
+ * A set of options accepted by the date field
+ */
+export type DateFieldOptions = {
+  formats?: dayjs.OptionType
+}
+
+/**
+ * A set of options accepted by the equals rule
+ * on the date field
+ */
+export type DateEqualsOptions = {
+  compare?: dayjs.OpUnitType
+  format?: dayjs.OptionType
+}
+
+/**
  * Options accepted when compiling schema types.
  */
 export type ParserOptions = {
@@ -220,11 +238,15 @@ export interface ErrorReporterContract extends BaseReporter {
 }
 
 /**
+ * The validator function to validate metadata given to a validation
+ * pipeline
+ */
+export type MetaDataValidator = (meta: Record<string, any>) => void
+
+/**
  * Options accepted during the validate call.
  */
-export type ValidationOptions = {
-  meta?: Record<string, any>
-
+export type ValidationOptions<MetaData extends Record<string, any> | undefined> = {
   /**
    * Messages provider is used to resolve error messages during
    * the validation lifecycle
@@ -236,7 +258,13 @@ export type ValidationOptions = {
    * can decide how to format and output errors.
    */
   errorReporter?: () => ErrorReporterContract
-}
+} & ([undefined] extends MetaData
+  ? {
+      meta?: MetaData
+    }
+  : {
+      meta: MetaData
+    })
 
 /**
  * Infers the schema type

@@ -17,6 +17,7 @@ import { fields, messages } from '../defaults.js'
 import type {
   Infer,
   SchemaTypes,
+  MetaDataValidator,
   ValidationOptions,
   ErrorReporterContract,
   MessagesProviderContact,
@@ -62,11 +63,28 @@ export class Vine extends SchemaBuilder {
    * ```
    */
   compile<Schema extends SchemaTypes>(schema: Schema) {
-    return new VineValidator(schema, {
+    return new VineValidator<Schema, Record<string, any> | undefined>(schema, {
       convertEmptyStringsToNull: this.convertEmptyStringsToNull,
       messagesProvider: this.messagesProvider,
       errorReporter: this.errorReporter,
     })
+  }
+
+  /**
+   * Define a callback to validate the metadata given to the validator
+   * at runtime
+   */
+  withMetaData<MetaData extends Record<string, any>>(callback?: MetaDataValidator) {
+    return {
+      compile: <Schema extends SchemaTypes>(schema: Schema) => {
+        return new VineValidator<Schema, MetaData>(schema, {
+          convertEmptyStringsToNull: this.convertEmptyStringsToNull,
+          messagesProvider: this.messagesProvider,
+          errorReporter: this.errorReporter,
+          metaDataValidator: callback,
+        })
+      },
+    }
   }
 
   /**
@@ -94,7 +112,7 @@ export class Vine extends SchemaBuilder {
        * Data to validate
        */
       data: any
-    } & ValidationOptions
+    } & ValidationOptions<Record<string, any> | undefined>
   ): Promise<Infer<Schema>> {
     const validator = this.compile(options.schema)
     return validator.validate(options.data, options)

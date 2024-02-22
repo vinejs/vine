@@ -7,8 +7,30 @@
  * file that was distributed with this source code.
  */
 
-import validator from 'validator'
-import { resolve4, resolve6 } from 'node:dns/promises'
+import delve from 'dlv'
+import isIP from 'validator/lib/isIP.js'
+import isJWT from 'validator/lib/isJWT.js'
+import isURL from 'validator/lib/isURL.js'
+import isSlug from 'validator/lib/isSlug.js'
+import isIBAN from 'validator/lib/isIBAN.js'
+import isUUID from 'validator/lib/isUUID.js'
+import isAscii from 'validator/lib/isAscii.js'
+import isEmail from 'validator/lib/isEmail.js'
+import isAlpha from 'validator/lib/isAlpha.js'
+import isLatLong from 'validator/lib/isLatLong.js'
+import isDecimal from 'validator/lib/isDecimal.js'
+import isHexColor from 'validator/lib/isHexColor.js'
+import isCreditCard from 'validator/lib/isCreditCard.js'
+import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
+import isPassportNumber from 'validator/lib/isPassportNumber.js'
+import isPostalCode, { type PostalCodeLocale } from 'validator/lib/isPostalCode.js'
+import isMobilePhone, { type MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+// @ts-ignore type missing from @types/validator
+import { locales as mobilePhoneLocales } from 'validator/lib/isMobilePhone.js'
+// @ts-ignore type missing from @types/validator
+import { locales as postalCodeLocales } from 'validator/lib/isPostalCode.js'
+
+import type { FieldContext } from '../types.js'
 
 const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
 const BOOLEAN_NEGATIVES = ['0', 0, 'false', false]
@@ -128,24 +150,24 @@ export const helpers = {
     return null
   },
 
-  isEmail: validator.default.isEmail,
-  isURL: validator.default.isURL,
-  isAlpha: validator.default.isAlpha,
-  isAlphaNumeric: validator.default.isAlphanumeric,
-  isIP: validator.default.isIP,
-  isUUID: validator.default.isUUID,
-  isAscii: validator.default.isAscii,
-  isCreditCard: validator.default.isCreditCard,
-  isIBAN: validator.default.isIBAN,
-  isJWT: validator.default.isJWT,
-  isLatLong: validator.default.isLatLong,
-  isMobilePhone: validator.default.isMobilePhone,
-  isPassportNumber: validator.default.isPassportNumber,
-  isPostalCode: validator.default.isPostalCode,
-  isSlug: validator.default.isSlug,
-  isDecimal: validator.default.isDecimal,
-  mobileLocales: validator.default.isMobilePhoneLocales,
-  postalCountryCodes: validator.default.isPostalCodeLocales,
+  isEmail: isEmail.default,
+  isURL: isURL.default,
+  isAlpha: isAlpha.default,
+  isAlphaNumeric: isAlphanumeric.default,
+  isIP: isIP.default,
+  isUUID: isUUID.default,
+  isAscii: isAscii.default,
+  isCreditCard: isCreditCard.default,
+  isIBAN: isIBAN.default,
+  isJWT: isJWT.default,
+  isLatLong: isLatLong.default,
+  isMobilePhone: isMobilePhone.default,
+  isPassportNumber: isPassportNumber.default,
+  isPostalCode: isPostalCode.default,
+  isSlug: isSlug.default,
+  isDecimal: isDecimal.default,
+  mobileLocales: mobilePhoneLocales as MobilePhoneLocale[],
+  postalCountryCodes: postalCodeLocales as PostalCodeLocale[],
   passportCountryCodes: [
     'AM',
     'AR',
@@ -213,13 +235,15 @@ export const helpers = {
     if (!value.startsWith('#')) {
       return false
     }
-    return validator.default.isHexColor(value)
+    return isHexColor.default(value)
   },
 
   /**
    * Check if a URL has valid `A` or `AAAA` DNS records
    */
   isActiveURL: async (url: string): Promise<boolean> => {
+    const { resolve4, resolve6 } = await import('node:dns/promises')
+
     try {
       const { hostname } = new URL(url)
       const v6Addresses = await resolve6(hostname)
@@ -311,5 +335,17 @@ export const helpers = {
     }
 
     return true
+  },
+
+  /**
+   * Returns the nested value from the field root
+   * object or the sibling value from the field
+   * parent object
+   */
+  getNestedValue(key: string, field: FieldContext) {
+    if (key.indexOf('.') > -1) {
+      return delve(field.data, key)
+    }
+    return field.parent[key]
   },
 }

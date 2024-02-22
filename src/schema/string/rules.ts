@@ -7,11 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import validator from 'validator'
+import camelcase from 'camelcase'
+import normalizeUrl from 'normalize-url'
+import escape from 'validator/lib/escape.js'
 import type { FieldContext } from '@vinejs/compiler/types'
+import normalizeEmail from 'validator/lib/normalizeEmail.js'
 
-import { helpers } from '../../vine/helpers.js'
 import { messages } from '../../defaults.js'
+import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 import type {
   URLOptions,
@@ -25,8 +28,6 @@ import type {
   AlphaNumericOptions,
   NormalizeEmailOptions,
 } from '../../types.js'
-import camelcase from 'camelcase'
-import normalizeUrl from 'normalize-url'
 
 /**
  * Validates the value to be a string
@@ -279,7 +280,7 @@ export const sameAsRule = createRule<{ otherField: string }>((value, options, fi
     return
   }
 
-  const input = field.parent[options.otherField]
+  const input = helpers.getNestedValue(options.otherField, field)
 
   /**
    * Performing validation and reporting error
@@ -301,7 +302,7 @@ export const notSameAsRule = createRule<{ otherField: string }>((value, options,
     return
   }
 
-  const input = field.parent[options.otherField]
+  const input = helpers.getNestedValue(options.otherField, field)
 
   /**
    * Performing validation and reporting error
@@ -358,7 +359,7 @@ export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
       return
     }
 
-    field.mutate(validator.default.normalizeEmail(value as string, options), field)
+    field.mutate(normalizeEmail.default(value as string, options), field)
   }
 )
 
@@ -407,7 +408,7 @@ export const escapeRule = createRule((value, _, field) => {
     return
   }
 
-  field.mutate(validator.default.escape(value as string), field)
+  field.mutate(escape.default(value as string), field)
 })
 
 /**

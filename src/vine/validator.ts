@@ -8,11 +8,17 @@
  */
 
 import { Compiler, refsBuilder } from '@vinejs/compiler'
-import type { MessagesProviderContact, Refs } from '@vinejs/compiler/types'
+import type { MessagesProviderContact } from '@vinejs/compiler/types'
 
 import { messages } from '../defaults.js'
 import { OTYPE, PARSE } from '../symbols.js'
-import type { ErrorReporterContract, Infer, SchemaTypes, ValidationOptions } from '../types.js'
+import type {
+  Infer,
+  SchemaTypes,
+  MetaDataValidator,
+  ValidationOptions,
+  ErrorReporterContract,
+} from '../types.js'
 
 /**
  * Error messages to share with the compiler
@@ -27,7 +33,10 @@ const COMPILER_ERROR_MESSAGES = {
  * Vine Validator exposes the API to validate data using a pre-compiled
  * schema.
  */
-export class VineValidator<Schema extends SchemaTypes> {
+export class VineValidator<
+  Schema extends SchemaTypes,
+  MetaData extends undefined | Record<string, any>,
+> {
   /**
    * Reference to static types
    */
@@ -58,36 +67,6 @@ export class VineValidator<Schema extends SchemaTypes> {
   }
 
   /**
-   * Refs computed from the compiled output
-   */
-  #refs: Refs
-
-  /**
-   * Compiled validator function
-   */
-  #validateFn: ReturnType<Compiler['compile']>
-
-  constructor(
-    schema: Schema,
-    options: {
-      convertEmptyStringsToNull: boolean
-      messagesProvider: MessagesProviderContact
-      errorReporter: () => ErrorReporterContract
-    }
-  ) {
-    const { compilerNode, refs } = this.#parse(schema)
-
-    this.#refs = refs
-    this.#validateFn = new Compiler(compilerNode, {
-      convertEmptyStringsToNull: options.convertEmptyStringsToNull,
-      messages: COMPILER_ERROR_MESSAGES,
-    }).compile()
-
-    this.errorReporter = options.errorReporter
-    this.messagesProvider = options.messagesProvider
-  }
-
-  /**
    * Validate data against a schema. Optionally, you can share metaData with
    * the validator
    *
@@ -102,15 +81,69 @@ export class VineValidator<Schema extends SchemaTypes> {
    * })
    * ```
    */
-  validate(data: any, options?: ValidationOptions): Promise<Infer<Schema>> {
-    const errorReporter = options?.errorReporter || this.errorReporter
-    const messagesProvider = options?.messagesProvider || this.messagesProvider
-    return this.#validateFn(
-      data,
-      options?.meta || {},
-      this.#refs,
-      messagesProvider,
-      errorReporter()
-    )
+  declare validate: (
+    data: any,
+    ...[options]: [undefined] extends MetaData
+      ? [options?: ValidationOptions<MetaData> | undefined]
+      : [options: ValidationOptions<MetaData>]
+  ) => Promise<Infer<Schema>>
+
+  constructor(
+    schema: Schema,
+    options: {
+      convertEmptyStringsToNull: boolean
+      metaDataValidator?: MetaDataValidator
+      messagesProvider: MessagesProviderContact
+      errorReporter: () => ErrorReporterContract
+    }
+  ) {
+    /**
+     * Compile the schema to a re-usable function
+     */
+    const { compilerNode, refs } = this.#parse(schema)
+    const metaDataValidator = options.metaDataValidator
+    const validateFn = new Compiler(compilerNode, {
+      convertEmptyStringsToNull: options.convertEmptyStringsToNull,
+      messages: COMPILER_ERROR_MESSAGES,
+    }).compile()
+
+    /**
+     * Assign error reporter and messages provider to public
+     * properties so that they can be overridden at the
+     * validator level.
+     */
+    this.errorReporter = options.errorReporter
+    this.messagesProvider = options.messagesProvider
+
+    /**
+     * Creating specialized functions with and without the
+     * metadata validator to optimize the runtime
+     * performance.
+     */
+    if (metaDataValidator) {
+      this.validate = (
+        data: any,
+        validateOptions?: ValidationOptions<MetaData>
+      ): Promise<Infer<Schema>> => {
+        let normalizedOptions = validateOptions ?? ({} as ValidationOptions<MetaData>)
+        const meta = normalizedOptions.meta ?? {}
+        const errorReporter = normalizedOptions.errorReporter ?? this.errorReporter
+        const messagesProvider = normalizedOptions.messagesProvider ?? this.messagesProvider
+
+        metaDataValidator!(meta)
+        return validateFn(data, meta, refs, messagesProvider, errorReporter())
+      }
+    } else {
+      this.validate = (
+        data: any,
+        validateOptions?: ValidationOptions<MetaData>
+      ): Promise<Infer<Schema>> => {
+        let normalizedOptions = validateOptions ?? ({} as ValidationOptions<MetaData>)
+        const meta = normalizedOptions.meta ?? {}
+        const errorReporter = normalizedOptions.errorReporter ?? this.errorReporter
+        const messagesProvider = normalizedOptions.messagesProvider ?? this.messagesProvider
+        return validateFn(data, meta, refs, messagesProvider, errorReporter())
+      }
+    }
   }
 }

@@ -77,6 +77,24 @@ export const messages = {
   'union': 'Invalid value provided for {{ field }} field',
   'unionGroup': 'Invalid value provided for {{ field }} field',
   'unionOfTypes': 'Invalid value provided for {{ field }} field',
+
+  'date': 'The {{ field }} field must be a datetime value',
+  'date.equals': 'The {{ field }} field must be a date equal to {{ expectedValue }}',
+  'date.after': 'The {{ field }} field must be a date after {{ expectedValue }}',
+  'date.before': 'The {{ field }} field must be a date before {{ expectedValue }}',
+  'date.afterOrEqual': 'The {{ field }} field must be a date after or equal to {{ expectedValue }}',
+  'date.beforeOrEqual':
+    'The {{ field }} field must be a date before or equal to {{ expectedValue }}',
+
+  'date.sameAs': 'The {{ field }} field and {{ otherField }} field must be the same',
+  'date.notSameAs': 'The {{ field }} field and {{ otherField }} field must be different',
+  'date.afterField': 'The {{ field }} field must be a date after {{ otherField }}',
+  'date.afterOrSameAs': 'The {{ field }} field must be a date after or same as {{ otherField }}',
+  'date.beforeField': 'The {{ field }} field must be a date before {{ otherField }}',
+  'date.beforeOrSameAs': 'The {{ field }} field must be a date before or same as {{ otherField }}',
+
+  'date.weekend': 'The {{ field }} field is not a weekend',
+  'date.weekday': 'The {{ field }} field is not a weekday',
 }
 
 /**

@@ -8,6 +8,7 @@
  */
 
 import camelcase from 'camelcase'
+import Macroable from '@poppinss/macroable'
 import type { LiteralNode, RefsStore } from '@vinejs/compiler/types'
 
 import { OTYPE, COTYPE, PARSE, VALIDATION } from '../../symbols.js'
@@ -25,6 +26,7 @@ import type {
  * Base schema type with only modifiers applicable on all the schema types.
  */
 abstract class BaseModifiersType<Output, CamelCaseOutput>
+  extends Macroable
   implements ConstructableSchema<Output, CamelCaseOutput>
 {
   /**
@@ -142,7 +144,7 @@ class OptionalModifier<Schema extends BaseModifiersType<any, any>> extends BaseM
  */
 class TransformModifier<
   Schema extends BaseModifiersType<any, any>,
-  Output
+  Output,
 > extends BaseModifiersType<Output, Output> {
   /**
    * The output value of the field. The property points to a type only

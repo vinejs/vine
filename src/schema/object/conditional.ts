@@ -19,7 +19,7 @@ import type { ParserOptions, SchemaTypes } from '../../types.js'
 export class GroupConditional<
   Properties extends Record<string, SchemaTypes>,
   Output,
-  CamelCaseOutput
+  CamelCaseOutput,
 > {
   declare [OTYPE]: Output;
   declare [COTYPE]: CamelCaseOutput

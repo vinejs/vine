@@ -144,4 +144,20 @@ test.group('Vine Helpers', () => {
     .run(async ({ assert }, { url, result }) => {
       assert.equal(await vine.helpers.isActiveURL(url), result)
     })
+
+  test('mobileLocales contains the list of mobile locales', ({ assert }) => {
+    const codes = vine.helpers.mobileLocales
+    assert.containsSubset(codes, ['fr-FR', 'en-GB', 'de-DE'])
+  })
+
+  test('postalCountryCodes contains the list of postal country codes', ({ assert }) => {
+    const codes = vine.helpers.postalCountryCodes
+    assert.containsSubset(codes, ['FR', 'GB', 'IT'])
+  })
+
+  test('validator.js functions are working', ({ assert }) => {
+    assert.isTrue(vine.helpers.isSlug('hello-world'))
+    assert.isTrue(vine.helpers.isPostalCode('69200', 'FR'))
+    assert.isTrue(vine.helpers.isMobilePhone('0612345678', 'fr-FR'))
+  })
 })

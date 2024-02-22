@@ -26,7 +26,8 @@ import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
 import { VineUnionOfTypes } from './union_of_types/main.js'
 import { OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
-import type { EnumLike, FieldContext, SchemaTypes } from '../types.js'
+import type { DateFieldOptions, EnumLike, FieldContext, SchemaTypes } from '../types.js'
+import { VineDate } from './date/main.js'
 
 /**
  * Schema builder exposes methods to construct a Vine schema. You may
@@ -69,6 +70,13 @@ export class SchemaBuilder extends Macroable {
    */
   number(options?: { strict: boolean }) {
     return new VineNumber(options)
+  }
+
+  /**
+   * Define a datetime value
+   */
+  date(options?: DateFieldOptions) {
+    return new VineDate(options)
   }
 
   /**

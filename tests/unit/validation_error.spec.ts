@@ -26,7 +26,7 @@ test.group('Exception', () => {
     try {
       throw new ValidationError([{ message: 'Field is required' }])
     } catch (error) {
-      assert.match(error.stack.split('\n')[1], new RegExp(import.meta.url))
+      assert.match(error.stack.split('\n')[1], /validation_error.spec.ts/)
     }
   })
 

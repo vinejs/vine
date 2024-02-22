@@ -2,6 +2,7 @@
 import Benchmark from 'benchmark'
 import { z } from 'zod'
 import vine from '../index.js'
+import * as valibot from 'valibot'
 import Joi from 'joi'
 import Ajv, { AsyncSchema } from 'ajv'
 
@@ -47,6 +48,19 @@ const vineSchema = vine.compile(
     ]),
   })
 )
+
+const valibotSchema = valibot.object({
+  contact: valibot.union([
+    valibot.object({
+      type: valibot.literal('email'),
+      email: valibot.string(),
+    }),
+    valibot.object({
+      type: valibot.literal('phone'),
+      mobile_number: valibot.string(),
+    }),
+  ]),
+})
 
 const joiSchema = Joi.object({
   contact: Joi.alternatives()
@@ -109,19 +123,19 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema
-        .validate(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      vineSchema.validate(getData()).then(() => deferred.resolve())
     },
   })
   .add('Zod', {
     defer: true,
     fn: function (deferred: any) {
-      zodSchema
-        .parseAsync(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      zodSchema.parseAsync(getData()).then(() => deferred.resolve())
+    },
+  })
+  .add('Valibot', {
+    defer: true,
+    fn: function (deferred: any) {
+      valibot.parseAsync(valibotSchema, getData()).then(() => deferred.resolve())
     },
   })
   .add('Joi', {
@@ -147,4 +161,4 @@ suite
   .on('complete', function (this: any) {
     console.log('Fastest is ' + this.filter('fastest').map('name'))
   })
-  .run({ async: false })
+  .run({ async: true })

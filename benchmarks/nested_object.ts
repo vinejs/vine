@@ -1,8 +1,9 @@
 // @ts-ignore
 import Benchmark from 'benchmark'
 import { z } from 'zod'
-import yup from 'yup'
+import * as yup from 'yup'
 import vine from '../index.js'
+import * as valibot from 'valibot'
 import Joi from 'joi'
 import Ajv, { AsyncSchema } from 'ajv'
 
@@ -49,6 +50,15 @@ const vineSchema = vine.compile(
     }),
   })
 )
+
+const valibotSchame = valibot.object({
+  username: valibot.string(),
+  password: valibot.string(),
+  contact: valibot.object({
+    name: valibot.string(),
+    address: valibot.optional(valibot.string()),
+  }),
+})
 
 const joiSchema = Joi.object({
   username: Joi.string().required(),
@@ -97,28 +107,25 @@ suite
   .add('Vine', {
     defer: true,
     fn: function (deferred: any) {
-      vineSchema
-        .validate(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      vineSchema.validate(getData()).then(() => deferred.resolve())
     },
   })
   .add('Zod', {
     defer: true,
     fn: function (deferred: any) {
-      zodSchema
-        .parseAsync(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      zodSchema.parseAsync(getData()).then(() => deferred.resolve())
     },
   })
   .add('Yup', {
     defer: true,
     fn: function (deferred: any) {
-      yupSchema
-        .validate(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
+      yupSchema.validate(getData()).then(() => deferred.resolve())
+    },
+  })
+  .add('Valibot', {
+    defer: true,
+    fn: function (deferred: any) {
+      valibot.parseAsync(valibotSchame, getData()).then(() => deferred.resolve())
     },
   })
   .add('Joi', {
@@ -144,4 +151,4 @@ suite
   .on('complete', function (this: any) {
     console.log('Fastest is ' + this.filter('fastest').map('name'))
   })
-  .run({ async: false })
+  .run({ async: true })
