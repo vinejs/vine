@@ -89,15 +89,9 @@ class NullableModifier<Schema extends BaseModifiersType<any, any>> extends BaseM
 > {
   #parent: Schema
 
-  /**
-   * Optional modifier validations list
-   */
-  validations: Validation<any>[]
-
-  constructor(parent: Schema, validations?: Validation<any>[]) {
+  constructor(parent: Schema) {
     super()
     this.#parent = parent
-    this.validations = validations || []
   }
 
   /**
