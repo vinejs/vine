@@ -364,7 +364,7 @@ test.group('VineString | clone', () => {
 
   test('apply nullable modifier and clone', ({ assert }) => {
     const schema = vine.string().nullable()
-    const schema1 = schema.clone().optional()
+    const schema1 = schema.clone().optional().requiredIfMissing('bar')
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -396,13 +396,18 @@ test.group('VineString | clone', () => {
           isAsync: false,
           ruleFnId: 'ref://1',
         },
+        {
+          implicit: true,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
       ],
     })
   })
 
   test('apply optional modifier and clone', ({ assert }) => {
-    const schema = vine.string().optional()
-    const schema1 = schema.clone().nullable()
+    const schema = vine.string().optional().requiredIfMissing('bar')
+    const schema1 = schema.clone().requiredIfExists('foo').nullable()
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -417,6 +422,11 @@ test.group('VineString | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+        },
+        {
+          implicit: true,
+          isAsync: false,
+          ruleFnId: 'ref://2',
         },
       ],
     })
@@ -433,6 +443,16 @@ test.group('VineString | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+        },
+        {
+          implicit: true,
+          isAsync: false,
+          ruleFnId: 'ref://2',
+        },
+        {
+          implicit: true,
+          isAsync: false,
+          ruleFnId: 'ref://3',
         },
       ],
     })
