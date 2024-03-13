@@ -17,7 +17,8 @@
     ".": "./build/index.js",
     "./defaults": "./build/src/defaults.js",
     "./factories": "./build/factories/main.js",
-    "./types": "./build/src/types.js"
+    "./types": "./build/src/types.js",
+    "./schema/base/*": "./build/src/schema/*.js"
   },
   "scripts": {
     "pretest": "npm run lint",
