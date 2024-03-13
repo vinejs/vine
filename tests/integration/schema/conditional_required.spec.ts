@@ -94,12 +94,12 @@ test.group('requiredIfExists', () => {
   })
 })
 
-test.group('requiredIfExistsAny', () => {
+test.group('requiredIfAnyExists', () => {
   test('fail if value is missing and any one of the other field is present', async ({ assert }) => {
     const schema = vine.object({
       email: vine.string().optional(),
       username: vine.string().optional(),
-      password: vine.string().optional().requiredIfExistsAny(['email', 'username']),
+      password: vine.string().optional().requiredIfAnyExists(['email', 'username']),
     })
 
     const data = {
@@ -119,7 +119,7 @@ test.group('requiredIfExistsAny', () => {
     const schema = vine.object({
       email: vine.string().optional(),
       username: vine.string().optional(),
-      password: vine.string().optional().requiredIfExistsAny(['email', 'username']),
+      password: vine.string().optional().requiredIfAnyExists(['email', 'username']),
     })
 
     const data = {
@@ -219,12 +219,12 @@ test.group('requiredIfMissing', () => {
   })
 })
 
-test.group('requiredIfMissingAny', () => {
+test.group('requiredIfAnyMissing', () => {
   test('fail if value is missing and any one of the other field is missing', async ({ assert }) => {
     const schema = vine.object({
       email: vine.string().optional(),
       username: vine.string().optional(),
-      githubId: vine.string().optional().requiredIfMissingAny(['email', 'username']),
+      githubId: vine.string().optional().requiredIfAnyMissing(['email', 'username']),
     })
 
     const data = {
@@ -244,7 +244,7 @@ test.group('requiredIfMissingAny', () => {
     const schema = vine.object({
       email: vine.string().optional(),
       username: vine.string().optional(),
-      githubId: vine.string().optional().requiredIfMissingAny(['email', 'username']),
+      githubId: vine.string().optional().requiredIfAnyMissing(['email', 'username']),
     })
 
     const data = {

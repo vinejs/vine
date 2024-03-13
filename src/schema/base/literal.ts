@@ -265,7 +265,7 @@ class OptionalModifier<Schema extends BaseModifiersType<any, any>> extends BaseM
    * one of the other fields are present with non-nullable
    * value.
    */
-  requiredIfExistsAny(fields: string[]) {
+  requiredIfAnyExists(fields: string[]) {
     return this.use(
       requiredWhen((field) => {
         return fields.some((otherField) =>
@@ -295,7 +295,7 @@ class OptionalModifier<Schema extends BaseModifiersType<any, any>> extends BaseM
    * Mark the field under validation as required when any
    * one of the other fields are missing.
    */
-  requiredIfMissingAny(fields: string[]) {
+  requiredIfAnyMissing(fields: string[]) {
     return this.use(
       requiredWhen((field) => {
         return fields.some((otherField) =>
