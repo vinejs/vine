@@ -9,7 +9,6 @@
 
 import { test } from '@japa/runner'
 import vine from '../../../index.js'
-import { helpers } from '../../../src/vine/helpers.js'
 
 test.group('requiredIfExists', () => {
   test('fail when value is missing but other field exists', async ({ assert }) => {
@@ -260,16 +259,11 @@ test.group('requiredIfMissingAny', () => {
   })
 })
 
-test.group('requiredWhen | optional', () => {
+test.group('requiredWhen', () => {
   test('fail when required field is missing', async ({ assert }) => {
     const schema = vine.object({
       game: vine.string().optional(),
-      teamName: vine
-        .string()
-        .optional()
-        .requiredWhen((field) => {
-          return helpers.exists(field.data.game) && field.data.game === 'volleyball'
-        }),
+      teamName: vine.string().optional().requiredWhen('game', '=', 'volleyball'),
     })
 
     const data = {
@@ -285,15 +279,25 @@ test.group('requiredWhen | optional', () => {
     ])
   })
 
+  test('pass when required condition has not been met', async ({ assert }) => {
+    const schema = vine.object({
+      game: vine.string().optional(),
+      teamName: vine.string().optional().requiredWhen('game', '=', 'volleyball'),
+    })
+
+    const data = {
+      game: 'handball',
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      game: 'handball',
+    })
+  })
+
   test('pass when required field is defined', async ({ assert }) => {
     const schema = vine.object({
       game: vine.string().optional(),
-      teamName: vine
-        .string()
-        .optional()
-        .requiredWhen((field) => {
-          return helpers.exists(field.data.game) && field.data.game === 'volleyball'
-        }),
+      teamName: vine.string().optional().requiredWhen('game', '=', 'volleyball'),
     })
 
     const data = {
@@ -305,5 +309,162 @@ test.group('requiredWhen | optional', () => {
       game: 'volleyball',
       teamName: 'foo',
     })
+  })
+
+  test('compare using "not equal" operator', async ({ assert }) => {
+    const schema = vine.object({
+      game: vine.string().optional(),
+      teamName: vine.string().optional().requiredWhen('game', '!=', 'volleyball'),
+    })
+
+    const data = {
+      game: 'handball',
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'teamName',
+        message: 'The teamName field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('compare using "in" operator', async ({ assert }) => {
+    const schema = vine.object({
+      game: vine.string().optional(),
+      teamName: vine.string().optional().requiredWhen('game', 'in', ['volleyball']),
+    })
+
+    const data = {
+      game: 'volleyball',
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'teamName',
+        message: 'The teamName field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('compare using "not In" operator', async ({ assert }) => {
+    const schema = vine.object({
+      game: vine.string().optional(),
+      teamName: vine.string().optional().requiredWhen('game', 'notIn', ['volleyball']),
+    })
+
+    const data = {
+      game: 'handball',
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'teamName',
+        message: 'The teamName field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('compare using ">" operator', async ({ assert }) => {
+    const schema = vine.object({
+      age: vine.number(),
+      guardianName: vine.string().optional().requiredWhen('age', '>', 1),
+    })
+
+    const data = {
+      age: 2,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'guardianName',
+        message: 'The guardianName field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('compare using "<" operator', async ({ assert }) => {
+    const schema = vine.object({
+      age: vine.number(),
+      guardianName: vine.string().optional().requiredWhen('age', '<', 19),
+    })
+
+    const data = {
+      age: 2,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'guardianName',
+        message: 'The guardianName field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('compare using "<=" operator', async ({ assert }) => {
+    const schema = vine.object({
+      age: vine.number(),
+      guardianName: vine.string().optional().requiredWhen('age', '<=', 18),
+    })
+
+    const data = {
+      age: 18,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'guardianName',
+        message: 'The guardianName field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('compare using ">=" operator', async ({ assert }) => {
+    const schema = vine.object({
+      age: vine.number(),
+      guardianName: vine.string().optional().requiredWhen('age', '>=', 1),
+    })
+
+    const data = {
+      age: 1,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'guardianName',
+        message: 'The guardianName field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('compare using custom callback', async ({ assert }) => {
+    const schema = vine.object({
+      game: vine.string().optional(),
+      teamName: vine
+        .string()
+        .optional()
+        .requiredWhen((field) => {
+          return field.parent.game === 'volleyball'
+        }),
+    })
+
+    const data = {
+      game: 'volleyball',
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'teamName',
+        message: 'The teamName field must be defined',
+        rule: 'required',
+      },
+    ])
   })
 })

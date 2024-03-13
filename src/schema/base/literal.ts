@@ -21,6 +21,9 @@ import type {
   FieldOptions,
   ParserOptions,
   ConstructableSchema,
+  ComparisonOperators,
+  ArrayComparisonOperators,
+  NumericComparisonOperators,
 } from '../../types.js'
 import { requiredWhen } from './rules.js'
 import { helpers } from '../../vine/helpers.js'
@@ -177,8 +180,68 @@ class OptionalModifier<Schema extends BaseModifiersType<any, any>> extends BaseM
    * field as required, or "false" to skip the required
    * validation
    */
-  requiredWhen(callback: (field: FieldContext) => boolean) {
-    return this.use(requiredWhen(callback))
+  requiredWhen<Operator extends ComparisonOperators>(
+    otherField: string,
+    operator: Operator,
+    expectedValue: Operator extends ArrayComparisonOperators
+      ? (string | number | boolean)[]
+      : Operator extends NumericComparisonOperators
+        ? number
+        : string | number | boolean
+  ): this
+  requiredWhen(callback: (field: FieldContext) => boolean): this
+  requiredWhen(
+    otherField: string | ((field: FieldContext) => boolean),
+    operator?: ComparisonOperators,
+    expectedValue?: any
+  ) {
+    /**
+     * The equality check if self implemented
+     */
+    if (typeof otherField === 'function') {
+      return this.use(requiredWhen(otherField))
+    }
+
+    /**
+     * Creating the checker function based upon the
+     * operator used for the comparison
+     */
+    let checker: (value: any) => boolean
+    switch (operator!) {
+      case '=':
+        checker = (value) => value === expectedValue
+        break
+      case '!=':
+        checker = (value) => value !== expectedValue
+        break
+      case 'in':
+        checker = (value) => expectedValue.includes(value)
+        break
+      case 'notIn':
+        checker = (value) => !expectedValue.includes(value)
+        break
+      case '>':
+        checker = (value) => value > expectedValue
+        break
+      case '<':
+        checker = (value) => value < expectedValue
+        break
+      case '>=':
+        checker = (value) => value >= expectedValue
+        break
+      case '<=':
+        checker = (value) => value <= expectedValue
+    }
+
+    /**
+     * Registering rule with custom implementation
+     */
+    return this.use(
+      requiredWhen((field) => {
+        const otherFieldValue = helpers.getNestedValue(otherField, field)
+        return checker(otherFieldValue)
+      })
+    )
   }
 
   /**

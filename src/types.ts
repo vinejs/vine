@@ -270,3 +270,11 @@ export type ValidationOptions<MetaData extends Record<string, any> | undefined> 
  * Infers the schema type
  */
 export type Infer<Schema extends { [OTYPE]: any }> = Schema[typeof OTYPE]
+
+/**
+ * Comparison operators supported by requiredWhen
+ * rule
+ */
+export type NumericComparisonOperators = '>' | '<' | '>=' | '<='
+export type ArrayComparisonOperators = 'in' | 'notIn'
+export type ComparisonOperators = ArrayComparisonOperators | NumericComparisonOperators | '=' | '!='
