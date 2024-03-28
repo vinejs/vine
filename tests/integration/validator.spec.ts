@@ -20,7 +20,6 @@ import vine, {
   VineLiteral,
   VineBoolean,
 } from '../../index.js'
-import { InferInput } from '../../src/types.js'
 
 test.group('Validator | metadata', () => {
   test('pass metadata to the validation pipeline', async ({ assert }) => {
