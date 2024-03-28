@@ -41,6 +41,20 @@ test.group('Simple messages provider | resolving messages', () => {
     )
   })
 
+  test('give priority to wildcard path message', ({ assert }) => {
+    const provider = new SimpleMessagesProvider(
+      {
+        'required': 'The field is required',
+        'users.*.username.required': 'Username is required',
+      },
+      {}
+    )
+
+    const ctx = fieldContext.create('username', undefined)
+    ctx.wildCardPath = 'users.*.username'
+    assert.equal(provider.getMessage('Enter value', 'required', ctx), 'Username is required')
+  })
+
   test('use default message when no message is provided', ({ assert }) => {
     const provider = new SimpleMessagesProvider(
       {

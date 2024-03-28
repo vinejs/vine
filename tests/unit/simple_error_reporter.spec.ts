@@ -61,6 +61,9 @@ test.group('Simple error reporter', () => {
         isArrayMember: true,
         name: 0,
         wildCardPath: 'scores.*',
+        getFieldPath() {
+          return `scores.0`
+        },
         parent: [],
       },
     })
@@ -68,7 +71,7 @@ test.group('Simple error reporter', () => {
     assert.isTrue(reporter.hasErrors)
     assert.deepEqual(reporter.errors, [
       {
-        field: 'scores.*',
+        field: 'scores.0',
         message: 'Scores are required',
         index: 0,
         rule: 'required',

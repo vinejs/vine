@@ -22,13 +22,13 @@ test.group('Array | array of numbers', () => {
 
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
-        field: 'categories.*',
+        field: 'categories.1',
         index: 1,
         message: 'The 1 field must be a number',
         rule: 'number',
       },
       {
-        field: 'categories.*',
+        field: 'categories.2',
         index: 2,
         message: 'The 2 field must be a number',
         rule: 'number',
@@ -68,7 +68,7 @@ test.group('Array | array of objects', () => {
 
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
-        field: 'contacts.*',
+        field: 'contacts.0',
         index: 0,
         message: 'The 0 field must be an object',
         rule: 'object',
@@ -142,7 +142,7 @@ test.group('Array | array of unions', () => {
 
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
-        field: 'contacts.*',
+        field: 'contacts.0',
         index: 0,
         message: 'Invalid value provided for 0 field',
         rule: 'union',
@@ -202,7 +202,7 @@ test.group('Array | array of unions', () => {
 
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
-        field: 'contacts.*',
+        field: 'contacts.0',
         index: 0,
         message: 'Invalid contact. Either provide an email or a phone number',
         rule: 'unknown_contact_type',
@@ -267,7 +267,7 @@ test.group('Array | array of unions', () => {
 
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
-        field: 'contacts.*.email',
+        field: 'contacts.0.email',
         message: 'The email field must be a valid email address',
         rule: 'email',
       },

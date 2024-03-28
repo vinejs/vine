@@ -55,7 +55,7 @@ export class SimpleErrorReporter implements ErrorReporterContract {
     const error: SimpleError = {
       message,
       rule,
-      field: field.wildCardPath,
+      field: field.getFieldPath(),
     }
 
     if (meta) {

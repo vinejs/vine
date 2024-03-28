@@ -60,7 +60,7 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
     /**
      * 1st priority is given to the field messages
      */
-    const fieldMessage = this.#messages[`${field.wildCardPath}.${rule}`]
+    const fieldMessage = this.#messages[`${field.getFieldPath()}.${rule}`]
     if (fieldMessage) {
       return this.#interpolate(fieldMessage, {
         field: fieldName,
@@ -69,7 +69,18 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
     }
 
     /**
-     * 2nd priority is for rule messages
+     * 2nd priority is for the wildcard path messages
+     */
+    const wildcardMessage = this.#messages[`${field.wildCardPath}.${rule}`]
+    if (wildcardMessage) {
+      return this.#interpolate(wildcardMessage, {
+        field: fieldName,
+        ...args,
+      })
+    }
+
+    /**
+     * 3rd priority is for rule messages
      */
     const ruleMessage = this.#messages[rule]
     if (ruleMessage) {
