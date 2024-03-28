@@ -26,7 +26,7 @@ import type {
 
 import type { helpers } from './vine/helpers.js'
 import type { ValidationError } from './errors/validation_error.js'
-import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE } from './symbols.js'
+import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from './symbols.js'
 
 /**
  * Options accepted by the mobile number validation
@@ -112,7 +112,8 @@ export type ValidationFields = Record<string, string>
  * Constructable schema type refers to any type that can be
  * constructed for type inference and compiler output
  */
-export interface ConstructableSchema<Output, CamelCaseOutput> {
+export interface ConstructableSchema<Inputs, Output, CamelCaseOutput> {
+  [ITYPE]: Inputs
   [OTYPE]: Output
   [COTYPE]: CamelCaseOutput
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes
@@ -124,7 +125,7 @@ export interface ConstructableSchema<Output, CamelCaseOutput> {
   [UNIQUE_NAME]?: string
   [IS_OF_TYPE]?: (value: unknown, field: FieldContext) => boolean
 }
-export type SchemaTypes = ConstructableSchema<any, any>
+export type SchemaTypes = ConstructableSchema<any, any, any>
 
 /**
  * Representation of a function that performs validation.
@@ -270,6 +271,7 @@ export type ValidationOptions<MetaData extends Record<string, any> | undefined> 
  * Infers the schema type
  */
 export type Infer<Schema extends { [OTYPE]: any }> = Schema[typeof OTYPE]
+export type InferInput<Schema extends { [ITYPE]: any }> = Schema[typeof ITYPE]
 
 /**
  * Comparison operators supported by requiredWhen

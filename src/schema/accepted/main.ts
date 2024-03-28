@@ -14,7 +14,11 @@ import type { FieldOptions, Validation } from '../../types.js'
 /**
  * VineAccepted represents a checkbox input that must be checked
  */
-export class VineAccepted extends BaseLiteralType<true, true> {
+export class VineAccepted extends BaseLiteralType<
+  'on' | '1' | 'yes' | 'true' | true | 1,
+  true,
+  true
+> {
   /**
    * Default collection of accepted rules
    */

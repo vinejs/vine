@@ -11,7 +11,7 @@ import camelcase from 'camelcase'
 import { RefsStore, RecordNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
-import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
+import { ITYPE, OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
 import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from './rules.js'
 
@@ -20,6 +20,7 @@ import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from 
  * keys are unknown
  */
 export class VineRecord<Schema extends SchemaTypes> extends BaseType<
+  { [K: string]: Schema[typeof ITYPE] },
   { [K: string]: Schema[typeof OTYPE] },
   { [K: string]: Schema[typeof COTYPE] }
 > {

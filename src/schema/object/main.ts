@@ -12,16 +12,16 @@ import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 import { ObjectGroup } from './group.js'
 import { GroupConditional } from './conditional.js'
-import { BaseModifiersType, BaseType } from '../base/main.js'
-import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
+import { BaseType, BaseModifiersType } from '../base/main.js'
+import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from '../../symbols.js'
 import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../../types.js'
 
 /**
  * Converts schema properties to camelCase
  */
 export class VineCamelCaseObject<
-  Schema extends VineObject<any, any, any>,
-> extends BaseModifiersType<Schema[typeof COTYPE], Schema[typeof COTYPE]> {
+  Schema extends VineObject<any, any, any, any>,
+> extends BaseModifiersType<Schema[typeof ITYPE], Schema[typeof COTYPE], Schema[typeof COTYPE]> {
   #schema: Schema;
 
   /**
@@ -64,9 +64,10 @@ export class VineCamelCaseObject<
  */
 export class VineObject<
   Properties extends Record<string, SchemaTypes>,
+  Input,
   Output,
   CamelCaseOutput,
-> extends BaseType<Output, CamelCaseOutput> {
+> extends BaseType<Input, Output, CamelCaseOutput> {
   /**
    * Object properties
    */
@@ -75,7 +76,7 @@ export class VineObject<
   /**
    * Object groups to merge based on conditionals
    */
-  #groups: ObjectGroup<GroupConditional<any, any, any>>[] = []
+  #groups: ObjectGroup<GroupConditional<any, any, any, any>>[] = []
 
   /**
    * Whether or not to allow unknown properties
@@ -119,12 +120,14 @@ export class VineObject<
    */
   allowUnknownProperties<Value>(): VineObject<
     Properties,
+    Input & { [K: string]: Value },
     Output & { [K: string]: Value },
     CamelCaseOutput & { [K: string]: Value }
   > {
     this.#allowUnknownProperties = true
     return this as VineObject<
       Properties,
+      Input & { [K: string]: Value },
       Output & { [K: string]: Value },
       CamelCaseOutput & { [K: string]: Value }
     >
@@ -134,12 +137,18 @@ export class VineObject<
    * Merge a union to the object groups. The union can be a "vine.union"
    * with objects, or a "vine.object.union" with properties.
    */
-  merge<Group extends ObjectGroup<GroupConditional<any, any, any>>>(
+  merge<Group extends ObjectGroup<GroupConditional<any, any, any, any>>>(
     group: Group
-  ): VineObject<Properties, Output & Group[typeof OTYPE], CamelCaseOutput & Group[typeof COTYPE]> {
+  ): VineObject<
+    Properties,
+    Input & Group[typeof ITYPE],
+    Output & Group[typeof OTYPE],
+    CamelCaseOutput & Group[typeof COTYPE]
+  > {
     this.#groups.push(group)
     return this as VineObject<
       Properties,
+      Input & Group[typeof ITYPE],
       Output & Group[typeof OTYPE],
       CamelCaseOutput & Group[typeof COTYPE]
     >
@@ -149,7 +158,7 @@ export class VineObject<
    * Clone object
    */
   clone(): this {
-    const cloned = new VineObject<Properties, Output, CamelCaseOutput>(
+    const cloned = new VineObject<Properties, Input, Output, CamelCaseOutput>(
       this.getProperties(),
       this.cloneOptions(),
       this.cloneValidations()

@@ -11,7 +11,7 @@ import { Compiler, refsBuilder } from '@vinejs/compiler'
 import type { MessagesProviderContact } from '@vinejs/compiler/types'
 
 import { messages } from '../defaults.js'
-import { OTYPE, PARSE } from '../symbols.js'
+import { ITYPE, OTYPE, PARSE } from '../symbols.js'
 import type {
   Infer,
   SchemaTypes,
@@ -40,6 +40,7 @@ export class VineValidator<
   /**
    * Reference to static types
    */
+  declare [ITYPE]: Schema[typeof ITYPE];
   declare [OTYPE]: Schema[typeof OTYPE]
 
   /**

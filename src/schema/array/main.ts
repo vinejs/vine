@@ -11,7 +11,7 @@ import camelcase from 'camelcase'
 import { RefsStore, ArrayNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
-import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
+import { ITYPE, OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
 import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 
 import {
@@ -28,6 +28,7 @@ import {
  * pipeline
  */
 export class VineArray<Schema extends SchemaTypes> extends BaseType<
+  Schema[typeof ITYPE][],
   Schema[typeof OTYPE][],
   Schema[typeof COTYPE][]
 > {

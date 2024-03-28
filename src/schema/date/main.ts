@@ -39,7 +39,7 @@ import type {
  * VineDate represents a Date object created by parsing a
  * string or number value as a date.
  */
-export class VineDate extends BaseLiteralType<Date, Date> {
+export class VineDate extends BaseLiteralType<string | number, Date, Date> {
   /**
    * Available VineDate rules
    */

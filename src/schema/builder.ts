@@ -11,6 +11,7 @@ import Macroable from '@poppinss/macroable'
 
 import { VineAny } from './any/main.js'
 import { VineEnum } from './enum/main.js'
+import { VineDate } from './date/main.js'
 import { union } from './union/builder.js'
 import { VineTuple } from './tuple/main.js'
 import { VineArray } from './array/main.js'
@@ -25,9 +26,8 @@ import { VineAccepted } from './accepted/main.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
 import { VineUnionOfTypes } from './union_of_types/main.js'
-import { OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
+import { ITYPE, OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
 import type { DateFieldOptions, EnumLike, FieldContext, SchemaTypes } from '../types.js'
-import { VineDate } from './date/main.js'
 
 /**
  * Schema builder exposes methods to construct a Vine schema. You may
@@ -95,6 +95,9 @@ export class SchemaBuilder extends Macroable {
     return new VineObject<
       Properties,
       {
+        [K in keyof Properties]: Properties[K][typeof ITYPE]
+      },
+      {
         [K in keyof Properties]: Properties[K][typeof OTYPE]
       },
       {
@@ -117,6 +120,7 @@ export class SchemaBuilder extends Macroable {
   tuple<Schema extends SchemaTypes[]>(schemas: [...Schema]) {
     return new VineTuple<
       Schema,
+      { [K in keyof Schema]: Schema[K][typeof ITYPE] },
       { [K in keyof Schema]: Schema[K][typeof OTYPE] },
       { [K in keyof Schema]: Schema[K][typeof COTYPE] }
     >(schemas)

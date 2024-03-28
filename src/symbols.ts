@@ -24,6 +24,11 @@ export const IS_OF_TYPE = Symbol.for('is_of_type')
 export const PARSE = Symbol.for('parse')
 
 /**
+ * The symbol for the opaque input type
+ */
+export const ITYPE = Symbol.for('opaque_input_type')
+
+/**
  * The symbol for the opaque type
  */
 export const OTYPE = Symbol.for('opaque_type')

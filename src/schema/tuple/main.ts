@@ -20,9 +20,10 @@ import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../..
  */
 export class VineTuple<
   Schema extends SchemaTypes[],
+  Input extends any[],
   Output extends any[],
   CamelCaseOutput extends any[],
-> extends BaseType<Output, CamelCaseOutput> {
+> extends BaseType<Input, Output, CamelCaseOutput> {
   #schemas: [...Schema]
 
   /**
@@ -53,12 +54,14 @@ export class VineTuple<
    */
   allowUnknownProperties<Value>(): VineTuple<
     Schema,
+    [...Input, ...Value[]],
     [...Output, ...Value[]],
     [...CamelCaseOutput, ...Value[]]
   > {
     this.#allowUnknownProperties = true
     return this as unknown as VineTuple<
       Schema,
+      [...Input, ...Value[]],
       [...Output, ...Value[]],
       [...CamelCaseOutput, ...Value[]]
     >
@@ -68,7 +71,7 @@ export class VineTuple<
    * Clone object
    */
   clone(): this {
-    const cloned = new VineTuple<Schema, Output, CamelCaseOutput>(
+    const cloned = new VineTuple<Schema, Input, Output, CamelCaseOutput>(
       this.#schemas.map((schema) => schema.clone()) as Schema,
       this.cloneOptions(),
       this.cloneValidations()

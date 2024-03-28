@@ -9,7 +9,7 @@
 
 import { test } from '@japa/runner'
 import { Vine } from '../../src/vine/main.js'
-import { Infer, ValidationOptions } from '../../src/types.js'
+import { Infer, InferInput, ValidationOptions } from '../../src/types.js'
 
 const vine = new Vine()
 
@@ -20,6 +20,13 @@ test.group('Types | Flat schema', () => {
       email: vine.string(),
       is_admin: vine.boolean(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string
+      is_admin: boolean | string | number
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -36,6 +43,13 @@ test.group('Types | Flat schema', () => {
       is_admin: vine.boolean(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | null
+      is_admin: boolean | string | number
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       username: string
@@ -50,6 +64,13 @@ test.group('Types | Flat schema', () => {
       email: vine.string().optional().nullable(),
       is_admin: vine.boolean().optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | null | undefined
+      is_admin: boolean | string | number | undefined | null
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -74,6 +95,13 @@ test.group('Types | Flat schema', () => {
           return value
         }),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | null | undefined
+      is_admin: boolean | string | number | null
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -100,6 +128,13 @@ test.group('Types | Flat schema', () => {
           }),
       })
       .toCamelCase()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | null | undefined
+      is_admin: boolean | string | number | null
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -132,6 +167,13 @@ test.group('Types | Flat schema', () => {
       .toCamelCase()
       .clone()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | null | undefined
+      is_admin: boolean | string | number | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       username: string
@@ -152,6 +194,17 @@ test.group('Types | Nested schema', () => {
         github_username: vine.string(),
       }),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string
+      is_admin: boolean | string | number
+      profile: {
+        twitter_handle: string
+        github_username: string
+      }
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -178,6 +231,17 @@ test.group('Types | Nested schema', () => {
         .nullable(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string
+      is_admin: boolean | string | number
+      profile: {
+        twitter_handle: string
+        github_username: string
+      } | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       username: string
@@ -202,6 +266,17 @@ test.group('Types | Nested schema', () => {
         })
         .nullable(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | undefined | null
+      is_admin: boolean | string | number
+      profile: {
+        twitter_handle: string
+        github_username: string | undefined | null
+      } | null
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -231,6 +306,17 @@ test.group('Types | Nested schema', () => {
         .nullable(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | undefined | null
+      is_admin: boolean | string | number
+      profile: {
+        twitter_handle: string
+        github_username: string | null
+      } | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       username: string
@@ -258,6 +344,17 @@ test.group('Types | Nested schema', () => {
       })
       .toCamelCase()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | undefined | null
+      is_admin: boolean | string | number
+      profile: {
+        twitter_handle: string
+        github_username: string | null
+      } | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       username: string
@@ -283,6 +380,17 @@ test.group('Types | Nested schema', () => {
         .toCamelCase()
         .nullable(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | undefined | null
+      is_admin: boolean | string | number
+      profile: {
+        twitter_handle: string
+        github_username: string | null
+      } | null
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -312,6 +420,17 @@ test.group('Types | Nested schema', () => {
       })
       .clone()
       .toCamelCase()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string | undefined | null
+      is_admin: boolean | string | number
+      profile: {
+        twitter_handle: string
+        github_username: string | null
+      } | null
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -344,6 +463,22 @@ test.group('Types | Object groups', () => {
         visitor_name: vine.string(),
       })
       .merge(guideSchema)
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<
+      {
+        visitor_name: string
+      } & (
+        | {
+            hiring_guide: true
+            guide_name: string
+            fees: string
+          }
+        | {
+            hiring_guide: false
+          }
+      )
+    >()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
@@ -381,6 +516,23 @@ test.group('Types | Object groups', () => {
       .merge(guideSchema)
       .nullable()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<
+      | ({
+          visitor_name: string
+        } & (
+          | {
+              hiring_guide: true
+              guide_name: string
+              fees: string
+            }
+          | {
+              hiring_guide: false
+            }
+        ))
+      | null
+    >()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
       | ({
@@ -417,6 +569,24 @@ test.group('Types | Object groups', () => {
       })
       .merge(guideSchema)
       .optional()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<
+      | ({
+          visitor_name: string
+        } & (
+          | {
+              hiring_guide: true
+              guide_name: string
+              fees: string
+            }
+          | {
+              hiring_guide: false
+            }
+        ))
+      | null
+      | undefined
+    >()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
@@ -468,6 +638,34 @@ test.group('Types | Object groups', () => {
       .merge(guideSchema)
       .merge(monumentSchema)
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<
+      {
+        visitor_name: string
+      } & (
+        | {
+            hiring_guide: true
+            guide_name: string
+            fees: string
+          }
+        | {
+            hiring_guide: false
+          }
+      ) &
+        (
+          | {
+              monument: 'foo'
+              available_transport: 'bus' | 'train'
+              has_free_entry: false
+            }
+          | {
+              monument: 'bar'
+              available_transport: 'bus' | 'car'
+              has_free_entry: true
+            }
+        )
+    >()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
       {
@@ -516,6 +714,22 @@ test.group('Types | Object groups', () => {
       .merge(guideSchema)
       .toCamelCase()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<
+      {
+        visitor_name: string
+      } & (
+        | {
+            hiring_guide: true
+            guide_name: string
+            fees: string
+          }
+        | {
+            hiring_guide: false
+          }
+      )
+    >()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
       {
@@ -552,6 +766,26 @@ test.group('Types | Object groups', () => {
       .merge(guideSchema)
       .allowUnknownProperties()
       .optional()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<
+      | ({
+          visitor_name: string
+        } & (
+          | {
+              hiring_guide: true
+              guide_name: string
+              fees: string
+            }
+          | {
+              hiring_guide: false
+            }
+        ) & {
+            [K: string]: unknown
+          })
+      | null
+      | undefined
+    >()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
@@ -592,6 +826,26 @@ test.group('Types | Object groups', () => {
       .optional()
       .clone()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<
+      | ({
+          visitor_name: string
+        } & (
+          | {
+              hiring_guide: true
+              guide_name: string
+              fees: string
+            }
+          | {
+              hiring_guide: false
+            }
+        ) & {
+            [K: string]: unknown
+          })
+      | null
+      | undefined
+    >()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<
       | (({
@@ -622,6 +876,14 @@ test.group('Types | Arrays', () => {
       ),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contacts: {
+        email: string
+        is_primary: boolean | number | string
+      }[]
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       contacts: {
@@ -642,6 +904,16 @@ test.group('Types | Arrays', () => {
         )
         .nullable(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contacts:
+        | {
+            email: string
+            is_primary: boolean | number | string
+          }[]
+        | null
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -666,6 +938,17 @@ test.group('Types | Arrays', () => {
         .nullable()
         .optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contacts:
+        | {
+            email: string
+            is_primary: boolean | number | string
+          }[]
+        | null
+        | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -693,6 +976,17 @@ test.group('Types | Arrays', () => {
           .optional(),
       })
       .toCamelCase()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contacts:
+        | {
+            email: string
+            is_primary: boolean | number | string
+          }[]
+        | null
+        | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -723,6 +1017,17 @@ test.group('Types | Arrays', () => {
       .toCamelCase()
       .clone()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contacts:
+        | {
+            email: string
+            is_primary: boolean | number | string
+          }[]
+        | null
+        | undefined
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       contacts:
@@ -742,6 +1047,11 @@ test.group('Types | Tuples', () => {
       colors: vine.tuple([vine.string(), vine.string(), vine.string()]),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: [string, string, string]
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       colors: [string, string, string]
@@ -753,6 +1063,11 @@ test.group('Types | Tuples', () => {
       colors: vine.tuple([vine.string(), vine.string(), vine.string()]).nullable(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: [string, string, string] | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       colors: [string, string, string] | null
@@ -763,6 +1078,11 @@ test.group('Types | Tuples', () => {
     const schema = vine.object({
       colors: vine.tuple([vine.string(), vine.string(), vine.string()]).nullable().optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: [string, string, string] | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -778,6 +1098,11 @@ test.group('Types | Tuples', () => {
         .nullable()
         .optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: [string, string, string, ...unknown[]] | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -801,6 +1126,11 @@ test.group('Types | Tuples', () => {
           .optional(),
       })
       .toCamelCase()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: [string, string, { primary_1: string }, ...unknown[]] | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -827,6 +1157,11 @@ test.group('Types | Tuples', () => {
           .optional(),
       })
       .toCamelCase()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: [string, string, { primary_1: string }, ...unknown[]] | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -855,6 +1190,19 @@ test.group('Types | Union', () => {
         ),
       ]),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contact:
+        | {
+            email: string
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -898,6 +1246,21 @@ test.group('Types | Union', () => {
         ),
       ]),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contact:
+        | {
+            email: string
+          }
+        | {
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -950,6 +1313,21 @@ test.group('Types | Union', () => {
         .clone(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contact:
+        | {
+            email: string
+          }
+        | {
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       contact:
@@ -973,6 +1351,13 @@ test.group('Types | Record', () => {
       colors: vine.record(vine.string()),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: {
+        [K: string]: string
+      }
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       colors: {
@@ -986,6 +1371,13 @@ test.group('Types | Record', () => {
       colors: vine.record(vine.string()).nullable(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors: {
+        [K: string]: string
+      } | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       colors: {
@@ -998,6 +1390,16 @@ test.group('Types | Record', () => {
     const schema = vine.object({
       colors: vine.record(vine.string()).optional().nullable(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      colors:
+        | {
+            [K: string]: string
+          }
+        | null
+        | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1051,6 +1453,11 @@ test.group('Types | Enum', () => {
       })
       .clone()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      role: 'admin' | 'moderator' | 'writer'
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       role: 'admin' | 'moderator' | 'writer'
@@ -1062,6 +1469,11 @@ test.group('Types | Enum', () => {
       role: vine.enum(['admin', 'moderator', 'writer']).nullable(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      role: 'admin' | 'moderator' | 'writer' | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       role: 'admin' | 'moderator' | 'writer' | null
@@ -1072,6 +1484,11 @@ test.group('Types | Enum', () => {
     const schema = vine.object({
       role: vine.enum(['admin', 'moderator', 'writer']).nullable().optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      role: 'admin' | 'moderator' | 'writer' | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1089,6 +1506,11 @@ test.group('Types | Enum', () => {
     const schema = vine.object({
       role: vine.enum(Role).nullable().optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      role: Role | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1109,6 +1531,11 @@ test.group('Types | Enum', () => {
       })
       .clone()
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      role: Role | null | undefined
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       role: Role | null | undefined
@@ -1122,6 +1549,11 @@ test.group('Types | Accepted', () => {
       terms_and_conditions: vine.accepted(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      terms_and_conditions: 'on' | '1' | 'yes' | 'true' | true | 1
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       terms_and_conditions: true
@@ -1133,6 +1565,11 @@ test.group('Types | Accepted', () => {
       terms_and_conditions: vine.accepted().nullable(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      terms_and_conditions: 'on' | '1' | 'yes' | 'true' | true | 1 | null
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       terms_and_conditions: true | null
@@ -1143,6 +1580,11 @@ test.group('Types | Accepted', () => {
     const schema = vine.object({
       terms_and_conditions: vine.accepted().nullable().optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      terms_and_conditions: 'on' | '1' | 'yes' | 'true' | true | 1 | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1161,6 +1603,11 @@ test.group('Types | Accepted', () => {
         }),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      terms_and_conditions: 'on' | '1' | 'yes' | 'true' | true | 1 | null | undefined
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       terms_and_conditions: boolean
@@ -1171,6 +1618,11 @@ test.group('Types | Accepted', () => {
     const schema = vine.object({
       terms_and_conditions: vine.accepted().clone().nullable().optional(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      terms_and_conditions: 'on' | '1' | 'yes' | 'true' | true | 1 | null | undefined
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1185,6 +1637,11 @@ test.group('Types | Any', () => {
       secret_message: vine.any(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       secret_message: any
@@ -1196,6 +1653,11 @@ test.group('Types | Any', () => {
       secret_message: vine.any().nullable(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       secret_message: any
@@ -1206,6 +1668,11 @@ test.group('Types | Any', () => {
     const schema = vine.object({
       secret_message: vine.any().optional().nullable(),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1219,6 +1686,11 @@ test.group('Types | Any', () => {
         return '1234'
       }),
     })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1236,6 +1708,11 @@ test.group('Types | Any', () => {
         .clone(),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      secret_message: any
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       secret_message: string
@@ -1249,6 +1726,11 @@ test.group('Types | UnionOfTypes', () => {
       health_check: vine.unionOfTypes([vine.boolean(), vine.string()]),
     })
 
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      health_check: string | number | boolean
+    }>()
+
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
       health_check: boolean | string
@@ -1261,6 +1743,11 @@ test.group('Types | UnionOfTypes', () => {
         health_check: vine.unionOfTypes([vine.boolean(), vine.string()]),
       })
       .clone()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      health_check: string | number | boolean
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
@@ -1278,6 +1765,13 @@ test.group('Types | compiled schema', () => {
         is_admin: vine.boolean(),
       })
     )
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username: string
+      email: string
+      is_admin: boolean | number | string
+    }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{

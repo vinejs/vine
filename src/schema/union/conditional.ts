@@ -9,7 +9,7 @@
 
 import { ConditionalFn, RefsStore, UnionNode } from '@vinejs/compiler/types'
 
-import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
+import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, SchemaTypes } from '../../types.js'
 
 /**
@@ -17,6 +17,7 @@ import type { ParserOptions, SchemaTypes } from '../../types.js'
  * with a schema
  */
 export class UnionConditional<Schema extends SchemaTypes> {
+  declare [ITYPE]: Schema[typeof ITYPE];
   declare [OTYPE]: Schema[typeof OTYPE];
   declare [COTYPE]: Schema[typeof COTYPE]
 

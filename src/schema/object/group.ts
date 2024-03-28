@@ -11,7 +11,7 @@ import { ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
 import { GroupConditional } from './conditional.js'
-import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
+import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
 
 /**
@@ -19,7 +19,8 @@ import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
  * condition returns a set of object properties to merge into the
  * existing object.
  */
-export class ObjectGroup<Conditional extends GroupConditional<any, any, any>> {
+export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any>> {
+  declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]
 

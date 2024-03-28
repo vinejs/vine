@@ -17,6 +17,7 @@ import type { FieldContext, FieldOptions, Validation } from '../../types.js'
  */
 export class VineEnum<const Values extends readonly unknown[]> extends BaseLiteralType<
   Values[number],
+  Values[number],
   Values[number]
 > {
   /**

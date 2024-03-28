@@ -12,11 +12,11 @@ import { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
 import { UnionConditional } from './conditional.js'
-import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
+import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type {
-  ConstructableSchema,
-  ParserOptions,
   SchemaTypes,
+  ParserOptions,
+  ConstructableSchema,
   UnionNoMatchCallback,
 } from '../../types.js'
 
@@ -25,8 +25,14 @@ import type {
  * of conditionals and each condition has an associated schema
  */
 export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
-  implements ConstructableSchema<Conditional[typeof OTYPE], Conditional[typeof COTYPE]>
+  implements
+    ConstructableSchema<
+      Conditional[typeof ITYPE],
+      Conditional[typeof OTYPE],
+      Conditional[typeof COTYPE]
+    >
 {
+  declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]
 

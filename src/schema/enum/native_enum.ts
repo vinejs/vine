@@ -20,6 +20,7 @@ import type { EnumLike, FieldOptions, Validation } from '../../types.js'
  */
 export class VineNativeEnum<Values extends EnumLike> extends BaseLiteralType<
   Values[keyof Values],
+  Values[keyof Values],
   Values[keyof Values]
 > {
   /**

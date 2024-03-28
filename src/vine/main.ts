@@ -14,6 +14,7 @@ import { SimpleMessagesProvider } from '../messages_provider/simple_messages_pro
 
 import { VineValidator } from './validator.js'
 import { fields, messages } from '../defaults.js'
+import { SimpleErrorReporter } from '../reporters/simple_error_reporter.js'
 import type {
   Infer,
   SchemaTypes,
@@ -22,7 +23,6 @@ import type {
   ErrorReporterContract,
   MessagesProviderContact,
 } from '../types.js'
-import { SimpleErrorReporter } from '../reporters/simple_error_reporter.js'
 
 /**
  * Validate user input with type-safety using a pre-compiled schema.

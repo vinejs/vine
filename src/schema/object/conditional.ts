@@ -9,7 +9,7 @@
 
 import type { ConditionalFn, ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 
-import { OTYPE, COTYPE, PARSE } from '../../symbols.js'
+import { OTYPE, COTYPE, PARSE, ITYPE } from '../../symbols.js'
 import type { ParserOptions, SchemaTypes } from '../../types.js'
 
 /**
@@ -18,9 +18,11 @@ import type { ParserOptions, SchemaTypes } from '../../types.js'
  */
 export class GroupConditional<
   Properties extends Record<string, SchemaTypes>,
+  Input,
   Output,
   CamelCaseOutput,
 > {
+  declare [ITYPE]: Input;
   declare [OTYPE]: Output;
   declare [COTYPE]: CamelCaseOutput
 

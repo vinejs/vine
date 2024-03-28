@@ -13,7 +13,7 @@ import type { FieldOptions, Validation } from '../../types.js'
 /**
  * VineAny represents a value that can be anything
  */
-export class VineAny extends BaseLiteralType<any, any> {
+export class VineAny extends BaseLiteralType<any, any, any> {
   constructor(options?: Partial<FieldOptions>, validations?: Validation<any>[]) {
     super(options, validations)
   }

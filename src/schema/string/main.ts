@@ -21,11 +21,14 @@ import type {
 import {
   inRule,
   urlRule,
+  jwtRule,
   uuidRule,
   trimRule,
+  ibanRule,
   alphaRule,
   emailRule,
   notInRule,
+  asciiRule,
   regexRule,
   sameAsRule,
   mobileRule,
@@ -44,22 +47,19 @@ import {
   creditCardRule,
   postalCodeRule,
   fixedLengthRule,
-  alphaNumericRule,
-  normalizeEmailRule,
-  asciiRule,
-  ibanRule,
-  jwtRule,
   coordinatesRule,
   toUpperCaseRule,
   toLowerCaseRule,
   toCamelCaseRule,
   normalizeUrlRule,
+  alphaNumericRule,
+  normalizeEmailRule,
 } from './rules.js'
 
 /**
  * VineString represents a string value in the validation schema.
  */
-export class VineString extends BaseLiteralType<string, string> {
+export class VineString extends BaseLiteralType<string, string, string> {
   static rules = {
     in: inRule,
     jwt: jwtRule,

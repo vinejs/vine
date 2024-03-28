@@ -26,7 +26,7 @@ import {
 /**
  * VineNumber represents a numeric value in the validation schema.
  */
-export class VineNumber extends BaseLiteralType<number, number> {
+export class VineNumber extends BaseLiteralType<string | number, number, number> {
   protected declare options: FieldOptions & { strict?: boolean }
 
   /**

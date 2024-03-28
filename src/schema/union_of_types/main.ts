@@ -11,7 +11,7 @@ import camelcase from 'camelcase'
 import type { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
-import { OTYPE, COTYPE, PARSE, IS_OF_TYPE } from '../../symbols.js'
+import { ITYPE, OTYPE, COTYPE, PARSE, IS_OF_TYPE } from '../../symbols.js'
 import type {
   SchemaTypes,
   ParserOptions,
@@ -24,8 +24,9 @@ import type {
  * of conditionals and each condition has an associated schema
  */
 export class VineUnionOfTypes<Schema extends SchemaTypes>
-  implements ConstructableSchema<Schema[typeof OTYPE], Schema[typeof COTYPE]>
+  implements ConstructableSchema<Schema[typeof ITYPE], Schema[typeof OTYPE], Schema[typeof COTYPE]>
 {
+  declare [ITYPE]: Schema[typeof ITYPE];
   declare [OTYPE]: Schema[typeof OTYPE];
   declare [COTYPE]: Schema[typeof COTYPE]
 

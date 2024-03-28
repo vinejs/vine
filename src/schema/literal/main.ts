@@ -14,7 +14,7 @@ import type { FieldOptions, Validation } from '../../types.js'
 /**
  * VineLiteral represents a type that matches an exact value
  */
-export class VineLiteral<Value> extends BaseLiteralType<Value, Value> {
+export class VineLiteral<Value> extends BaseLiteralType<Value, Value, Value> {
   /**
    * Default collection of literal rules
    */
