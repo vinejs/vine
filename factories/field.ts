@@ -34,6 +34,9 @@ export class FieldFactory {
       data: { [fieldName]: value },
       name: fieldName as any,
       wildCardPath: fieldName,
+      getFieldPath() {
+        return fieldName
+      },
       isDefined: helpers.exists(value),
       isValid: true,
       meta: {},
