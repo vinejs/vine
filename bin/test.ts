@@ -1,3 +1,4 @@
+import { snapshot } from '@japa/snapshot'
 import { Assert, assert } from '@japa/assert'
 import { expectTypeOf } from '@japa/expect-type'
 import { processCLIArgs, configure, run } from '@japa/runner'
@@ -48,7 +49,7 @@ configure({
       files: ['tests/integration/**/*.spec(.js|.ts)'],
     },
   ],
-  plugins: [assert(), expectTypeOf()],
+  plugins: [assert(), expectTypeOf(), snapshot()],
 })
 
 /*

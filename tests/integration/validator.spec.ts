@@ -196,3 +196,121 @@ test.group('Validator | extend schema classes', () => {
     assert.isTrue((vine as any).money())
   })
 })
+
+test.group('Validator | toJSON', () => {
+  test('get JSON representation of the schema', async ({ assert }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+      role: vine.string().in((field) => {
+        assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
+        return field.meta.choices
+      }),
+    })
+
+    const validator = vine.compile(author)
+    assert.snapshot(validator.toJSON()).matchInline(`
+      {
+        "refs": {
+          "ref://1": {
+            "options": undefined,
+            "validator": [Function],
+          },
+          "ref://2": {
+            "options": undefined,
+            "validator": [Function],
+          },
+          "ref://3": {
+            "options": undefined,
+            "validator": [Function],
+          },
+          "ref://4": {
+            "options": undefined,
+            "validator": [Function],
+          },
+          "ref://5": {
+            "options": {
+              "choices": [Function],
+            },
+            "validator": [Function],
+          },
+        },
+        "schema": {
+          "schema": {
+            "allowNull": false,
+            "allowUnknownProperties": false,
+            "bail": true,
+            "fieldName": "",
+            "groups": [],
+            "isOptional": false,
+            "parseFnId": undefined,
+            "properties": [
+              {
+                "allowNull": false,
+                "bail": true,
+                "fieldName": "name",
+                "isOptional": false,
+                "parseFnId": undefined,
+                "propertyName": "name",
+                "type": "literal",
+                "validations": [
+                  {
+                    "implicit": false,
+                    "isAsync": false,
+                    "ruleFnId": "ref://1",
+                  },
+                ],
+              },
+              {
+                "allowNull": false,
+                "bail": true,
+                "fieldName": "email",
+                "isOptional": false,
+                "parseFnId": undefined,
+                "propertyName": "email",
+                "type": "literal",
+                "validations": [
+                  {
+                    "implicit": false,
+                    "isAsync": false,
+                    "ruleFnId": "ref://2",
+                  },
+                  {
+                    "implicit": false,
+                    "isAsync": false,
+                    "ruleFnId": "ref://3",
+                  },
+                ],
+              },
+              {
+                "allowNull": false,
+                "bail": true,
+                "fieldName": "role",
+                "isOptional": false,
+                "parseFnId": undefined,
+                "propertyName": "role",
+                "type": "literal",
+                "validations": [
+                  {
+                    "implicit": false,
+                    "isAsync": false,
+                    "ruleFnId": "ref://4",
+                  },
+                  {
+                    "implicit": false,
+                    "isAsync": false,
+                    "ruleFnId": "ref://5",
+                  },
+                ],
+              },
+            ],
+            "propertyName": "",
+            "type": "object",
+            "validations": [],
+          },
+          "type": "root",
+        },
+      }
+    `)
+  }).pin()
+})

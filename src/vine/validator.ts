@@ -8,7 +8,7 @@
  */
 
 import { Compiler, refsBuilder } from '@vinejs/compiler'
-import type { MessagesProviderContact } from '@vinejs/compiler/types'
+import type { MessagesProviderContact, Refs, RootNode } from '@vinejs/compiler/types'
 
 import { messages } from '../defaults.js'
 import { ITYPE, OTYPE, PARSE } from '../symbols.js'
@@ -41,7 +41,15 @@ export class VineValidator<
    * Reference to static types
    */
   declare [ITYPE]: Schema[typeof ITYPE];
-  declare [OTYPE]: Schema[typeof OTYPE]
+  declare [OTYPE]: Schema[typeof OTYPE];
+
+  /**
+   * Reference to the compiled schema
+   */
+  #compiled: {
+    schema: RootNode,
+    refs: Refs,
+  }
 
   /**
    * Messages provider to use on the validator
@@ -102,6 +110,8 @@ export class VineValidator<
      * Compile the schema to a re-usable function
      */
     const { compilerNode, refs } = this.#parse(schema)
+    this.#compiled = { schema: compilerNode, refs }
+
     const metaDataValidator = options.metaDataValidator
     const validateFn = new Compiler(compilerNode, {
       convertEmptyStringsToNull: options.convertEmptyStringsToNull,
@@ -145,6 +155,17 @@ export class VineValidator<
         const messagesProvider = normalizedOptions.messagesProvider ?? this.messagesProvider
         return validateFn(data, meta, refs, messagesProvider, errorReporter())
       }
+    }
+  }
+
+  /**
+   * Returns the compiled schema and refs.
+   */
+  toJSON() {
+    const { schema, refs } = this.#compiled
+    return {
+      schema: structuredClone(schema),
+      refs,
     }
   }
 }
