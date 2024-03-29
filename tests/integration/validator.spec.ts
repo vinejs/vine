@@ -312,5 +312,5 @@ test.group('Validator | toJSON', () => {
         },
       }
     `)
-  }).pin()
+  })
 })

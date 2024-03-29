@@ -41,14 +41,14 @@ export class VineValidator<
    * Reference to static types
    */
   declare [ITYPE]: Schema[typeof ITYPE];
-  declare [OTYPE]: Schema[typeof OTYPE];
+  declare [OTYPE]: Schema[typeof OTYPE]
 
   /**
    * Reference to the compiled schema
    */
   #compiled: {
-    schema: RootNode,
-    refs: Refs,
+    schema: RootNode
+    refs: Refs
   }
 
   /**
