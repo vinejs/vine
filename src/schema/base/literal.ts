@@ -91,7 +91,9 @@ abstract class BaseModifiersType<Input, Output, CamelCaseOutput>
 /**
  * Modifies the schema type to allow null values
  */
-class NullableModifier<Schema extends BaseModifiersType<any, any, any>> extends BaseModifiersType<
+export class NullableModifier<
+  Schema extends BaseModifiersType<any, any, any>,
+> extends BaseModifiersType<
   Schema[typeof ITYPE] | null,
   Schema[typeof OTYPE] | null,
   Schema[typeof COTYPE] | null
@@ -124,7 +126,9 @@ class NullableModifier<Schema extends BaseModifiersType<any, any, any>> extends 
 /**
  * Modifies the schema type to allow undefined values
  */
-class OptionalModifier<Schema extends BaseModifiersType<any, any, any>> extends BaseModifiersType<
+export class OptionalModifier<
+  Schema extends BaseModifiersType<any, any, any>,
+> extends BaseModifiersType<
   Schema[typeof ITYPE] | undefined | null,
   Schema[typeof OTYPE] | undefined,
   Schema[typeof COTYPE] | undefined
@@ -334,7 +338,7 @@ class OptionalModifier<Schema extends BaseModifiersType<any, any, any>> extends 
 /**
  * Modifies the schema type to allow custom transformed values
  */
-class TransformModifier<
+export class TransformModifier<
   Schema extends BaseModifiersType<any, any, any>,
   Output,
 > extends BaseModifiersType<Schema[typeof ITYPE], Output, Output> {
