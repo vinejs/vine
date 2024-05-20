@@ -21,6 +21,7 @@ import {
   negativeRule,
   positiveRule,
   withoutDecimalsRule,
+  inRule,
 } from './rules.js'
 
 /**
@@ -120,5 +121,12 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
    */
   clone(): this {
     return new VineNumber(this.cloneOptions(), this.cloneValidations()) as this
+  }
+
+  /**
+   * Enforce the value to be in a list of allowed values
+   */
+  in(values: number[]) {
+    return this.use(inRule({ values }))
   }
 }

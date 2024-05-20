@@ -147,3 +147,19 @@ export const withoutDecimalsRule = createRule((value, _, field) => {
     field.report(messages.withoutDecimals, 'withoutDecimals', field)
   }
 })
+
+/**
+ * Enforce the value to be in a list of allowed values
+ */
+export const inRule = createRule<{ values: number[] }>((value, options, field) => {
+  /**
+   * Skip if the field is not valid.
+   */
+  if (!field.isValid) {
+    return
+  }
+
+  if (!options.values.includes(value as number)) {
+    field.report(messages['number.in'], 'in', field, options)
+  }
+})

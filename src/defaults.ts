@@ -45,6 +45,7 @@ export const messages = {
   'boolean': 'The value must be a boolean',
 
   'number': 'The {{ field }} field must be a number',
+  'number.in': 'The selected {{ field }} is not in {{ values }}',
   'min': 'The {{ field }} field must be at least {{ min }}',
   'max': 'The {{ field }} field must not be greater than {{ max }}',
   'range': 'The {{ field }} field must be between {{ min }} and {{ max }}',
