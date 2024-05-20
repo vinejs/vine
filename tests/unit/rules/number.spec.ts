@@ -10,6 +10,7 @@
 import { test } from '@japa/runner'
 import { validator } from '../../../factories/main.js'
 import {
+  inRule,
   minRule,
   maxRule,
   rangeRule,
@@ -393,5 +394,41 @@ test.group('Number | withoutDecimals', () => {
 
     validated.assertSucceeded()
     validated.assertOutput(18)
+  })
+})
+
+test.group('Number | in', () => {
+  test('skip validation when value is not a number', () => {
+    const number = numberRule({})
+    const inArrayRule = inRule({ values: [1, 4] })
+    const validated = validator.execute([number, inArrayRule], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('skip validation when value is not a number with bail mode disabled', () => {
+    const number = numberRule({})
+    const inArrayRule = inRule({ values: [1, 4] })
+    const validated = validator.bail(false).execute([number, inArrayRule], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('work fine when value is in an array', () => {
+    const number = numberRule({})
+    const inArrayRule = inRule({ values: [1, 4] })
+    const validated = validator.execute([number, inArrayRule], 4)
+
+    validated.assertSucceeded()
+  })
+
+  test('fails when value is not in an array', () => {
+    const number = numberRule({})
+    const inArrayRule = inRule({ values: [1, 4] })
+    const validated = validator.execute([number, inArrayRule], 3)
+
+    validated.assertErrorsCount(1)
   })
 })
