@@ -34,6 +34,7 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
    * Default collection of number rules
    */
   static rules = {
+    in: inRule,
     max: maxRule,
     min: minRule,
     range: rangeRule,
