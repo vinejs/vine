@@ -30,6 +30,8 @@ export { BaseLiteralType } from './src/schema/base/literal.js'
 export { BaseType, BaseModifiersType } from './src/schema/base/main.js'
 export { SimpleErrorReporter } from './src/reporters/simple_error_reporter.js'
 export { SimpleMessagesProvider } from './src/messages_provider/simple_messages_provider.js'
+export { ObjectGroup } from './src/schema/object/group.js'
+export { GroupConditional } from './src/schema/object/conditional.js'
 
 const vine = new Vine()
 export default vine
