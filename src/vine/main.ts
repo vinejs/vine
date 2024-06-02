@@ -14,6 +14,7 @@ import { SimpleMessagesProvider } from '../messages_provider/simple_messages_pro
 
 import { VineValidator } from './validator.js'
 import { fields, messages } from '../defaults.js'
+import { ValidationError } from '../errors/validation_error.js'
 import { SimpleErrorReporter } from '../reporters/simple_error_reporter.js'
 import type {
   Infer,
@@ -116,5 +117,36 @@ export class Vine extends SchemaBuilder {
   ): Promise<Infer<Schema>> {
     const validator = this.compile(options.schema)
     return validator.validate(options.data, options)
+  }
+
+  /**
+   * Validate data against a schema without throwing the
+   * "ValidationError" exception. Instead the validation
+   * errors are returned within the return value.
+   *
+   * ```ts
+   * await vine.tryValidate({ schema, data })
+   * await vine.tryValidate({ schema, data, messages, fields })
+   *
+   * await vine.tryValidate({ schema, data, messages, fields }, {
+   *   errorReporter
+   * })
+   * ```
+   */
+  tryValidate<Schema extends SchemaTypes>(
+    options: {
+      /**
+       * Schema to use for validation
+       */
+      schema: Schema
+
+      /**
+       * Data to validate
+       */
+      data: any
+    } & ValidationOptions<Record<string, any> | undefined>
+  ): Promise<[ValidationError, null] | [null, Infer<Schema>]> {
+    const validator = this.compile(options.schema)
+    return validator.tryValidate(options.data, options)
   }
 }

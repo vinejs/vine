@@ -163,6 +163,19 @@ export class VineValidator<
    * Performs validation without throwing the validation
    * exception. Instead, the validation errors are
    * returned as the first argument.
+   *
+   *
+   * ```ts
+   * await validator.tryValidate(data)
+   * await validator.tryValidate(data, { meta: {} })
+   *
+   * await validator.tryValidate(data, {
+   *   meta: { userId: auth.user.id },
+   *   errorReporter,
+   *   messagesProvider
+   * })
+   * ```
+   *
    */
   async tryValidate(
     data: any,
