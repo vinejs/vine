@@ -12,6 +12,7 @@ import type { MessagesProviderContact, Refs, RootNode } from '@vinejs/compiler/t
 
 import { messages } from '../defaults.js'
 import { ITYPE, OTYPE, PARSE } from '../symbols.js'
+import { ValidationError } from '../errors/validation_error.js'
 import type {
   Infer,
   SchemaTypes,
@@ -155,6 +156,28 @@ export class VineValidator<
         const messagesProvider = normalizedOptions.messagesProvider ?? this.messagesProvider
         return validateFn(data, meta, refs, messagesProvider, errorReporter())
       }
+    }
+  }
+
+  /**
+   * Performs validation without throwing the validation
+   * exception. Instead, the validation errors are
+   * returned as the first argument.
+   */
+  async tryValidate(
+    data: any,
+    ...[options]: [undefined] extends MetaData
+      ? [options?: ValidationOptions<MetaData> | undefined]
+      : [options: ValidationOptions<MetaData>]
+  ): Promise<[ValidationError, null] | [null, Infer<Schema>]> {
+    try {
+      const result = await this.validate(data, options!)
+      return [null, result]
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return [error, null]
+      }
+      throw error
     }
   }
 

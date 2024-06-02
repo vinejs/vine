@@ -20,6 +20,8 @@ import vine, {
   VineLiteral,
   VineBoolean,
 } from '../../index.js'
+import { Infer } from '../../src/types.js'
+import { ValidationError } from '../../src/errors/validation_error.js'
 
 test.group('Validator | metadata', () => {
   test('pass metadata to the validation pipeline', async ({ assert }) => {
@@ -312,5 +314,81 @@ test.group('Validator | toJSON', () => {
         },
       }
     `)
+  })
+})
+
+test.group('Validator | tryValidator', () => {
+  test('return validation errors without throwing an exception', async ({
+    assert,
+    expectTypeOf,
+  }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const validator = vine.compile(author)
+    const [error, result] = await validator.tryValidate({})
+    assert.instanceOf(error, ValidationError)
+    assert.isNull(result)
+
+    if (error) {
+      expectTypeOf(result).toMatchTypeOf(null)
+      expectTypeOf(error).toMatchTypeOf<ValidationError>()
+    }
+    if (result) {
+      expectTypeOf(error).toMatchTypeOf(null)
+      expectTypeOf(result).toMatchTypeOf<Infer<typeof validator>>()
+    }
+  })
+
+  test('rethrow non ValidationError errors', async () => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const validator = vine
+      .withMetaData<{ choices: string[] }>(() => {
+        throw new Error('Invalid metadata')
+      })
+      .compile(author)
+
+    await validator.tryValidate(
+      {},
+      {
+        meta: {
+          choices: [],
+        },
+      }
+    )
+  }).throws('Invalid metadata')
+
+  test('return validated data', async ({ assert, expectTypeOf }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const validator = vine.compile(author)
+    const [error, result] = await validator.tryValidate({
+      name: 'virk',
+      email: 'foo@bar.com',
+    })
+
+    assert.isNull(error)
+    assert.deepEqual(result, {
+      name: 'virk',
+      email: 'foo@bar.com',
+    })
+
+    if (error) {
+      expectTypeOf(result).toMatchTypeOf(null)
+      expectTypeOf(error).toMatchTypeOf<ValidationError>()
+    }
+    if (result) {
+      expectTypeOf(error).toMatchTypeOf(null)
+      expectTypeOf(result).toMatchTypeOf<Infer<typeof validator>>()
+    }
   })
 })
