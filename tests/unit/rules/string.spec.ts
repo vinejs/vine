@@ -36,6 +36,7 @@ import {
   passportRule,
   postalCodeRule,
   uuidRule,
+  ulidRule,
   asciiRule,
   ibanRule,
   jwtRule,
@@ -1283,6 +1284,46 @@ test.group('String | uuid', () => {
       {
         rule: uuidRule({ version: [1, 4] }),
         value: '71e4fbab-3498-447b-a97c-2c6060069678',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | ulid', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: ulidRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: ulidRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: ulidRule(),
+        value: '1999010301',
+        error: 'The dummy field must be a valid ULID',
+      },
+      {
+        rule: ulidRule(),
+        value: '01HZW62CR5FNVW4PSXVXC1HTZF',
+      },
+      {
+        rule: ulidRule(),
+        value: '7ZZZZZZZZZZZZZZZZZZZZZZZZZ',
+      },
+      {
+        errorsCount: 1,
+        rule: ulidRule(),
+        value: '80000000000000000000000000',
+        error: 'The dummy field must be a valid ULID',
       },
     ])
     .run(stringRuleValidator)

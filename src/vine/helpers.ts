@@ -35,6 +35,8 @@ import type { FieldContext } from '../types.js'
 const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
 const BOOLEAN_NEGATIVES = ['0', 0, 'false', false]
 
+const ULID = /^[0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{26}$/
+
 /**
  * Collection of helpers used across the codebase to coerce
  * and type-check values from HTML forms.
@@ -227,6 +229,23 @@ export const helpers = {
     'UA',
     'US',
   ] as const,
+
+  /**
+   * Check if the value is a valid ULID
+   */
+  isULID(value: unknown): boolean {
+    if (typeof value !== 'string') {
+      return false
+    }
+
+    // Largest valid ULID is '7ZZZZZZZZZZZZZZZZZZZZZZZZZ'
+    // https://github.com/ulid/spec#overflow-errors-when-parsing-base32-strings
+    if (value[0] > '7') {
+      return false
+    }
+
+    return ULID.test(value)
+  },
 
   /**
    * Check if the value is a valid color hexcode

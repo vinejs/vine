@@ -38,6 +38,7 @@ import {
   passportRule,
   postalCodeRule,
   uuidRule,
+  ulidRule,
   asciiRule,
   ibanRule,
   jwtRule,
@@ -666,6 +667,11 @@ test.group('VineString | applying rules', () => {
         name: 'uuid',
         schema: vine.string().uuid(),
         rule: uuidRule(),
+      },
+      {
+        name: 'ulid',
+        schema: vine.string().ulid(),
+        rule: ulidRule(),
       },
       {
         name: 'ascii',

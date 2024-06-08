@@ -593,6 +593,19 @@ export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefin
 )
 
 /**
+ * Validates the value to be a valid ULID
+ */
+export const ulidRule = createRule((value, _, field) => {
+  if (!field.isValid) {
+    return
+  }
+
+  if (!helpers.isULID(value as string)) {
+    field.report(messages.ulid, 'ulid', field)
+  }
+})
+
+/**
  * Validates the value contains ASCII characters only
  */
 export const asciiRule = createRule((value, _, field) => {
