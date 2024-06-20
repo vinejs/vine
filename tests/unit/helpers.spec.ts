@@ -160,4 +160,10 @@ test.group('Vine Helpers', () => {
     assert.isTrue(vine.helpers.isPostalCode('69200', 'FR'))
     assert.isTrue(vine.helpers.isMobilePhone('0612345678', 'fr-FR'))
   })
+
+  test('check if the value is a ULID', ({ assert }) => {
+    assert.isTrue(vine.helpers.isULID('01J0TSV6ZP6VTAHWZ7A7SYDBM2'))
+    assert.isTrue(vine.helpers.isULID('01j0tsv6zp6vtahwz7a7sydbm2'))
+    assert.isFalse(vine.helpers.isULID('01J0TSV6ZP6VTAHWZIL7A7SYDB'))
+  })
 })
