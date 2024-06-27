@@ -23,6 +23,7 @@ import {
   urlRule,
   jwtRule,
   uuidRule,
+  ulidRule,
   trimRule,
   ibanRule,
   alphaRule,
@@ -66,6 +67,7 @@ export class VineString extends BaseLiteralType<string, string, string> {
     url: urlRule,
     iban: ibanRule,
     uuid: uuidRule,
+    ulid: ulidRule,
     trim: trimRule,
     email: emailRule,
     alpha: alphaRule,
@@ -325,6 +327,13 @@ export class VineString extends BaseLiteralType<string, string, string> {
    */
   uuid(...args: Parameters<typeof uuidRule>) {
     return this.use(uuidRule(...args))
+  }
+
+  /**
+   * Validates the value to be a valid ULID
+   */
+  ulid() {
+    return this.use(ulidRule())
   }
 
   /**
