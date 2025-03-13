@@ -8,96 +8,71 @@
  */
 
 /**
- * Copy-pasted from
- * https://github.com/ts-essentials/ts-essentials/blob/3f5d46a203cad06728fbf2a089a5b39bd473bf4e/lib/camel-case/index.ts
- *
- * Since, we need just one helper, I decided to not pull in the entire package and just copy-paste
- * the types
+ * Credit - https://blog.beraliv.dev/2022-07-14-camel-case
  */
-
-type IsStringLiteral<Type> = Type extends string ? (string extends Type ? false : true) : false
-
-type WordInPascalCase<Type> = Capitalize<WordInCamelCase<Uncapitalize<Type & string>>>
-
-type WordInCamelCase<
-  Type,
-  Character extends string = '',
-> = Type extends `${Character}${infer NextCharacter}${infer _}`
-  ? NextCharacter extends Capitalize<NextCharacter>
-    ? Character
-    : WordInCamelCase<Type, `${Character}${NextCharacter}`>
-  : Character
 
 type Separator = '_' | '-'
 
-type IncludesSeparator<Type> = Type extends `${string}${Separator}${string}` ? true : false
+type FilterEmptyWord<Word, T extends unknown[], S extends 'start' | 'end'> = Word extends ''
+  ? T
+  : {
+      start: [Word, ...T]
+      end: [...T, Word]
+    }[S]
 
-type IsOneWord<Type> =
-  Type extends Lowercase<Type & string>
+type SplitBySeparator<S> = S extends `${infer Word}${Separator}${infer Rest}`
+  ? FilterEmptyWord<Word, SplitBySeparator<Rest>, 'start'>
+  : FilterEmptyWord<S, [], 'start'>
+
+type IsRepeatedSeparator<Ch, Validated> = Ch extends Separator
+  ? Validated extends `${string}${Separator}`
     ? true
-    : Type extends Uppercase<Type & string>
-      ? true
-      : false
+    : false
+  : false
 
-type IsCamelCase<Type> = Type extends Uncapitalize<Type & string> ? true : false
+type RemoveRepeatedSeparator<
+  NotValidated,
+  Validated = '',
+> = NotValidated extends `${infer Ch}${infer Rest}`
+  ? IsRepeatedSeparator<Ch, Validated> extends true
+    ? RemoveRepeatedSeparator<Rest, Validated>
+    : RemoveRepeatedSeparator<Rest, `${Validated & string}${Ch}`>
+  : Validated
 
-type IsPascalCase<Type> = Type extends Capitalize<Type & string> ? true : false
+type IsUppercase<Ch extends string> = [Ch] extends [Uppercase<Ch>] ? true : false
 
-/** snake_case, CONSTANT_CASE, kebab-case or COBOL-CASE */
-type SeparatorCaseParser<
-  Type,
-  Tuple extends readonly any[] = [],
-> = Type extends `${infer Word}${Separator}${infer Tail}`
-  ? SeparatorCaseParser<Tail, [...Tuple, Lowercase<Word>]>
-  : Type extends `${infer Word}`
-    ? [...Tuple, Lowercase<Word>]
-    : Tuple
+type SplitByCapital<S, Word extends string = '', Words extends unknown[] = []> = S extends ''
+  ? FilterEmptyWord<Word, Words, 'end'>
+  : S extends `${infer Ch}${infer Rest}`
+    ? IsUppercase<Ch> extends true
+      ? SplitByCapital<Rest, Ch, FilterEmptyWord<Word, Words, 'end'>>
+      : SplitByCapital<Rest, `${Word}${Ch}`, Words>
+    : []
 
-type CamelCaseParser<Type, Tuple extends readonly any[] = []> = Type extends ''
-  ? Tuple
-  : Type extends `${WordInCamelCase<Type & string>}${infer Tail}`
-    ? Type extends `${infer Word}${Tail}`
-      ? CamelCaseParser<Uncapitalize<Tail>, [...Tuple, Lowercase<Word>]>
-      : never
-    : never
+type WhichApproach<S> = S extends `${string}${Separator}${string}`
+  ? 'separatorBased'
+  : 'capitalBased'
 
-type PascalCaseParser<Type, Tuple extends readonly any[] = []> = Type extends ''
-  ? Tuple
-  : Type extends `${WordInPascalCase<Type & string>}${infer Tail}`
-    ? Type extends `${infer Word}${Tail}`
-      ? PascalCaseParser<Tail, [...Tuple, Lowercase<Word>]>
-      : never
-    : never
+type Words<S> = {
+  separatorBased: SplitBySeparator<RemoveRepeatedSeparator<S>>
+  capitalBased: IsUppercase<S & string> extends true ? [S] : SplitByCapital<S>
+}[WhichApproach<S>]
 
-type SplitAnyCase<Type> =
-  IncludesSeparator<Type> extends true
-    ? SeparatorCaseParser<Type>
-    : IsOneWord<Type> extends true
-      ? [Lowercase<Type & string>]
-      : IsCamelCase<Type> extends true
-        ? CamelCaseParser<Type>
-        : IsPascalCase<Type> extends true
-          ? PascalCaseParser<Type>
-          : []
+type WordCase<S, C extends 'pascal' | 'lower'> = {
+  pascal: Capitalize<WordCase<S, 'lower'> & string>
+  lower: Lowercase<S & string>
+}[C]
 
-type PascalCapitalizer<Type, Tuple extends readonly any[] = []> = Type extends [
-  infer Head,
-  ...infer Tail,
-]
-  ? Head extends string
-    ? PascalCapitalizer<Tail, [...Tuple, Capitalize<Head>]>
-    : PascalCapitalizer<Tail, Tuple>
-  : Tuple
+type PascalCasify<T, R extends unknown[] = []> = T extends [infer Head, ...infer Rest]
+  ? PascalCasify<Rest, [...R, WordCase<Head, 'pascal'>]>
+  : R
 
-type CamelCapitalizer<Type> = Type extends [infer First, ...infer Tail]
-  ? PascalCapitalizer<Tail, [First]>
+type CamelCasify<T> = T extends [infer Head, ...infer Rest]
+  ? PascalCasify<Rest, [WordCase<Head, 'lower'>]>
   : []
 
-type Join<Type, JoinedString extends string = ''> = Type extends [infer Head, ...infer Tail]
-  ? Head extends string
-    ? Join<Tail, `${JoinedString}${Head}`>
-    : Join<Tail>
-  : JoinedString
+type Join<T, S extends string = ''> = T extends [infer Word, ...infer Rest]
+  ? Join<Rest, `${S}${Word & string}`>
+  : S
 
-export type CamelCase<Type> =
-  IsStringLiteral<Type> extends true ? Join<CamelCapitalizer<SplitAnyCase<Type>>> : Type
+export type CamelCase<S extends string> = Join<CamelCasify<Words<S>>>

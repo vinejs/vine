@@ -181,6 +181,25 @@ test.group('Types | Flat schema', () => {
       isAdmin: boolean
     }>()
   })
+
+  test('infer types for keys with numbers in it', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      datasheetBase64: vine.string().optional(),
+      email_11: vine.string(),
+    })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      datasheetBase64?: string | undefined | null
+      email_11: string
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      datasheetBase64?: string | undefined
+      email_11: string
+    }>()
+  }).tags(['@regression'])
 })
 
 test.group('Types | Nested schema', () => {
