@@ -41,12 +41,16 @@ type RemoveRepeatedSeparator<
 
 type IsUppercase<Ch extends string> = [Ch] extends [Uppercase<Ch>] ? true : false
 
-type SplitByCapital<S, Word extends string = '', Words extends unknown[] = []> = S extends ''
-  ? FilterEmptyWord<Word, Words, 'end'>
+type SplitByCapital<
+  S,
+  Word extends string = '',
+  RemainingWords extends unknown[] = [],
+> = S extends ''
+  ? FilterEmptyWord<Word, RemainingWords, 'end'>
   : S extends `${infer Ch}${infer Rest}`
     ? IsUppercase<Ch> extends true
-      ? SplitByCapital<Rest, Ch, FilterEmptyWord<Word, Words, 'end'>>
-      : SplitByCapital<Rest, `${Word}${Ch}`, Words>
+      ? SplitByCapital<Rest, Ch, FilterEmptyWord<Word, RemainingWords, 'end'>>
+      : SplitByCapital<Rest, `${Word}${Ch}`, RemainingWords>
     : []
 
 type WhichApproach<S> = S extends `${string}${Separator}${string}`
