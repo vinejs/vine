@@ -12,6 +12,7 @@ import Macroable from '@poppinss/macroable'
 import { VineAny } from './any/main.js'
 import { VineEnum } from './enum/main.js'
 import { VineDate } from './date/main.js'
+import { VineNull } from './null/main.js'
 import { union } from './union/builder.js'
 import { VineTuple } from './tuple/main.js'
 import { VineArray } from './array/main.js'
@@ -22,6 +23,7 @@ import { VineNumber } from './number/main.js'
 import { VineBoolean } from './boolean/main.js'
 import { VineLiteral } from './literal/main.js'
 import { CamelCase } from './camelcase_types.js'
+import { VineOptional } from './optional/main.js'
 import { VineAccepted } from './accepted/main.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
@@ -93,20 +95,20 @@ export class SchemaBuilder extends Macroable {
     return new VineLiteral<Value>(value)
   }
 
-  // /**
-  //  * Define an optional value. Chain the "nullable"
-  //  * method to get null values in the output
-  //  */
-  // optional() {
-  //   return new VineOptional()
-  // }
+  /**
+   * Define an optional value. Chain the "nullable"
+   * method to get null values in the output
+   */
+  optional() {
+    return new VineOptional<undefined>()
+  }
 
-  // /**
-  //  * Define a null value
-  //  */
-  // null() {
-  //   return new VineNull()
-  // }
+  /**
+   * Define a null value
+   */
+  null() {
+    return new VineNull()
+  }
 
   /**
    * Define an object with known properties. You may call "allowUnknownProperties"

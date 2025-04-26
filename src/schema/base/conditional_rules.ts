@@ -9,6 +9,10 @@ import type {
   NumericComparisonOperators,
 } from '../../types.js'
 
+/**
+ * Set of conditional rules to mark a field as required using
+ * runtime checks
+ */
 export abstract class ConditionalValidations {
   abstract use(validation: Validation<any> | RuleBuilder): this
 

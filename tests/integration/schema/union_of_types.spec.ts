@@ -74,50 +74,101 @@ test.group('UnionOfTypes', () => {
     ])
   })
 
-  // test('allow undefined and null values using vine.optional()', async ({ assert }) => {
-  //   const schema = vine.object({
-  //     health_check: vine.unionOfTypes([vine.optional(), vine.boolean(), vine.string().url()]),
-  //   })
+  test('allow undefined and null values using vine.optional()', async ({ assert }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([vine.optional(), vine.boolean(), vine.string().url()]),
+    })
 
-  //   await assert.validationOutput(vine.validate({ schema, data: {} }), {})
-  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
-  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {})
-  // })
+    await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {})
+  })
 
-  // test('output null value using nullable modifier', async ({ assert }) => {
-  //   const schema = vine.object({
-  //     health_check: vine.unionOfTypes([vine.optional(), vine.boolean(), vine.string().url()]),
-  //   })
+  test('conditionally mark field as required via vine.optional', async ({ assert }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([
+        vine.optional().requiredWhen(() => true),
+        vine.boolean(),
+        vine.string().url(),
+      ]),
+    })
 
-  //   await assert.validationOutput(vine.validate({ schema, data: {} }), {})
-  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
-  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {})
-  // })
+    await assert.validationErrors(vine.validate({ schema, data: {} }), [
+      {
+        field: 'health_check',
+        message: 'The health_check field must be defined',
+        rule: 'required',
+      },
+    ])
+    await assert.validationErrors(vine.validate({ schema, data: { health_check: undefined } }), [
+      {
+        field: 'health_check',
+        message: 'The health_check field must be defined',
+        rule: 'required',
+      },
+    ])
+    await assert.validationErrors(vine.validate({ schema, data: { health_check: null } }), [
+      {
+        field: 'health_check',
+        message: 'The health_check field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
 
-  // test('allow null value using vine.null', async ({ assert }) => {
-  //   const schema = vine.object({
-  //     health_check: vine.unionOfTypes([
-  //       vine.optional().use(
-  //         requiredWhen((field) => {
-  //           return true
-  //         })
-  //       ),
-  //       vine.null(),
-  //       vine.boolean(),
-  //       vine.string().url(),
-  //     ]),
-  //   })
+  test('move to other unions when field is defined', async ({ assert }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([
+        vine.optional().requiredWhen(() => true),
+        vine.boolean(),
+        vine.string().url(),
+      ]),
+    })
 
-  //   console.log(schema)
+    await assert.validationOutput(vine.validate({ schema, data: { health_check: '1' } }), {
+      health_check: true,
+    })
+  })
 
-  //   await assert.validationErrors(vine.validate({ schema, data: {} }), [])
+  test('output null value using nullable modifier', async ({ assert }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([
+        vine.optional().nullable(),
+        vine.boolean(),
+        vine.string().url(),
+      ]),
+    })
 
-  //   await assert.validationOutput(vine.validate({ schema, data: {} }), {})
-  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
-  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {
-  //     health_check: null,
-  //   })
-  // })
+    await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {
+      health_check: null,
+    })
+  })
+
+  test('allow null value using vine.null', async ({ assert }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([vine.null(), vine.boolean(), vine.string().url()]),
+    })
+
+    await assert.validationErrors(vine.validate({ schema, data: {} }), [
+      {
+        field: 'health_check',
+        message: 'Invalid value provided for health_check field',
+        rule: 'unionOfTypes',
+      },
+    ])
+    await assert.validationErrors(vine.validate({ schema, data: { health_check: undefined } }), [
+      {
+        field: 'health_check',
+        message: 'Invalid value provided for health_check field',
+        rule: 'unionOfTypes',
+      },
+    ])
+    await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {
+      health_check: null,
+    })
+  })
 
   test('disallow duplicate types', async ({ assert }) => {
     assert.throws(

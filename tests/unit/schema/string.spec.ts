@@ -119,6 +119,58 @@ test.group('VineString', () => {
     })
   })
 
+  test('apply optional modifier and then transformer', ({ assert }) => {
+    const schema = vine
+      .string()
+      .optional()
+      .transform(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      subtype: 'string',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: true,
+      bail: true,
+      parseFnId: undefined,
+      transformFnId: 'ref://2',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
+  test('apply nullable modifier and then transformer', ({ assert }) => {
+    const schema = vine
+      .string()
+      .nullable()
+      .transform(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      subtype: 'string',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: true,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      transformFnId: 'ref://2',
+      validations: [
+        {
+          implicit: false,
+          isAsync: false,
+          ruleFnId: 'ref://1',
+        },
+      ],
+    })
+  })
+
   test('disable bail mode', ({ assert }) => {
     const schema = vine.string().bail(false)
 

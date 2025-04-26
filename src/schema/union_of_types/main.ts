@@ -52,7 +52,7 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
    * Clones the VineUnionOfTypes schema type.
    */
   clone(): this {
-    const cloned = new VineUnionOfTypes<Schema>(this.#schemas)
+    const cloned = new VineUnionOfTypes<Schema>(this.#schemas.map((schema) => schema.clone()))
     cloned.otherwise(this.#otherwiseCallback)
 
     return cloned as this

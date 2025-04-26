@@ -1896,19 +1896,51 @@ test.group('Types | UnionOfTypes', () => {
     }>()
   })
 
-  test('define union of types with undefined values', ({ expectTypeOf }) => {
+  test('define union of types with optional values', ({ expectTypeOf }) => {
     const schema = vine.object({
-      health_check: vine.unionOfTypes([vine.boolean(), vine.string()]),
+      health_check: vine.unionOfTypes([vine.optional(), vine.boolean(), vine.string()]),
     })
 
     type InputsSchema = InferInput<typeof schema>
     expectTypeOf<InputsSchema>().toEqualTypeOf<{
-      health_check: string | number | boolean
+      health_check?: string | number | boolean | undefined | null
     }>()
 
     type Schema = Infer<typeof schema>
     expectTypeOf<Schema>().toEqualTypeOf<{
-      health_check: boolean | string
+      health_check?: boolean | string | undefined
+    }>()
+  })
+
+  test('define union of types with optional and nullable values', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([vine.optional().nullable(), vine.boolean(), vine.string()]),
+    })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      health_check?: string | number | boolean | undefined | null
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      health_check?: boolean | string | undefined | null
+    }>()
+  })
+
+  test('define union of types with null values', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([vine.null(), vine.boolean(), vine.string()]),
+    })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      health_check: string | number | boolean | null
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      health_check: boolean | string | null
     }>()
   })
 })
