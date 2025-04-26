@@ -22,6 +22,7 @@ import vine, {
 } from '../../index.js'
 import { Infer } from '../../src/types.js'
 import { ValidationError } from '../../src/errors/validation_error.js'
+import { StandardSchemaV1 } from '@standard-schema/spec'
 
 test.group('Validator | metadata', () => {
   test('pass metadata to the validation pipeline', async ({ assert }) => {
@@ -482,5 +483,99 @@ test.group('Validator | regression', () => {
         },
       }
     )
+  })
+})
+
+test.group('Validator | standard validator', () => {
+  test('return validation errors as per standard validator spec', async ({
+    assert,
+    expectTypeOf,
+  }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const validator = vine.compile(author)
+
+    expectTypeOf<StandardSchemaV1.InferInput<typeof validator>>().toEqualTypeOf<{
+      name: string
+      email: string
+    }>()
+
+    expectTypeOf<StandardSchemaV1.InferOutput<typeof validator>>().toEqualTypeOf<{
+      name: string
+      email: string
+    }>()
+
+    const result = await validator['~standard'].validate({})
+    if ('value' in result) {
+      if (result.value) {
+        expectTypeOf(result.value).toEqualTypeOf<Infer<typeof validator>>()
+      }
+    }
+
+    if (result.issues) {
+      expectTypeOf(result.issues).toEqualTypeOf<readonly StandardSchemaV1.Issue[]>()
+    }
+
+    assert.deepEqual(result.issues, [
+      {
+        field: 'name',
+        message: 'The name field must be defined',
+        path: 'name',
+        rule: 'required',
+      },
+      {
+        field: 'email',
+        message: 'The email field must be defined',
+        path: 'email',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('return validated output as per standard validator spec', async ({
+    assert,
+    expectTypeOf,
+  }) => {
+    assert.plan(2)
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const validator = vine.compile(author)
+
+    expectTypeOf<StandardSchemaV1.InferInput<typeof validator>>().toEqualTypeOf<{
+      name: string
+      email: string
+    }>()
+
+    expectTypeOf<StandardSchemaV1.InferOutput<typeof validator>>().toEqualTypeOf<{
+      name: string
+      email: string
+    }>()
+
+    const result = await validator['~standard'].validate({
+      name: 'virk',
+      email: 'foo@bar.com',
+    })
+
+    if ('value' in result) {
+      assert.deepEqual(result.value, {
+        name: 'virk',
+        email: 'foo@bar.com',
+      })
+      if (result.value) {
+        expectTypeOf(result.value).toEqualTypeOf<Infer<typeof validator>>()
+      }
+    }
+
+    if (result.issues) {
+      expectTypeOf(result.issues).toEqualTypeOf<readonly StandardSchemaV1.Issue[]>()
+    }
+
+    assert.isUndefined(result.issues)
   })
 })
