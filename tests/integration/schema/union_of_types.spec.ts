@@ -9,6 +9,7 @@
 
 import { test } from '@japa/runner'
 import vine from '../../../index.js'
+// import { requiredWhen } from '../../../src/schema/base/rules.js'
 
 test.group('UnionOfTypes', () => {
   test('report error when none of the unions match', async ({ assert }) => {
@@ -72,6 +73,51 @@ test.group('UnionOfTypes', () => {
       },
     ])
   })
+
+  // test('allow undefined and null values using vine.optional()', async ({ assert }) => {
+  //   const schema = vine.object({
+  //     health_check: vine.unionOfTypes([vine.optional(), vine.boolean(), vine.string().url()]),
+  //   })
+
+  //   await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
+  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {})
+  // })
+
+  // test('output null value using nullable modifier', async ({ assert }) => {
+  //   const schema = vine.object({
+  //     health_check: vine.unionOfTypes([vine.optional(), vine.boolean(), vine.string().url()]),
+  //   })
+
+  //   await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
+  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {})
+  // })
+
+  // test('allow null value using vine.null', async ({ assert }) => {
+  //   const schema = vine.object({
+  //     health_check: vine.unionOfTypes([
+  //       vine.optional().use(
+  //         requiredWhen((field) => {
+  //           return true
+  //         })
+  //       ),
+  //       vine.null(),
+  //       vine.boolean(),
+  //       vine.string().url(),
+  //     ]),
+  //   })
+
+  //   console.log(schema)
+
+  //   await assert.validationErrors(vine.validate({ schema, data: {} }), [])
+
+  //   await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: undefined } }), {})
+  //   await assert.validationOutput(vine.validate({ schema, data: { health_check: null } }), {
+  //     health_check: null,
+  //   })
+  // })
 
   test('disallow duplicate types', async ({ assert }) => {
     assert.throws(

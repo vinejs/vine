@@ -1895,6 +1895,22 @@ test.group('Types | UnionOfTypes', () => {
       health_check: boolean | string
     }>()
   })
+
+  test('define union of types with undefined values', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      health_check: vine.unionOfTypes([vine.boolean(), vine.string()]),
+    })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      health_check: string | number | boolean
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      health_check: boolean | string
+    }>()
+  })
 })
 
 test.group('Types | compiled schema', () => {

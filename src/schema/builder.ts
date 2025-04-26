@@ -28,11 +28,11 @@ import { VineNativeEnum } from './enum/native_enum.js'
 import { VineUnionOfTypes } from './union_of_types/main.js'
 import { ITYPE, OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
 import type {
+  EnumLike,
+  SchemaTypes,
+  FieldContext,
   UndefinedOptional,
   DateFieldOptions,
-  EnumLike,
-  FieldContext,
-  SchemaTypes,
 } from '../types.js'
 
 /**
@@ -92,6 +92,21 @@ export class SchemaBuilder extends Macroable {
   literal<const Value>(value: Value) {
     return new VineLiteral<Value>(value)
   }
+
+  // /**
+  //  * Define an optional value. Chain the "nullable"
+  //  * method to get null values in the output
+  //  */
+  // optional() {
+  //   return new VineOptional()
+  // }
+
+  // /**
+  //  * Define a null value
+  //  */
+  // null() {
+  //   return new VineNull()
+  // }
 
   /**
    * Define an object with known properties. You may call "allowUnknownProperties"

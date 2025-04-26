@@ -8,7 +8,6 @@
  */
 
 import camelcase from 'camelcase'
-import Macroable from '@poppinss/macroable'
 import type { LiteralNode, RefsStore } from '@vinejs/compiler/types'
 
 import { OTYPE, COTYPE, PARSE, VALIDATION, ITYPE, SUBTYPE } from '../../symbols.js'
@@ -20,65 +19,60 @@ import type {
   FieldContext,
   FieldOptions,
   ParserOptions,
-  ConstructableSchema,
   ComparisonOperators,
   ArrayComparisonOperators,
   NumericComparisonOperators,
+  ConstructableLiteralSchema,
+  WithCustomRules,
 } from '../../types.js'
 import { requiredWhen } from './rules.js'
 import { helpers } from '../../vine/helpers.js'
+import Macroable from '@poppinss/macroable'
+import { ConditionalValidations } from './conditional_rules.js'
 
 /**
- * Base schema type with only modifiers applicable on all the schema types.
+ * Modifies the schema type to allow null values
  */
-abstract class BaseModifiersType<Input, Output, CamelCaseOutput>
-  extends Macroable
-  implements ConstructableSchema<Input, Output, CamelCaseOutput>
+export class NullableModifier<Schema extends ConstructableLiteralSchema<any, any, any>>
+  implements
+    ConstructableLiteralSchema<
+      Schema[typeof ITYPE] | null,
+      Schema[typeof OTYPE] | null,
+      Schema[typeof COTYPE] | null
+    >
 {
-  /**
-   * Each subtype should implement the compile method that returns
-   * one of the known compiler nodes
-   */
-  abstract [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): LiteralNode & { subtype: string }
-
-  /**
-   * The child class must implement the clone method
-   */
-  abstract clone(): this
-
   /**
    * Define the input type of the schema
    */
-  declare [ITYPE]: Input;
+  declare [ITYPE]: Schema[typeof ITYPE] | null;
 
   /**
    * The output value of the field. The property points to a type only
    * and not the real value.
    */
-  declare [OTYPE]: Output;
-  declare [COTYPE]: CamelCaseOutput
+  declare [OTYPE]: Schema[typeof OTYPE] | null;
+  declare [COTYPE]: Schema[typeof COTYPE] | null
+
+  #parent: Schema
+
+  constructor(parent: Schema) {
+    this.#parent = parent
+  }
+
+  /**
+   * Creates a fresh instance of the underlying schema type
+   * and wraps it inside the nullable modifier
+   */
+  clone(): this {
+    return new NullableModifier(this.#parent.clone()) as this
+  }
 
   /**
    * Mark the field under validation as optional. An optional
    * field allows both null and undefined values.
    */
-  optional(validations?: Validation<any>[]): OptionalModifier<this> {
-    return new OptionalModifier(this, validations)
-  }
-
-  /**
-   * Mark the field under validation to be null. The null value will
-   * be written to the output as well.
-   *
-   * If `optional` and `nullable` are used together, then both undefined
-   * and null values will be allowed.
-   */
-  nullable(): NullableModifier<this> {
-    return new NullableModifier(this)
+  optional(): OptionalModifier<this> {
+    return new OptionalModifier(this)
   }
 
   /**
@@ -89,32 +83,6 @@ abstract class BaseModifiersType<Input, Output, CamelCaseOutput>
     transformer: Transformer<this, TransformedOutput>
   ): TransformModifier<this, TransformedOutput> {
     return new TransformModifier(transformer, this)
-  }
-}
-
-/**
- * Modifies the schema type to allow null values
- */
-export class NullableModifier<
-  Schema extends BaseModifiersType<any, any, any>,
-> extends BaseModifiersType<
-  Schema[typeof ITYPE] | null,
-  Schema[typeof OTYPE] | null,
-  Schema[typeof COTYPE] | null
-> {
-  #parent: Schema
-
-  constructor(parent: Schema) {
-    super()
-    this.#parent = parent
-  }
-
-  /**
-   * Creates a fresh instance of the underlying schema type
-   * and wraps it inside the nullable modifier
-   */
-  clone(): this {
-    return new NullableModifier(this.#parent.clone()) as this
   }
 
   /**
@@ -134,13 +102,28 @@ export class NullableModifier<
 /**
  * Modifies the schema type to allow undefined values
  */
-export class OptionalModifier<
-  Schema extends BaseModifiersType<any, any, any>,
-> extends BaseModifiersType<
-  Schema[typeof ITYPE] | undefined | null,
-  Schema[typeof OTYPE] | undefined,
-  Schema[typeof COTYPE] | undefined
-> {
+export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any, any>>
+  extends ConditionalValidations
+  implements
+    ConstructableLiteralSchema<
+      Schema[typeof ITYPE] | undefined | null,
+      Schema[typeof OTYPE] | undefined,
+      Schema[typeof COTYPE] | undefined
+    >,
+    WithCustomRules
+{
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Schema[typeof ITYPE] | undefined | null;
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [OTYPE]: Schema[typeof OTYPE] | undefined;
+  declare [COTYPE]: Schema[typeof COTYPE] | undefined
+
   #parent: Schema
 
   /**
@@ -181,6 +164,27 @@ export class OptionalModifier<
         isAsync: validation.rule.isAsync,
       }
     })
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable(): NullableModifier<this> {
+    return new NullableModifier(this)
+  }
+
+  /**
+   * Apply transform on the final validated value. The transform method may
+   * convert the value to any new datatype.
+   */
+  transform<TransformedOutput>(
+    transformer: Transformer<this, TransformedOutput>
+  ): TransformModifier<this, TransformedOutput> {
+    return new TransformModifier(transformer, this)
   }
 
   /**
@@ -350,10 +354,14 @@ export class OptionalModifier<
 /**
  * Modifies the schema type to allow custom transformed values
  */
-export class TransformModifier<
-  Schema extends BaseModifiersType<any, any, any>,
-  Output,
-> extends BaseModifiersType<Schema[typeof ITYPE], Output, Output> {
+export class TransformModifier<Schema extends ConstructableLiteralSchema<any, any, any>, Output>
+  implements ConstructableLiteralSchema<Schema[typeof ITYPE], Output, Output>
+{
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Schema[typeof ITYPE];
+
   /**
    * The output value of the field. The property points to a type only
    * and not the real value.
@@ -365,7 +373,6 @@ export class TransformModifier<
   #transform: Transformer<Schema, Output>
 
   constructor(transform: Transformer<Schema, Output>, parent: Schema) {
-    super()
     this.#transform = transform
     this.#parent = parent
   }
@@ -376,6 +383,25 @@ export class TransformModifier<
    */
   clone(): this {
     return new TransformModifier(this.#transform, this.#parent.clone()) as this
+  }
+
+  /**
+   * Mark the field under validation as optional. An optional
+   * field allows both null and undefined values.
+   */
+  optional(): OptionalModifier<this> {
+    return new OptionalModifier(this)
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable(): NullableModifier<this> {
+    return new NullableModifier(this)
   }
 
   /**
@@ -396,11 +422,22 @@ export class TransformModifier<
  * The base type for creating a custom literal type. Literal type
  * is a schema type that has no children elements.
  */
-export abstract class BaseLiteralType<Input, Output, CamelCaseOutput> extends BaseModifiersType<
-  Input,
-  Output,
-  CamelCaseOutput
-> {
+export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
+  extends Macroable
+  implements ConstructableLiteralSchema<Input, Output, CamelCaseOutput>, WithCustomRules
+{
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Input;
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [OTYPE]: Output;
+  declare [COTYPE]: CamelCaseOutput;
+
   /**
    * Specify the subtype of the literal schema field
    */
@@ -495,6 +532,35 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput> extends Ba
   bail(state: boolean) {
     this.options.bail = state
     return this
+  }
+
+  /**
+   * Mark the field under validation as optional. An optional
+   * field allows both null and undefined values.
+   */
+  optional(): OptionalModifier<this> {
+    return new OptionalModifier(this)
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable(): NullableModifier<this> {
+    return new NullableModifier(this)
+  }
+
+  /**
+   * Apply transform on the final validated value. The transform method may
+   * convert the value to any new datatype.
+   */
+  transform<TransformedOutput>(
+    transformer: Transformer<this, TransformedOutput>
+  ): TransformModifier<this, TransformedOutput> {
+    return new TransformModifier(transformer, this)
   }
 
   /**

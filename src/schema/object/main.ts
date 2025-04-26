@@ -11,17 +11,19 @@ import camelcase from 'camelcase'
 import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 import { ObjectGroup } from './group.js'
+import { BaseType } from '../base/main.js'
 import { GroupConditional } from './conditional.js'
-import { BaseType, BaseModifiersType } from '../base/main.js'
 import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from '../../symbols.js'
 import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../../types.js'
 
 /**
  * Converts schema properties to camelCase
  */
-export class VineCamelCaseObject<
-  Schema extends VineObject<any, any, any, any>,
-> extends BaseModifiersType<Schema[typeof ITYPE], Schema[typeof COTYPE], Schema[typeof COTYPE]> {
+export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> extends BaseType<
+  Schema[typeof ITYPE],
+  Schema[typeof COTYPE],
+  Schema[typeof COTYPE]
+> {
   #schema: Schema;
 
   /**

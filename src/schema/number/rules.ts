@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
+import { messages } from '../../defaults.js'
 import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
-import { messages } from '../../defaults.js'
 
 /**
  * Enforce the value to be a number or a string representation

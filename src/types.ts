@@ -141,6 +141,38 @@ export interface ConstructableSchema<Inputs, Output, CamelCaseOutput> {
   [UNIQUE_NAME]?: string
   [IS_OF_TYPE]?: (value: unknown, field: FieldContext) => boolean
 }
+
+/**
+ * A sub-type of ConstructableSchema that limits the compiler nodes return types
+ */
+export interface ConstructableLiteralSchema<Inputs, Output, CamelCaseOutput> {
+  [ITYPE]: Inputs
+  [OTYPE]: Output
+  [COTYPE]: CamelCaseOutput
+  [PARSE](
+    propertyName: string,
+    refs: RefsStore,
+    options: ParserOptions
+  ): LiteralNode & { subtype: string }
+  clone(): this
+
+  /**
+   * Implement if you want schema type to be used with the unionOfTypes
+   */
+  [UNIQUE_NAME]?: string
+  [IS_OF_TYPE]?: (value: unknown, field: FieldContext) => boolean
+}
+
+/**
+ * Representation of a schema type that allows for custom rules
+ */
+export interface WithCustomRules {
+  /**
+   * Push a validation to the validations chain.
+   */
+  use(validation: Validation<any> | RuleBuilder): this
+}
+
 export type SchemaTypes = ConstructableSchema<any, any, any>
 
 /**

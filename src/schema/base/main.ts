@@ -7,7 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import type { FieldContext, RefsStore } from '@vinejs/compiler/types'
+import Macroable from '@poppinss/macroable'
+import type { RefsStore } from '@vinejs/compiler/types'
 
 import { ITYPE, OTYPE, COTYPE, PARSE, VALIDATION } from '../../symbols.js'
 import type {
@@ -18,43 +19,37 @@ import type {
   CompilerNodes,
   ParserOptions,
   ConstructableSchema,
-  ComparisonOperators,
-  ArrayComparisonOperators,
-  NumericComparisonOperators,
+  WithCustomRules,
 } from '../../types.js'
-import Macroable from '@poppinss/macroable'
-import { requiredWhen } from './rules.js'
-import { helpers } from '../../vine/helpers.js'
+import { ConditionalValidations } from './conditional_rules.js'
 
 /**
- * Base schema type with only modifiers applicable on all the schema types.
+ * Modifies the schema type to allow null values
  */
-export abstract class BaseModifiersType<Input, Output, CamelCaseOutput>
-  extends Macroable
-  implements ConstructableSchema<Input, Output, CamelCaseOutput>
+export class NullableModifier<Schema extends ConstructableSchema<any, any, any>>
+  implements
+    ConstructableSchema<
+      Schema[typeof ITYPE] | null,
+      Schema[typeof OTYPE] | null,
+      Schema[typeof COTYPE] | null
+    >
 {
-  /**
-   * Each subtype should implement the compile method that returns
-   * one of the known compiler nodes
-   */
-  abstract [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes
-
-  /**
-   * The child class must implement the clone method
-   */
-  abstract clone(): this
-
   /**
    * Define the input type of the schema
    */
-  declare [ITYPE]: Input;
+  declare [ITYPE]: Schema[typeof ITYPE] | null;
 
   /**
    * The output value of the field. The property points to a type only
    * and not the real value.
    */
-  declare [OTYPE]: Output;
-  declare [COTYPE]: CamelCaseOutput
+  declare [OTYPE]: Schema[typeof OTYPE] | null;
+  declare [COTYPE]: Schema[typeof COTYPE] | null
+
+  #parent: Schema
+  constructor(parent: Schema) {
+    this.#parent = parent
+  }
 
   /**
    * Mark the field under validation as optional. An optional
@@ -62,34 +57,6 @@ export abstract class BaseModifiersType<Input, Output, CamelCaseOutput>
    */
   optional(): OptionalModifier<this> {
     return new OptionalModifier(this)
-  }
-
-  /**
-   * Mark the field under validation to be null. The null value will
-   * be written to the output as well.
-   *
-   * If `optional` and `nullable` are used together, then both undefined
-   * and null values will be allowed.
-   */
-  nullable(): NullableModifier<this> {
-    return new NullableModifier(this)
-  }
-}
-
-/**
- * Modifies the schema type to allow null values
- */
-export class NullableModifier<
-  Schema extends BaseModifiersType<any, any, any>,
-> extends BaseModifiersType<
-  Schema[typeof ITYPE] | null,
-  Schema[typeof OTYPE] | null,
-  Schema[typeof COTYPE] | null
-> {
-  #parent: Schema
-  constructor(parent: Schema) {
-    super()
-    this.#parent = parent
   }
 
   /**
@@ -116,13 +83,28 @@ export class NullableModifier<
 /**
  * Modifies the schema type to allow undefined values
  */
-export class OptionalModifier<
-  Schema extends BaseModifiersType<any, any, any>,
-> extends BaseModifiersType<
-  Schema[typeof ITYPE] | undefined | null,
-  Schema[typeof OTYPE] | undefined,
-  Schema[typeof COTYPE] | undefined
-> {
+export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
+  extends ConditionalValidations
+  implements
+    ConstructableSchema<
+      Schema[typeof ITYPE] | null | undefined,
+      Schema[typeof OTYPE] | undefined,
+      Schema[typeof COTYPE] | undefined
+    >,
+    WithCustomRules
+{
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Schema[typeof ITYPE] | undefined | null;
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [OTYPE]: Schema[typeof OTYPE] | undefined;
+  declare [COTYPE]: Schema[typeof COTYPE] | undefined
+
   #parent: Schema
 
   /**
@@ -166,144 +148,22 @@ export class OptionalModifier<
   }
 
   /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable(): NullableModifier<this> {
+    return new NullableModifier(this)
+  }
+
+  /**
    * Push a validation to the validations chain.
    */
   use(validation: Validation<any> | RuleBuilder): this {
     this.validations.push(VALIDATION in validation ? validation[VALIDATION]() : validation)
     return this
-  }
-
-  /**
-   * Define a callback to conditionally require a field at
-   * runtime.
-   *
-   * The callback method should return "true" to mark the
-   * field as required, or "false" to skip the required
-   * validation
-   */
-  requiredWhen<Operator extends ComparisonOperators>(
-    otherField: string,
-    operator: Operator,
-    expectedValue: Operator extends ArrayComparisonOperators
-      ? (string | number | boolean)[]
-      : Operator extends NumericComparisonOperators
-        ? number
-        : string | number | boolean
-  ): this
-  requiredWhen(callback: (field: FieldContext) => boolean): this
-  requiredWhen(
-    otherField: string | ((field: FieldContext) => boolean),
-    operator?: ComparisonOperators,
-    expectedValue?: any
-  ) {
-    /**
-     * The equality check if self implemented
-     */
-    if (typeof otherField === 'function') {
-      return this.use(requiredWhen(otherField))
-    }
-
-    /**
-     * Creating the checker function based upon the
-     * operator used for the comparison
-     */
-    let checker: (value: any) => boolean
-    switch (operator!) {
-      case '=':
-        checker = (value) => value === expectedValue
-        break
-      case '!=':
-        checker = (value) => value !== expectedValue
-        break
-      case 'in':
-        checker = (value) => expectedValue.includes(value)
-        break
-      case 'notIn':
-        checker = (value) => !expectedValue.includes(value)
-        break
-      case '>':
-        checker = (value) => value > expectedValue
-        break
-      case '<':
-        checker = (value) => value < expectedValue
-        break
-      case '>=':
-        checker = (value) => value >= expectedValue
-        break
-      case '<=':
-        checker = (value) => value <= expectedValue
-    }
-
-    /**
-     * Registering rule with custom implementation
-     */
-    return this.use(
-      requiredWhen((field) => {
-        const otherFieldValue = helpers.getNestedValue(otherField, field)
-        return checker(otherFieldValue)
-      })
-    )
-  }
-
-  /**
-   * Mark the field under validation as required when all
-   * the other fields are present with value other
-   * than `undefined` or `null`.
-   */
-  requiredIfExists(fields: string | string[]) {
-    const fieldsToExist = Array.isArray(fields) ? fields : [fields]
-    return this.use(
-      requiredWhen((field) => {
-        return fieldsToExist.every((otherField) => {
-          return helpers.exists(helpers.getNestedValue(otherField, field))
-        })
-      })
-    )
-  }
-
-  /**
-   * Mark the field under validation as required when any
-   * one of the other fields are present with non-nullable
-   * value.
-   */
-  requiredIfAnyExists(fields: string[]) {
-    return this.use(
-      requiredWhen((field) => {
-        return fields.some((otherField) =>
-          helpers.exists(helpers.getNestedValue(otherField, field))
-        )
-      })
-    )
-  }
-
-  /**
-   * Mark the field under validation as required when all
-   * the other fields are missing or their value is
-   * `undefined` or `null`.
-   */
-  requiredIfMissing(fields: string | string[]) {
-    const fieldsToExist = Array.isArray(fields) ? fields : [fields]
-    return this.use(
-      requiredWhen((field) => {
-        return fieldsToExist.every((otherField) =>
-          helpers.isMissing(helpers.getNestedValue(otherField, field))
-        )
-      })
-    )
-  }
-
-  /**
-   * Mark the field under validation as required when any
-   * one of the other fields are missing.
-   */
-  requiredIfAnyMissing(fields: string[]) {
-    return this.use(
-      requiredWhen((field) => {
-        return fields.some((otherField) =>
-          helpers.isMissing(helpers.getNestedValue(otherField, field))
-        )
-      })
-    )
   }
 
   /**
@@ -332,20 +192,42 @@ export class OptionalModifier<
  * The BaseSchema class abstracts the repetitive parts of creating
  * a custom schema type.
  */
-export abstract class BaseType<Input, Output, CamelCaseOutput> extends BaseModifiersType<
-  Input,
-  Output,
-  CamelCaseOutput
-> {
+export abstract class BaseType<Input, Output, CamelCaseOutput>
+  extends Macroable
+  implements ConstructableSchema<Input, Output, CamelCaseOutput>, WithCustomRules
+{
   /**
-   * Field options
+   * Each subtype should implement the compile method that returns
+   * one of the known compiler nodes
    */
-  protected options: FieldOptions
+  abstract [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes
+
+  /**
+   * The child class must implement the clone method
+   */
+  abstract clone(): this
+
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Input;
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [OTYPE]: Output;
+  declare [COTYPE]: CamelCaseOutput
 
   /**
    * Set of validations to run
    */
   protected validations: Validation<any>[]
+
+  /**
+   * Field options
+   */
+  protected options: FieldOptions
 
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {
     super()
@@ -420,5 +302,24 @@ export abstract class BaseType<Input, Output, CamelCaseOutput> extends BaseModif
   bail(state: boolean) {
     this.options.bail = state
     return this
+  }
+
+  /**
+   * Mark the field under validation as optional. An optional
+   * field allows both null and undefined values.
+   */
+  optional(): OptionalModifier<this> {
+    return new OptionalModifier(this)
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable(): NullableModifier<this> {
+    return new NullableModifier(this)
   }
 }
