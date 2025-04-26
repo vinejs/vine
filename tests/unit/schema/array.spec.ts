@@ -67,6 +67,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -84,6 +85,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -137,6 +139,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -154,6 +157,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -207,6 +211,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -224,6 +229,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -277,6 +283,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -294,6 +301,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -325,11 +333,13 @@ test.group('VineArray', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://3',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'maxLength',
           ruleFnId: 'ref://4',
         },
       ],
@@ -359,6 +369,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -376,6 +387,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -429,6 +441,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -446,6 +459,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -499,6 +513,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -516,6 +531,7 @@ test.group('VineArray', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -586,6 +602,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -603,6 +620,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -644,6 +662,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -661,6 +680,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -713,6 +733,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -730,6 +751,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -771,6 +793,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -788,6 +811,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -840,6 +864,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -857,6 +882,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -898,6 +924,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -915,6 +942,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -968,6 +996,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -985,6 +1014,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1027,6 +1057,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1044,6 +1075,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1076,6 +1108,7 @@ test.group('VineArray | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://3',
         },
       ],
@@ -1105,6 +1138,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1122,6 +1156,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1141,11 +1176,13 @@ test.group('VineArray | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://3',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'maxLength',
           ruleFnId: 'ref://4',
         },
       ],
@@ -1175,6 +1212,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1192,6 +1230,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1245,6 +1284,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1262,6 +1302,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1303,6 +1344,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1320,6 +1362,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1375,6 +1418,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1392,6 +1436,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1433,6 +1478,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1450,6 +1496,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1505,6 +1552,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1522,6 +1570,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1563,6 +1612,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://1',
               },
             ],
@@ -1580,6 +1630,7 @@ test.group('VineArray | clone', () => {
               {
                 implicit: false,
                 isAsync: false,
+                name: 'string',
                 ruleFnId: 'ref://2',
               },
             ],
@@ -1606,6 +1657,7 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://2',
         },
       ],
@@ -1623,6 +1675,7 @@ test.group('VineArray | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
         ],
@@ -1651,6 +1704,7 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'maxLength',
           ruleFnId: 'ref://2',
         },
       ],
@@ -1668,6 +1722,7 @@ test.group('VineArray | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
         ],
@@ -1696,6 +1751,7 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'fixedLength',
           ruleFnId: 'ref://2',
         },
       ],
@@ -1713,6 +1769,7 @@ test.group('VineArray | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
         ],
@@ -1741,6 +1798,7 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'notEmpty',
           ruleFnId: 'ref://2',
         },
       ],
@@ -1758,6 +1816,7 @@ test.group('VineArray | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
         ],
@@ -1786,6 +1845,7 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'distinct',
           ruleFnId: 'ref://2',
         },
       ],
@@ -1803,6 +1863,7 @@ test.group('VineArray | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
         ],
@@ -1831,6 +1892,7 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'compact',
           ruleFnId: 'ref://2',
         },
       ],
@@ -1848,6 +1910,7 @@ test.group('VineArray | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
         ],
@@ -1883,6 +1946,7 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://2',
         },
       ],
@@ -1900,6 +1964,7 @@ test.group('VineArray | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
         ],

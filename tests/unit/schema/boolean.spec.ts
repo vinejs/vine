@@ -30,6 +30,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -52,6 +53,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -80,6 +82,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -102,6 +105,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -124,6 +128,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -145,6 +150,7 @@ test.group('VineBoolean', () => {
       parseFnId: 'ref://1',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -167,6 +173,7 @@ test.group('VineBoolean', () => {
       transformFnId: 'ref://2',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -219,6 +226,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -236,6 +244,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -259,6 +268,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -276,6 +286,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -299,6 +310,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -316,6 +328,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -339,6 +352,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -356,6 +370,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -379,6 +394,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -398,6 +414,7 @@ test.group('VineBoolean | clone', () => {
       transformFnId: 'ref://2',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -421,6 +438,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -438,6 +456,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: 'ref://1',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -462,6 +481,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -479,6 +499,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',

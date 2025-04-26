@@ -154,6 +154,7 @@ export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any
           validator: validation.rule.validator,
           options: validation.options,
         }),
+        name: validation.rule.name,
         implicit: validation.rule.implicit,
         isAsync: validation.rule.isAsync,
       }
@@ -361,6 +362,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
           validator: validation.rule.validator,
           options: validation.options,
         }),
+        name: validation.rule.name,
         implicit: validation.rule.implicit,
         isAsync: validation.rule.isAsync,
       }

@@ -260,6 +260,7 @@ test.group('Validator | toJSON', () => {
                   {
                     "implicit": false,
                     "isAsync": false,
+                    "name": "string",
                     "ruleFnId": "ref://1",
                   },
                 ],
@@ -277,11 +278,13 @@ test.group('Validator | toJSON', () => {
                   {
                     "implicit": false,
                     "isAsync": false,
+                    "name": "string",
                     "ruleFnId": "ref://2",
                   },
                   {
                     "implicit": false,
                     "isAsync": false,
+                    "name": "email",
                     "ruleFnId": "ref://3",
                   },
                 ],
@@ -299,11 +302,13 @@ test.group('Validator | toJSON', () => {
                   {
                     "implicit": false,
                     "isAsync": false,
+                    "name": "string",
                     "ruleFnId": "ref://4",
                   },
                   {
                     "implicit": false,
                     "isAsync": false,
+                    "name": "inList",
                     "ruleFnId": "ref://5",
                   },
                 ],

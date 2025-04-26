@@ -15,7 +15,7 @@ import { createRule } from '../../vine/create_rule.js'
  * Enforce the value to be a number or a string representation
  * of a number
  */
-export const numberRule = createRule<{ strict?: boolean }>((value, options, field) => {
+export const numberRule = createRule<{ strict?: boolean }>(function number(value, options, field) {
   const valueAsNumber = options.strict ? value : helpers.asNumber(value)
 
   if (
@@ -34,7 +34,7 @@ export const numberRule = createRule<{ strict?: boolean }>((value, options, fiel
 /**
  * Enforce a minimum value on a number field
  */
-export const minRule = createRule<{ min: number }>((value, options, field) => {
+export const minRule = createRule<{ min: number }>(function min(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -50,7 +50,7 @@ export const minRule = createRule<{ min: number }>((value, options, field) => {
 /**
  * Enforce a maximum value on a number field
  */
-export const maxRule = createRule<{ max: number }>((value, options, field) => {
+export const maxRule = createRule<{ max: number }>(function max(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -66,23 +66,25 @@ export const maxRule = createRule<{ max: number }>((value, options, field) => {
 /**
  * Enforce a range of values on a number field.
  */
-export const rangeRule = createRule<{ min: number; max: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const rangeRule = createRule<{ min: number; max: number }>(
+  function range(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  if ((value as number) < options.min || (value as number) > options.max) {
-    field.report(messages.range, 'range', field, options)
+    if ((value as number) < options.min || (value as number) > options.max) {
+      field.report(messages.range, 'range', field, options)
+    }
   }
-})
+)
 
 /**
  * Enforce the value is a positive number
  */
-export const positiveRule = createRule((value, _, field) => {
+export const positiveRule = createRule(function positive(value, _, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -98,7 +100,7 @@ export const positiveRule = createRule((value, _, field) => {
 /**
  * Enforce the value is a negative number
  */
-export const negativeRule = createRule<undefined>((value, _, field) => {
+export const negativeRule = createRule<undefined>(function negative(value, _, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -114,28 +116,30 @@ export const negativeRule = createRule<undefined>((value, _, field) => {
 /**
  * Enforce the value to have a fixed or range of decimals
  */
-export const decimalRule = createRule<{ range: [number, number?] }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const decimalRule = createRule<{ range: [number, number?] }>(
+  function decimal(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  if (
-    !helpers.isDecimal(String(value), {
-      force_decimal: options.range[0] !== 0,
-      decimal_digits: options.range.join(','),
-    })
-  ) {
-    field.report(messages.decimal, 'decimal', field, { digits: options.range.join('-') })
+    if (
+      !helpers.isDecimal(String(value), {
+        force_decimal: options.range[0] !== 0,
+        decimal_digits: options.range.join(','),
+      })
+    ) {
+      field.report(messages.decimal, 'decimal', field, { digits: options.range.join('-') })
+    }
   }
-})
+)
 
 /**
  * Enforce the value to not have decimal places
  */
-export const withoutDecimalsRule = createRule((value, _, field) => {
+export const withoutDecimalsRule = createRule(function withoutDecimals(value, _, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -151,7 +155,7 @@ export const withoutDecimalsRule = createRule((value, _, field) => {
 /**
  * Enforce the value to be in a list of allowed values
  */
-export const inRule = createRule<{ values: number[] }>((value, options, field) => {
+export const inRule = createRule<{ values: number[] }>(function inValues(value, options, field) {
   /**
    * Skip if the field is not valid.
    */

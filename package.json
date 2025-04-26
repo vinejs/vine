@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@poppinss/macroable": "^1.0.4",
+    "@standard-schema/spec": "^1.0.0",
     "@types/validator": "^13.15.0",
     "@vinejs/compiler": "^3.0.0",
     "camelcase": "^8.0.0",

@@ -30,7 +30,7 @@ dayjs.extend(isSameOrBefore)
  * Validates the value to be a string or number formatted
  * as per the expected date-time format.
  */
-export const dateRule = createRule<Partial<DateFieldOptions>>((value, options, field) => {
+export const dateRule = createRule<Partial<DateFieldOptions>>(function date(value, options, field) {
   if (typeof value !== 'string' && typeof value !== 'number') {
     field.report(messages.date, 'date', field)
     return
@@ -104,7 +104,7 @@ export const equalsRule = createRule<
   {
     expectedValue: string | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
+>(function equals(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -147,7 +147,7 @@ export const afterRule = createRule<
       | (string & { _?: never })
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
+>(function after(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -197,7 +197,7 @@ export const afterOrEqualRule = createRule<
       | (string & { _?: never })
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
+>(function afterOrEqual(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -248,7 +248,7 @@ export const beforeRule = createRule<
       | (string & { _?: never })
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
+>(function before(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -298,7 +298,7 @@ export const beforeOrEqualRule = createRule<
       | (string & { _?: never })
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
+>(function beforeOrEqual(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -344,7 +344,7 @@ export const sameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
+>(function sameAs(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -386,7 +386,7 @@ export const notSameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
+>(function notSameAs(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -428,7 +428,7 @@ export const afterFieldRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
+>(function afterField(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -470,7 +470,7 @@ export const afterOrSameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
+>(function afterOrSameAs(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -512,7 +512,7 @@ export const beforeFieldRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
+>(function beforeField(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -554,7 +554,7 @@ export const beforeOrSameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
+>(function beforeOrSameAs(_, options, field) {
   if (!field.meta.$value) {
     return
   }
@@ -589,7 +589,7 @@ export const beforeOrSameAsRule = createRule<
 /**
  * The weekend rule ensures the date falls on a weekend
  */
-export const weekendRule = createRule((_, __, field) => {
+export const weekendRule = createRule(function weekend(_, __, field) {
   if (!field.meta.$value) {
     return
   }
@@ -605,7 +605,7 @@ export const weekendRule = createRule((_, __, field) => {
 /**
  * The weekday rule ensures the date falls on a weekday
  */
-export const weekdayRule = createRule((_, __, field) => {
+export const weekdayRule = createRule(function weekday(_, __, field) {
   if (!field.meta.$value) {
     return
   }

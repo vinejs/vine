@@ -69,6 +69,7 @@ test.group('VineString', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -91,6 +92,7 @@ test.group('VineString', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -113,6 +115,7 @@ test.group('VineString', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -139,6 +142,7 @@ test.group('VineString', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -165,6 +169,7 @@ test.group('VineString', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -187,6 +192,7 @@ test.group('VineString', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -209,6 +215,7 @@ test.group('VineString', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -245,6 +252,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -262,6 +270,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -285,6 +294,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -302,6 +312,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -325,6 +336,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -342,6 +354,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -365,6 +378,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -382,6 +396,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -405,6 +420,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -424,6 +440,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -447,6 +464,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -464,11 +482,13 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://2',
         },
       ],
@@ -492,11 +512,13 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://2',
         },
       ],
@@ -514,16 +536,19 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://2',
         },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://3',
         },
       ],
@@ -548,6 +573,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -566,6 +592,7 @@ test.group('VineString | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
       ],
@@ -575,7 +602,7 @@ test.group('VineString | clone', () => {
 
 test.group('VineString | applying rules', () => {
   test('register rule via rule builder', ({ assert }) => {
-    const passwordRule = createRule(() => {})
+    const passwordRule = createRule(function password() {})
     class Password implements RuleBuilder {
       [VALIDATION]() {
         return passwordRule()
@@ -599,11 +626,13 @@ test.group('VineString | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'string',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'password',
           ruleFnId: 'ref://2',
         },
       ],
@@ -809,11 +838,13 @@ test.group('VineString | applying rules', () => {
           {
             implicit: false,
             isAsync: false,
+            name: 'string',
             ruleFnId: 'ref://1',
           },
           {
             implicit: false,
             isAsync: rule.rule.isAsync,
+            name: rule.rule.name,
             ruleFnId: 'ref://2',
           },
         ],

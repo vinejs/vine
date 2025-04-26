@@ -21,12 +21,14 @@ type GetArgs<T> = undefined extends T ? [options?: T] : [options: T]
 export function createRule<Options = undefined>(
   validator: Validator<Options>,
   metaData?: {
+    name?: string
     implicit?: boolean
     isAsync?: boolean
   }
 ) {
   const rule: ValidationRule<Options> = {
     validator,
+    name: metaData?.name ?? validator.name,
     isAsync: metaData?.isAsync || validator.constructor.name === 'AsyncFunction',
     implicit: metaData?.implicit ?? false,
   }

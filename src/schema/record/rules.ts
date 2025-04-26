@@ -14,7 +14,7 @@ import { createRule } from '../../vine/create_rule.js'
 /**
  * Enforce a minimum length on an object field
  */
-export const minLengthRule = createRule<{ min: number }>((value, options, field) => {
+export const minLengthRule = createRule<{ min: number }>(function minLength(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -33,7 +33,7 @@ export const minLengthRule = createRule<{ min: number }>((value, options, field)
 /**
  * Enforce a maximum length on an object field
  */
-export const maxLengthRule = createRule<{ max: number }>((value, options, field) => {
+export const maxLengthRule = createRule<{ max: number }>(function maxLength(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -52,27 +52,29 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, field)
 /**
  * Enforce a fixed length on an object field
  */
-export const fixedLengthRule = createRule<{ size: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const fixedLengthRule = createRule<{ size: number }>(
+  function fixedLength(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  /**
-   * Value will always be an object if the field is valid.
-   */
-  if (Object.keys(value as Record<string, any>).length !== options.size) {
-    field.report(messages['record.fixedLength'], 'record.fixedLength', field, options)
+    /**
+     * Value will always be an object if the field is valid.
+     */
+    if (Object.keys(value as Record<string, any>).length !== options.size) {
+      field.report(messages['record.fixedLength'], 'record.fixedLength', field, options)
+    }
   }
-})
+)
 
 /**
  * Register a callback to validate the object keys
  */
 export const validateKeysRule = createRule<(keys: string[], field: FieldContext) => void>(
-  (value, callback, field) => {
+  function validateKeys(value, callback, field) {
     /**
      * Skip if the field is not valid.
      */

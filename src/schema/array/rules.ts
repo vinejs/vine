@@ -14,7 +14,7 @@ import { createRule } from '../../vine/create_rule.js'
 /**
  * Enforce a minimum length on an array field
  */
-export const minLengthRule = createRule<{ min: number }>((value, options, field) => {
+export const minLengthRule = createRule<{ min: number }>(function minLength(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -33,7 +33,7 @@ export const minLengthRule = createRule<{ min: number }>((value, options, field)
 /**
  * Enforce a maximum length on an array field
  */
-export const maxLengthRule = createRule<{ max: number }>((value, options, field) => {
+export const maxLengthRule = createRule<{ max: number }>(function maxLength(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -52,26 +52,28 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, field)
 /**
  * Enforce a fixed length on an array field
  */
-export const fixedLengthRule = createRule<{ size: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const fixedLengthRule = createRule<{ size: number }>(
+  function fixedLength(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  /**
-   * Value will always be an array if the field is valid.
-   */
-  if ((value as unknown[]).length !== options.size) {
-    field.report(messages['array.fixedLength'], 'array.fixedLength', field, options)
+    /**
+     * Value will always be an array if the field is valid.
+     */
+    if ((value as unknown[]).length !== options.size) {
+      field.report(messages['array.fixedLength'], 'array.fixedLength', field, options)
+    }
   }
-})
+)
 
 /**
  * Ensure the array is not empty
  */
-export const notEmptyRule = createRule<undefined>((value, _, field) => {
+export const notEmptyRule = createRule<undefined>(function notEmpty(value, _, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -90,26 +92,28 @@ export const notEmptyRule = createRule<undefined>((value, _, field) => {
 /**
  * Ensure array elements are distinct/unique
  */
-export const distinctRule = createRule<{ fields?: string | string[] }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const distinctRule = createRule<{ fields?: string | string[] }>(
+  function distinct(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  /**
-   * Value will always be an array if the field is valid.
-   */
-  if (!helpers.isDistinct(value as any[], options.fields)) {
-    field.report(messages.distinct, 'distinct', field, options)
+    /**
+     * Value will always be an array if the field is valid.
+     */
+    if (!helpers.isDistinct(value as any[], options.fields)) {
+      field.report(messages.distinct, 'distinct', field, options)
+    }
   }
-})
+)
 
 /**
  * Removes empty strings, null and undefined values from the array
  */
-export const compactRule = createRule<undefined>((value, _, field) => {
+export const compactRule = createRule<undefined>(function compact(value, _, field) {
   /**
    * Skip if the field is not valid.
    */

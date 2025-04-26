@@ -9,9 +9,9 @@
 
 import camelcase from 'camelcase'
 import normalizeUrl from 'normalize-url'
-import escape from 'validator/lib/escape.js'
+import escapeValue from 'validator/lib/escape.js'
 import type { FieldContext } from '@vinejs/compiler/types'
-import normalizeEmail from 'validator/lib/normalizeEmail.js'
+import normalizeEmailValue from 'validator/lib/normalizeEmail.js'
 
 import { messages } from '../../defaults.js'
 import { helpers } from '../../vine/helpers.js'
@@ -32,7 +32,7 @@ import type {
 /**
  * Validates the value to be a string
  */
-export const stringRule = createRule((value, _, field) => {
+export const stringRule = createRule(function string(value, _, field) {
   if (typeof value !== 'string') {
     field.report(messages.string, 'string', field)
   }
@@ -41,22 +41,24 @@ export const stringRule = createRule((value, _, field) => {
 /**
  * Validates the value to be a valid email address
  */
-export const emailRule = createRule<EmailOptions | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const emailRule = createRule<EmailOptions | undefined>(
+  function email(value, options, field) {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!helpers.isEmail(value as string, options)) {
-    field.report(messages.email, 'email', field)
+    if (!helpers.isEmail(value as string, options)) {
+      field.report(messages.email, 'email', field)
+    }
   }
-})
+)
 
 /**
  * Validates the value to be a valid mobile number
  */
 export const mobileRule = createRule<
   MobileOptions | undefined | ((field: FieldContext) => MobileOptions | undefined)
->((value, options, field) => {
+>(function mobile(value, options, field) {
   if (!field.isValid) {
     return
   }
@@ -72,20 +74,22 @@ export const mobileRule = createRule<
 /**
  * Validates the value to be a valid IP address.
  */
-export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>(
+  function ipAddress(value, options, field) {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!helpers.isIP(value as string, options?.version)) {
-    field.report(messages.ipAddress, 'ipAddress', field)
+    if (!helpers.isIP(value as string, options?.version)) {
+      field.report(messages.ipAddress, 'ipAddress', field)
+    }
   }
-})
+)
 
 /**
  * Validates the value against a regular expression
  */
-export const regexRule = createRule<RegExp>((value, expression, field) => {
+export const regexRule = createRule<RegExp>(function regex(value, expression, field) {
   if (!field.isValid) {
     return
   }
@@ -98,7 +102,7 @@ export const regexRule = createRule<RegExp>((value, expression, field) => {
 /**
  * Validates the value to be a valid hex color code
  */
-export const hexCodeRule = createRule((value, _, field) => {
+export const hexCodeRule = createRule(function hexCode(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -111,7 +115,7 @@ export const hexCodeRule = createRule((value, _, field) => {
 /**
  * Validates the value to be a valid URL
  */
-export const urlRule = createRule<URLOptions | undefined>((value, options, field) => {
+export const urlRule = createRule<URLOptions | undefined>(function url(value, options, field) {
   if (!field.isValid) {
     return
   }
@@ -124,7 +128,7 @@ export const urlRule = createRule<URLOptions | undefined>((value, options, field
 /**
  * Validates the value to be an active URL
  */
-export const activeUrlRule = createRule(async (value, _, field) => {
+export const activeUrlRule = createRule(async function activeUrl(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -137,35 +141,37 @@ export const activeUrlRule = createRule(async (value, _, field) => {
 /**
  * Validates the value to contain only letters
  */
-export const alphaRule = createRule<AlphaOptions | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const alphaRule = createRule<AlphaOptions | undefined>(
+  function alpha(value, options, field) {
+    if (!field.isValid) {
+      return
+    }
 
-  let characterSet = 'a-zA-Z'
-  if (options) {
-    if (options.allowSpaces) {
-      characterSet += '\\s'
+    let characterSet = 'a-zA-Z'
+    if (options) {
+      if (options.allowSpaces) {
+        characterSet += '\\s'
+      }
+      if (options.allowDashes) {
+        characterSet += '-'
+      }
+      if (options.allowUnderscores) {
+        characterSet += '_'
+      }
     }
-    if (options.allowDashes) {
-      characterSet += '-'
-    }
-    if (options.allowUnderscores) {
-      characterSet += '_'
-    }
-  }
 
-  const expression = new RegExp(`^[${characterSet}]+$`)
-  if (!expression.test(value as string)) {
-    field.report(messages.alpha, 'alpha', field)
+    const expression = new RegExp(`^[${characterSet}]+$`)
+    if (!expression.test(value as string)) {
+      field.report(messages.alpha, 'alpha', field)
+    }
   }
-})
+)
 
 /**
  * Validates the value to contain only letters and numbers
  */
 export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
-  (value, options, field) => {
+  function alphaNumeric(value, options, field) {
     if (!field.isValid) {
       return
     }
@@ -193,7 +199,7 @@ export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
 /**
  * Enforce a minimum length on a string field
  */
-export const minLengthRule = createRule<{ min: number }>((value, options, field) => {
+export const minLengthRule = createRule<{ min: number }>(function minLength(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -208,7 +214,7 @@ export const minLengthRule = createRule<{ min: number }>((value, options, field)
 /**
  * Enforce a maximum length on a string field
  */
-export const maxLengthRule = createRule<{ max: number }>((value, options, field) => {
+export const maxLengthRule = createRule<{ max: number }>(function maxLength(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -224,101 +230,111 @@ export const maxLengthRule = createRule<{ max: number }>((value, options, field)
 /**
  * Enforce a fixed length on a string field
  */
-export const fixedLengthRule = createRule<{ size: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const fixedLengthRule = createRule<{ size: number }>(
+  function fixedLength(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  if ((value as string).length !== options.size) {
-    field.report(messages.fixedLength, 'fixedLength', field, options)
+    if ((value as string).length !== options.size) {
+      field.report(messages.fixedLength, 'fixedLength', field, options)
+    }
   }
-})
+)
 
 /**
  * Ensure the value ends with the pre-defined substring
  */
-export const endsWithRule = createRule<{ substring: string }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const endsWithRule = createRule<{ substring: string }>(
+  function endsWith(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  if (!(value as string).endsWith(options.substring)) {
-    field.report(messages.endsWith, 'endsWith', field, options)
+    if (!(value as string).endsWith(options.substring)) {
+      field.report(messages.endsWith, 'endsWith', field, options)
+    }
   }
-})
+)
 
 /**
  * Ensure the value starts with the pre-defined substring
  */
-export const startsWithRule = createRule<{ substring: string }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const startsWithRule = createRule<{ substring: string }>(
+  function startsWith(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  if (!(value as string).startsWith(options.substring)) {
-    field.report(messages.startsWith, 'startsWith', field, options)
+    if (!(value as string).startsWith(options.substring)) {
+      field.report(messages.startsWith, 'startsWith', field, options)
+    }
   }
-})
+)
 
 /**
  * Ensure the field's value under validation is the same as the other field's value
  */
-export const sameAsRule = createRule<{ otherField: string }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const sameAsRule = createRule<{ otherField: string }>(
+  function sameAs(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  const input = helpers.getNestedValue(options.otherField, field)
+    const input = helpers.getNestedValue(options.otherField, field)
 
-  /**
-   * Performing validation and reporting error
-   */
-  if (input !== value) {
-    field.report(messages.sameAs, 'sameAs', field, options)
-    return
+    /**
+     * Performing validation and reporting error
+     */
+    if (input !== value) {
+      field.report(messages.sameAs, 'sameAs', field, options)
+      return
+    }
   }
-})
+)
 
 /**
  * Ensure the field's value under validation is different from another field's value
  */
-export const notSameAsRule = createRule<{ otherField: string }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const notSameAsRule = createRule<{ otherField: string }>(
+  function notSameAs(value, options, field) {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  const input = helpers.getNestedValue(options.otherField, field)
+    const input = helpers.getNestedValue(options.otherField, field)
 
-  /**
-   * Performing validation and reporting error
-   */
-  if (input === value) {
-    field.report(messages.notSameAs, 'notSameAs', field, options)
-    return
+    /**
+     * Performing validation and reporting error
+     */
+    if (input === value) {
+      field.report(messages.notSameAs, 'notSameAs', field, options)
+      return
+    }
   }
-})
+)
 
 /**
  * Ensure the field under validation is confirmed by
  * having another field with the same name
  */
 export const confirmedRule = createRule<{ confirmationField: string } | undefined>(
-  (value, options, field) => {
+  function confirmed(value, options, field) {
     /**
      * Skip if the field is not valid.
      */
@@ -342,7 +358,7 @@ export const confirmedRule = createRule<{ confirmationField: string } | undefine
 /**
  * Trims whitespaces around the string value
  */
-export const trimRule = createRule((value, _, field) => {
+export const trimRule = createRule(function trim(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -354,12 +370,12 @@ export const trimRule = createRule((value, _, field) => {
  * Normalizes the email address
  */
 export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
-  (value, options, field) => {
+  function normalizeEmail(value, options, field) {
     if (!field.isValid) {
       return
     }
 
-    field.mutate(normalizeEmail.default(value as string, options), field)
+    field.mutate(normalizeEmailValue.default(value as string, options), field)
   }
 )
 
@@ -367,7 +383,7 @@ export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
  * Converts the field value to UPPERCASE.
  */
 export const toUpperCaseRule = createRule<string | string[] | undefined>(
-  (value, locales, field) => {
+  function toUpperCase(value, locales, field) {
     if (!field.isValid) {
       return
     }
@@ -380,7 +396,7 @@ export const toUpperCaseRule = createRule<string | string[] | undefined>(
  * Converts the field value to lowercase.
  */
 export const toLowerCaseRule = createRule<string | string[] | undefined>(
-  (value, locales, field) => {
+  function toLowerCase(value, locales, field) {
     if (!field.isValid) {
       return
     }
@@ -392,7 +408,7 @@ export const toLowerCaseRule = createRule<string | string[] | undefined>(
 /**
  * Converts the field value to camelCase.
  */
-export const toCamelCaseRule = createRule((value, _, field) => {
+export const toCamelCaseRule = createRule(function toCamelCase(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -403,19 +419,19 @@ export const toCamelCaseRule = createRule((value, _, field) => {
 /**
  * Escape string for HTML entities
  */
-export const escapeRule = createRule((value, _, field) => {
+export const escapeRule = createRule(function escape(value, _, field) {
   if (!field.isValid) {
     return
   }
 
-  field.mutate(escape.default(value as string), field)
+  field.mutate(escapeValue.default(value as string), field)
 })
 
 /**
  * Normalize a URL
  */
 export const normalizeUrlRule = createRule<undefined | NormalizeUrlOptions>(
-  (value, options, field) => {
+  function normalizeUrlValue(value, options, field) {
     if (!field.isValid) {
       return
     }
@@ -428,7 +444,7 @@ export const normalizeUrlRule = createRule<undefined | NormalizeUrlOptions>(
  * Ensure the field's value under validation is a subset of the pre-defined list.
  */
 export const inRule = createRule<{ choices: string[] | ((field: FieldContext) => string[]) }>(
-  (value, options, field) => {
+  function inList(value, options, field) {
     /**
      * Skip if the field is not valid.
      */
@@ -452,7 +468,7 @@ export const inRule = createRule<{ choices: string[] | ((field: FieldContext) =>
  * Ensure the field's value under validation is not inside the pre-defined list.
  */
 export const notInRule = createRule<{ list: string[] | ((field: FieldContext) => string[]) }>(
-  (value, options, field) => {
+  function notIn(value, options, field) {
     /**
      * Skip if the field is not valid.
      */
@@ -477,7 +493,7 @@ export const notInRule = createRule<{ list: string[] | ((field: FieldContext) =>
  */
 export const creditCardRule = createRule<
   CreditCardOptions | undefined | ((field: FieldContext) => CreditCardOptions | void | undefined)
->((value, options, field) => {
+>(function creditCard(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -516,7 +532,7 @@ export const creditCardRule = createRule<
  */
 export const passportRule = createRule<
   PassportOptions | ((field: FieldContext) => PassportOptions)
->((value, options, field) => {
+>(function passport(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -540,7 +556,7 @@ export const passportRule = createRule<
  */
 export const postalCodeRule = createRule<
   PostalCodeOptions | undefined | ((field: FieldContext) => PostalCodeOptions | void | undefined)
->((value, options, field) => {
+>(function postalCode(value, options, field) {
   /**
    * Skip if the field is not valid.
    */
@@ -572,7 +588,7 @@ export const postalCodeRule = createRule<
  * Validates the value to be a valid UUID
  */
 export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefined>(
-  (value, options, field) => {
+  function uuid(value, options, field) {
     if (!field.isValid) {
       return
     }
@@ -595,7 +611,7 @@ export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefin
 /**
  * Validates the value to be a valid ULID
  */
-export const ulidRule = createRule((value, _, field) => {
+export const ulidRule = createRule(function ulid(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -608,7 +624,7 @@ export const ulidRule = createRule((value, _, field) => {
 /**
  * Validates the value contains ASCII characters only
  */
-export const asciiRule = createRule((value, _, field) => {
+export const asciiRule = createRule(function ascii(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -621,7 +637,7 @@ export const asciiRule = createRule((value, _, field) => {
 /**
  * Validates the value to be a valid IBAN number
  */
-export const ibanRule = createRule((value, _, field) => {
+export const ibanRule = createRule(function iban(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -634,7 +650,7 @@ export const ibanRule = createRule((value, _, field) => {
 /**
  * Validates the value to be a valid JWT token
  */
-export const jwtRule = createRule((value, _, field) => {
+export const jwtRule = createRule(function jwt(value, _, field) {
   if (!field.isValid) {
     return
   }
@@ -647,7 +663,7 @@ export const jwtRule = createRule((value, _, field) => {
 /**
  * Ensure the value is a string with latitude and longitude coordinates
  */
-export const coordinatesRule = createRule((value, _, field) => {
+export const coordinatesRule = createRule(function coordinates(value, _, field) {
   if (!field.isValid) {
     return
   }

@@ -62,6 +62,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -79,6 +80,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -132,6 +134,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -149,6 +152,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -202,6 +206,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -219,6 +224,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -272,6 +278,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -289,6 +296,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -342,6 +350,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -359,6 +368,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -412,6 +422,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -429,6 +440,7 @@ test.group('VineRecord', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -495,6 +507,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -512,6 +525,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -553,6 +567,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -570,6 +585,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -622,6 +638,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -639,6 +656,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -680,6 +698,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -697,6 +716,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -749,6 +769,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -766,6 +787,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -807,6 +829,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -824,6 +847,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -877,6 +901,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -894,6 +919,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -936,6 +962,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -953,6 +980,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -1008,6 +1036,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -1025,6 +1054,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -1066,6 +1096,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -1083,6 +1114,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -1138,6 +1170,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -1155,6 +1188,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -1196,6 +1230,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://1',
@@ -1213,6 +1248,7 @@ test.group('VineRecord | clone', () => {
             parseFnId: undefined,
             validations: [
               {
+                name: 'string',
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://2',
@@ -1239,6 +1275,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'minLength',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1256,6 +1293,7 @@ test.group('VineRecord | applying rules', () => {
         parseFnId: undefined,
         validations: [
           {
+            name: 'string',
             implicit: false,
             isAsync: false,
             ruleFnId: 'ref://1',
@@ -1284,6 +1322,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'maxLength',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1301,6 +1340,7 @@ test.group('VineRecord | applying rules', () => {
         parseFnId: undefined,
         validations: [
           {
+            name: 'string',
             implicit: false,
             isAsync: false,
             ruleFnId: 'ref://1',
@@ -1329,6 +1369,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'fixedLength',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1346,6 +1387,7 @@ test.group('VineRecord | applying rules', () => {
         parseFnId: undefined,
         validations: [
           {
+            name: 'string',
             implicit: false,
             isAsync: false,
             ruleFnId: 'ref://1',
@@ -1375,6 +1417,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'validateKeys',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1392,6 +1435,7 @@ test.group('VineRecord | applying rules', () => {
         parseFnId: undefined,
         validations: [
           {
+            name: 'string',
             implicit: false,
             isAsync: false,
             ruleFnId: 'ref://1',

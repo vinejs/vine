@@ -36,6 +36,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -58,6 +59,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -80,6 +82,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -102,6 +105,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -124,6 +128,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -145,6 +150,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://2',
         },
       ],
@@ -170,6 +176,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -187,6 +194,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -210,6 +218,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -227,6 +236,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -250,6 +260,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -267,6 +278,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -290,6 +302,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -307,6 +320,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -330,6 +344,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -349,6 +364,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -372,6 +388,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -389,6 +406,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://2',
         },
       ],

@@ -16,7 +16,7 @@ import { createRule } from '../../vine/create_rule.js'
  * is matched
  */
 export const requiredWhen = createRule<(field: FieldContext) => boolean>(
-  (_, checker, field) => {
+  function requiredWhen(_, checker, field) {
     const shouldBeRequired = checker(field)
     if (!field.isDefined && shouldBeRequired) {
       field.report(messages.required, 'required', field)

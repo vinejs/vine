@@ -203,6 +203,7 @@ export type Validator<Options extends any> = (
  */
 export type ValidationRule<Options extends any> = {
   validator: Validator<Options>
+  name: string
   isAsync: boolean
   implicit: boolean
 }

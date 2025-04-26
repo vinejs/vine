@@ -141,6 +141,7 @@ export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
           validator: validation.rule.validator,
           options: validation.options,
         }),
+        name: validation.rule.name,
         implicit: validation.rule.implicit,
         isAsync: validation.rule.isAsync,
       }
@@ -270,6 +271,7 @@ export abstract class BaseType<Input, Output, CamelCaseOutput>
           validator: validation.rule.validator,
           options: validation.options,
         }),
+        name: validation.rule.name,
         implicit: validation.rule.implicit,
         isAsync: validation.rule.isAsync,
       }

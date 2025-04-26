@@ -46,6 +46,7 @@ test.group('VineDate', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -68,6 +69,7 @@ test.group('VineDate', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -90,6 +92,7 @@ test.group('VineDate', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -112,6 +115,7 @@ test.group('VineDate', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -134,11 +138,13 @@ test.group('VineDate', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
       ],
@@ -161,6 +167,7 @@ test.group('VineDate', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -182,6 +189,7 @@ test.group('VineDate', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://2',
         },
       ],
@@ -218,6 +226,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -235,6 +244,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -258,6 +268,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -275,6 +286,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -298,6 +310,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -315,6 +328,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -338,6 +352,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -355,6 +370,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -378,11 +394,13 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
       ],
@@ -400,16 +418,19 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'afterOrEqual',
           ruleFnId: 'ref://3',
         },
       ],
@@ -433,6 +454,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -452,6 +474,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -475,6 +498,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
       ],
@@ -492,6 +516,7 @@ test.group('VineDate | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://2',
         },
       ],
@@ -517,11 +542,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'equals',
           ruleFnId: 'ref://2',
         },
       ],
@@ -551,11 +578,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
       ],
@@ -585,11 +614,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'before',
           ruleFnId: 'ref://2',
         },
       ],
@@ -619,11 +650,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'afterOrEqual',
           ruleFnId: 'ref://2',
         },
       ],
@@ -653,11 +686,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'beforeOrEqual',
           ruleFnId: 'ref://2',
         },
       ],
@@ -687,11 +722,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'sameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -721,11 +758,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'notSameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -755,11 +794,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'afterField',
           ruleFnId: 'ref://2',
         },
       ],
@@ -789,11 +830,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'afterOrSameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -823,11 +866,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'beforeField',
           ruleFnId: 'ref://2',
         },
       ],
@@ -857,11 +902,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'beforeOrSameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -891,11 +938,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'weekend',
           ruleFnId: 'ref://2',
         },
       ],
@@ -925,11 +974,13 @@ test.group('VineDate | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'date',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'weekday',
           ruleFnId: 'ref://2',
         },
       ],

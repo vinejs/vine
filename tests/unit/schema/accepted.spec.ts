@@ -32,6 +32,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -54,6 +55,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -76,6 +78,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -98,6 +101,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -119,6 +123,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
+          name: 'accepted',
         },
       ],
     })
@@ -141,6 +146,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -166,6 +172,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -183,6 +190,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -206,6 +214,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -223,6 +232,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -246,6 +256,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -263,6 +274,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -286,6 +298,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -303,6 +316,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -326,6 +340,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -345,6 +360,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -368,6 +384,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -385,6 +402,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
+          name: 'accepted',
         },
       ],
     })

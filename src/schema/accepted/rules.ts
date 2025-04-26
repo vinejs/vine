@@ -21,7 +21,7 @@ const ACCEPTED_VALUES = ['on', '1', 'yes', 'true', true, 1]
  * - "yes"
  * - "true"
  */
-export const acceptedRule = createRule((value, _, field) => {
+export const acceptedRule = createRule(function accepted(value, _, field) {
   if (!ACCEPTED_VALUES.includes(value as any)) {
     field.report(messages.accepted, 'accepted', field)
   }

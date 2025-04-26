@@ -17,7 +17,7 @@ import { FieldContext } from '@vinejs/compiler/types'
  */
 export const enumRule = createRule<{
   choices: readonly any[] | ((field: FieldContext) => readonly any[])
-}>((value, options, field) => {
+}>(function enumList(value, options, field) {
   const choices = typeof options.choices === 'function' ? options.choices(field) : options.choices
 
   /**

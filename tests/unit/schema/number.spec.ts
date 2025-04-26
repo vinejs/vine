@@ -41,6 +41,7 @@ test.group('VineNumber', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -63,6 +64,7 @@ test.group('VineNumber', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -85,6 +87,7 @@ test.group('VineNumber', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -107,6 +110,7 @@ test.group('VineNumber', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -129,16 +133,19 @@ test.group('VineNumber', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'min',
           ruleFnId: 'ref://2',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'max',
           ruleFnId: 'ref://3',
         },
       ],
@@ -161,6 +168,7 @@ test.group('VineNumber', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -182,6 +190,7 @@ test.group('VineNumber', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://2',
         },
       ],
@@ -220,6 +229,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -237,6 +247,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -260,6 +271,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -277,6 +289,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -300,6 +313,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -317,6 +331,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -340,6 +355,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -357,6 +373,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -380,11 +397,13 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'min',
           ruleFnId: 'ref://2',
         },
       ],
@@ -402,16 +421,19 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'min',
           ruleFnId: 'ref://2',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'max',
           ruleFnId: 'ref://3',
         },
       ],
@@ -435,6 +457,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -454,6 +477,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -477,6 +501,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
       ],
@@ -494,6 +519,7 @@ test.group('VineNumber | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://2',
         },
       ],
@@ -519,11 +545,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'min',
           ruleFnId: 'ref://2',
         },
       ],
@@ -553,11 +581,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'max',
           ruleFnId: 'ref://2',
         },
       ],
@@ -587,11 +617,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'range',
           ruleFnId: 'ref://2',
         },
       ],
@@ -621,11 +653,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'positive',
           ruleFnId: 'ref://2',
         },
       ],
@@ -655,11 +689,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'negative',
           ruleFnId: 'ref://2',
         },
       ],
@@ -689,11 +725,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'decimal',
           ruleFnId: 'ref://2',
         },
       ],
@@ -723,11 +761,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'decimal',
           ruleFnId: 'ref://2',
         },
       ],
@@ -757,11 +797,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'withoutDecimals',
           ruleFnId: 'ref://2',
         },
       ],
@@ -791,11 +833,13 @@ test.group('VineNumber | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'number',
           ruleFnId: 'ref://1',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'inValues',
           ruleFnId: 'ref://2',
         },
       ],
