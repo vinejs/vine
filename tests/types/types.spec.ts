@@ -202,6 +202,73 @@ test.group('Types | Flat schema', () => {
   }).tags(['@regression'])
 })
 
+test.group('Types | Re-using objects', () => {
+  test('re-use object properties to create a new schema', ({ expectTypeOf }) => {
+    const newUserSchema = vine.object({
+      id: vine.number(),
+      email: vine.string(),
+      fullName: vine.string(),
+    })
+
+    const editUserSchema = vine.object({ ...newUserSchema.getProperties() })
+    type InputsSchema = InferInput<typeof editUserSchema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      id: number | string
+      email: string
+      fullName: string
+    }>()
+
+    type Schema = Infer<typeof editUserSchema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      id: number
+      email: string
+      fullName: string
+    }>()
+  })
+
+  test('cherry pick properties to create a new schema', ({ expectTypeOf }) => {
+    const newUserSchema = vine.object({
+      id: vine.number(),
+      email: vine.string(),
+      fullName: vine.string(),
+    })
+
+    const editUserSchema = vine.object({ ...newUserSchema.pick(['email', 'fullName']) })
+    type InputsSchema = InferInput<typeof editUserSchema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      email: string
+      fullName: string
+    }>()
+
+    type Schema = Infer<typeof editUserSchema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      email: string
+      fullName: string
+    }>()
+  })
+
+  test('omit properties to create a new schema', ({ expectTypeOf }) => {
+    const newUserSchema = vine.object({
+      id: vine.number(),
+      email: vine.string(),
+      fullName: vine.string(),
+    })
+
+    const editUserSchema = vine.object({ ...newUserSchema.omit(['id']) })
+    type InputsSchema = InferInput<typeof editUserSchema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      email: string
+      fullName: string
+    }>()
+
+    type Schema = Infer<typeof editUserSchema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      email: string
+      fullName: string
+    }>()
+  })
+})
+
 test.group('Types | Nested schema', () => {
   test('infer types', ({ expectTypeOf }) => {
     const schema = vine.object({

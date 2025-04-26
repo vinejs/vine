@@ -110,6 +110,52 @@ test.group('VineObject | flat object', () => {
 
     await assert.validationOutput(vine.validate({ schema, data }), data)
   })
+
+  test('cherry pick properties from an existing object', async ({ assert }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const schema = vine.object({
+      ...author.pick(['name']),
+      body: vine.string(),
+    })
+
+    const data = {
+      name: 'virk',
+      email: 'foo@bar.com',
+      body: 'This is post 101',
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      name: 'virk',
+      body: 'This is post 101',
+    })
+  })
+
+  test('omit properties from an existing object', async ({ assert }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const schema = vine.object({
+      ...author.omit(['name']),
+      body: vine.string(),
+    })
+
+    const data = {
+      name: 'virk',
+      email: 'foo@bar.com',
+      body: 'This is post 101',
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      email: 'foo@bar.com',
+      body: 'This is post 101',
+    })
+  })
 })
 
 test.group('VineObject | allow unknown properties', () => {
