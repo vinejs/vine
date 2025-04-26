@@ -61,7 +61,8 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
   }
 
   /**
-   * Mark the field as optional
+   * Mark the field under validation as optional. An optional
+   * field allows both null and undefined values.
    */
   optional() {
     return new VineUnionOfTypes<VineOptional<undefined> | Schema>([

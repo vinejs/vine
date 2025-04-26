@@ -247,4 +247,246 @@ test.group('UnionOfTypes', () => {
       },
     ])
   }).tags(['#75'])
+
+  test('define optional union', async ({ assert }) => {
+    const emailField = vine.string().email()
+    const emailSchema = vine.object({
+      email: emailField.clone(),
+    })
+    const phoneSchema = vine.object({
+      phone: vine.string().mobile(),
+    })
+
+    const contact = vine
+      .union([
+        vine.union.if((value) => vine.helpers.isString(value), emailField),
+        vine.union.if((value) => vine.helpers.isObject(value) && 'email' in value, emailSchema),
+        vine.union.if((value) => vine.helpers.isObject(value) && 'phone' in value, phoneSchema),
+      ])
+      .optional()
+
+    const schema = vine.object({
+      contact,
+    })
+
+    await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: undefined,
+        },
+      }),
+      {}
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: null,
+        },
+      }),
+      {}
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: 'foo@bar.com',
+        },
+      }),
+      {
+        contact: 'foo@bar.com',
+      }
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: {
+            email: 'foo@bar.com',
+          },
+        },
+      }),
+      {
+        contact: {
+          email: 'foo@bar.com',
+        },
+      }
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: {
+            phone: '123456789',
+          },
+        },
+      }),
+      {
+        contact: {
+          phone: '123456789',
+        },
+      }
+    )
+
+    await assert.validationErrors(
+      vine.validate({
+        schema,
+        data: {
+          contact: {},
+        },
+      }),
+      [
+        {
+          field: 'contact',
+          message: 'Invalid value provided for contact field',
+          rule: 'union',
+        },
+      ]
+    )
+  })
+
+  test('define nullable union', async ({ assert }) => {
+    const emailField = vine.string().email()
+    const emailSchema = vine.object({
+      email: emailField.clone(),
+    })
+    const phoneSchema = vine.object({
+      phone: vine.string().mobile(),
+    })
+
+    const contact = vine
+      .union([
+        vine.union.if((value) => vine.helpers.isString(value), emailField),
+        vine.union.if((value) => vine.helpers.isObject(value) && 'email' in value, emailSchema),
+        vine.union.if((value) => vine.helpers.isObject(value) && 'phone' in value, phoneSchema),
+      ])
+      .nullable()
+
+    const schema = vine.object({
+      contact,
+    })
+
+    await assert.validationErrors(vine.validate({ schema, data: {} }), [
+      {
+        field: 'contact',
+        message: 'Invalid value provided for contact field',
+        rule: 'union',
+      },
+    ])
+    await assert.validationErrors(
+      vine.validate({
+        schema,
+        data: {
+          contact: undefined,
+        },
+      }),
+      [
+        {
+          field: 'contact',
+          message: 'Invalid value provided for contact field',
+          rule: 'union',
+        },
+      ]
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: null,
+        },
+      }),
+      {
+        contact: null,
+      }
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: 'foo@bar.com',
+        },
+      }),
+      {
+        contact: 'foo@bar.com',
+      }
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: {
+            email: 'foo@bar.com',
+          },
+        },
+      }),
+      {
+        contact: {
+          email: 'foo@bar.com',
+        },
+      }
+    )
+
+    await assert.validationOutput(
+      vine.validate({
+        schema,
+        data: {
+          contact: {
+            phone: '123456789',
+          },
+        },
+      }),
+      {
+        contact: {
+          phone: '123456789',
+        },
+      }
+    )
+
+    await assert.validationErrors(
+      vine.validate({
+        schema,
+        data: {
+          contact: {},
+        },
+      }),
+      [
+        {
+          field: 'contact',
+          message: 'Invalid value provided for contact field',
+          rule: 'union',
+        },
+      ]
+    )
+    await assert.validationErrors(vine.validate({ schema, data: {} }), [
+      {
+        field: 'contact',
+        message: 'Invalid value provided for contact field',
+        rule: 'union',
+      },
+    ])
+    await assert.validationErrors(
+      vine.validate({
+        schema,
+        data: {
+          contact: undefined,
+        },
+      }),
+      [
+        {
+          field: 'contact',
+          message: 'Invalid value provided for contact field',
+          rule: 'union',
+        },
+      ]
+    )
+  })
 })

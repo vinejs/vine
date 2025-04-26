@@ -12,13 +12,15 @@ import { RefsStore, UnionNode } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
 import { UnionConditional } from './conditional.js'
-import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
+import { ITYPE, OTYPE, COTYPE, PARSE, IS_OF_TYPE } from '../../symbols.js'
 import type {
   SchemaTypes,
   ParserOptions,
   ConstructableSchema,
   UnionNoMatchCallback,
 } from '../../types.js'
+import { VineOptional } from '../optional/main.js'
+import { VineNull } from '../null/main.js'
 
 /**
  * Vine union represents a union data type. A union is a collection
@@ -43,6 +45,33 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
 
   constructor(conditionals: Conditional[]) {
     this.#conditionals = conditionals
+  }
+
+  /**
+   * Mark the field under validation as optional. An optional
+   * field allows both null and undefined values.
+   */
+  optional() {
+    const optional = new VineOptional<undefined>()
+    return new VineUnion<UnionConditional<VineOptional<undefined>> | Conditional>([
+      new UnionConditional(optional[IS_OF_TYPE], optional),
+      ...this.#conditionals,
+    ])
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable() {
+    const nullable = new VineNull()
+    return new VineUnion<UnionConditional<VineNull> | Conditional>([
+      new UnionConditional(nullable[IS_OF_TYPE], nullable),
+      ...this.#conditionals,
+    ])
   }
 
   /**

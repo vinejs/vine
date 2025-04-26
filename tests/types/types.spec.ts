@@ -1484,6 +1484,123 @@ test.group('Types | Union', () => {
           }
     }>()
   })
+
+  test('mark union as optional', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      contact: vine
+        .union([
+          vine.union.if(
+            (value) => vine.helpers.isObject(value) && 'email' in value,
+            vine.object({
+              email: vine.string(),
+              otp: vine.string(),
+            })
+          ),
+          vine.union.if(
+            (value) => vine.helpers.isObject(value) && 'username' in value,
+            vine.object({
+              username: vine.string(),
+              password: vine.string(),
+            })
+          ),
+        ])
+        .optional(),
+    })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contact?:
+        | {
+            email: string
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+        | undefined
+        | null
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      contact?:
+        | {
+            email: string
+            otp: string
+          }
+        | {
+            username: string
+            password: string
+          }
+        | undefined
+    }>()
+  })
+
+  test('mark nested union as optional', ({ expectTypeOf }) => {
+    const schema = vine.object({
+      contact: vine.union([
+        vine.union.if(
+          (value) => vine.helpers.isObject(value) && 'email' in value,
+          vine
+            .union([
+              vine.union.if(
+                (value) => vine.helpers.isObject(value) && 'otp' in value,
+                vine.object({
+                  otp: vine.string(),
+                })
+              ),
+              vine.union.else(
+                vine.object({
+                  email: vine.string(),
+                })
+              ),
+            ])
+            .optional()
+        ),
+        vine.union.if(
+          (value) => vine.helpers.isObject(value) && 'username' in value,
+          vine.object({
+            username: vine.string(),
+            password: vine.string(),
+          })
+        ),
+      ]),
+    })
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      contact?:
+        | {
+            email: string
+          }
+        | {
+            otp: string
+          }
+        | null
+        | undefined
+        | {
+            username: string
+            password: string
+          }
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      contact?:
+        | {
+            email: string
+          }
+        | {
+            otp: string
+          }
+        | undefined
+        | {
+            username: string
+            password: string
+          }
+    }>()
+  })
 })
 
 test.group('Types | Record', () => {
