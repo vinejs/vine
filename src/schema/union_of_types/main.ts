@@ -18,6 +18,8 @@ import type {
   ConstructableSchema,
   UnionNoMatchCallback,
 } from '../../types.js'
+import { VineOptional } from '../optional/main.js'
+import { VineNull } from '../null/main.js'
 
 /**
  * Vine union represents a union data type. A union is a collection
@@ -56,6 +58,27 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
     cloned.otherwise(this.#otherwiseCallback)
 
     return cloned as this
+  }
+
+  /**
+   * Mark the field as optional
+   */
+  optional() {
+    return new VineUnionOfTypes<VineOptional<undefined> | Schema>([
+      new VineOptional(),
+      ...this.#schemas,
+    ])
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable() {
+    return new VineUnionOfTypes<VineNull | Schema>([new VineNull(), ...this.#schemas])
   }
 
   /**

@@ -50,6 +50,11 @@ export type CompilerNodes =
 export type MobileOptions = { locale?: MobilePhoneLocale[] } & IsMobilePhoneOptions
 
 /**
+ * Literals values that can be compared using "==="
+ */
+export type Literal = string | number | bigint | boolean | null | undefined
+
+/**
  * Options accepted by the email address validation
  */
 export type EmailOptions = IsEmailOptions

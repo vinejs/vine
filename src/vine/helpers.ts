@@ -152,6 +152,33 @@ export const helpers = {
     return null
   },
 
+  /**
+   * Compares two values. The inputValue will be casted to
+   * a number, when the expected value is a number and will
+   * be casted to a boolean, when expected value is a boolean
+   */
+  compareValues(inputValue: unknown, expectedValue: any) {
+    let input = inputValue
+
+    /**
+     * Normalizing the field value as per the expected
+     * value.
+     */
+    if (typeof expectedValue === 'boolean') {
+      input = this.asBoolean(inputValue)
+    } else if (typeof expectedValue === 'number') {
+      input = this.asNumber(inputValue)
+    }
+
+    /**
+     * Performing validation and reporting error
+     */
+    return {
+      isEqual: input === expectedValue,
+      casted: input,
+    }
+  },
+
   isEmail: isEmail.default,
   isURL: isURL.default,
   isAlpha: isAlpha.default,

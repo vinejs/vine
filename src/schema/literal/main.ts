@@ -8,14 +8,15 @@
  */
 
 import { equalsRule } from './rules.js'
+import { helpers } from '../../vine/helpers.js'
 import { BaseLiteralType } from '../base/literal.js'
-import type { FieldOptions, Validation } from '../../types.js'
-import { SUBTYPE } from '../../symbols.js'
+import { IS_OF_TYPE, SUBTYPE, UNIQUE_NAME } from '../../symbols.js'
+import type { FieldOptions, Literal, Validation } from '../../types.js'
 
 /**
  * VineLiteral represents a type that matches an exact value
  */
-export class VineLiteral<Value> extends BaseLiteralType<Value, Value, Value> {
+export class VineLiteral<Value extends Literal> extends BaseLiteralType<Value, Value, Value> {
   /**
    * Default collection of literal rules
    */
@@ -28,11 +29,25 @@ export class VineLiteral<Value> extends BaseLiteralType<Value, Value, Value> {
   /**
    * The subtype of the literal schema field
    */
-  [SUBTYPE] = 'literal'
+  [SUBTYPE] = 'literal';
+
+  /**
+   * The property must be implemented for "unionOfTypes"
+   */
+  declare [UNIQUE_NAME]: string;
+
+  /**
+   * Checks if the value is of string type. The method must be
+   * implemented for "unionOfTypes"
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return helpers.compareValues(value, this.#value).isEqual
+  }
 
   constructor(value: Value, options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations || [equalsRule({ expectedValue: value })])
     this.#value = value
+    this[UNIQUE_NAME] = `vine.literal.${this.#value}`
   }
 
   /**

@@ -9,6 +9,7 @@
 
 import { test } from '@japa/runner'
 import vine from '../../../index.js'
+import { Infer } from '../../../src/types.js'
 // import { requiredWhen } from '../../../src/schema/base/rules.js'
 
 test.group('UnionOfTypes', () => {
@@ -188,4 +189,62 @@ test.group('UnionOfTypes', () => {
       'Cannot use "VineUnion". The schema type is not compatible for use with "vine.unionOfTypes"'
     )
   })
+
+  test('define unionOf number, literal and optional', async ({ assert, expectTypeOf }) => {
+    const schema = vine.object({
+      rating: vine
+        .unionOfTypes([vine.number().min(0).max(5), vine.literal('*')])
+        .optional()
+        .nullable(),
+    })
+
+    expectTypeOf<Infer<typeof schema>>().toEqualTypeOf<{
+      rating?: undefined | null | number | '*'
+    }>()
+    await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { rating: undefined } }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { rating: null } }), {
+      rating: null,
+    })
+    await assert.validationOutput(vine.validate({ schema, data: { rating: '5' } }), {
+      rating: 5,
+    })
+    await assert.validationOutput(vine.validate({ schema, data: { rating: '*' } }), {
+      rating: '*',
+    })
+    await assert.validationErrors(vine.validate({ schema, data: { rating: 'foo' } }), [
+      {
+        field: 'rating',
+        rule: 'unionOfTypes',
+        message: 'Invalid value provided for rating field',
+      },
+    ])
+  }).tags(['#75'])
+
+  test('define unionOf string, array of strings and optional', async ({ assert, expectTypeOf }) => {
+    const schema = vine.object({
+      type: vine.unionOfTypes([vine.string(), vine.array(vine.string())]).optional(),
+    })
+
+    expectTypeOf<Infer<typeof schema>>().toEqualTypeOf<{
+      type?: string | string[] | undefined
+    }>()
+
+    await assert.validationOutput(vine.validate({ schema, data: {} }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { type: undefined } }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { type: null } }), {})
+    await assert.validationOutput(vine.validate({ schema, data: { type: 'created' } }), {
+      type: 'created',
+    })
+    await assert.validationOutput(vine.validate({ schema, data: { type: ['created'] } }), {
+      type: ['created'],
+    })
+    await assert.validationErrors(vine.validate({ schema, data: { type: 10 } }), [
+      {
+        field: 'type',
+        rule: 'unionOfTypes',
+        message: 'Invalid value provided for type field',
+      },
+    ])
+  }).tags(['#75'])
 })

@@ -30,6 +30,7 @@ import { VineNativeEnum } from './enum/native_enum.js'
 import { VineUnionOfTypes } from './union_of_types/main.js'
 import { ITYPE, OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
 import type {
+  Literal,
   EnumLike,
   SchemaTypes,
   FieldContext,
@@ -91,7 +92,7 @@ export class SchemaBuilder extends Macroable {
    * Define a schema type in which the input value
    * matches the pre-defined value
    */
-  literal<const Value>(value: Value) {
+  literal<const Value extends Literal>(value: Value) {
     return new VineLiteral<Value>(value)
   }
 

@@ -16,22 +16,12 @@ import { createRule } from '../../vine/create_rule.js'
  * serialization behavior.
  */
 export const equalsRule = createRule<{ expectedValue: any }>((value, options, field) => {
-  let input = value
-
-  /**
-   * Normalizing the field value as per the expected
-   * value.
-   */
-  if (typeof options.expectedValue === 'boolean') {
-    input = helpers.asBoolean(value)
-  } else if (typeof options.expectedValue === 'number') {
-    input = helpers.asNumber(value)
-  }
+  const comparedValue = helpers.compareValues(value, options.expectedValue)
 
   /**
    * Performing validation and reporting error
    */
-  if (input !== options.expectedValue) {
+  if (!comparedValue.isEqual) {
     field.report(messages.literal, 'literal', field, options)
     return
   }
@@ -39,5 +29,5 @@ export const equalsRule = createRule<{ expectedValue: any }>((value, options, fi
   /**
    * Mutating input with normalized value
    */
-  field.mutate(input, field)
+  field.mutate(comparedValue.casted, field)
 })
