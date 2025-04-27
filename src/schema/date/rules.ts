@@ -108,10 +108,6 @@ export const equalsRule = createRule<
     expectedValue: string | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function equals(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
   const dateTime = field.$value as Dayjs
@@ -151,10 +147,6 @@ export const afterRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function after(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
   const dateTime = field.$value as Dayjs
@@ -201,10 +193,6 @@ export const afterOrEqualRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function afterOrEqual(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
   const dateTime = field.$value as Dayjs
@@ -252,10 +240,6 @@ export const beforeRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function before(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
   const dateTime = field.$value as Dayjs
@@ -302,10 +286,6 @@ export const beforeOrEqualRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function beforeOrEqual(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
   const dateTime = field.$value as Dayjs
@@ -348,10 +328,6 @@ export const sameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function sameAs(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const dateTime = field.$value as Dayjs
   const format = options.format || field.$formats
@@ -390,10 +366,6 @@ export const notSameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function notSameAs(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const dateTime = field.$value as Dayjs
   const format = options.format || field.$formats
@@ -432,10 +404,6 @@ export const afterFieldRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function afterField(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const dateTime = field.$value as Dayjs
   const format = options.format || field.$formats
@@ -474,10 +442,6 @@ export const afterOrSameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function afterOrSameAs(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const dateTime = field.$value as Dayjs
   const format = options.format || field.$formats
@@ -516,10 +480,6 @@ export const beforeFieldRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function beforeField(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const dateTime = field.$value as Dayjs
   const format = options.format || field.$formats
@@ -558,10 +518,6 @@ export const beforeOrSameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function beforeOrSameAs(_, options, field) {
-  if (!field.$value) {
-    return
-  }
-
   const compare = options.compare || 'day'
   const dateTime = field.$value as Dayjs
   const format = options.format || field.$formats
@@ -593,10 +549,6 @@ export const beforeOrSameAsRule = createRule<
  * The weekend rule ensures the date falls on a weekend
  */
 export const weekendRule = createRule(function weekend(_, __, field) {
-  if (!field.$value) {
-    return
-  }
-
   const dateTime = field.$value as Dayjs
   const day = dateTime.day()
 
@@ -609,10 +561,6 @@ export const weekendRule = createRule(function weekend(_, __, field) {
  * The weekday rule ensures the date falls on a weekday
  */
 export const weekdayRule = createRule(function weekday(_, __, field) {
-  if (!field.$value) {
-    return
-  }
-
   const dateTime = field.$value as Dayjs
   const day = dateTime.day()
 

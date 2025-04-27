@@ -84,7 +84,8 @@ export class VineDate extends BaseLiteralType<string | number, Date, Date> {
   declare protected options: FieldOptions & DateFieldOptions
 
   constructor(options?: Partial<FieldOptions> & DateFieldOptions, validations?: Validation<any>[]) {
-    super(options, validations || [dateRule(options || {})])
+    super(options, validations || [])
+    this.dataTypeValidator = dateRule(options || {})
   }
 
   /**
