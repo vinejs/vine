@@ -30,69 +30,72 @@ dayjs.extend(isSameOrBefore)
  * Validates the value to be a string or number formatted
  * as per the expected date-time format.
  */
-export const dateRule = createRule<Partial<DateFieldOptions>>(function date(value, options, field) {
-  if (typeof value !== 'string' && typeof value !== 'number') {
-    field.report(messages.date, 'date', field)
-    return
+export const dateRule = createRule<Partial<DateFieldOptions>>(
+  function date(value, options, field): boolean {
+    if (typeof value !== 'string' && typeof value !== 'number') {
+      field.report(messages.date, 'date', field)
+      return false
+    }
+
+    let isTimestampAllowed = false
+    let isISOAllowed = false
+    let formats: DateEqualsOptions['format'] = options.formats || DEFAULT_DATE_FORMATS
+
+    /**
+     * DayJS mutates the formats property under the hood. Therefore
+     * we have to create a shallow clone before passing formats.
+     *
+     * https://github.com/iamkun/dayjs/issues/2136
+     */
+    if (Array.isArray(formats)) {
+      formats = [...formats]
+      isTimestampAllowed = formats.includes('x')
+      isISOAllowed = formats.includes('iso8601')
+    } else if (typeof formats !== 'string') {
+      formats = { ...formats }
+      isTimestampAllowed = formats.format === 'x'
+      isISOAllowed = formats.format === 'iso'
+    }
+
+    const valueAsNumber = isTimestampAllowed ? helpers.asNumber(value) : value
+
+    let dateTime: dayjs.Dayjs | undefined
+
+    /**
+     * The timestamp validation does not work with formats array.
+     * Therefore we validate is separately without passing any
+     * formats.
+     *
+     * Otherwise we parse the date with formats
+     */
+    if (isTimestampAllowed && !Number.isNaN(valueAsNumber)) {
+      dateTime = dayjs(valueAsNumber)
+    } else {
+      dateTime = dayjs(value, formats, true)
+    }
+
+    /**
+     * If datetime is invalid and the ISO format is allowed,
+     * then we reattempt to parse the date without formats
+     */
+    if (!dateTime.isValid() && isISOAllowed) {
+      dateTime = dayjs(value)
+    }
+
+    /**
+     * Ensure post parsing the datetime instance is valid
+     */
+    if (!dateTime.isValid()) {
+      field.report(messages.date, 'date', field)
+      return false
+    }
+
+    field.$value = dateTime
+    field.$formats = formats
+    field.mutate(dateTime.toDate(), field)
+    return true
   }
-
-  let isTimestampAllowed = false
-  let isISOAllowed = false
-  let formats: DateEqualsOptions['format'] = options.formats || DEFAULT_DATE_FORMATS
-
-  /**
-   * DayJS mutates the formats property under the hood. Therefore
-   * we have to create a shallow clone before passing formats.
-   *
-   * https://github.com/iamkun/dayjs/issues/2136
-   */
-  if (Array.isArray(formats)) {
-    formats = [...formats]
-    isTimestampAllowed = formats.includes('x')
-    isISOAllowed = formats.includes('iso8601')
-  } else if (typeof formats !== 'string') {
-    formats = { ...formats }
-    isTimestampAllowed = formats.format === 'x'
-    isISOAllowed = formats.format === 'iso'
-  }
-
-  const valueAsNumber = isTimestampAllowed ? helpers.asNumber(value) : value
-
-  let dateTime: dayjs.Dayjs | undefined
-
-  /**
-   * The timestamp validation does not work with formats array.
-   * Therefore we validate is separately without passing any
-   * formats.
-   *
-   * Otherwise we parse the date with formats
-   */
-  if (isTimestampAllowed && !Number.isNaN(valueAsNumber)) {
-    dateTime = dayjs(valueAsNumber)
-  } else {
-    dateTime = dayjs(value, formats, true)
-  }
-
-  /**
-   * If datetime is invalid and the ISO format is allowed,
-   * then we reattempt to parse the date without formats
-   */
-  if (!dateTime.isValid() && isISOAllowed) {
-    dateTime = dayjs(value)
-  }
-
-  /**
-   * Ensure post parsing the datetime instance is valid
-   */
-  if (!dateTime.isValid()) {
-    field.report(messages.date, 'date', field)
-    return
-  }
-
-  field.meta.$value = dateTime
-  field.meta.$formats = formats
-  field.mutate(dateTime.toDate(), field)
-})
+)
 
 /**
  * The equals rule compares the input value to be same
@@ -105,13 +108,13 @@ export const equalsRule = createRule<
     expectedValue: string | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function equals(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const dateTime = field.$value as Dayjs
   const expectedValue =
     typeof options.expectedValue === 'function'
       ? options.expectedValue(field)
@@ -148,13 +151,13 @@ export const afterRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function after(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -198,13 +201,13 @@ export const afterOrEqualRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function afterOrEqual(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -249,13 +252,13 @@ export const beforeRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function before(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -299,13 +302,13 @@ export const beforeOrEqualRule = createRule<
       | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function beforeOrEqual(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
   const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -345,13 +348,13 @@ export const sameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function sameAs(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
   const expectedDateTime = dayjs(expectedValue, format, true)
 
@@ -387,13 +390,13 @@ export const notSameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function notSameAs(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
   const expectedDateTime = dayjs(expectedValue, format, true)
 
@@ -429,13 +432,13 @@ export const afterFieldRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function afterField(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
   const expectedDateTime = dayjs(expectedValue, format, true)
 
@@ -471,13 +474,13 @@ export const afterOrSameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function afterOrSameAs(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
   const expectedDateTime = dayjs(expectedValue, format, true)
 
@@ -513,13 +516,13 @@ export const beforeFieldRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function beforeField(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
   const expectedDateTime = dayjs(expectedValue, format, true)
 
@@ -555,13 +558,13 @@ export const beforeOrSameAsRule = createRule<
     otherField: string
   } & DateEqualsOptions
 >(function beforeOrSameAs(_, options, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
   const expectedDateTime = dayjs(expectedValue, format, true)
 
@@ -590,11 +593,11 @@ export const beforeOrSameAsRule = createRule<
  * The weekend rule ensures the date falls on a weekend
  */
 export const weekendRule = createRule(function weekend(_, __, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
-  const dateTime = field.meta.$value as Dayjs
+  const dateTime = field.$value as Dayjs
   const day = dateTime.day()
 
   if (day !== 0 && day !== 6) {
@@ -606,11 +609,11 @@ export const weekendRule = createRule(function weekend(_, __, field) {
  * The weekday rule ensures the date falls on a weekday
  */
 export const weekdayRule = createRule(function weekday(_, __, field) {
-  if (!field.meta.$value) {
+  if (!field.$value) {
     return
   }
 
-  const dateTime = field.meta.$value as Dayjs
+  const dateTime = field.$value as Dayjs
   const day = dateTime.day()
 
   if (day === 0 || day === 6) {
