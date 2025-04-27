@@ -119,7 +119,8 @@ export class VineString extends BaseLiteralType<string, string, string> {
   }
 
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {
-    super(options, validations || [stringRule()])
+    super(options, validations || [])
+    this.dataTypeValidator = stringRule()
   }
 
   /**

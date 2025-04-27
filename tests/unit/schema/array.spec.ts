@@ -63,14 +63,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -81,14 +75,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -135,14 +123,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -153,14 +135,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -207,14 +183,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -225,14 +195,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -279,14 +243,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -297,14 +255,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -365,14 +317,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -383,14 +329,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -437,14 +377,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -455,14 +389,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -509,14 +437,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -527,14 +449,8 @@ test.group('VineArray', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -598,14 +514,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -616,14 +526,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -658,14 +562,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -676,14 +574,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -729,14 +621,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -747,14 +633,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -789,14 +669,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -807,14 +681,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -860,14 +728,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -878,14 +740,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -920,14 +776,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -938,14 +788,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -992,14 +836,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1010,14 +848,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1053,14 +885,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1071,14 +897,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1134,14 +954,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1152,14 +966,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1208,14 +1016,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1226,14 +1028,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1280,14 +1076,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1298,14 +1088,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1340,14 +1124,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1358,14 +1136,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1414,14 +1186,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1432,14 +1198,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1474,14 +1234,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1492,14 +1246,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1548,14 +1296,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1566,14 +1308,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1608,14 +1344,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
@@ -1626,14 +1356,8 @@ test.group('VineArray | clone', () => {
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                name: 'string',
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1671,14 +1395,8 @@ test.group('VineArray | applying rules', () => {
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1718,14 +1436,8 @@ test.group('VineArray | applying rules', () => {
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1765,14 +1477,8 @@ test.group('VineArray | applying rules', () => {
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1812,14 +1518,8 @@ test.group('VineArray | applying rules', () => {
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1859,14 +1559,8 @@ test.group('VineArray | applying rules', () => {
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1906,14 +1600,8 @@ test.group('VineArray | applying rules', () => {
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1960,14 +1648,8 @@ test.group('VineArray | applying rules', () => {
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 

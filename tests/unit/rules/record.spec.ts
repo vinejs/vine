@@ -16,10 +16,24 @@ import {
   validateKeysRule,
 } from '../../../src/schema/record/rules.js'
 
+const objectValidator = {
+  rule: {
+    implicit: false,
+    isAsync: false,
+    name: 'object',
+    validator(value: unknown) {
+      return value !== null && typeof value === 'object' && !Array.isArray(value)
+    },
+  },
+}
+
 test.group('Record | minLength', () => {
   test('skip when field is invalid', () => {
     const minLength = minLengthRule({ min: 2 })
-    const validated = validator.withContext({ isValid: false }).execute(minLength, 'foo')
+    const validated = validator
+      .withContext({ isValid: false })
+      .withDataTypeValidator(objectValidator)
+      .execute(minLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -28,7 +42,7 @@ test.group('Record | minLength', () => {
   test('skip when field is invalid and bail mode is disabled', () => {
     const minLength = minLengthRule({ min: 2 })
     const validated = validator
-      .withContext({ isValid: false })
+      .withDataTypeValidator(objectValidator)
       .bail(false)
       .execute(minLength, 'foo')
 
@@ -38,14 +52,18 @@ test.group('Record | minLength', () => {
 
   test('report when object length is less than the expected length', () => {
     const minLength = minLengthRule({ min: 2 })
-    const validated = validator.execute(minLength, { foo: 'bar' })
+    const validated = validator
+      .withDataTypeValidator(objectValidator)
+      .execute(minLength, { foo: 'bar' })
 
     validated.assertError('The dummy field must have at least 2 items')
   })
 
   test('pass validation when length is same or greater than expected length', () => {
     const minLength = minLengthRule({ min: 2 })
-    const validated = validator.execute(minLength, { foo: 'bar', bar: 'baz' })
+    const validated = validator
+      .withDataTypeValidator(objectValidator)
+      .execute(minLength, { foo: 'bar', bar: 'baz' })
     validated.assertSucceeded()
     validated.assertOutput({ foo: 'bar', bar: 'baz' })
 
@@ -58,7 +76,7 @@ test.group('Record | minLength', () => {
 test.group('Record | maxLength', () => {
   test('skip when field is invalid', () => {
     const maxLength = maxLengthRule({ max: 2 })
-    const validated = validator.withContext({ isValid: false }).execute(maxLength, 'foo')
+    const validated = validator.withDataTypeValidator(objectValidator).execute(maxLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -67,7 +85,7 @@ test.group('Record | maxLength', () => {
   test('skip when field is invalid and bail mode is disabled', () => {
     const maxLength = maxLengthRule({ max: 2 })
     const validated = validator
-      .withContext({ isValid: false })
+      .withDataTypeValidator(objectValidator)
       .bail(false)
       .execute(maxLength, 'foo')
 
@@ -77,14 +95,18 @@ test.group('Record | maxLength', () => {
 
   test('report when object length is greater than the expected length', () => {
     const maxLength = maxLengthRule({ max: 2 })
-    const validated = validator.execute(maxLength, { foo: 'bar', bar: 'baz', baz: 'foo' })
+    const validated = validator
+      .withDataTypeValidator(objectValidator)
+      .execute(maxLength, { foo: 'bar', bar: 'baz', baz: 'foo' })
 
     validated.assertError('The dummy field must not have more than 2 items')
   })
 
   test('pass validation when length is same or less than expected length', () => {
     const maxLength = maxLengthRule({ max: 2 })
-    const validated = validator.execute(maxLength, { foo: 'bar', bar: 'baz' })
+    const validated = validator
+      .withDataTypeValidator(objectValidator)
+      .execute(maxLength, { foo: 'bar', bar: 'baz' })
     validated.assertSucceeded()
     validated.assertOutput({ foo: 'bar', bar: 'baz' })
 
@@ -97,16 +119,16 @@ test.group('Record | maxLength', () => {
 test.group('Record | fixedLength', () => {
   test('skip when field is invalid', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
-    const validated = validator.withContext({ isValid: false }).execute(fixedLength, 'foo')
+    const validated = validator.withDataTypeValidator(objectValidator).execute(fixedLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
   })
 
-  test('skip when field is invalid and bail mode is disabled', () => {
+  test('skip when field data type is invalid and bail mode is disabled', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
     const validated = validator
-      .withContext({ isValid: false })
+      .withDataTypeValidator(objectValidator)
       .bail(false)
       .execute(fixedLength, 'foo')
 
@@ -116,21 +138,27 @@ test.group('Record | fixedLength', () => {
 
   test('report when object length is greater than the expected length', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
-    const validated = validator.execute(fixedLength, { foo: 'bar', bar: 'baz', baz: 'foo' })
+    const validated = validator
+      .withDataTypeValidator(objectValidator)
+      .execute(fixedLength, { foo: 'bar', bar: 'baz', baz: 'foo' })
 
     validated.assertError('The dummy field must contain 2 items')
   })
 
   test('report when object length is less than the expected length', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
-    const validated = validator.execute(fixedLength, { foo: 'bar' })
+    const validated = validator
+      .withDataTypeValidator(objectValidator)
+      .execute(fixedLength, { foo: 'bar' })
 
     validated.assertError('The dummy field must contain 2 items')
   })
 
   test('pass validation when length is same as the expected length', () => {
     const maxLength = fixedLengthRule({ size: 2 })
-    const validated = validator.execute(maxLength, { foo: 'bar', bar: 'baz' })
+    const validated = validator
+      .withDataTypeValidator(objectValidator)
+      .execute(maxLength, { foo: 'bar', bar: 'baz' })
     validated.assertSucceeded()
     validated.assertOutput({ foo: 'bar', bar: 'baz' })
   })
@@ -141,7 +169,7 @@ test.group('Record | validateKeys', () => {
     const validateKeys = validateKeysRule(() => {
       throw new Error('Never expected to be invoked')
     })
-    const validated = validator.withContext({ isValid: false }).execute(validateKeys, 'foo')
+    const validated = validator.withDataTypeValidator(objectValidator).execute(validateKeys, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -152,7 +180,7 @@ test.group('Record | validateKeys', () => {
       throw new Error('Never expected to be invoked')
     })
     const validated = validator
-      .withContext({ isValid: false })
+      .withDataTypeValidator(objectValidator)
       .bail(false)
       .execute(validateKeys, 'foo')
 
@@ -167,7 +195,7 @@ test.group('Record | validateKeys', () => {
       assert.deepEqual(keys, ['foo', 'bar', 'baz'])
     })
 
-    const validated = validator.execute(validateKeys, {
+    const validated = validator.withDataTypeValidator(objectValidator).execute(validateKeys, {
       foo: 'bar',
       bar: 'baz',
       baz: 'foo',
@@ -186,7 +214,7 @@ test.group('Record | validateKeys', () => {
       field.report('Invalid keys', 'record.keys', field)
     })
 
-    const validated = validator.execute(validateKeys, {
+    const validated = validator.withDataTypeValidator(objectValidator).execute(validateKeys, {
       foo: 'bar',
       bar: 'baz',
       baz: 'foo',

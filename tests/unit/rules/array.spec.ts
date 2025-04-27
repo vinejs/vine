@@ -18,10 +18,21 @@ import {
   fixedLengthRule,
 } from '../../../src/schema/array/rules.js'
 
+const arrayValidator = {
+  rule: {
+    implicit: false,
+    isAsync: false,
+    name: 'object',
+    validator(value: unknown) {
+      return Array.isArray(value)
+    },
+  },
+}
+
 test.group('Array | minLength', () => {
   test('skip when field is invalid', () => {
     const minLength = minLengthRule({ min: 2 })
-    const validated = validator.withContext({ isValid: false }).execute(minLength, 'foo')
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(minLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -30,7 +41,7 @@ test.group('Array | minLength', () => {
   test('skip when field is invalid and bail mode is disabled', () => {
     const minLength = minLengthRule({ min: 2 })
     const validated = validator
-      .withContext({ isValid: false })
+      .withDataTypeValidator(arrayValidator)
       .bail(false)
       .execute(minLength, 'foo')
 
@@ -40,14 +51,16 @@ test.group('Array | minLength', () => {
 
   test('report when array length is less than the expected length', () => {
     const minLength = minLengthRule({ min: 2 })
-    const validated = validator.execute(minLength, ['foo'])
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(minLength, ['foo'])
 
     validated.assertError('The dummy field must have at least 2 items')
   })
 
   test('pass validation when length is same or greater than expected length', () => {
     const minLength = minLengthRule({ min: 2 })
-    const validated = validator.execute(minLength, ['foo', 'bar'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(minLength, ['foo', 'bar'])
     validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
 
@@ -60,7 +73,10 @@ test.group('Array | minLength', () => {
 test.group('Array | maxLength', () => {
   test('skip when field is invalid', () => {
     const maxLength = maxLengthRule({ max: 2 })
-    const validated = validator.withContext({ isValid: false }).execute(maxLength, 'foo')
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .withContext({ isValid: false })
+      .execute(maxLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -69,7 +85,7 @@ test.group('Array | maxLength', () => {
   test('skip when field is invalid and bail mode is disabled', () => {
     const maxLength = maxLengthRule({ max: 2 })
     const validated = validator
-      .withContext({ isValid: false })
+      .withDataTypeValidator(arrayValidator)
       .bail(false)
       .execute(maxLength, 'foo')
 
@@ -79,14 +95,18 @@ test.group('Array | maxLength', () => {
 
   test('report when array length is greater than the expected length', () => {
     const maxLength = maxLengthRule({ max: 2 })
-    const validated = validator.execute(maxLength, ['foo', 'bar', 'baz'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(maxLength, ['foo', 'bar', 'baz'])
 
     validated.assertError('The dummy field must not have more than 2 items')
   })
 
   test('pass validation when length is same or less than expected length', () => {
     const maxLength = maxLengthRule({ max: 2 })
-    const validated = validator.execute(maxLength, ['foo', 'bar'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(maxLength, ['foo', 'bar'])
     validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
 
@@ -99,7 +119,10 @@ test.group('Array | maxLength', () => {
 test.group('Array | fixedLength', () => {
   test('skip when field is invalid', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
-    const validated = validator.withContext({ isValid: false }).execute(fixedLength, 'foo')
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .withContext({ isValid: false })
+      .execute(fixedLength, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -108,7 +131,7 @@ test.group('Array | fixedLength', () => {
   test('skip when field is invalid and bail mode is disabled', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
     const validated = validator
-      .withContext({ isValid: false })
+      .withDataTypeValidator(arrayValidator)
       .bail(false)
       .execute(fixedLength, 'foo')
 
@@ -118,21 +141,25 @@ test.group('Array | fixedLength', () => {
 
   test('report when array length is greater than the expected length', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
-    const validated = validator.execute(fixedLength, ['foo', 'bar', 'baz'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(fixedLength, ['foo', 'bar', 'baz'])
 
     validated.assertError('The dummy field must contain 2 items')
   })
 
   test('report when array length is less than the expected length', () => {
     const fixedLength = fixedLengthRule({ size: 2 })
-    const validated = validator.execute(fixedLength, ['foo'])
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(fixedLength, ['foo'])
 
     validated.assertError('The dummy field must contain 2 items')
   })
 
   test('pass validation when length is same as the expected length', () => {
     const maxLength = fixedLengthRule({ size: 2 })
-    const validated = validator.execute(maxLength, ['foo', 'bar'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(maxLength, ['foo', 'bar'])
     validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
   })
@@ -141,7 +168,7 @@ test.group('Array | fixedLength', () => {
 test.group('Array | notEmpty', () => {
   test('skip when field is invalid', () => {
     const notEmpty = notEmptyRule()
-    const validated = validator.withContext({ isValid: false }).execute(notEmpty, 'foo')
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(notEmpty, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -149,7 +176,10 @@ test.group('Array | notEmpty', () => {
 
   test('skip when field is invalid and bail mode is disabled', () => {
     const notEmpty = notEmptyRule()
-    const validated = validator.withContext({ isValid: false }).bail(false).execute(notEmpty, 'foo')
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .bail(false)
+      .execute(notEmpty, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -157,14 +187,16 @@ test.group('Array | notEmpty', () => {
 
   test('report when array is empty', () => {
     const notEmpty = notEmptyRule()
-    const validated = validator.execute(notEmpty, [])
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(notEmpty, [])
 
     validated.assertError('The dummy field must not be empty')
   })
 
   test('pass validation when array has one or more items', () => {
     const notEmpty = notEmptyRule()
-    const validated = validator.execute(notEmpty, ['foo', 'bar'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(notEmpty, ['foo', 'bar'])
     validated.assertSucceeded()
     validated.assertOutput(['foo', 'bar'])
   })
@@ -173,7 +205,7 @@ test.group('Array | notEmpty', () => {
 test.group('Array | distinct', () => {
   test('skip when field is invalid', () => {
     const distinct = distinctRule({})
-    const validated = validator.withContext({ isValid: false }).execute(distinct, 'foo')
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -181,7 +213,10 @@ test.group('Array | distinct', () => {
 
   test('skip when field is invalid and bail mode is disabled', () => {
     const distinct = distinctRule({})
-    const validated = validator.withContext({ isValid: false }).bail(false).execute(distinct, 'foo')
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .bail(false)
+      .execute(distinct, 'foo')
 
     validated.assertSucceeded()
     validated.assertOutput('foo')
@@ -189,38 +224,50 @@ test.group('Array | distinct', () => {
 
   test('pass validation when array is empty', () => {
     const distinct = distinctRule({})
-    const validated = validator.execute(distinct, [])
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [])
 
     validated.assertSucceeded()
   })
 
   test('pass validation when array has unique items', () => {
     const distinct = distinctRule({})
-    const validated = validator.execute(distinct, ['foo', 'bar', 'baz'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(distinct, ['foo', 'bar', 'baz'])
     validated.assertSucceeded()
 
-    const validated1 = validator.execute(distinct, [11, 12, 13])
+    const validated1 = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(distinct, [11, 12, 13])
     validated1.assertSucceeded()
 
-    const validated2 = validator.execute(distinct, [true, false])
+    const validated2 = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(distinct, [true, false])
     validated2.assertSucceeded()
   })
 
   test('report error when array has duplicates', () => {
     const distinct = distinctRule({})
-    const validated = validator.execute(distinct, ['foo', 'bar', 'foo'])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(distinct, ['foo', 'bar', 'foo'])
     validated.assertError('The dummy field has duplicate values')
 
-    const validated1 = validator.execute(distinct, [11, 12, 11])
+    const validated1 = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(distinct, [11, 12, 11])
     validated1.assertError('The dummy field has duplicate values')
 
-    const validated2 = validator.execute(distinct, [true, true])
+    const validated2 = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(distinct, [true, true])
     validated2.assertError('The dummy field has duplicate values')
   })
 
   test('pass validation when array of objects have unique items', () => {
     const distinct = distinctRule({ fields: 'email' })
-    const validated = validator.execute(distinct, [
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
       {
         email: 'foo@bar.com',
       },
@@ -234,7 +281,7 @@ test.group('Array | distinct', () => {
 
   test('report error when array of objects has duplicate items', () => {
     const distinct = distinctRule({ fields: 'email' })
-    const validated = validator.execute(distinct, [
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
       {
         email: 'foo@bar.com',
       },
@@ -247,7 +294,7 @@ test.group('Array | distinct', () => {
 
   test('pass validation when object has unique items for a composite key', () => {
     const distinct = distinctRule({ fields: ['email', 'company_id'] })
-    const validated = validator.execute(distinct, [
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
       {
         email: 'foo@bar.com',
         company_id: 1,
@@ -263,7 +310,7 @@ test.group('Array | distinct', () => {
 
   test('report error when object has duplicate items for a composite key', () => {
     const distinct = distinctRule({ fields: ['email', 'company_id'] })
-    const validated = validator.execute(distinct, [
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
       {
         email: 'foo@bar.com',
         company_id: 1,
@@ -279,7 +326,7 @@ test.group('Array | distinct', () => {
 
   test('skip when one or more fields are missing in objects', () => {
     const distinct = distinctRule({ fields: ['email', 'company_id'] })
-    const validated = validator.execute(distinct, [
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
       {
         email: 'foo@bar.com',
       },
@@ -293,7 +340,7 @@ test.group('Array | distinct', () => {
 
   test('skip when array elements are not objects', () => {
     const distinct = distinctRule({ fields: ['email', 'company_id'] })
-    const validated = validator.execute(distinct, [
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
       {
         email: 'foo@bar.com',
       },
@@ -307,31 +354,24 @@ test.group('Array | distinct', () => {
 test.group('Array | compact', () => {
   test('skip when field is invalid', () => {
     const compact = compactRule()
-    const validated = validator.withContext({ isValid: false }).execute(compact, 'foo')
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(compact, 'foo')
     validated.assertOutput('foo')
   })
 
   test('skip when field is invalid and bail mode is disabled', () => {
     const compact = compactRule()
-    const validated = validator.withContext({ isValid: false }).bail(false).execute(compact, 'foo')
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .bail(false)
+      .execute(compact, 'foo')
     validated.assertOutput('foo')
   })
 
   test('remove empty strings null and undefined values', () => {
     const compact = compactRule()
-    const validated = validator.execute(compact, [
-      'foo',
-      'bar',
-      '',
-      null,
-      undefined,
-      'baz',
-      null,
-      true,
-      false,
-      1,
-      0,
-    ])
+    const validated = validator
+      .withDataTypeValidator(arrayValidator)
+      .execute(compact, ['foo', 'bar', '', null, undefined, 'baz', null, true, false, 1, 0])
 
     validated.assertOutput(['foo', 'bar', 'baz', true, false, 1, 0])
   })

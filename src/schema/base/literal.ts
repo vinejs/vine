@@ -311,6 +311,13 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   abstract clone(): this
 
   /**
+   * The validation to use to validating the schema data type. Using
+   * a data type validator guards custom rules to only run when
+   * the data type validation passes.
+   */
+  dataTypeValidator?: Validation<any>
+
+  /**
    * Field options
    */
   protected options: FieldOptions
@@ -353,20 +360,25 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   }
 
   /**
+   * Compiles validation to the compile validation node
+   */
+  protected compileValidation(validation: Validation<any>, refs: RefsStore) {
+    return {
+      ruleFnId: refs.track({
+        validator: validation.rule.validator,
+        options: validation.options,
+      }),
+      name: validation.rule.name,
+      implicit: validation.rule.implicit,
+      isAsync: validation.rule.isAsync,
+    }
+  }
+
+  /**
    * Compiles validations
    */
   protected compileValidations(refs: RefsStore) {
-    return this.validations.map((validation) => {
-      return {
-        ruleFnId: refs.track({
-          validator: validation.rule.validator,
-          options: validation.options,
-        }),
-        name: validation.rule.name,
-        implicit: validation.rule.implicit,
-        isAsync: validation.rule.isAsync,
-      }
-    })
+    return this.validations.map((validation) => this.compileValidation(validation, refs))
   }
 
   /**
@@ -438,6 +450,9 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
       type: 'literal',
       subtype: this[SUBTYPE],
       fieldName: propertyName,
+      ...(this.dataTypeValidator
+        ? { dataTypeValidatorFnId: this.compileValidation(this.dataTypeValidator, refs).ruleFnId }
+        : {}),
       propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
       bail: this.options.bail,
       allowNull: this.options.allowNull,

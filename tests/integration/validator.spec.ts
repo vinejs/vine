@@ -251,24 +251,19 @@ test.group('Validator | toJSON', () => {
               {
                 "allowNull": false,
                 "bail": true,
+                "dataTypeValidatorFnId": "ref://1",
                 "fieldName": "name",
                 "isOptional": false,
                 "parseFnId": undefined,
                 "propertyName": "name",
                 "subtype": "string",
                 "type": "literal",
-                "validations": [
-                  {
-                    "implicit": false,
-                    "isAsync": false,
-                    "name": "string",
-                    "ruleFnId": "ref://1",
-                  },
-                ],
+                "validations": [],
               },
               {
                 "allowNull": false,
                 "bail": true,
+                "dataTypeValidatorFnId": "ref://2",
                 "fieldName": "email",
                 "isOptional": false,
                 "parseFnId": undefined,
@@ -276,12 +271,6 @@ test.group('Validator | toJSON', () => {
                 "subtype": "string",
                 "type": "literal",
                 "validations": [
-                  {
-                    "implicit": false,
-                    "isAsync": false,
-                    "name": "string",
-                    "ruleFnId": "ref://2",
-                  },
                   {
                     "implicit": false,
                     "isAsync": false,
@@ -293,6 +282,7 @@ test.group('Validator | toJSON', () => {
               {
                 "allowNull": false,
                 "bail": true,
+                "dataTypeValidatorFnId": "ref://4",
                 "fieldName": "role",
                 "isOptional": false,
                 "parseFnId": undefined,
@@ -300,12 +290,6 @@ test.group('Validator | toJSON', () => {
                 "subtype": "string",
                 "type": "literal",
                 "validations": [
-                  {
-                    "implicit": false,
-                    "isAsync": false,
-                    "name": "string",
-                    "ruleFnId": "ref://4",
-                  },
                   {
                     "implicit": false,
                     "isAsync": false,
@@ -577,5 +561,191 @@ test.group('Validator | standard validator', () => {
     }
 
     assert.isUndefined(result.issues)
+  })
+})
+
+test.group('Validator | bail mode disabled', () => {
+  test('run all string validation rules when bail mode is disabled', async ({ assert }) => {
+    const author = vine.object({
+      email: vine.string().email().minLength(5).bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(validator.validate({ email: 'foo' }), [
+      {
+        field: 'email',
+        message: 'The email field must be a valid email address',
+        rule: 'email',
+      },
+      {
+        field: 'email',
+        message: 'The email field must have at least 5 characters',
+        meta: {
+          min: 5,
+        },
+        rule: 'minLength',
+      },
+    ])
+  })
+
+  test('do not run all validation rules when value is not a string', async ({ assert }) => {
+    const author = vine.object({
+      email: vine.string().email().minLength(5).bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(validator.validate({ email: 22 }), [
+      {
+        field: 'email',
+        message: 'The email field must be a string',
+        rule: 'string',
+      },
+    ])
+  })
+
+  test('run all number validation rules when bail mode is disabled', async ({ assert }) => {
+    const author = vine.object({
+      score: vine.number().min(10).positive().bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(validator.validate({ score: -2 }), [
+      {
+        field: 'score',
+        message: 'The score field must be at least 10',
+        meta: {
+          min: 10,
+        },
+        rule: 'min',
+      },
+      {
+        field: 'score',
+        message: 'The score field must be positive',
+        rule: 'positive',
+      },
+    ])
+  })
+
+  test('do not run all validation rules when value is not a number', async ({ assert }) => {
+    const author = vine.object({
+      score: vine.number().min(10).positive().bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(validator.validate({ score: 'foo' }), [
+      {
+        field: 'score',
+        message: 'The score field must be a number',
+        rule: 'number',
+      },
+    ])
+  })
+
+  test('run all array validation rules when bail mode is disabled', async ({ assert }) => {
+    const author = vine.object({
+      scores: vine.array(vine.number()).minLength(3).distinct().bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(validator.validate({ scores: [1, 1] }), [
+      {
+        field: 'scores',
+        message: 'The scores field must have at least 3 items',
+        meta: {
+          min: 3,
+        },
+        rule: 'array.minLength',
+      },
+      {
+        field: 'scores',
+        message: 'The scores field has duplicate values',
+        meta: {
+          fields: undefined,
+        },
+        rule: 'distinct',
+      },
+    ])
+  })
+
+  test('do not run all validation rules when value is not an array', async ({ assert }) => {
+    const author = vine.object({
+      scores: vine.array(vine.number()).minLength(3).distinct().bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(validator.validate({ scores: 1 }), [
+      {
+        field: 'scores',
+        message: 'The scores field must be an array',
+        rule: 'array',
+      },
+    ])
+  })
+
+  test('run all record validation rules when bail mode is disabled', async ({ assert }) => {
+    const author = vine.object({
+      colors: vine
+        .record(vine.string())
+        .minLength(4)
+        .validateKeys((keys, field) => {
+          if (keys.some((key) => /^[A-Za-z]+$/.test(key) === false)) {
+            field.report('Invalid colors keys', 'color-keys', field)
+          }
+        })
+        .bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(
+      validator.validate({
+        colors: {
+          'primary-green': '#2B9A66',
+          'primary-red': '#DC3E42',
+        },
+      }),
+      [
+        {
+          field: 'colors',
+          message: 'The colors field must have at least 4 items',
+          meta: {
+            min: 4,
+          },
+          rule: 'record.minLength',
+        },
+        {
+          field: 'colors',
+          message: 'Invalid colors keys',
+          rule: 'color-keys',
+        },
+      ]
+    )
+  })
+
+  test('do not run all validation rules when value is not an object', async ({ assert }) => {
+    const author = vine.object({
+      colors: vine
+        .record(vine.string())
+        .minLength(4)
+        .validateKeys((keys, field) => {
+          if (keys.some((key) => /^[A-Za-z]+$/.test(key) === false)) {
+            field.report('Invalid colors keys', 'color-keys', field)
+          }
+        })
+        .bail(false),
+    })
+
+    const validator = vine.compile(author)
+    await assert.validationErrors(
+      validator.validate({
+        colors: [],
+      }),
+      [
+        {
+          field: 'colors',
+          message: 'The colors field must be an object',
+          rule: 'object',
+        },
+      ]
+    )
   })
 })

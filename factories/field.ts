@@ -39,6 +39,7 @@ export class FieldFactory {
       },
       isDefined: helpers.exists(value),
       isValid: true,
+      isValidDataType: false,
       meta: {},
       mutate(newValue) {
         this.value = newValue

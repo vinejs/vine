@@ -16,13 +16,6 @@ import { createRule } from '../../vine/create_rule.js'
  */
 export const minLengthRule = createRule<{ min: number }>(function minLength(value, options, field) {
   /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
-  /**
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length < options.min) {
@@ -34,13 +27,6 @@ export const minLengthRule = createRule<{ min: number }>(function minLength(valu
  * Enforce a maximum length on an array field
  */
 export const maxLengthRule = createRule<{ max: number }>(function maxLength(value, options, field) {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
   /**
    * Value will always be an array if the field is valid.
    */
@@ -55,13 +41,6 @@ export const maxLengthRule = createRule<{ max: number }>(function maxLength(valu
 export const fixedLengthRule = createRule<{ size: number }>(
   function fixedLength(value, options, field) {
     /**
-     * Skip if the field is not valid.
-     */
-    if (!field.isValid) {
-      return
-    }
-
-    /**
      * Value will always be an array if the field is valid.
      */
     if ((value as unknown[]).length !== options.size) {
@@ -75,13 +54,6 @@ export const fixedLengthRule = createRule<{ size: number }>(
  */
 export const notEmptyRule = createRule<undefined>(function notEmpty(value, _, field) {
   /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
-  /**
    * Value will always be an array if the field is valid.
    */
   if ((value as unknown[]).length <= 0) {
@@ -94,13 +66,6 @@ export const notEmptyRule = createRule<undefined>(function notEmpty(value, _, fi
  */
 export const distinctRule = createRule<{ fields?: string | string[] }>(
   function distinct(value, options, field) {
-    /**
-     * Skip if the field is not valid.
-     */
-    if (!field.isValid) {
-      return
-    }
-
     /**
      * Value will always be an array if the field is valid.
      */

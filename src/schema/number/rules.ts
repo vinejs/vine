@@ -16,6 +16,10 @@ import { createRule } from '../../vine/create_rule.js'
  * of a number
  */
 export const numberRule = createRule<{ strict?: boolean }>(function number(value, options, field) {
+  if (!field.isDefined) {
+    return false
+  }
+
   const valueAsNumber = options.strict ? value : helpers.asNumber(value)
 
   if (
@@ -25,23 +29,17 @@ export const numberRule = createRule<{ strict?: boolean }>(function number(value
     valueAsNumber === Number.NEGATIVE_INFINITY
   ) {
     field.report(messages.number, 'number', field)
-    return
+    return false
   }
 
   field.mutate(valueAsNumber, field)
+  return true
 })
 
 /**
  * Enforce a minimum value on a number field
  */
 export const minRule = createRule<{ min: number }>(function min(value, options, field) {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
   if ((value as number) < options.min) {
     field.report(messages.min, 'min', field, options)
   }
@@ -51,13 +49,6 @@ export const minRule = createRule<{ min: number }>(function min(value, options, 
  * Enforce a maximum value on a number field
  */
 export const maxRule = createRule<{ max: number }>(function max(value, options, field) {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
   if ((value as number) > options.max) {
     field.report(messages.max, 'max', field, options)
   }
@@ -68,13 +59,6 @@ export const maxRule = createRule<{ max: number }>(function max(value, options, 
  */
 export const rangeRule = createRule<{ min: number; max: number }>(
   function range(value, options, field) {
-    /**
-     * Skip if the field is not valid.
-     */
-    if (!field.isValid) {
-      return
-    }
-
     if ((value as number) < options.min || (value as number) > options.max) {
       field.report(messages.range, 'range', field, options)
     }
@@ -85,13 +69,6 @@ export const rangeRule = createRule<{ min: number; max: number }>(
  * Enforce the value is a positive number
  */
 export const positiveRule = createRule(function positive(value, _, field) {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
   if ((value as number) < 0) {
     field.report(messages.positive, 'positive', field)
   }
@@ -101,13 +78,6 @@ export const positiveRule = createRule(function positive(value, _, field) {
  * Enforce the value is a negative number
  */
 export const negativeRule = createRule<undefined>(function negative(value, _, field) {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
   if ((value as number) >= 0) {
     field.report(messages.negative, 'negative', field)
   }
@@ -118,13 +88,6 @@ export const negativeRule = createRule<undefined>(function negative(value, _, fi
  */
 export const decimalRule = createRule<{ range: [number, number?] }>(
   function decimal(value, options, field) {
-    /**
-     * Skip if the field is not valid.
-     */
-    if (!field.isValid) {
-      return
-    }
-
     if (
       !helpers.isDecimal(String(value), {
         force_decimal: options.range[0] !== 0,
@@ -140,13 +103,6 @@ export const decimalRule = createRule<{ range: [number, number?] }>(
  * Enforce the value to not have decimal places
  */
 export const withoutDecimalsRule = createRule(function withoutDecimals(value, _, field) {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
   if (!Number.isInteger(value)) {
     field.report(messages.withoutDecimals, 'withoutDecimals', field)
   }
@@ -156,13 +112,6 @@ export const withoutDecimalsRule = createRule(function withoutDecimals(value, _,
  * Enforce the value to be in a list of allowed values
  */
 export const inRule = createRule<{ values: number[] }>(function inValues(value, options, field) {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
-
   if (!options.values.includes(value as number)) {
     field.report(messages['number.in'], 'in', field, options)
   }

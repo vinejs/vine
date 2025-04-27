@@ -65,14 +65,8 @@ test.group('VineString', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -88,14 +82,8 @@ test.group('VineString', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -111,14 +99,8 @@ test.group('VineString', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -138,14 +120,8 @@ test.group('VineString', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -165,14 +141,8 @@ test.group('VineString', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -188,14 +158,8 @@ test.group('VineString', () => {
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -211,14 +175,8 @@ test.group('VineString', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -248,14 +206,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -266,14 +218,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -290,14 +236,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -308,14 +248,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -332,14 +266,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -350,14 +278,8 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -374,14 +296,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -392,14 +308,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -416,14 +326,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
@@ -436,14 +340,8 @@ test.group('VineString | clone', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -460,14 +358,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -478,13 +370,8 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
         {
           implicit: true,
           isAsync: false,
@@ -508,13 +395,8 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
         {
           implicit: true,
           isAsync: false,
@@ -532,13 +414,8 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
         {
           implicit: true,
           isAsync: false,
@@ -569,14 +446,8 @@ test.group('VineString | clone', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -588,14 +459,8 @@ test.group('VineString | clone', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 })
@@ -622,13 +487,8 @@ test.group('VineString | applying rules', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          name: 'string',
-          ruleFnId: 'ref://1',
-        },
         {
           implicit: false,
           isAsync: false,
@@ -834,13 +694,8 @@ test.group('VineString | applying rules', () => {
         isOptional: false,
         bail: true,
         parseFnId: undefined,
+        dataTypeValidatorFnId: 'ref://1',
         validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            name: 'string',
-            ruleFnId: 'ref://1',
-          },
           {
             implicit: false,
             isAsync: rule.rule.isAsync,

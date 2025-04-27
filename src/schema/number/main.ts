@@ -68,7 +68,8 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
     options?: Partial<FieldOptions> & { strict?: boolean },
     validations?: Validation<any>[]
   ) {
-    super(options, validations || [numberRule(options || {})])
+    super(options, validations || [])
+    this.dataTypeValidator = numberRule(options || {})
   }
 
   /**

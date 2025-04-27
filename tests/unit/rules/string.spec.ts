@@ -68,11 +68,13 @@ async function stringRuleValidator(_: any, dataset: DataSet) {
     ? await validator
         .bail(dataset.bail === false ? false : true)
         .withContext(dataset.field || {})
-        .executeAsync([string, dataset.rule], dataset.value)
+        .withDataTypeValidator(string)
+        .executeAsync([dataset.rule], dataset.value)
     : validator
         .bail(dataset.bail === false ? false : true)
         .withContext(dataset.field || {})
-        .execute([string, dataset.rule], dataset.value)
+        .withDataTypeValidator(string)
+        .execute([dataset.rule], dataset.value)
 
   if (dataset.error && dataset.errorsCount) {
     validated.assertErrorsCount(dataset.errorsCount)
