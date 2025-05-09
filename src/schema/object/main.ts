@@ -121,6 +121,34 @@ export class VineObject<
   }
 
   /**
+   * Returns a clone copy of the cherry picked object properties including
+   * only the mentioned properties.
+   */
+  pick<Keys extends keyof Properties>(keys: Keys[] | readonly Keys[]): Pick<Properties, Keys> {
+    const result = {} as Pick<Properties, Keys>
+    for (const key of keys) {
+      result[key] = this.#properties[key].clone()
+    }
+    return result
+  }
+
+  /**
+   * Returns a cloned copy of the cherry picked object properties without
+   * the mentioned properties
+   */
+  omit<Keys extends keyof Properties>(keys: Keys[] | readonly Keys[]): Omit<Properties, Keys> {
+    const result = {} as Omit<Properties, Keys>
+
+    for (const key of Object.keys(this.#properties)) {
+      if (!keys.includes(key as Keys)) {
+        ;(result as any)[key] = this.#properties[key].clone()
+      }
+    }
+
+    return result
+  }
+
+  /**
    * Copy unknown properties to the final output.
    */
   allowUnknownProperties<Value>(): VineObject<
