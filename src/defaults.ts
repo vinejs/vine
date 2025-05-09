@@ -97,6 +97,11 @@ export const messages = {
 
   'date.weekend': 'The {{ field }} field is not a weekend',
   'date.weekday': 'The {{ field }} field is not a weekday',
+
+  'file': 'The {{ field }} field must be a valid file',
+  'file.minSize': 'The {{ field }} field must be at least {{ min }} bytes in size',
+  'file.maxSize': 'The {{ field }} field must not exceed {{ max }} bytes in size',
+  'file.mimeTypes': 'The {{ field }} field must be one of the following mime types: {{ mimeTypes }}'
 }
 
 /**
