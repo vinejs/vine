@@ -13,7 +13,7 @@ import { BaseLiteralType } from '../base/literal.js'
 import { isFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rules.js'
 
 export class VineFile extends BaseLiteralType<File, File, File> {
-  [SUBTYPE] = 'File'
+  [SUBTYPE] = 'file'
 
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations || [isFileRule()])
