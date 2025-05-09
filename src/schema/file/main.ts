@@ -8,30 +8,30 @@
  */
 
 import { SUBTYPE } from '../../symbols.js'
-import { FieldOptions, Validation } from '../../types.js';
+import { FieldOptions, Validation } from '../../types.js'
 import { BaseLiteralType } from '../base/literal.js'
-import { isFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rules.js';
+import { isFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rules.js'
 
 export class VineFile extends BaseLiteralType<File, File, File> {
-    [SUBTYPE] = 'File';
+  [SUBTYPE] = 'File'
 
-    constructor(options?: FieldOptions, validations?: Validation<any>[]) {
-        super(options, validations || [isFileRule()])
-    }
+  constructor(options?: FieldOptions, validations?: Validation<any>[]) {
+    super(options, validations || [isFileRule()])
+  }
 
-    clone() {
-        return new VineFile(this.cloneOptions(), this.cloneValidations()) as this;
-    }
+  clone() {
+    return new VineFile(this.cloneOptions(), this.cloneValidations()) as this
+  }
 
-    minSize(size: number) {
-        return this.use(minSizeRule({ min: size }));
-    }
+  minSize(size: number) {
+    return this.use(minSizeRule({ min: size }))
+  }
 
-    maxSize(size: number) {
-        return this.use(maxSizeRule({ max: size }));
-    }
+  maxSize(size: number) {
+    return this.use(maxSizeRule({ max: size }))
+  }
 
-    mimeTypes(types: string[]) {
-        return this.use(mimeTypesRule({ mimeTypes: types }));
-    }
+  mimeTypes(types: string[]) {
+    return this.use(mimeTypesRule({ mimeTypes: types }))
+  }
 }
