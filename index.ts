@@ -17,6 +17,7 @@ export { VineEnum } from './src/schema/enum/main.js'
 export { VineNativeEnum } from './src/schema/enum/native_enum.js'
 export { VineTuple } from './src/schema/tuple/main.js'
 export { VineUnion } from './src/schema/union/main.js'
+export { UnionConditional } from './src/schema/union/conditional.js';
 export { VineArray } from './src/schema/array/main.js'
 export { VineValidator } from './src/vine/validator.js'
 export { VineString } from './src/schema/string/main.js'
