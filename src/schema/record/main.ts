@@ -12,8 +12,15 @@ import { RefsStore, RecordNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
 import { ITYPE, OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
-import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import type {
+  CompilerNodes,
+  FieldOptions,
+  ParserOptions,
+  SchemaTypes,
+  Validation,
+} from '../../types.js'
 import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from './rules.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * VineRecord represents an object of key-value pair in which
@@ -94,10 +101,34 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
     ) as this
   }
 
+  protected compileJsonSchema(node: CompilerNodes) {
+    const schema: JSONSchema7 & {} = {
+      type: 'object',
+      additionalProperties: {},
+    }
+
+    // TODO: Remove condition
+    if ('json' in node) {
+      schema.additionalProperties = node.json
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.jsonSchema) continue
+      validation.rule.jsonSchema(schema, validation.options)
+    }
+
+    return schema
+  }
+
   /**
    * Compiles to record data type
    */
-  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): RecordNode {
+  [PARSE](
+    propertyName: string,
+    refs: RefsStore,
+    options: ParserOptions
+  ): RecordNode & { json: JSONSchema7 } {
+    const parsed = this.#schema[PARSE]('*', refs, options)
     return {
       type: 'record',
       fieldName: propertyName,
@@ -105,9 +136,10 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
       bail: this.options.bail,
       allowNull: this.options.allowNull,
       isOptional: this.options.isOptional,
-      each: this.#schema[PARSE]('*', refs, options),
+      each: parsed,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
+      json: this.compileJsonSchema(parsed),
     }
   }
 }

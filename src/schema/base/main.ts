@@ -22,6 +22,7 @@ import type {
   WithCustomRules,
 } from '../../types.js'
 import { ConditionalValidations } from './conditional_rules.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Modifies the schema type to allow null values
@@ -59,6 +60,10 @@ export class NullableModifier<Schema extends ConstructableSchema<any, any, any>>
     return new OptionalModifier(this)
   }
 
+  meta(meta: JSONSchema7): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
   /**
    * Creates a fresh instance of the underlying schema type
    * and wraps it inside the nullable modifier
@@ -74,6 +79,66 @@ export class NullableModifier<Schema extends ConstructableSchema<any, any, any>>
     const output = this.#parent[PARSE](propertyName, refs, options)
     if (output.type !== 'union') {
       output.allowNull = true
+
+      // TODO: We might want to dedupe
+      if (output.json.anyOf) {
+        output.json.anyOf.push({ type: 'null' })
+        return output
+      }
+
+      if (output.json.type === undefined) {
+        output.json.type = 'null'
+        return output
+      }
+
+      if (typeof output.json.type === 'string') {
+        output.json.type = [output.json.type, 'null']
+        return output
+      }
+
+      if (Array.isArray(output.json.type)) {
+        output.json.type.push('null')
+        return output
+      }
+    }
+
+    return output
+  }
+}
+
+export class MetaModifier<Schema extends ConstructableSchema<any, any, any>>
+  implements ConstructableSchema<Schema[typeof ITYPE], Schema[typeof OTYPE], Schema[typeof COTYPE]>
+{
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Schema[typeof ITYPE];
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [OTYPE]: Schema[typeof OTYPE];
+  declare [COTYPE]: Schema[typeof COTYPE]
+
+  #parent: Schema
+  #meta: JSONSchema7
+
+  constructor(parent: Schema, meta: JSONSchema7) {
+    this.#parent = parent
+    this.#meta = meta
+  }
+
+  clone(): this {
+    return new MetaModifier(this.#parent.clone(), this.#meta) as this
+  }
+
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes {
+    const output = this.#parent[PARSE](propertyName, refs, options)
+
+    output.json = {
+      ...output.json,
+      ...this.#meta,
     }
 
     return output

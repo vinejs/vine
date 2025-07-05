@@ -32,18 +32,25 @@ import type {
 /**
  * Validates the value to be a string
  */
-export const stringRule = createRule(function string(value, _, field) {
-  if (!field.isDefined) {
+export const stringRule = createRule(
+  function string(value, _, field) {
+    if (!field.isDefined) {
+      return false
+    }
+
+    if (typeof value === 'string') {
+      return true
+    }
+
+    field.report(messages.string, 'string', field)
     return false
+  },
+  {
+    json: (schema) => {
+      schema.type = 'string'
+    },
   }
-
-  if (typeof value === 'string') {
-    return true
-  }
-
-  field.report(messages.string, 'string', field)
-  return false
-})
+)
 
 /**
  * Validates the value to be a valid email address
@@ -53,6 +60,11 @@ export const emailRule = createRule<EmailOptions | undefined>(
     if (!helpers.isEmail(value as string, options)) {
       field.report(messages.email, 'email', field)
     }
+  },
+  {
+    json: (schema) => {
+      schema.format = 'email'
+    },
   }
 )
 
@@ -78,35 +90,62 @@ export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>(
     if (!helpers.isIP(value as string, options?.version)) {
       field.report(messages.ipAddress, 'ipAddress', field)
     }
+  },
+  {
+    json: (schema, options) => {
+      schema.format = options?.version === 6 ? 'ipv6' : 'ipv4'
+    },
   }
 )
 
 /**
  * Validates the value against a regular expression
  */
-export const regexRule = createRule<RegExp>(function regex(value, expression, field) {
-  if (!expression.test(value as string)) {
-    field.report(messages.regex, 'regex', field)
+export const regexRule = createRule<RegExp>(
+  function regex(value, expression, field) {
+    if (!expression.test(value as string)) {
+      field.report(messages.regex, 'regex', field)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.pattern = options.source
+    },
   }
-})
+)
 
 /**
  * Validates the value to be a valid hex color code
  */
-export const hexCodeRule = createRule(function hexCode(value, _, field) {
-  if (!helpers.isHexColor(value as string)) {
-    field.report(messages.hexCode, 'hexCode', field)
+export const hexCodeRule = createRule(
+  function hexCode(value, _, field) {
+    if (!helpers.isHexColor(value as string)) {
+      field.report(messages.hexCode, 'hexCode', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.pattern = '^#?([0-9a-f]{6}|[0-9a-f]{3}|[0-9a-f]{8})$'
+    },
   }
-})
+)
 
 /**
  * Validates the value to be a valid URL
  */
-export const urlRule = createRule<URLOptions | undefined>(function url(value, options, field) {
-  if (!helpers.isURL(value as string, options)) {
-    field.report(messages.url, 'url', field)
+export const urlRule = createRule<URLOptions | undefined>(
+  function url(value, options, field) {
+    if (!helpers.isURL(value as string, options)) {
+      field.report(messages.url, 'url', field)
+      field.report(messages.url, 'url', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.format = 'uri'
+    },
   }
-})
+)
 
 /**
  * Validates the value to be an active URL
@@ -139,6 +178,24 @@ export const alphaRule = createRule<AlphaOptions | undefined>(
     if (!expression.test(value as string)) {
       field.report(messages.alpha, 'alpha', field)
     }
+  },
+  {
+    json: (schema, options) => {
+      let characterSet = 'a-zA-Z'
+      if (options) {
+        if (options.allowSpaces) {
+          characterSet += '\\s'
+        }
+        if (options.allowDashes) {
+          characterSet += '-'
+        }
+        if (options.allowUnderscores) {
+          characterSet += '_'
+        }
+      }
+
+      schema.pattern = `^[${characterSet}]+$`
+    },
   }
 )
 
@@ -164,26 +221,58 @@ export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
     if (!expression.test(value as string)) {
       field.report(messages.alphaNumeric, 'alphaNumeric', field)
     }
+  },
+  {
+    json: (schema, options) => {
+      let characterSet = 'a-zA-Z0-9'
+      if (options) {
+        if (options.allowSpaces) {
+          characterSet += '\\s'
+        }
+        if (options.allowDashes) {
+          characterSet += '-'
+        }
+        if (options.allowUnderscores) {
+          characterSet += '_'
+        }
+      }
+
+      schema.pattern = `^[${characterSet}]+$`
+    },
   }
 )
 
 /**
  * Enforce a minimum length on a string field
  */
-export const minLengthRule = createRule<{ min: number }>(function minLength(value, options, field) {
-  if ((value as string).length < options.min) {
-    field.report(messages.minLength, 'minLength', field, options)
+export const minLengthRule = createRule<{ min: number }>(
+  function minLength(value, options, field) {
+    if ((value as string).length < options.min) {
+      field.report(messages.minLength, 'minLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.minLength = options.min
+    },
   }
-})
+)
 
 /**
  * Enforce a maximum length on a string field
  */
-export const maxLengthRule = createRule<{ max: number }>(function maxLength(value, options, field) {
-  if ((value as string).length > options.max) {
-    field.report(messages.maxLength, 'maxLength', field, options)
+export const maxLengthRule = createRule<{ max: number }>(
+  function maxLength(value, options, field) {
+    if ((value as string).length > options.max) {
+      field.report(messages.maxLength, 'maxLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.maxLength = options.max
+    },
   }
-})
+)
 
 /**
  * Enforce a fixed length on a string field
@@ -193,6 +282,12 @@ export const fixedLengthRule = createRule<{ size: number }>(
     if ((value as string).length !== options.size) {
       field.report(messages.fixedLength, 'fixedLength', field, options)
     }
+  },
+  {
+    json: (schema, options) => {
+      schema.minLength = options.size
+      schema.maxLength = options.size
+    },
   }
 )
 
@@ -397,17 +492,29 @@ export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefin
         field.report(messages.uuid, 'uuid', field, options)
       }
     }
+  },
+  {
+    json: (schema) => {
+      schema.format = 'uuid'
+    },
   }
 )
 
 /**
  * Validates the value to be a valid ULID
  */
-export const ulidRule = createRule(function ulid(value, _, field) {
-  if (!helpers.isULID(value as string)) {
-    field.report(messages.ulid, 'ulid', field)
+export const ulidRule = createRule(
+  function ulid(value, _, field) {
+    if (!helpers.isULID(value as string)) {
+      field.report(messages.ulid, 'ulid', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.pattern = '^[0-7][0-9A-HJKMNP-TV-Z]{25}$'
+    },
   }
-})
+)
 
 /**
  * Validates the value contains ASCII characters only

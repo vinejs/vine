@@ -23,5 +23,11 @@ export const booleanRule = createRule<{ strict?: boolean }>(
     }
 
     field.mutate(valueAsBoolean, field)
+  },
+  {
+    json: (schema) => {
+      // TODO: We might want to handle strictness with anyOf
+      schema.type = 'boolean'
+    },
   }
 )

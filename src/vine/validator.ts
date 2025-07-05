@@ -20,7 +20,9 @@ import type {
   MetaDataValidator,
   ValidationOptions,
   ErrorReporterContract,
+  CompilerNodes,
 } from '../types.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Error messages to share with the compiler
@@ -205,6 +207,11 @@ export class VineValidator<
       schema: structuredClone(schema),
       refs,
     }
+  }
+
+  'toJSONSchema'(): JSONSchema7 {
+    const schema = this.#compiled.schema.schema as CompilerNodes
+    return schema.json
   }
 
   readonly '~standard': StandardSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> = {

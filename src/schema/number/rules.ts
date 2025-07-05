@@ -15,44 +15,65 @@ import { createRule } from '../../vine/create_rule.js'
  * Enforce the value to be a number or a string representation
  * of a number
  */
-export const numberRule = createRule<{ strict?: boolean }>(function number(value, options, field) {
-  if (!field.isDefined) {
-    return false
+export const numberRule = createRule<{ strict?: boolean }>(
+  function number(value, options, field) {
+    if (!field.isDefined) {
+      return false
+    }
+
+    const valueAsNumber = options.strict ? value : helpers.asNumber(value)
+
+    if (
+      typeof valueAsNumber !== 'number' ||
+      Number.isNaN(valueAsNumber) ||
+      valueAsNumber === Number.POSITIVE_INFINITY ||
+      valueAsNumber === Number.NEGATIVE_INFINITY
+    ) {
+      field.report(messages.number, 'number', field)
+      return false
+    }
+
+    field.mutate(valueAsNumber, field)
+    return true
+  },
+  {
+    json: (schema) => {
+      schema.type = 'number'
+    },
   }
-
-  const valueAsNumber = options.strict ? value : helpers.asNumber(value)
-
-  if (
-    typeof valueAsNumber !== 'number' ||
-    Number.isNaN(valueAsNumber) ||
-    valueAsNumber === Number.POSITIVE_INFINITY ||
-    valueAsNumber === Number.NEGATIVE_INFINITY
-  ) {
-    field.report(messages.number, 'number', field)
-    return false
-  }
-
-  field.mutate(valueAsNumber, field)
-  return true
-})
+)
 
 /**
  * Enforce a minimum value on a number field
  */
-export const minRule = createRule<{ min: number }>(function min(value, options, field) {
-  if ((value as number) < options.min) {
-    field.report(messages.min, 'min', field, options)
+export const minRule = createRule<{ min: number }>(
+  function min(value, options, field) {
+    if ((value as number) < options.min) {
+      field.report(messages.min, 'min', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.minimum = options.min
+    },
   }
-})
+)
 
 /**
  * Enforce a maximum value on a number field
  */
-export const maxRule = createRule<{ max: number }>(function max(value, options, field) {
-  if ((value as number) > options.max) {
-    field.report(messages.max, 'max', field, options)
+export const maxRule = createRule<{ max: number }>(
+  function max(value, options, field) {
+    if ((value as number) > options.max) {
+      field.report(messages.max, 'max', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.maximum = options.max
+    },
   }
-})
+)
 
 /**
  * Enforce a range of values on a number field.
@@ -62,30 +83,51 @@ export const rangeRule = createRule<{ min: number; max: number }>(
     if ((value as number) < options.min || (value as number) > options.max) {
       field.report(messages.range, 'range', field, options)
     }
+  },
+  {
+    json: (schema, options) => {
+      schema.minimum = options.min
+      schema.maximum = options.max
+    },
   }
 )
 
 /**
  * Enforce the value is a positive number
  */
-export const positiveRule = createRule(function positive(value, _, field) {
-  if ((value as number) < 0) {
-    field.report(messages.positive, 'positive', field)
+export const positiveRule = createRule(
+  function positive(value, _, field) {
+    if ((value as number) < 0) {
+      field.report(messages.positive, 'positive', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.minimum = 0
+    },
   }
-})
+)
 
 /**
  * Enforce the value is a negative number
  */
-export const negativeRule = createRule<undefined>(function negative(value, _, field) {
-  if ((value as number) >= 0) {
-    field.report(messages.negative, 'negative', field)
+export const negativeRule = createRule<undefined>(
+  function negative(value, _, field) {
+    if ((value as number) >= 0) {
+      field.report(messages.negative, 'negative', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.exclusiveMaximum = 0
+    },
   }
-})
+)
 
 /**
  * Enforce the value to have a fixed or range of decimals
  */
+// TODO: Handle json-schema. Range can be handled with anyOf but we have floating point precision issues
 export const decimalRule = createRule<{ range: [number, number?] }>(
   function decimal(value, options, field) {
     if (
@@ -102,17 +144,32 @@ export const decimalRule = createRule<{ range: [number, number?] }>(
 /**
  * Enforce the value to not have decimal places
  */
-export const withoutDecimalsRule = createRule(function withoutDecimals(value, _, field) {
-  if (!Number.isInteger(value)) {
-    field.report(messages.withoutDecimals, 'withoutDecimals', field)
+export const withoutDecimalsRule = createRule(
+  function withoutDecimals(value, _, field) {
+    if (!Number.isInteger(value)) {
+      field.report(messages.withoutDecimals, 'withoutDecimals', field)
+      field.report(messages.withoutDecimals, 'withoutDecimals', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.type = 'integer'
+    },
   }
-})
+)
 
 /**
  * Enforce the value to be in a list of allowed values
  */
-export const inRule = createRule<{ values: number[] }>(function inValues(value, options, field) {
-  if (!options.values.includes(value as number)) {
-    field.report(messages['number.in'], 'in', field, options)
+export const inRule = createRule<{ values: number[] }>(
+  function inValues(value, options, field) {
+    if (!options.values.includes(value as number)) {
+      field.report(messages['number.in'], 'in', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.enum = options.values
+    },
   }
-})
+)
