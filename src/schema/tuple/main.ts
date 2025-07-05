@@ -8,11 +8,12 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, TupleNode } from '@vinejs/compiler/types'
+import { CompilerNodes, RefsStore, TupleNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
 import { IS_OF_TYPE, PARSE, UNIQUE_NAME } from '../../symbols.js'
 import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * VineTuple is an array with known length and may have different
@@ -85,9 +86,35 @@ export class VineTuple<
   }
 
   /**
+   * Compiles JSON Schema.
+   */
+  protected compileJsonSchema(nodes: CompilerNodes[]) {
+    const schema: JSONSchema7 & { items: JSONSchema7[] } = {
+      type: 'array',
+      items: [],
+      additionalItems: false,
+    }
+
+    for (const node of nodes) {
+      if ('json' in node) {
+        schema.items.push(node.json)
+      }
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.jsonSchema) continue
+      validation.rule.jsonSchema(schema, validation.options)
+    }
+
+    return schema
+  }
+
+  /**
    * Compiles to array data type
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): TupleNode {
+    const parsed = this.#schemas.map((schema, index) => schema[PARSE](String(index), refs, options))
+
     return {
       type: 'tuple',
       fieldName: propertyName,
@@ -98,7 +125,8 @@ export class VineTuple<
       allowUnknownProperties: this.#allowUnknownProperties,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      properties: this.#schemas.map((schema, index) => schema[PARSE](String(index), refs, options)),
+      properties: parsed,
+      json: this.compileJsonSchema(parsed),
     }
   }
 }

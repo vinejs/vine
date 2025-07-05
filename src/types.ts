@@ -32,6 +32,7 @@ import type {
 import type { helpers } from './vine/helpers.js'
 import type { ValidationError } from './errors/validation_error.js'
 import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from './symbols.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Compiler nodes emitted by Vine
@@ -157,6 +158,11 @@ export type Validator<Options extends any> = (
   field: FieldContext
 ) => any | Promise<any>
 
+export type JsonSchemaModifier<Options extends any> = (
+  schema: JSONSchema7,
+  options: Options
+) => void
+
 /**
  * A validation rule is a combination of a validator and
  * some metadata required at the time of compiling the
@@ -168,6 +174,7 @@ export type ValidationRule<Options extends any> = {
   validator: Validator<Options>
   isAsync: boolean
   implicit: boolean
+  jsonSchema?: JsonSchemaModifier<Options>
 }
 
 /**

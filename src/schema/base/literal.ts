@@ -27,6 +27,7 @@ import type {
 } from '../../types.js'
 import { requiredWhen } from './rules.js'
 import { helpers } from '../../vine/helpers.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Base schema type with only modifiers applicable on all the schema types.
@@ -90,6 +91,53 @@ abstract class BaseModifiersType<Input, Output, CamelCaseOutput>
   ): TransformModifier<this, TransformedOutput> {
     return new TransformModifier(transformer, this)
   }
+
+  meta(meta: JSONSchema7): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+}
+
+class MetaModifier<Schema extends BaseModifiersType<any, any, any>> extends BaseModifiersType<
+  Schema[typeof ITYPE],
+  Schema[typeof OTYPE],
+  Schema[typeof COTYPE]
+> {
+  #parent: Schema
+  #meta: JSONSchema7
+
+  constructor(parent: Schema, meta: JSONSchema7) {
+    super()
+    this.#parent = parent
+    this.#meta = meta
+  }
+
+  /**
+   * Creates a fresh instance of the underlying schema type
+   * and wraps it inside the nullable modifier
+   */
+  clone(): this {
+    return new MetaModifier(this.#parent.clone(), this.#meta) as this
+  }
+
+  /**
+   * Compiles to compiler node
+   */
+  [PARSE](
+    propertyName: string,
+    refs: RefsStore,
+    options: ParserOptions
+  ): LiteralNode & { subtype: string } {
+    const output = this.#parent[PARSE](propertyName, refs, options)
+    output.allowNull = true
+
+    // TODO: We might want to deepmerge
+    output.json = {
+      ...output.json,
+      ...this.#meta,
+    }
+
+    return output
+  }
 }
 
 /**
@@ -127,6 +175,28 @@ export class NullableModifier<
   ): LiteralNode & { subtype: string } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.allowNull = true
+
+    // TODO: We might want to dedupe
+    if (output.json.anyOf) {
+      output.json.anyOf.push({ type: 'null' })
+      return output
+    }
+
+    if (output.json.type === undefined) {
+      output.json.type = 'null'
+      return output
+    }
+
+    if (typeof output.json.type === 'string') {
+      output.json.type = [output.json.type, 'null']
+      return output
+    }
+
+    if (Array.isArray(output.json.type)) {
+      output.json.type.push('null')
+      return output
+    }
+
     return output
   }
 }
@@ -465,8 +535,22 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput> extends Ba
         }),
         implicit: validation.rule.implicit,
         isAsync: validation.rule.isAsync,
+        json: validation.rule.jsonSchema,
       }
     })
+  }
+
+  /**
+   * Compiles JSON Schema.
+   */
+  protected compileJsonSchema() {
+    const schema: JSONSchema7 = {}
+    for (const validation of this.validations) {
+      if (!validation.rule.jsonSchema) continue
+      validation.rule.jsonSchema(schema, validation.options)
+    }
+
+    return schema
   }
 
   /**
@@ -515,6 +599,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput> extends Ba
       isOptional: this.options.isOptional,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
+      json: this.compileJsonSchema(),
     }
   }
 }

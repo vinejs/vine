@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import type { Validation, ValidationRule, Validator } from '../types.js'
+import type { JsonSchemaModifier, Validation, ValidationRule, Validator } from '../types.js'
 
 /**
  * Returns args for the validation function.
@@ -23,12 +23,14 @@ export function createRule<Options = undefined>(
   metaData?: {
     implicit?: boolean
     isAsync?: boolean
+    json?: JsonSchemaModifier<Options>
   }
 ) {
   const rule: ValidationRule<Options> = {
     validator,
     isAsync: metaData?.isAsync || validator.constructor.name === 'AsyncFunction',
     implicit: metaData?.implicit ?? false,
+    jsonSchema: metaData?.json,
   }
 
   return function (...options: GetArgs<Options>): Validation<Options> {

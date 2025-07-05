@@ -32,24 +32,38 @@ import type {
 /**
  * Validates the value to be a string
  */
-export const stringRule = createRule((value, _, field) => {
-  if (typeof value !== 'string') {
-    field.report(messages.string, 'string', field)
+export const stringRule = createRule(
+  (value, _, field) => {
+    if (typeof value !== 'string') {
+      field.report(messages.string, 'string', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.type = 'string'
+    },
   }
-})
+)
 
 /**
  * Validates the value to be a valid email address
  */
-export const emailRule = createRule<EmailOptions | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const emailRule = createRule<EmailOptions | undefined>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!helpers.isEmail(value as string, options)) {
-    field.report(messages.email, 'email', field)
+    if (!helpers.isEmail(value as string, options)) {
+      field.report(messages.email, 'email', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.format = 'email'
+    },
   }
-})
+)
 
 /**
  * Validates the value to be a valid mobile number
@@ -72,54 +86,82 @@ export const mobileRule = createRule<
 /**
  * Validates the value to be a valid IP address.
  */
-export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!helpers.isIP(value as string, options?.version)) {
-    field.report(messages.ipAddress, 'ipAddress', field)
+    if (!helpers.isIP(value as string, options?.version)) {
+      field.report(messages.ipAddress, 'ipAddress', field)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.format = options?.version === 6 ? 'ipv6' : 'ipv4'
+    },
   }
-})
+)
 
 /**
  * Validates the value against a regular expression
  */
-export const regexRule = createRule<RegExp>((value, expression, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const regexRule = createRule<RegExp>(
+  (value, expression, field) => {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!expression.test(value as string)) {
-    field.report(messages.regex, 'regex', field)
+    if (!expression.test(value as string)) {
+      field.report(messages.regex, 'regex', field)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.pattern = options.source
+    },
   }
-})
+)
 
 /**
  * Validates the value to be a valid hex color code
  */
-export const hexCodeRule = createRule((value, _, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const hexCodeRule = createRule(
+  (value, _, field) => {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!helpers.isHexColor(value as string)) {
-    field.report(messages.hexCode, 'hexCode', field)
+    if (!helpers.isHexColor(value as string)) {
+      field.report(messages.hexCode, 'hexCode', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.pattern = '^#?([0-9a-f]{6}|[0-9a-f]{3}|[0-9a-f]{8})$'
+    },
   }
-})
+)
 
 /**
  * Validates the value to be a valid URL
  */
-export const urlRule = createRule<URLOptions | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const urlRule = createRule<URLOptions | undefined>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!helpers.isURL(value as string, options)) {
-    field.report(messages.url, 'url', field)
+    if (!helpers.isURL(value as string, options)) {
+      field.report(messages.url, 'url', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.format = 'uri'
+    },
   }
-})
+)
 
 /**
  * Validates the value to be an active URL
@@ -137,29 +179,49 @@ export const activeUrlRule = createRule(async (value, _, field) => {
 /**
  * Validates the value to contain only letters
  */
-export const alphaRule = createRule<AlphaOptions | undefined>((value, options, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const alphaRule = createRule<AlphaOptions | undefined>(
+  (value, options, field) => {
+    if (!field.isValid) {
+      return
+    }
 
-  let characterSet = 'a-zA-Z'
-  if (options) {
-    if (options.allowSpaces) {
-      characterSet += '\\s'
+    let characterSet = 'a-zA-Z'
+    if (options) {
+      if (options.allowSpaces) {
+        characterSet += '\\s'
+      }
+      if (options.allowDashes) {
+        characterSet += '-'
+      }
+      if (options.allowUnderscores) {
+        characterSet += '_'
+      }
     }
-    if (options.allowDashes) {
-      characterSet += '-'
-    }
-    if (options.allowUnderscores) {
-      characterSet += '_'
-    }
-  }
 
-  const expression = new RegExp(`^[${characterSet}]+$`)
-  if (!expression.test(value as string)) {
-    field.report(messages.alpha, 'alpha', field)
+    const expression = new RegExp(`^[${characterSet}]+$`)
+    if (!expression.test(value as string)) {
+      field.report(messages.alpha, 'alpha', field)
+    }
+  },
+  {
+    json: (schema, options) => {
+      let characterSet = 'a-zA-Z'
+      if (options) {
+        if (options.allowSpaces) {
+          characterSet += '\\s'
+        }
+        if (options.allowDashes) {
+          characterSet += '-'
+        }
+        if (options.allowUnderscores) {
+          characterSet += '_'
+        }
+      }
+
+      schema.pattern = `^[${characterSet}]+$`
+    },
   }
-})
+)
 
 /**
  * Validates the value to contain only letters and numbers
@@ -187,55 +249,95 @@ export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
     if (!expression.test(value as string)) {
       field.report(messages.alphaNumeric, 'alphaNumeric', field)
     }
+  },
+  {
+    json: (schema, options) => {
+      let characterSet = 'a-zA-Z0-9'
+      if (options) {
+        if (options.allowSpaces) {
+          characterSet += '\\s'
+        }
+        if (options.allowDashes) {
+          characterSet += '-'
+        }
+        if (options.allowUnderscores) {
+          characterSet += '_'
+        }
+      }
+
+      schema.pattern = `^[${characterSet}]+$`
+    },
   }
 )
 
 /**
  * Enforce a minimum length on a string field
  */
-export const minLengthRule = createRule<{ min: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
+export const minLengthRule = createRule<{ min: number }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
+    if ((value as string).length < options.min) {
+      field.report(messages.minLength, 'minLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.minLength = options.min
+    },
   }
-  if ((value as string).length < options.min) {
-    field.report(messages.minLength, 'minLength', field, options)
-  }
-})
+)
 
 /**
  * Enforce a maximum length on a string field
  */
-export const maxLengthRule = createRule<{ max: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const maxLengthRule = createRule<{ max: number }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  if ((value as string).length > options.max) {
-    field.report(messages.maxLength, 'maxLength', field, options)
+    if ((value as string).length > options.max) {
+      field.report(messages.maxLength, 'maxLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.maxLength = options.max
+    },
   }
-})
+)
 
 /**
  * Enforce a fixed length on a string field
  */
-export const fixedLengthRule = createRule<{ size: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const fixedLengthRule = createRule<{ size: number }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  if ((value as string).length !== options.size) {
-    field.report(messages.fixedLength, 'fixedLength', field, options)
+    if ((value as string).length !== options.size) {
+      field.report(messages.fixedLength, 'fixedLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.minLength = options.size
+      schema.maxLength = options.size
+    },
   }
-})
+)
 
 /**
  * Ensure the value ends with the pre-defined substring
@@ -589,21 +691,33 @@ export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefin
         field.report(messages.uuid, 'uuid', field, options)
       }
     }
+  },
+  {
+    json: (schema) => {
+      schema.format = 'uuid'
+    },
   }
 )
 
 /**
  * Validates the value to be a valid ULID
  */
-export const ulidRule = createRule((value, _, field) => {
-  if (!field.isValid) {
-    return
-  }
+export const ulidRule = createRule(
+  (value, _, field) => {
+    if (!field.isValid) {
+      return
+    }
 
-  if (!helpers.isULID(value as string)) {
-    field.report(messages.ulid, 'ulid', field)
+    if (!helpers.isULID(value as string)) {
+      field.report(messages.ulid, 'ulid', field)
+    }
+  },
+  {
+    json: (schema) => {
+      schema.pattern = '^[0-7][0-9A-HJKMNP-TV-Z]{25}$'
+    },
   }
-})
+)
 
 /**
  * Validates the value contains ASCII characters only

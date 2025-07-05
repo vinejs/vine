@@ -12,7 +12,13 @@ import { RefsStore, ArrayNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
 import { ITYPE, OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
-import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import type {
+  CompilerNodes,
+  FieldOptions,
+  ParserOptions,
+  SchemaTypes,
+  Validation,
+} from '../../types.js'
 
 import {
   compactRule,
@@ -22,6 +28,7 @@ import {
   maxLengthRule,
   fixedLengthRule,
 } from './rules.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * VineArray represents an array schema type in the validation
@@ -115,9 +122,30 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
   }
 
   /**
+   * Compiles JSON Schema.
+   */
+  protected compileJsonSchema(node: CompilerNodes) {
+    const schema: JSONSchema7 = {
+      type: 'array',
+    }
+
+    if ('json' in node) {
+      schema.items = node.json
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.jsonSchema) continue
+      validation.rule.jsonSchema(schema, validation.options)
+    }
+
+    return schema
+  }
+
+  /**
    * Compiles to array data type
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ArrayNode {
+    const parsed = this.#schema[PARSE]('*', refs, options)
     return {
       type: 'array',
       fieldName: propertyName,
@@ -125,9 +153,10 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
       bail: this.options.bail,
       allowNull: this.options.allowNull,
       isOptional: this.options.isOptional,
-      each: this.#schema[PARSE]('*', refs, options),
+      each: parsed,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
+      json: this.compileJsonSchema(parsed),
     }
   }
 }

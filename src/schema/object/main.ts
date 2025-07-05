@@ -8,13 +8,14 @@
  */
 
 import camelcase from 'camelcase'
-import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
+import type { CompilerNodes, ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 import { ObjectGroup } from './group.js'
 import { GroupConditional } from './conditional.js'
 import { BaseType, BaseModifiersType } from '../base/main.js'
 import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from '../../symbols.js'
 import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../../types.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Converts schema properties to camelCase
@@ -213,9 +214,40 @@ export class VineObject<
   }
 
   /**
+   * Compiles JSON Schema.
+   */
+  protected compileJsonSchema(nodes: CompilerNodes[]) {
+    const schema: JSONSchema7 & { properties: {}; required: [] } = {
+      type: 'object',
+      properties: {},
+      required: [],
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.jsonSchema) continue
+      validation.rule.jsonSchema(schema, validation.options)
+    }
+
+    for (const node of nodes) {
+      if (node.type === 'literal') {
+        schema.properties[node.propertyName] = node.json
+        if (!node.isOptional) {
+          schema.required?.push(node.propertyName)
+        }
+      }
+    }
+
+    return schema
+  }
+
+  /**
    * Compiles the schema type to a compiler node
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ObjectNode {
+    const parsedProperties = Object.keys(this.#properties).map((property) => {
+      return this.#properties[property][PARSE](property, refs, options)
+    })
+
     return {
       type: 'object',
       fieldName: propertyName,
@@ -226,12 +258,11 @@ export class VineObject<
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       allowUnknownProperties: this.#allowUnknownProperties,
       validations: this.compileValidations(refs),
-      properties: Object.keys(this.#properties).map((property) => {
-        return this.#properties[property][PARSE](property, refs, options)
-      }),
+      properties: parsedProperties,
       groups: this.#groups.map((group) => {
         return group[PARSE](refs, options)
       }),
+      json: this.compileJsonSchema(parsedProperties),
     }
   }
 }

@@ -14,59 +14,81 @@ import { createRule } from '../../vine/create_rule.js'
 /**
  * Enforce a minimum length on an object field
  */
-export const minLengthRule = createRule<{ min: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const minLengthRule = createRule<{ min: number }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  /**
-   * Value will always be an object if the field is valid.
-   */
-  if (Object.keys(value as Record<string, any>).length < options.min) {
-    field.report(messages['record.minLength'], 'record.minLength', field, options)
+    /**
+     * Value will always be an object if the field is valid.
+     */
+    if (Object.keys(value as Record<string, any>).length < options.min) {
+      field.report(messages['record.minLength'], 'record.minLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.minProperties = options.min
+    },
   }
-})
+)
 
 /**
  * Enforce a maximum length on an object field
  */
-export const maxLengthRule = createRule<{ max: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const maxLengthRule = createRule<{ max: number }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  /**
-   * Value will always be an object if the field is valid.
-   */
-  if (Object.keys(value as Record<string, any>).length > options.max) {
-    field.report(messages['record.maxLength'], 'record.maxLength', field, options)
+    /**
+     * Value will always be an object if the field is valid.
+     */
+    if (Object.keys(value as Record<string, any>).length > options.max) {
+      field.report(messages['record.maxLength'], 'record.maxLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.maxProperties = options.max
+    },
   }
-})
+)
 
 /**
  * Enforce a fixed length on an object field
  */
-export const fixedLengthRule = createRule<{ size: number }>((value, options, field) => {
-  /**
-   * Skip if the field is not valid.
-   */
-  if (!field.isValid) {
-    return
-  }
+export const fixedLengthRule = createRule<{ size: number }>(
+  (value, options, field) => {
+    /**
+     * Skip if the field is not valid.
+     */
+    if (!field.isValid) {
+      return
+    }
 
-  /**
-   * Value will always be an object if the field is valid.
-   */
-  if (Object.keys(value as Record<string, any>).length !== options.size) {
-    field.report(messages['record.fixedLength'], 'record.fixedLength', field, options)
+    /**
+     * Value will always be an object if the field is valid.
+     */
+    if (Object.keys(value as Record<string, any>).length !== options.size) {
+      field.report(messages['record.fixedLength'], 'record.fixedLength', field, options)
+    }
+  },
+  {
+    json: (schema, options) => {
+      schema.minProperties = options.size
+      schema.maxProperties = options.size
+    },
   }
-})
+)
 
 /**
  * Register a callback to validate the object keys

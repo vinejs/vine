@@ -25,6 +25,7 @@ import type {
 import Macroable from '@poppinss/macroable'
 import { requiredWhen } from './rules.js'
 import { helpers } from '../../vine/helpers.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Base schema type with only modifiers applicable on all the schema types.
@@ -74,6 +75,45 @@ export abstract class BaseModifiersType<Input, Output, CamelCaseOutput>
   nullable(): NullableModifier<this> {
     return new NullableModifier(this)
   }
+
+  meta(meta: JSONSchema7): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+}
+
+export class MetaModifier<
+  Schema extends BaseModifiersType<any, any, any>,
+> extends BaseModifiersType<
+  Schema[typeof ITYPE] | undefined | null,
+  Schema[typeof OTYPE],
+  Schema[typeof COTYPE]
+> {
+  #parent: Schema
+  #meta: JSONSchema7
+
+  constructor(parent: Schema, meta: JSONSchema7) {
+    super()
+    this.#parent = parent
+    this.#meta = meta
+  }
+
+  clone(): this {
+    return new MetaModifier(this.#parent.clone(), this.#meta) as this
+  }
+
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes {
+    const output = this.#parent[PARSE](propertyName, refs, options)
+
+    // TODO: Remove this and we might want to deepmerge
+    if ('json' in output) {
+      output.json = {
+        ...output.json,
+        ...this.#meta,
+      }
+    }
+
+    return output
+  }
 }
 
 /**
@@ -107,6 +147,27 @@ export class NullableModifier<
     const output = this.#parent[PARSE](propertyName, refs, options)
     if (output.type !== 'union') {
       output.allowNull = true
+
+      // TODO: We might want to dedupe
+      if (output.json.anyOf) {
+        output.json.anyOf.push({ type: 'null' })
+        return output
+      }
+
+      if (output.json.type === undefined) {
+        output.json.type = 'null'
+        return output
+      }
+
+      if (typeof output.json.type === 'string') {
+        output.json.type = [output.json.type, 'null']
+        return output
+      }
+
+      if (Array.isArray(output.json.type)) {
+        output.json.type.push('null')
+        return output
+      }
     }
 
     return output

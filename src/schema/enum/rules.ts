@@ -17,14 +17,23 @@ import { FieldContext } from '@vinejs/compiler/types'
  */
 export const enumRule = createRule<{
   choices: readonly any[] | ((field: FieldContext) => readonly any[])
-}>((value, options, field) => {
-  const choices = typeof options.choices === 'function' ? options.choices(field) : options.choices
+}>(
+  (value, options, field) => {
+    const choices = typeof options.choices === 'function' ? options.choices(field) : options.choices
 
-  /**
-   * Report error when value is not part of the pre-defined
-   * options
-   */
-  if (!choices.includes(value)) {
-    field.report(messages.enum, 'enum', field, { choices })
+    /**
+     * Report error when value is not part of the pre-defined
+     * options
+     */
+    if (!choices.includes(value)) {
+      field.report(messages.enum, 'enum', field, { choices })
+    }
+  },
+  {
+    // TODO: We might want to handle this differently
+    json: (schema, options) => {
+      if (typeof options.choices === 'function') return
+      schema.enum = options.choices as any[]
+    },
   }
-})
+)

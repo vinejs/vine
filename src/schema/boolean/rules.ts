@@ -14,12 +14,20 @@ import { createRule } from '../../vine/create_rule.js'
 /**
  * Validates the value to be a boolean
  */
-export const booleanRule = createRule<{ strict?: boolean }>((value, options, field) => {
-  const valueAsBoolean = options.strict === true ? value : helpers.asBoolean(value)
-  if (typeof valueAsBoolean !== 'boolean') {
-    field.report(messages.boolean, 'boolean', field)
-    return
-  }
+export const booleanRule = createRule<{ strict?: boolean }>(
+  (value, options, field) => {
+    const valueAsBoolean = options.strict === true ? value : helpers.asBoolean(value)
+    if (typeof valueAsBoolean !== 'boolean') {
+      field.report(messages.boolean, 'boolean', field)
+      return
+    }
 
-  field.mutate(valueAsBoolean, field)
-})
+    field.mutate(valueAsBoolean, field)
+  },
+  {
+    json: (schema) => {
+      // TODO: We might want to handle strictness with anyOf
+      schema.type = 'boolean'
+    },
+  }
+)

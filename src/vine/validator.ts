@@ -20,6 +20,7 @@ import type {
   ValidationOptions,
   ErrorReporterContract,
 } from '../types.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Error messages to share with the compiler
@@ -203,5 +204,15 @@ export class VineValidator<
       schema: structuredClone(schema),
       refs,
     }
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    const schema = this.#compiled.schema.schema
+
+    if ('json' in schema) {
+      return schema.json
+    }
+
+    return {}
   }
 }
