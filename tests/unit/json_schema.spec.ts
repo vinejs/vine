@@ -90,6 +90,14 @@ test.group('JsonSchema', () => {
         vine.enum(['foo', 'baz']).meta({ type: 'string' }).nullable(),
         { type: ['string', 'null'], enum: ['foo', 'baz'] },
       ],
+      [
+        'meta',
+        vine.enum(Roles).meta({ default: Roles.ADMIN }),
+        {
+          enum: ['admin', 'moderator'],
+          default: 'admin',
+        },
+      ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
       const validator = vine.compile(schema)
@@ -136,7 +144,20 @@ test.group('JsonSchema', () => {
           ],
         },
       ],
-      // ['meta', vine.boolean().meta({ examples: [true] }), { type: 'boolean', examples: [true] }],
+      [
+        'meta',
+        vine.any().meta({ examples: ['ANYTHING'] }),
+        {
+          examples: ['ANYTHING'],
+          anyOf: [
+            { type: 'string' },
+            { type: 'number' },
+            { type: 'boolean' },
+            { type: 'array' },
+            { type: 'object' },
+          ],
+        },
+      ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
       const validator = vine.compile(schema)
@@ -173,6 +194,15 @@ test.group('JsonSchema', () => {
           additionalProperties: { type: 'number' },
           minProperties: 6,
           maxProperties: 6,
+        },
+      ],
+      [
+        'meta',
+        vine.record(vine.number()).meta({ examples: [1, 2, 3] }),
+        {
+          type: 'object',
+          additionalProperties: { type: 'number' },
+          examples: [1, 2, 3],
         },
       ],
     ])
@@ -225,6 +255,11 @@ test.group('JsonSchema', () => {
         vine.object({}).nullable(),
         { type: ['object', 'null'], properties: {}, required: [] },
       ],
+      [
+        'meta',
+        vine.object({}).meta({ description: 'Hello World!' }),
+        { type: 'object', description: 'Hello World!', properties: {}, required: [] },
+      ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
       const validator = vine.compile(schema)
@@ -264,6 +299,11 @@ test.group('JsonSchema', () => {
         vine.array(vine.string()).nullable(),
         { type: ['array', 'null'], items: { type: 'string' } },
       ],
+      [
+        'meta',
+        vine.array(vine.boolean()).meta({ examples: [[true, false, false]] }),
+        { type: 'array', items: { type: 'boolean' }, examples: [[true, false, false]] },
+      ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
       const validator = vine.compile(schema)
@@ -282,6 +322,16 @@ test.group('JsonSchema', () => {
         'nullable',
         vine.tuple([vine.string()]).nullable(),
         { type: ['array', 'null'], items: [{ type: 'string' }], additionalItems: false },
+      ],
+      [
+        'meta',
+        vine.tuple([vine.boolean(), vine.number()]).meta({ description: 'A tuple' }),
+        {
+          type: 'array',
+          items: [{ type: 'boolean' }, { type: 'number' }],
+          additionalItems: false,
+          description: 'A tuple',
+        },
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {

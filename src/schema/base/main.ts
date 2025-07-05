@@ -389,4 +389,8 @@ export abstract class BaseType<Input, Output, CamelCaseOutput>
   nullable(): NullableModifier<this> {
     return new NullableModifier(this)
   }
+
+  meta(meta: JSONSchema7): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
 }
