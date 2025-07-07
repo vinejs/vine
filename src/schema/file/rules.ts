@@ -1,25 +1,59 @@
+/*
+ * vinejs
+ *
+ * (c) VineJS
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
-export const isFileRule = createRule((value, _, field) => {
-  if (!(value instanceof File)) field.report(messages.file, 'file', field)
+/**
+ * Validates the value to be an instance of the platform native File
+ * class
+ */
+export const isFileRule = createRule(function file(value, _, field): boolean {
+  if (!field.isDefined) {
+    return false
+  }
+
+  if (value instanceof File === false) {
+    field.report(messages.file, 'file', field)
+    return false
+  }
+
+  return true
 })
 
-export const minSizeRule = createRule<{ min: number }>((value, options, field) => {
-  if (!(value instanceof File) || !field.isValid) return
-  if (value.size < options.min)
+/**
+ * Enforce the file size to be atleast the provided minimum size
+ */
+export const minSizeRule = createRule<{ min: number }>(function minSize(value, options, field) {
+  if ((value as File).size < options.min) {
     field.report(messages['file.minSize'], 'file.minSize', field, options)
+    return false
+  }
+
+  return true
 })
 
-export const maxSizeRule = createRule<{ max: number }>((value, options, field) => {
-  if (!(value instanceof File) || !field.isValid) return
-  if (value.size > options.max)
+/**
+ * Limit the maximum file size
+ */
+export const maxSizeRule = createRule<{ max: number }>(function minSize(value, options, field) {
+  if ((value as File).size > options.max) {
     field.report(messages['file.maxSize'], 'file.maxSize', field, options)
+  }
 })
 
+/**
+ * Enforce the file type to be one of the specified file types
+ */
 export const mimeTypesRule = createRule<{ mimeTypes: string[] }>((value, options, field) => {
-  if (!(value instanceof File) || !field.isValid) return
-  const mimeType = value.type
-  if (!options.mimeTypes.includes(mimeType))
+  const mimeType = (value as File).type
+  if (!options.mimeTypes.includes(mimeType)) {
     field.report(messages['file.mimeTypes'], 'file.mimeTypes', field, options)
+  }
 })

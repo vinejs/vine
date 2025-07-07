@@ -311,7 +311,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   abstract clone(): this
 
   /**
-   * The validation to use to validating the schema data type. Using
+   * The validation to use for validating the schema data type. Using
    * a data type validator guards custom rules to only run when
    * the data type validation passes.
    */

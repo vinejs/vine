@@ -31,7 +31,7 @@ test.group('File', () => {
       file: vine.file().maxSize(2 * 1024 * 1024),
     })
 
-    const data = { file: new File(['a'.repeat(3 * 1024 * 1024)], 'file.txt') } // Simulating a file of 3MB
+    const data = { file: new File(['a'.repeat(3 * 1024 * 1024)], 'file.txt') }
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
         field: 'file',
@@ -49,7 +49,7 @@ test.group('File', () => {
       file: vine.file().maxSize(2 * 1024 * 1024),
     })
 
-    const data = { file: new File(['a'.repeat(1 * 1024 * 1024)], 'file.text') } // Simulating a file of 1MB
+    const data = { file: new File(['a'.repeat(1 * 1024 * 1024)], 'file.text') }
     await assert.validationOutput(vine.validate({ schema, data }), data)
   })
 
@@ -58,7 +58,7 @@ test.group('File', () => {
       file: vine.file().minSize(1 * 1024 * 1024),
     })
 
-    const data = { file: new File(['a'.repeat(512 * 1024)], 'file.txt') } // Simulating a file of 512KB
+    const data = { file: new File(['a'.repeat(512 * 1024)], 'file.txt') }
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
         field: 'file',
@@ -82,7 +82,7 @@ test.group('File', () => {
     await assert.validationErrors(vine.validate({ schema, data }), [
       {
         field: 'file',
-        message: 'The file field must be one of the following mime types: text/plain',
+        message: 'The file mime type is invalid',
         meta: {
           mimeTypes: ['text/plain'],
         },

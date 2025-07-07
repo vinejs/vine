@@ -27,13 +27,8 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -48,13 +43,8 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -69,13 +59,8 @@ test.group('VineFile', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -90,13 +75,8 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -110,14 +90,9 @@ test.group('VineFile', () => {
       allowNull: false,
       isOptional: false,
       bail: true,
-      parseFnId: 'ref://1',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://2',
-        },
-      ],
+      parseFnId: 'ref://2',
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -133,13 +108,8 @@ test.group('VineFile', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -156,14 +126,10 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
+
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -173,13 +139,8 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -196,13 +157,9 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -213,13 +170,9 @@ test.group('VineFile', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+
+      validations: [],
     })
   })
 
@@ -236,13 +189,9 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -254,13 +203,9 @@ test.group('VineFile', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+
+      validations: [],
     })
   })
 
@@ -277,14 +222,10 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
+
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -294,13 +235,8 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -317,14 +253,10 @@ test.group('VineFile', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
+
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -333,14 +265,9 @@ test.group('VineFile', () => {
       allowNull: false,
       isOptional: false,
       bail: true,
-      parseFnId: 'ref://1',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://2',
-        },
-      ],
+      parseFnId: 'ref://2',
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 })

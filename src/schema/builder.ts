@@ -205,7 +205,9 @@ export class SchemaBuilder extends Macroable {
     return new VineUnionOfTypes(schemas)
   }
 
-  /** Define a file field   */
+  /**
+   * Define a File instance value
+   */
   file() {
     return new VineFile()
   }
