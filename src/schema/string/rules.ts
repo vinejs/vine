@@ -46,7 +46,7 @@ export const stringRule = createRule(
     return false
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.type = 'string'
     },
   }
@@ -62,7 +62,7 @@ export const emailRule = createRule<EmailOptions | undefined>(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.format = 'email'
     },
   }
@@ -92,7 +92,7 @@ export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.format = options?.version === 6 ? 'ipv6' : 'ipv4'
     },
   }
@@ -108,7 +108,7 @@ export const regexRule = createRule<RegExp>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.pattern = options.source
     },
   }
@@ -124,7 +124,7 @@ export const hexCodeRule = createRule(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.pattern = '^#?([0-9a-f]{6}|[0-9a-f]{3}|[0-9a-f]{8})$'
     },
   }
@@ -141,7 +141,7 @@ export const urlRule = createRule<URLOptions | undefined>(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.format = 'uri'
     },
   }
@@ -180,7 +180,7 @@ export const alphaRule = createRule<AlphaOptions | undefined>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       let characterSet = 'a-zA-Z'
       if (options) {
         if (options.allowSpaces) {
@@ -223,7 +223,7 @@ export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       let characterSet = 'a-zA-Z0-9'
       if (options) {
         if (options.allowSpaces) {
@@ -252,7 +252,7 @@ export const minLengthRule = createRule<{ min: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minLength = options.min
     },
   }
@@ -268,7 +268,7 @@ export const maxLengthRule = createRule<{ max: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.maxLength = options.max
     },
   }
@@ -284,7 +284,7 @@ export const fixedLengthRule = createRule<{ size: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minLength = options.size
       schema.maxLength = options.size
     },
@@ -494,7 +494,7 @@ export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefin
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.format = 'uuid'
     },
   }
@@ -510,7 +510,7 @@ export const ulidRule = createRule(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.pattern = '^[0-7][0-9A-HJKMNP-TV-Z]{25}$'
     },
   }

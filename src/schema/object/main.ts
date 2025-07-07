@@ -65,7 +65,7 @@ export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> 
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): ObjectNode & { json: JSONSchema7 } {
+  ): ObjectNode & { jsonSchema: JSONSchema7 } {
     options.toCamelCase = true
     return this.#schema[PARSE](propertyName, refs, options)
   }
@@ -228,7 +228,7 @@ export class VineObject<
   /**
    * Compiles JSON Schema.
    */
-  protected compileJsonSchema(nodes: CompilerNodes[]) {
+  protected toJSONSchema(nodes: CompilerNodes[]) {
     const schema: JSONSchema7 & { properties: {}; required: [] } = {
       type: 'object',
       properties: {},
@@ -236,12 +236,12 @@ export class VineObject<
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.jsonSchema) continue
-      validation.rule.jsonSchema(schema, validation.options)
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
     }
 
     for (const node of nodes) {
-      schema.properties[node.propertyName] = node.json
+      schema.properties[node.propertyName] = node.jsonSchema
 
       if (!('isOptional' in node) || !node.isOptional) {
         schema.required.push(node.propertyName)
@@ -258,7 +258,7 @@ export class VineObject<
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): ObjectNode & { json: JSONSchema7 } {
+  ): ObjectNode & { jsonSchema: JSONSchema7 } {
     const parsedProperties = Object.keys(this.#properties).map((property) => {
       return this.#properties[property][PARSE](property, refs, options)
     })
@@ -277,7 +277,7 @@ export class VineObject<
       groups: this.#groups.map((group) => {
         return group[PARSE](refs, options)
       }),
-      json: this.compileJsonSchema(parsedProperties),
+      jsonSchema: this.toJSONSchema(parsedProperties),
     }
   }
 }

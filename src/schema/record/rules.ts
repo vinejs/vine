@@ -25,7 +25,7 @@ export const minLengthRule = createRule<{ min: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minProperties = options.min
     },
   }
@@ -44,7 +44,7 @@ export const maxLengthRule = createRule<{ max: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.maxProperties = options.max
     },
   }
@@ -63,7 +63,7 @@ export const fixedLengthRule = createRule<{ size: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minProperties = options.size
       schema.maxProperties = options.size
     },

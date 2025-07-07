@@ -44,7 +44,7 @@ export type CompilerNodes = (
   | UnionNode
   | RecordNode
   | TupleNode
-) & { json: JSONSchema7 }
+) & { jsonSchema: JSONSchema7 }
 
 /**
  * Options accepted by the mobile number validation
@@ -160,7 +160,7 @@ export interface ConstructableLiteralSchema<Inputs, Output, CamelCaseOutput> {
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; json: JSONSchema7 }
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 }
   clone(): this
 
   /**
@@ -213,7 +213,7 @@ export type ValidationRule<Options extends any> = {
   name: string
   isAsync: boolean
   implicit: boolean
-  jsonSchema?: JsonSchemaModifier<Options>
+  toJSONSchema?: JsonSchemaModifier<Options>
 }
 
 /**

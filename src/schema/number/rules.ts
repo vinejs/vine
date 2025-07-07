@@ -37,7 +37,7 @@ export const numberRule = createRule<{ strict?: boolean }>(
     return true
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.type = 'number'
     },
   }
@@ -53,7 +53,7 @@ export const minRule = createRule<{ min: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minimum = options.min
     },
   }
@@ -69,7 +69,7 @@ export const maxRule = createRule<{ max: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.maximum = options.max
     },
   }
@@ -85,7 +85,7 @@ export const rangeRule = createRule<{ min: number; max: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minimum = options.min
       schema.maximum = options.max
     },
@@ -102,7 +102,7 @@ export const positiveRule = createRule(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.minimum = 0
     },
   }
@@ -118,7 +118,7 @@ export const negativeRule = createRule<undefined>(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.exclusiveMaximum = 0
     },
   }
@@ -152,7 +152,7 @@ export const withoutDecimalsRule = createRule(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.type = 'integer'
     },
   }
@@ -168,7 +168,7 @@ export const inRule = createRule<{ values: number[] }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.enum = options.values
     },
   }

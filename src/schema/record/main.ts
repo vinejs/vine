@@ -101,7 +101,7 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
     ) as this
   }
 
-  protected compileJsonSchema(node: CompilerNodes) {
+  protected toJSONSchema(node: CompilerNodes) {
     const schema: JSONSchema7 & {} = {
       type: 'object',
       additionalProperties: {},
@@ -109,12 +109,12 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
 
     // TODO: Remove condition
     if ('json' in node) {
-      schema.additionalProperties = node.json
+      schema.additionalProperties = node.jsonSchema
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.jsonSchema) continue
-      validation.rule.jsonSchema(schema, validation.options)
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
     }
 
     return schema
@@ -127,7 +127,7 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): RecordNode & { json: JSONSchema7 } {
+  ): RecordNode & { jsonSchema: JSONSchema7 } {
     const parsed = this.#schema[PARSE]('*', refs, options)
     return {
       type: 'record',
@@ -139,7 +139,7 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
       each: parsed,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      json: this.compileJsonSchema(parsed),
+      jsonSchema: this.toJSONSchema(parsed),
     }
   }
 }

@@ -211,7 +211,7 @@ export class VineValidator<
 
   'toJSONSchema'(): JSONSchema7 {
     const schema = this.#compiled.schema.schema as CompilerNodes
-    return schema.json
+    return schema.jsonSchema
   }
 
   readonly '~standard': StandardSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> = {

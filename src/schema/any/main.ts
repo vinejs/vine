@@ -34,7 +34,7 @@ export class VineAny extends BaseLiteralType<any, any, any> {
     return new VineAny(this.cloneOptions(), this.cloneValidations()) as this
   }
 
-  protected compileJsonSchema(): JSONSchema7 {
+  protected toJSONSchema(): JSONSchema7 {
     const schema: JSONSchema7 = {
       anyOf: [
         { type: 'string' },
@@ -46,8 +46,8 @@ export class VineAny extends BaseLiteralType<any, any, any> {
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.jsonSchema) continue
-      validation.rule.jsonSchema(schema, validation.options)
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
     }
 
     return schema
@@ -60,9 +60,9 @@ export class VineAny extends BaseLiteralType<any, any, any> {
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; json: JSONSchema7 } {
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
     const schema = super[PARSE](propertyName, refs, options)
-    schema.json = this.compileJsonSchema()
+    schema.jsonSchema = this.toJSONSchema()
     return schema
   }
 }

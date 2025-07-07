@@ -24,7 +24,7 @@ export const minLengthRule = createRule<{ min: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minItems = options.min
     },
   }
@@ -43,7 +43,7 @@ export const maxLengthRule = createRule<{ max: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.maxItems = options.max
     },
   }
@@ -62,7 +62,7 @@ export const fixedLengthRule = createRule<{ size: number }>(
     }
   },
   {
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       schema.minItems = options.size
       schema.maxItems = options.size
     },
@@ -82,7 +82,7 @@ export const notEmptyRule = createRule<undefined>(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.minItems = 1
     },
   }
@@ -101,7 +101,7 @@ export const distinctRule = createRule<{ fields?: string | string[] }>(
     }
   },
   {
-    json: (schema) => {
+    toJSONSchema: (schema) => {
       schema.uniqueItems = true
     },
   }

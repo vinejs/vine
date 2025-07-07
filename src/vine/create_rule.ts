@@ -24,7 +24,7 @@ export function createRule<Options = undefined>(
     name?: string
     implicit?: boolean
     isAsync?: boolean
-    json?: JsonSchemaModifier<Options>
+    toJSONSchema?: JsonSchemaModifier<Options>
   }
 ) {
   const rule: ValidationRule<Options> = {
@@ -32,7 +32,7 @@ export function createRule<Options = undefined>(
     name: metaData?.name ?? validator.name,
     isAsync: metaData?.isAsync || validator.constructor.name === 'AsyncFunction',
     implicit: metaData?.implicit ?? false,
-    jsonSchema: metaData?.json,
+    toJSONSchema: metaData?.toJSONSchema,
   }
 
   return function (...options: GetArgs<Options>): Validation<Options> {

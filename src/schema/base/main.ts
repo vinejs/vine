@@ -60,7 +60,11 @@ export class NullableModifier<Schema extends ConstructableSchema<any, any, any>>
     return new OptionalModifier(this)
   }
 
-  meta(meta: JSONSchema7): MetaModifier<this> {
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
     return new MetaModifier(this, meta)
   }
 
@@ -81,23 +85,23 @@ export class NullableModifier<Schema extends ConstructableSchema<any, any, any>>
       output.allowNull = true
 
       // TODO: We might want to dedupe
-      if (output.json.anyOf) {
-        output.json.anyOf.push({ type: 'null' })
+      if (output.jsonSchema.anyOf) {
+        output.jsonSchema.anyOf.push({ type: 'null' })
         return output
       }
 
-      if (output.json.type === undefined) {
-        output.json.type = 'null'
+      if (output.jsonSchema.type === undefined) {
+        output.jsonSchema.type = 'null'
         return output
       }
 
-      if (typeof output.json.type === 'string') {
-        output.json.type = [output.json.type, 'null']
+      if (typeof output.jsonSchema.type === 'string') {
+        output.jsonSchema.type = [output.jsonSchema.type, 'null']
         return output
       }
 
-      if (Array.isArray(output.json.type)) {
-        output.json.type.push('null')
+      if (Array.isArray(output.jsonSchema.type)) {
+        output.jsonSchema.type.push('null')
         return output
       }
     }
@@ -122,9 +126,9 @@ export class MetaModifier<Schema extends ConstructableSchema<any, any, any>>
   declare [COTYPE]: Schema[typeof COTYPE]
 
   #parent: Schema
-  #meta: JSONSchema7
+  #meta: JSONSchema7 | Object
 
-  constructor(parent: Schema, meta: JSONSchema7) {
+  constructor(parent: Schema, meta: JSONSchema7 | Object) {
     this.#parent = parent
     this.#meta = meta
   }
@@ -136,8 +140,8 @@ export class MetaModifier<Schema extends ConstructableSchema<any, any, any>>
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes {
     const output = this.#parent[PARSE](propertyName, refs, options)
 
-    output.json = {
-      ...output.json,
+    output.jsonSchema = {
+      ...output.jsonSchema,
       ...this.#meta,
     }
 
@@ -222,6 +226,14 @@ export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
    */
   nullable(): NullableModifier<this> {
     return new NullableModifier(this)
+  }
+
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
   }
 
   /**

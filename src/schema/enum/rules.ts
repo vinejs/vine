@@ -31,7 +31,7 @@ export const enumRule = createRule<{
   },
   {
     // TODO: We might want to handle this differently
-    json: (schema, options) => {
+    toJSONSchema: (schema, options) => {
       if (typeof options.choices === 'function') return
       schema.enum = options.choices as any[]
     },

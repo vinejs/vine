@@ -103,13 +103,13 @@ export class VineTuple<
 
     for (const node of nodes) {
       if ('json' in node) {
-        schema.items.push(node.json)
+        schema.items.push(node.jsonSchema)
       }
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.jsonSchema) continue
-      validation.rule.jsonSchema(schema, validation.options)
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
     }
 
     return schema
@@ -122,7 +122,7 @@ export class VineTuple<
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): TupleNode & { json: JSONSchema7 } {
+  ): TupleNode & { jsonSchema: JSONSchema7 } {
     const parsed = this.#schemas.map((schema, index) => schema[PARSE](String(index), refs, options))
 
     return {
@@ -136,7 +136,7 @@ export class VineTuple<
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
       properties: parsed,
-      json: this.compileJsonSchema(parsed),
+      jsonSchema: this.compileJsonSchema(parsed),
     }
   }
 }

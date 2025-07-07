@@ -91,28 +91,28 @@ export class NullableModifier<Schema extends ConstructableLiteralSchema<any, any
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; json: JSONSchema7 } {
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.allowNull = true
 
     // TODO: We might want to dedupe
-    if (output.json.anyOf) {
-      output.json.anyOf.push({ type: 'null' })
+    if (output.jsonSchema.anyOf) {
+      output.jsonSchema.anyOf.push({ type: 'null' })
       return output
     }
 
-    if (output.json.type === undefined) {
-      output.json.type = 'null'
+    if (output.jsonSchema.type === undefined) {
+      output.jsonSchema.type = 'null'
       return output
     }
 
-    if (typeof output.json.type === 'string') {
-      output.json.type = [output.json.type, 'null']
+    if (typeof output.jsonSchema.type === 'string') {
+      output.jsonSchema.type = [output.jsonSchema.type, 'null']
       return output
     }
 
-    if (Array.isArray(output.json.type)) {
-      output.json.type.push('null')
+    if (Array.isArray(output.jsonSchema.type)) {
+      output.jsonSchema.type.push('null')
       return output
     }
 
@@ -178,13 +178,13 @@ export class MetaModifier<Schema extends ConstructableLiteralSchema<any, any, an
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; json: JSONSchema7 } {
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.allowNull = true
 
     // TODO: We might want to deepmerge
-    output.json = {
-      ...output.json,
+    output.jsonSchema = {
+      ...output.jsonSchema,
       ...this.#meta,
     }
 
@@ -304,7 +304,7 @@ export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; json: JSONSchema7 } {
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.isOptional = true
     output.validations = output.validations.concat(this.compileValidations(refs))
@@ -372,7 +372,7 @@ export class TransformModifier<Schema extends ConstructableLiteralSchema<any, an
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; json: JSONSchema7 } {
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.transformFnId = refs.trackTransformer(this.#transform)
     return output
@@ -483,16 +483,16 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   /**
    * Compiles JSON Schema.
    */
-  protected compileJsonSchema() {
+  protected toJSONSchema() {
     const schema: JSONSchema7 = {}
 
-    if (this.dataTypeValidator?.rule.jsonSchema) {
-      this.dataTypeValidator.rule.jsonSchema(schema, this.dataTypeValidator.options)
+    if (this.dataTypeValidator?.rule.toJSONSchema) {
+      this.dataTypeValidator.rule.toJSONSchema(schema, this.dataTypeValidator.options)
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.jsonSchema) continue
-      validation.rule.jsonSchema(schema, validation.options)
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
     }
 
     return schema
@@ -545,7 +545,11 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
     return new NullableModifier(this)
   }
 
-  meta(meta: JSONSchema7): MetaModifier<this> {
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
     return new MetaModifier(this, meta)
   }
 
@@ -566,7 +570,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; json: JSONSchema7 } {
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
     return {
       type: 'literal',
       subtype: this[SUBTYPE],
@@ -580,7 +584,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
       isOptional: this.options.isOptional,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      json: this.compileJsonSchema(),
+      jsonSchema: this.toJSONSchema(),
     }
   }
 }

@@ -130,12 +130,12 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
     }
 
     if ('json' in node) {
-      schema.items = node.json
+      schema.items = node.jsonSchema
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.jsonSchema) continue
-      validation.rule.jsonSchema(schema, validation.options)
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
     }
 
     return schema
@@ -148,7 +148,7 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): ArrayNode & { json: JSONSchema7 } {
+  ): ArrayNode & { jsonSchema: JSONSchema7 } {
     const parsed = this.#schema[PARSE]('*', refs, options)
     return {
       type: 'array',
@@ -160,7 +160,7 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
       each: parsed,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      json: this.compileJsonSchema(parsed),
+      jsonSchema: this.compileJsonSchema(parsed),
     }
   }
 }
