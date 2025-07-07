@@ -11,6 +11,7 @@ import { ConditionalFn, RefsStore, UnionNode } from '@vinejs/compiler/types'
 
 import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, SchemaTypes } from '../../types.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Represents a union conditional type. A conditional is a predicate
@@ -43,10 +44,13 @@ export class UnionConditional<Schema extends SchemaTypes> {
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): UnionNode['conditions'][number] {
+  ): UnionNode['conditions'][number] & { jsonSchema: JSONSchema7 } {
+    const parsedSchema = this.#schema[PARSE](propertyName, refs, options)
+
     return {
       conditionalFnRefId: refs.trackConditional(this.#conditional),
-      schema: this.#schema[PARSE](propertyName, refs, options),
+      schema: parsedSchema,
+      jsonSchema: parsedSchema.jsonSchema,
     }
   }
 }

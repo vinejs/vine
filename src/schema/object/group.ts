@@ -13,6 +13,7 @@ import { messages } from '../../defaults.js'
 import { GroupConditional } from './conditional.js'
 import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Object group represents a group with multiple conditionals, where each
@@ -31,6 +32,17 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any
 
   constructor(conditionals: Conditional[]) {
     this.#conditionals = conditionals
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  protected toJSONSchema(
+    groups: (ObjectGroupNode['conditions'][number] & { jsonSchema: JSONSchema7 })[]
+  ): JSONSchema7 {
+    return {
+      anyOf: groups.map((group) => group.jsonSchema),
+    }
   }
 
   /**
@@ -54,11 +66,16 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any
   /**
    * Compiles the group
    */
-  [PARSE](refs: RefsStore, options: ParserOptions): ObjectGroupNode {
+  [PARSE](refs: RefsStore, options: ParserOptions): ObjectGroupNode & { jsonSchema: JSONSchema7 } {
+    const parsedConditions = this.#conditionals.map((conditional) =>
+      conditional[PARSE](refs, options)
+    )
+
     return {
       type: 'group',
       elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
-      conditions: this.#conditionals.map((conditional) => conditional[PARSE](refs, options)),
+      conditions: parsedConditions,
+      jsonSchema: this.toJSONSchema(parsedConditions),
     }
   }
 }

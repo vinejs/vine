@@ -8,7 +8,7 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, UnionNode } from '@vinejs/compiler/types'
+import { CompilerNodes, RefsStore, UnionNode } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
 import { UnionConditional } from './conditional.js'
@@ -18,9 +18,11 @@ import type {
   ParserOptions,
   ConstructableSchema,
   UnionNoMatchCallback,
+  RefIdentifier,
 } from '../../types.js'
 import { VineOptional } from '../optional/main.js'
 import { VineNull } from '../null/main.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Vine union represents a union data type. A union is a collection
@@ -84,6 +86,22 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
   }
 
   /**
+   * Transforms into JSONSchema.
+   */
+  protected toJSONSchema(
+    conditions: ({
+      conditionalFnRefId: RefIdentifier
+      schema: CompilerNodes
+    } & {
+      jsonSchema: JSONSchema7
+    })[]
+  ): JSONSchema7 {
+    return {
+      anyOf: conditions.map((condition) => condition.jsonSchema),
+    }
+  }
+
+  /**
    * Clones the VineUnion schema type.
    */
   clone(): this {
@@ -96,15 +114,22 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
   /**
    * Compiles to a union
    */
-  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): UnionNode {
+  [PARSE](
+    propertyName: string,
+    refs: RefsStore,
+    options: ParserOptions
+  ): UnionNode & { jsonSchema: JSONSchema7 } {
+    const parsedConditions = this.#conditionals.map((conditional) =>
+      conditional[PARSE](propertyName, refs, options)
+    )
+
     return {
       type: 'union',
       fieldName: propertyName,
       propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
       elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
-      conditions: this.#conditionals.map((conditional) =>
-        conditional[PARSE](propertyName, refs, options)
-      ),
+      conditions: parsedConditions,
+      jsonSchema: this.toJSONSchema(parsedConditions),
     }
   }
 }

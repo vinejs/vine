@@ -122,9 +122,9 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
   }
 
   /**
-   * Compiles JSON Schema.
+   * Transforms into JSONSchema.
    */
-  protected compileJsonSchema(node: CompilerNodes) {
+  protected toJSONSchema(node: CompilerNodes): JSONSchema7 {
     const schema: JSONSchema7 = {
       type: 'array',
     }
@@ -160,7 +160,7 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
       each: parsed,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      jsonSchema: this.compileJsonSchema(parsed),
+      jsonSchema: this.toJSONSchema(parsed),
     }
   }
 }

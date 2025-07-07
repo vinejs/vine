@@ -12,6 +12,7 @@ import { helpers } from '../../vine/helpers.js'
 import { BaseLiteralType } from '../base/literal.js'
 import { IS_OF_TYPE, SUBTYPE, UNIQUE_NAME } from '../../symbols.js'
 import type { FieldOptions, Literal, Validation } from '../../types.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * VineLiteral represents a type that matches an exact value
@@ -56,5 +57,31 @@ export class VineLiteral<Value extends Literal> extends BaseLiteralType<Value, V
    */
   clone(): this {
     return new VineLiteral(this.#value, this.cloneOptions(), this.cloneValidations()) as this
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  protected toJSONSchema(): JSONSchema7 {
+    const schema = super.toJSONSchema()
+
+    if (typeof this.#value === 'string') {
+      schema.type = 'string'
+      schema.enum = [this.#value]
+    }
+
+    if (typeof this.#value === 'boolean') {
+      schema.type = 'boolean'
+      schema.enum = [this.#value]
+    }
+
+    if (typeof this.#value === 'number') {
+      schema.type = 'number'
+      schema.enum = [this.#value]
+    }
+
+    // TODO: Handle bigint
+
+    return schema
   }
 }

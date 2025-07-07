@@ -21,7 +21,7 @@ import type {
   CompilerNodes,
 } from '../../types.js'
 import { JSONSchema7 } from 'json-schema'
-import { ObjectNode, RefsStore } from '@vinejs/compiler/types'
+import { ObjectGroupNode, ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 /**
  * Converts schema properties to camelCase
@@ -226,9 +226,12 @@ export class VineObject<
   }
 
   /**
-   * Compiles JSON Schema.
+   * Transforms into JSONSchema.
    */
-  protected toJSONSchema(nodes: CompilerNodes[]) {
+  protected toJSONSchema(
+    nodes: CompilerNodes[],
+    groups: (ObjectGroupNode & { jsonSchema: JSONSchema7 })[]
+  ): JSONSchema7 {
     const schema: JSONSchema7 & { properties: {}; required: [] } = {
       type: 'object',
       properties: {},
@@ -248,6 +251,12 @@ export class VineObject<
       }
     }
 
+    if (groups.length > 0) {
+      return {
+        anyOf: [schema, ...groups.map((group) => group.jsonSchema)],
+      }
+    }
+
     return schema
   }
 
@@ -263,6 +272,10 @@ export class VineObject<
       return this.#properties[property][PARSE](property, refs, options)
     })
 
+    const parsedGroups = this.#groups.map((group) => {
+      return group[PARSE](refs, options)
+    })
+
     return {
       type: 'object',
       fieldName: propertyName,
@@ -274,10 +287,8 @@ export class VineObject<
       allowUnknownProperties: this.#allowUnknownProperties,
       validations: this.compileValidations(refs),
       properties: parsedProperties,
-      groups: this.#groups.map((group) => {
-        return group[PARSE](refs, options)
-      }),
-      jsonSchema: this.toJSONSchema(parsedProperties),
+      groups: parsedGroups,
+      jsonSchema: this.toJSONSchema(parsedProperties, parsedGroups),
     }
   }
 }

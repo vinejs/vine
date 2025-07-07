@@ -92,9 +92,9 @@ export class VineTuple<
   }
 
   /**
-   * Compiles JSON Schema.
+   * Transforms into JSONSchema.
    */
-  protected compileJsonSchema(nodes: CompilerNodes[]) {
+  protected toJSONSchema(nodes: CompilerNodes[]) {
     const schema: JSONSchema7 & { items: JSONSchema7[] } = {
       type: 'array',
       items: [],
@@ -136,7 +136,7 @@ export class VineTuple<
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
       properties: parsed,
-      jsonSchema: this.compileJsonSchema(parsed),
+      jsonSchema: this.toJSONSchema(parsed),
     }
   }
 }

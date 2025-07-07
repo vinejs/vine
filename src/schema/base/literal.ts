@@ -80,7 +80,11 @@ export class NullableModifier<Schema extends ConstructableLiteralSchema<any, any
     return new TransformModifier(transformer, this)
   }
 
-  meta(meta: JSONSchema7): MetaModifier<this> {
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
     return new MetaModifier(this, meta)
   }
 
@@ -120,6 +124,9 @@ export class NullableModifier<Schema extends ConstructableLiteralSchema<any, any
   }
 }
 
+/**
+ * Adds meta data to the schema type.
+ */
 export class MetaModifier<Schema extends ConstructableLiteralSchema<any, any, any>>
   implements
     ConstructableLiteralSchema<Schema[typeof ITYPE], Schema[typeof OTYPE], Schema[typeof COTYPE]>
@@ -165,7 +172,7 @@ export class MetaModifier<Schema extends ConstructableLiteralSchema<any, any, an
 
   /**
    * Creates a fresh instance of the underlying schema type
-   * and wraps it inside the nullable modifier
+   * and wraps it inside the meta modifier
    */
   clone(): this {
     return new MetaModifier(this.#parent.clone(), this.#meta) as this
@@ -481,7 +488,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   }
 
   /**
-   * Compiles JSON Schema.
+   * Transforms into JSONSchema.
    */
   protected toJSONSchema() {
     const schema: JSONSchema7 = {}

@@ -133,6 +133,10 @@ export class MetaModifier<Schema extends ConstructableSchema<any, any, any>>
     this.#meta = meta
   }
 
+  /**
+   * Creates a fresh instance of the underlying schema type
+   * and wraps it inside the meta modifier
+   */
   clone(): this {
     return new MetaModifier(this.#parent.clone(), this.#meta) as this
   }
@@ -402,6 +406,10 @@ export abstract class BaseType<Input, Output, CamelCaseOutput>
     return new NullableModifier(this)
   }
 
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
   meta(meta: JSONSchema7): MetaModifier<this> {
     return new MetaModifier(this, meta)
   }

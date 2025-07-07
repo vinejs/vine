@@ -101,6 +101,9 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
     ) as this
   }
 
+  /**
+   * Transforms into JSONSchema.
+   */
   protected toJSONSchema(node: CompilerNodes) {
     const schema: JSONSchema7 & {} = {
       type: 'object',

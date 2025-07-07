@@ -260,6 +260,15 @@ test.group('JsonSchema', () => {
         vine.object({}).meta({ description: 'Hello World!' }),
         { type: 'object', description: 'Hello World!', properties: {}, required: [] },
       ],
+      [
+        'merge',
+        vine.object({ hello: vine.string() }),
+        {
+          type: 'object',
+          properties: { hello: { type: 'string' }, world: { type: 'number' } },
+          required: ['hello', 'world'],
+        },
+      ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
       const validator = vine.compile(schema)
@@ -338,4 +347,111 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+
+  test('vine.literal() - {0}')
+    .with<[string, SchemaTypes, JSONSchema7][]>([
+      ['string', vine.literal('literal_string'), { type: 'string', enum: ['literal_string'] }],
+      ['number', vine.literal(2481), { type: 'number', enum: [2481] }],
+      ['boolean', vine.literal(true), { type: 'boolean', enum: [true] }],
+      ['nullable', vine.literal('str').nullable(), { type: ['string', 'null'], enum: ['str'] }],
+      [
+        'meta',
+        vine.literal(false).meta({ description: 'Always false' }),
+        { type: 'boolean', enum: [false], description: 'Always false' },
+      ],
+    ])
+    .run(({ assert }, [_, schema, expected]) => {
+      const validator = vine.compile(schema)
+      assert.deepEqual(validator.toJSONSchema(), expected)
+    })
+
+  test('vine.union() - {0}').run(({ assert }) => {
+    const schema = vine.union([
+      vine.union.if((value) => vine.helpers.isString(value), vine.string().email()),
+      vine.union.if(
+        (value) => vine.helpers.isObject(value),
+        vine.object({ email: vine.string().email() })
+      ),
+    ])
+
+    const validator = vine.compile(schema)
+
+    assert.deepEqual(validator.toJSONSchema(), {
+      anyOf: [
+        { type: 'string', format: 'email' },
+        {
+          type: 'object',
+          properties: { email: { type: 'string', format: 'email' } },
+          required: ['email'],
+        },
+      ],
+    })
+  })
+
+  test('vine.unionOfTypes() - {0}').run(({ assert }) => {
+    const schema = vine.unionOfTypes([vine.string().email(), vine.number()])
+
+    const validator = vine.compile(schema)
+
+    assert.deepEqual(validator.toJSONSchema(), {
+      anyOf: [{ type: 'string', format: 'email' }, { type: 'number' }],
+    })
+  })
+
+  test('vine.group()').run(({ assert }) => {
+    const guideSchema = vine.group([
+      vine.group.if((data) => vine.helpers.isTrue(data.is_hiring_guide), {
+        is_hiring_guide: vine.literal(true),
+        guide_id: vine.string(),
+        amount: vine.number(),
+      }),
+      vine.group.else({
+        is_hiring_guide: vine.literal(false),
+      }),
+    ])
+
+    const schema = vine
+      .object({
+        name: vine.string(),
+        group_size: vine.number(),
+        phone_number: vine.string(),
+      })
+      .merge(guideSchema)
+
+    const validator = vine.compile(schema)
+
+    assert.deepEqual(validator.toJSONSchema(), {
+      anyOf: [
+        {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            group_size: { type: 'number' },
+            phone_number: { type: 'string' },
+          },
+          required: ['name', 'group_size', 'phone_number'],
+        },
+        {
+          anyOf: [
+            {
+              type: 'object',
+              properties: {
+                is_hiring_guide: { type: 'boolean', enum: [true] },
+                guide_id: { type: 'string' },
+                amount: { type: 'number' },
+              },
+              required: ['is_hiring_guide', 'guide_id', 'amount'],
+            },
+            {
+              type: 'object',
+              properties: {
+                is_hiring_guide: { type: 'boolean', enum: [false] },
+              },
+              required: ['is_hiring_guide'],
+            },
+          ],
+        },
+      ],
+    } satisfies JSONSchema7)
+  })
 })

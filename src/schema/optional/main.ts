@@ -28,6 +28,7 @@ import type {
   ConstructableSchema,
 } from '../../types.js'
 import { ConditionalValidations } from '../base/conditional_rules.js'
+import { JSONSchema7 } from 'json-schema'
 
 /**
  * Specify an optional value inside a union.
@@ -177,7 +178,7 @@ export class VineOptional<Output>
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string } {
+  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
     return {
       type: 'literal',
       subtype: this[SUBTYPE],
@@ -188,6 +189,7 @@ export class VineOptional<Output>
       isOptional: this.options.isOptional,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
+      jsonSchema: {},
     }
   }
 }

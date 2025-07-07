@@ -34,6 +34,9 @@ export class VineAny extends BaseLiteralType<any, any, any> {
     return new VineAny(this.cloneOptions(), this.cloneValidations()) as this
   }
 
+  /**
+   * Transforms into JSONSchema.
+   */
   protected toJSONSchema(): JSONSchema7 {
     const schema: JSONSchema7 = {
       anyOf: [
