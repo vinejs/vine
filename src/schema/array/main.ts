@@ -129,9 +129,7 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
       type: 'array',
     }
 
-    if ('json' in node) {
-      schema.items = node.jsonSchema
-    }
+    schema.items = node.jsonSchema
 
     for (const validation of this.validations) {
       if (!validation.rule.toJSONSchema) continue

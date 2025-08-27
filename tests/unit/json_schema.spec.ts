@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import vine from '../../index.js'
 import { SchemaTypes } from '../../src/types.js'
 import { JSONSchema7 } from 'json-schema'
+import { BOOLEAN_NEGATIVES, BOOLEAN_POSITIVES } from '../../src/vine/helpers.js'
 
 enum Roles {
   ADMIN = 'admin',
@@ -79,16 +80,17 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@string'])
 
   test('vine.enum() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
       ['no type', vine.enum([1, 3]), { enum: [1, 3] }],
       ['native enum', vine.enum(Roles), { enum: ['admin', 'moderator'] }],
-      ['nullable', vine.enum([1, 3]).nullable(), { type: 'null', enum: [1, 3] }],
+      ['nullable', vine.enum([1, 3]).nullable(), { anyOf: [{ type: 'null' }, { enum: [1, 3] }] }],
       [
         'nullable with predifined type',
         vine.enum(['foo', 'baz']).meta({ type: 'string' }).nullable(),
-        { type: ['string', 'null'], enum: ['foo', 'baz'] },
+        { anyOf: [{ type: 'null' }, { type: 'string', enum: ['foo', 'baz'] }] },
       ],
       [
         'meta',
@@ -103,17 +105,29 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@enum'])
 
   test('vine.boolean() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
-      ['', vine.boolean(), { type: 'boolean' }],
-      ['nullable', vine.boolean().nullable(), { type: ['boolean', 'null'] }],
-      ['meta', vine.boolean().meta({ examples: [true] }), { type: 'boolean', examples: [true] }],
+      ['not strict', vine.boolean(), { enum: [...BOOLEAN_POSITIVES, ...BOOLEAN_NEGATIVES] }],
+      ['strict', vine.boolean({ strict: true }), { type: 'boolean' }],
+      ['strict nullable', vine.boolean({ strict: true }).nullable(), { type: ['boolean', 'null'] }],
+      [
+        'not strict nullable',
+        vine.boolean().nullable(),
+        { anyOf: [{ type: 'null' }, { enum: [...BOOLEAN_POSITIVES, ...BOOLEAN_NEGATIVES] }] },
+      ],
+      [
+        'meta',
+        vine.boolean({ strict: true }).meta({ examples: [true] }),
+        { type: 'boolean', examples: [true] },
+      ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@boolean'])
 
   test('vine.any() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
@@ -163,6 +177,7 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@any'])
 
   test('vine.record().{0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
@@ -210,11 +225,16 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@record'])
 
   // TODO: We might want to add `additionalProperties: false`
   test('vine.object() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
-      ['empty', vine.object({}), { type: 'object', properties: {}, required: [] }],
+      [
+        'empty',
+        vine.object({}),
+        { type: 'object', properties: {}, required: [], additionalProperties: false },
+      ],
       [
         'properties',
         vine.object({ hello: vine.string(), world: vine.number() }),
@@ -229,6 +249,21 @@ test.group('JsonSchema', () => {
             },
           },
           required: ['hello', 'world'],
+          additionalProperties: false,
+        },
+      ],
+      [
+        'allowUnknownProperties',
+        vine.object({ hello: vine.string() }).allowUnknownProperties(),
+        {
+          type: 'object',
+          properties: {
+            hello: {
+              type: 'string',
+            },
+          },
+          required: ['hello'],
+          additionalProperties: true,
         },
       ],
       [
@@ -248,25 +283,23 @@ test.group('JsonSchema', () => {
             },
           },
           required: ['baz'],
+          additionalProperties: false,
         },
       ],
       [
         'nullable',
         vine.object({}).nullable(),
-        { type: ['object', 'null'], properties: {}, required: [] },
+        { type: ['object', 'null'], properties: {}, required: [], additionalProperties: false },
       ],
       [
         'meta',
         vine.object({}).meta({ description: 'Hello World!' }),
-        { type: 'object', description: 'Hello World!', properties: {}, required: [] },
-      ],
-      [
-        'merge',
-        vine.object({ hello: vine.string() }),
         {
           type: 'object',
-          properties: { hello: { type: 'string' }, world: { type: 'number' } },
-          required: ['hello', 'world'],
+          description: 'Hello World!',
+          properties: {},
+          required: [],
+          additionalProperties: false,
         },
       ],
     ])
@@ -274,6 +307,7 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@object'])
 
   test('vine.array() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
@@ -310,7 +344,7 @@ test.group('JsonSchema', () => {
       ],
       [
         'meta',
-        vine.array(vine.boolean()).meta({ examples: [[true, false, false]] }),
+        vine.array(vine.boolean({ strict: true })).meta({ examples: [[true, false, false]] }),
         { type: 'array', items: { type: 'boolean' }, examples: [[true, false, false]] },
       ],
     ])
@@ -318,26 +352,43 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@array'])
 
   test('vine.tuple() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
       [
         '',
         vine.tuple([vine.string(), vine.number()]),
-        { type: 'array', items: [{ type: 'string' }, { type: 'number' }], additionalItems: false },
+        {
+          type: 'array',
+          items: [{ type: 'string' }, { type: 'number' }],
+          minItems: 2,
+          maxItems: 2,
+          additionalItems: false,
+        },
       ],
       // TODO: allowUnknownProperties()
       [
         'nullable',
         vine.tuple([vine.string()]).nullable(),
-        { type: ['array', 'null'], items: [{ type: 'string' }], additionalItems: false },
+        {
+          type: ['array', 'null'],
+          items: [{ type: 'string' }],
+          minItems: 1,
+          maxItems: 1,
+          additionalItems: false,
+        },
       ],
       [
         'meta',
-        vine.tuple([vine.boolean(), vine.number()]).meta({ description: 'A tuple' }),
+        vine
+          .tuple([vine.boolean({ strict: true }), vine.number()])
+          .meta({ description: 'A tuple' }),
         {
           type: 'array',
           items: [{ type: 'boolean' }, { type: 'number' }],
+          minItems: 2,
+          maxItems: 2,
           additionalItems: false,
           description: 'A tuple',
         },
@@ -347,13 +398,20 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@tuple'])
 
   test('vine.literal() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
       ['string', vine.literal('literal_string'), { type: 'string', enum: ['literal_string'] }],
       ['number', vine.literal(2481), { type: 'number', enum: [2481] }],
       ['boolean', vine.literal(true), { type: 'boolean', enum: [true] }],
-      ['nullable', vine.literal('str').nullable(), { type: ['string', 'null'], enum: ['str'] }],
+      [
+        'nullable',
+        vine.literal('str').nullable(),
+        {
+          anyOf: [{ type: 'null' }, { type: 'string', enum: ['str'] }],
+        },
+      ],
       [
         'meta',
         vine.literal(false).meta({ description: 'Always false' }),
@@ -364,94 +422,103 @@ test.group('JsonSchema', () => {
       const validator = vine.compile(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
+    .tags(['@literal'])
 
-  test('vine.union() - {0}').run(({ assert }) => {
-    const schema = vine.union([
-      vine.union.if((value) => vine.helpers.isString(value), vine.string().email()),
-      vine.union.if(
-        (value) => vine.helpers.isObject(value),
-        vine.object({ email: vine.string().email() })
-      ),
-    ])
+  test('vine.union() - {0}')
+    .run(({ assert }) => {
+      const schema = vine.union([
+        vine.union.if((value) => vine.helpers.isString(value), vine.string().email()),
+        vine.union.if(
+          (value) => vine.helpers.isObject(value),
+          vine.object({ email: vine.string().email() })
+        ),
+      ])
 
-    const validator = vine.compile(schema)
+      const validator = vine.compile(schema)
 
-    assert.deepEqual(validator.toJSONSchema(), {
-      anyOf: [
-        { type: 'string', format: 'email' },
-        {
-          type: 'object',
-          properties: { email: { type: 'string', format: 'email' } },
-          required: ['email'],
-        },
-      ],
-    })
-  })
-
-  test('vine.unionOfTypes() - {0}').run(({ assert }) => {
-    const schema = vine.unionOfTypes([vine.string().email(), vine.number()])
-
-    const validator = vine.compile(schema)
-
-    assert.deepEqual(validator.toJSONSchema(), {
-      anyOf: [{ type: 'string', format: 'email' }, { type: 'number' }],
-    })
-  })
-
-  test('vine.group()').run(({ assert }) => {
-    const guideSchema = vine.group([
-      vine.group.if((data) => vine.helpers.isTrue(data.is_hiring_guide), {
-        is_hiring_guide: vine.literal(true),
-        guide_id: vine.string(),
-        amount: vine.number(),
-      }),
-      vine.group.else({
-        is_hiring_guide: vine.literal(false),
-      }),
-    ])
-
-    const schema = vine
-      .object({
-        name: vine.string(),
-        group_size: vine.number(),
-        phone_number: vine.string(),
-      })
-      .merge(guideSchema)
-
-    const validator = vine.compile(schema)
-
-    assert.deepEqual(validator.toJSONSchema(), {
-      anyOf: [
-        {
-          type: 'object',
-          properties: {
-            name: { type: 'string' },
-            group_size: { type: 'number' },
-            phone_number: { type: 'string' },
+      assert.deepEqual(validator.toJSONSchema(), {
+        anyOf: [
+          { type: 'string', format: 'email' },
+          {
+            type: 'object',
+            properties: { email: { type: 'string', format: 'email' } },
+            required: ['email'],
+            additionalProperties: false,
           },
-          required: ['name', 'group_size', 'phone_number'],
-        },
-        {
-          anyOf: [
-            {
-              type: 'object',
-              properties: {
-                is_hiring_guide: { type: 'boolean', enum: [true] },
-                guide_id: { type: 'string' },
-                amount: { type: 'number' },
-              },
-              required: ['is_hiring_guide', 'guide_id', 'amount'],
+        ],
+      })
+    })
+    .tags(['@union'])
+
+  test('vine.unionOfTypes() - {0}')
+    .run(({ assert }) => {
+      const schema = vine.unionOfTypes([vine.string().email(), vine.number()])
+
+      const validator = vine.compile(schema)
+
+      assert.deepEqual(validator.toJSONSchema(), {
+        anyOf: [{ type: 'string', format: 'email' }, { type: 'number' }],
+      })
+    })
+    .tags(['@unionOfTypes'])
+
+  test('vine.group()')
+    .run(({ assert }) => {
+      const guideSchema = vine.group([
+        vine.group.if((data) => vine.helpers.isTrue(data.is_hiring_guide), {
+          is_hiring_guide: vine.literal(true),
+          guide_id: vine.string(),
+          amount: vine.number(),
+        }),
+        vine.group.else({
+          is_hiring_guide: vine.literal(false),
+        }),
+      ])
+
+      const schema = vine
+        .object({
+          name: vine.string(),
+          group_size: vine.number(),
+          phone_number: vine.string(),
+        })
+        .merge(guideSchema)
+
+      const validator = vine.compile(schema)
+
+      assert.deepEqual(validator.toJSONSchema(), {
+        anyOf: [
+          {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              group_size: { type: 'number' },
+              phone_number: { type: 'string' },
             },
-            {
-              type: 'object',
-              properties: {
-                is_hiring_guide: { type: 'boolean', enum: [false] },
+            required: ['name', 'group_size', 'phone_number'],
+            additionalProperties: false,
+          },
+          {
+            anyOf: [
+              {
+                type: 'object',
+                properties: {
+                  is_hiring_guide: { type: 'boolean', enum: [true] },
+                  guide_id: { type: 'string' },
+                  amount: { type: 'number' },
+                },
+                required: ['is_hiring_guide', 'guide_id', 'amount'],
               },
-              required: ['is_hiring_guide'],
-            },
-          ],
-        },
-      ],
-    } satisfies JSONSchema7)
-  })
+              {
+                type: 'object',
+                properties: {
+                  is_hiring_guide: { type: 'boolean', enum: [false] },
+                },
+                required: ['is_hiring_guide'],
+              },
+            ],
+          },
+        ],
+      } satisfies JSONSchema7)
+    })
+    .tags(['@group'])
 })

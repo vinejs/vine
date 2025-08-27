@@ -110,10 +110,7 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
       additionalProperties: {},
     }
 
-    // TODO: Remove condition
-    if ('json' in node) {
-      schema.additionalProperties = node.jsonSchema
-    }
+    schema.additionalProperties = node.jsonSchema
 
     for (const validation of this.validations) {
       if (!validation.rule.toJSONSchema) continue

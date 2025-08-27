@@ -236,6 +236,7 @@ export class VineObject<
       type: 'object',
       properties: {},
       required: [],
+      additionalProperties: this.#allowUnknownProperties,
     }
 
     for (const validation of this.validations) {

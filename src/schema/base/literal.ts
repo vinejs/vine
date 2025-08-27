@@ -105,6 +105,14 @@ export class NullableModifier<Schema extends ConstructableLiteralSchema<any, any
       return output
     }
 
+    if (output.jsonSchema.enum) {
+      output.jsonSchema = {
+        anyOf: [{ type: 'null' }, output.jsonSchema],
+      }
+
+      return output
+    }
+
     if (output.jsonSchema.type === undefined) {
       output.jsonSchema.type = 'null'
       return output

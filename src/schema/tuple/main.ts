@@ -95,16 +95,16 @@ export class VineTuple<
    * Transforms into JSONSchema.
    */
   protected toJSONSchema(nodes: CompilerNodes[]) {
-    const schema: JSONSchema7 & { items: JSONSchema7[] } = {
+    const schema: JSONSchema7 & { items?: JSONSchema7[] } = {
       type: 'array',
-      items: [],
+      minItems: nodes.length,
+      maxItems: nodes.length,
       additionalItems: false,
     }
 
     for (const node of nodes) {
-      if ('json' in node) {
-        schema.items.push(node.jsonSchema)
-      }
+      if (!schema.items) schema.items = []
+      schema.items.push(node.jsonSchema)
     }
 
     for (const validation of this.validations) {

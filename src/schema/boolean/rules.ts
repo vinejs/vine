@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { helpers } from '../../vine/helpers.js'
+import { BOOLEAN_NEGATIVES, BOOLEAN_POSITIVES, helpers } from '../../vine/helpers.js'
 import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
@@ -25,9 +25,12 @@ export const booleanRule = createRule<{ strict?: boolean }>(
     field.mutate(valueAsBoolean, field)
   },
   {
-    toJSONSchema: (schema) => {
-      // TODO: We might want to handle strictness with anyOf
-      schema.type = 'boolean'
+    toJSONSchema: (schema, { strict = false }) => {
+      if (strict) {
+        schema.type = 'boolean'
+      } else {
+        schema.enum = [...BOOLEAN_POSITIVES, ...BOOLEAN_NEGATIVES]
+      }
     },
   }
 )
