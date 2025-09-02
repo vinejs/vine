@@ -383,7 +383,7 @@ export const postalCodeRule = createRule<
 /**
  * Validates the value to be a valid UUID
  */
-export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefined>(
+export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)[] } | undefined>(
   function uuid(value, options, field) {
     if (!options || !options.version) {
       if (!helpers.isUUID(value as string)) {
