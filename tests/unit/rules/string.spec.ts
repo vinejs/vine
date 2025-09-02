@@ -1287,6 +1287,22 @@ test.group('String | uuid', () => {
         rule: uuidRule({ version: [1, 4] }),
         value: '71e4fbab-3498-447b-a97c-2c6060069678',
       },
+      {
+        rule: uuidRule({ version: [6] }),
+        value: '1ec9414c-232a-6b00-b3c8-9e6bdeced846',
+      },
+      {
+        rule: uuidRule({ version: [7] }),
+        value: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+      },
+      {
+        rule: uuidRule({ version: [8] }),
+        value: '12345678-1234-8234-a234-123456789012',
+      },
+      {
+        rule: uuidRule({ version: [4, 6, 7, 8] }),
+        value: '71e4fbab-3498-447b-a97c-2c6060069678',
+      },
     ])
     .run(stringRuleValidator)
 })
