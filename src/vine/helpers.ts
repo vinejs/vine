@@ -31,7 +31,6 @@ import { locales as mobilePhoneLocales } from 'validator/lib/isMobilePhone.js'
 import { locales as postalCodeLocales } from 'validator/lib/isPostalCode.js'
 
 import type { FieldContext } from '../types.js'
-import { FieldNode } from '@vinejs/compiler/types'
 
 const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
 const BOOLEAN_NEGATIVES = ['0', 0, 'false', false]
