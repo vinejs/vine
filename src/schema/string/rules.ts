@@ -256,20 +256,48 @@ export const notSameAsRule = createRule<{ otherField: string }>(
  * Ensure the field under validation is confirmed by
  * having another field with the same name
  */
-export const confirmedRule = createRule<{ confirmationField: string } | undefined>(
-  function confirmed(value, options, field) {
-    const otherField = options?.confirmationField || `${field.name}_confirmation`
-    const input = field.parent[otherField]
-
-    /**
-     * Performing validation and reporting error
-     */
-    if (input !== value) {
-      field.report(messages.confirmed, 'confirmed', field, { otherField })
-      return
+export const confirmedRule = createRule<
+  | {
+      /**
+       * @deprecated
+       * Use "as" field instead
+       */
+      confirmationField?: string
     }
+  | {
+      as?: string
+    }
+  | undefined
+>(function confirmed(value, options, field) {
+  const normalizedOptions: { confirmationField?: string; as?: string } = options ?? {}
+  const otherField =
+    normalizedOptions.as ?? normalizedOptions.confirmationField ?? `${field.name}_confirmation`
+  const input = field.parent[otherField]
+
+  /**
+   * Performing validation and reporting error
+   */
+  if (input !== value) {
+    field.report(
+      messages.confirmed,
+      'confirmed',
+      {
+        ...field,
+        name: otherField,
+        wildCardPath: `${field.wildCardPath.replace(String(field.name), otherField)}`,
+        isDefined: true,
+        isValid: false,
+        value: input,
+        getFieldPath() {
+          const parentPath = field.getFieldPath()
+          return `${parentPath.replace(String(field.name), otherField)}`
+        },
+      },
+      { otherField, originalField: field.name }
+    )
+    return
   }
-)
+})
 
 /**
  * Ensure the field's value under validation is a subset of the pre-defined list.

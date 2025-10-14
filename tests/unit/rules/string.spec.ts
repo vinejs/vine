@@ -590,7 +590,7 @@ test.group('String | confirmed', () => {
         },
       },
       {
-        rule: confirmedRule({ confirmationField: 'dummyConfirmed' }),
+        rule: confirmedRule({ as: 'dummyConfirmed' }),
         value: 'foo',
         field: {
           parent: {
