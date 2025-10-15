@@ -27,8 +27,8 @@ import { VineOptional } from './optional/main.js'
 import { VineAccepted } from './accepted/main.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
+import { VineNativeFile } from './native_file/main.js'
 import { VineUnionOfTypes } from './union_of_types/main.js'
-import { VineFile } from './file/main.js'
 import { ITYPE, OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
 import type {
   Literal,
@@ -208,7 +208,7 @@ export class SchemaBuilder extends Macroable {
   /**
    * Define a File instance value
    */
-  file() {
-    return new VineFile()
+  nativeFile() {
+    return new VineNativeFile()
   }
 }

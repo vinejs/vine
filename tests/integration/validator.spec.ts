@@ -19,7 +19,7 @@ import vine, {
   VineString,
   VineLiteral,
   VineBoolean,
-  VineFile,
+  VineNativeFile,
 } from '../../index.js'
 import { Infer } from '../../src/types.js'
 import { ValidationError } from '../../src/errors/validation_error.js'
@@ -192,12 +192,12 @@ test.group('Validator | extend schema classes', () => {
     assert.isTrue((vine.enum(['guest', 'moderator', 'admin']) as any).hasMultipleOptions())
   })
 
-  test('extend VineFile class', ({ assert }) => {
-    VineFile.macro('isImage' as any, function (this: VineFile) {
+  test('extend VineNativeFile class', ({ assert }) => {
+    VineNativeFile.macro('isImage' as any, function (this: VineNativeFile) {
       return true
     })
 
-    assert.isTrue((vine.file() as any).isImage())
+    assert.isTrue((vine.nativeFile() as any).isImage())
   })
 
   test('extend Vine class', ({ assert }) => {

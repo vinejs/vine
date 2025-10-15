@@ -17,7 +17,7 @@ const vine = new Vine()
 
 test.group('VineFile', () => {
   test('create file schema', ({ assert }) => {
-    const schema = vine.file()
+    const schema = vine.nativeFile()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -33,7 +33,7 @@ test.group('VineFile', () => {
   })
 
   test('apply nullable modifier', ({ assert }) => {
-    const schema = vine.file().nullable()
+    const schema = vine.nativeFile().nullable()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -49,7 +49,7 @@ test.group('VineFile', () => {
   })
 
   test('apply optional modifier', ({ assert }) => {
-    const schema = vine.file().optional()
+    const schema = vine.nativeFile().optional()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -65,7 +65,7 @@ test.group('VineFile', () => {
   })
 
   test('disable bail mode', ({ assert }) => {
-    const schema = vine.file().bail(false)
+    const schema = vine.nativeFile().bail(false)
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -81,7 +81,7 @@ test.group('VineFile', () => {
   })
 
   test('apply parser', ({ assert }) => {
-    const schema = vine.file().parse(() => {})
+    const schema = vine.nativeFile().parse(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -97,7 +97,7 @@ test.group('VineFile', () => {
   })
 
   test('apply transformer', ({ assert }) => {
-    const schema = vine.file().transform(() => {})
+    const schema = vine.nativeFile().transform(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
       subtype: 'file',
@@ -114,7 +114,7 @@ test.group('VineFile', () => {
   })
 
   test('clone file schema', ({ assert }) => {
-    const schema = vine.file()
+    const schema = vine.nativeFile()
     const schema1 = schema.clone()
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
@@ -145,7 +145,7 @@ test.group('VineFile', () => {
   })
 
   test('clone and apply optional modifier', ({ assert }) => {
-    const schema = vine.file()
+    const schema = vine.nativeFile()
     const schema1 = schema.clone().optional()
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
@@ -177,7 +177,7 @@ test.group('VineFile', () => {
   })
 
   test('clone and apply transformer', ({ assert }) => {
-    const schema = vine.file()
+    const schema = vine.nativeFile()
     const schema1 = schema.clone().transform(() => {})
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
@@ -210,7 +210,7 @@ test.group('VineFile', () => {
   })
 
   test('clone and disable bail mode', ({ assert }) => {
-    const schema = vine.file()
+    const schema = vine.nativeFile()
     const schema1 = schema.clone().bail(false)
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
@@ -241,7 +241,7 @@ test.group('VineFile', () => {
   })
 
   test('clone and apply parser', ({ assert }) => {
-    const schema = vine.file()
+    const schema = vine.nativeFile()
     const schema1 = schema.clone().parse(() => {})
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {

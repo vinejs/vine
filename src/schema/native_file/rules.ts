@@ -14,13 +14,13 @@ import { createRule } from '../../vine/create_rule.js'
  * Validates the value to be an instance of the platform native File
  * class
  */
-export const isFileRule = createRule(function file(value, _, field): boolean {
+export const isNativeFileRule = createRule(function file(value, _, field): boolean {
   if (!field.isDefined) {
     return false
   }
 
   if (value instanceof File === false) {
-    field.report(messages.file, 'file', field)
+    field.report(messages.nativeFile, 'nativeFile', field)
     return false
   }
 
@@ -32,7 +32,7 @@ export const isFileRule = createRule(function file(value, _, field): boolean {
  */
 export const minSizeRule = createRule<{ min: number }>(function minSize(value, options, field) {
   if ((value as File).size < options.min) {
-    field.report(messages['file.minSize'], 'file.minSize', field, options)
+    field.report(messages['nativeFile.minSize'], 'nativeFile.minSize', field, options)
     return false
   }
 
@@ -44,7 +44,7 @@ export const minSizeRule = createRule<{ min: number }>(function minSize(value, o
  */
 export const maxSizeRule = createRule<{ max: number }>(function minSize(value, options, field) {
   if ((value as File).size > options.max) {
-    field.report(messages['file.maxSize'], 'file.maxSize', field, options)
+    field.report(messages['nativeFile.maxSize'], 'nativeFile.maxSize', field, options)
   }
 })
 
@@ -54,6 +54,6 @@ export const maxSizeRule = createRule<{ max: number }>(function minSize(value, o
 export const mimeTypesRule = createRule<{ mimeTypes: string[] }>((value, options, field) => {
   const mimeType = (value as File).type
   if (!options.mimeTypes.includes(mimeType)) {
-    field.report(messages['file.mimeTypes'], 'file.mimeTypes', field, options)
+    field.report(messages['nativeFile.mimeTypes'], 'nativeFile.mimeTypes', field, options)
   }
 })

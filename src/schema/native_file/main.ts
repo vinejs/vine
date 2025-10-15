@@ -10,21 +10,21 @@
 import { SUBTYPE } from '../../symbols.js'
 import { BaseLiteralType } from '../base/literal.js'
 import { FieldOptions, Validation } from '../../types.js'
-import { isFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rules.js'
+import { isNativeFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rules.js'
 
 /**
- * VineFile represents a platform native File class instance.
+ * VineNativeFile represents a platform native File class instance.
  */
-export class VineFile extends BaseLiteralType<File, File, File> {
+export class VineNativeFile extends BaseLiteralType<File, File, File> {
   [SUBTYPE] = 'file'
 
   constructor(options?: Partial<FieldOptions>, validations?: Validation<any>[]) {
     super(options, validations || [])
-    this.dataTypeValidator = isFileRule()
+    this.dataTypeValidator = isNativeFileRule()
   }
 
   clone() {
-    return new VineFile(this.cloneOptions(), this.cloneValidations()) as this
+    return new VineNativeFile(this.cloneOptions(), this.cloneValidations()) as this
   }
 
   /**
