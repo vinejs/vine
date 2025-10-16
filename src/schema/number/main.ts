@@ -9,7 +9,7 @@
 
 import { helpers } from '../../vine/helpers.js'
 import { BaseLiteralType } from '../base/literal.js'
-import { FieldOptions, Validation } from '../../types.js'
+import { type FieldOptions, type Validation } from '../../types.js'
 import { IS_OF_TYPE, SUBTYPE, UNIQUE_NAME } from '../../symbols.js'
 
 import {

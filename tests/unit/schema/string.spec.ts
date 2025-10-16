@@ -11,7 +11,7 @@ import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
 import { Vine } from '../../../src/vine/main.ts'
-import { RuleBuilder } from '../../../src/types.ts'
+import { type RuleBuilder } from '../../../src/types.ts'
 import { createRule } from '../../../src/vine/create_rule.ts'
 import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.ts'
 import {

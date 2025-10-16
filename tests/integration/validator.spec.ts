@@ -21,9 +21,9 @@ import vine, {
   VineBoolean,
   VineNativeFile,
 } from '../../index.ts'
-import { Infer } from '../../src/types.ts'
+import { type Infer } from '../../src/types.ts'
 import { ValidationError } from '../../src/errors/validation_error.ts'
-import { StandardSchemaV1 } from '@standard-schema/spec'
+import { type StandardSchemaV1 } from '@standard-schema/spec'
 
 test.group('Validator | metadata', () => {
   test('pass metadata to the validation pipeline', async ({ assert }) => {

@@ -38,9 +38,9 @@
     "quick:test": "node --import=ts-node-maintained/register/esm --enable-source-maps bin/test.ts"
   },
   "devDependencies": {
-    "@adonisjs/eslint-config": "^2.1.2",
+    "@adonisjs/eslint-config": "^3.0.0-next.4",
     "@adonisjs/prettier-config": "^1.4.5",
-    "@adonisjs/tsconfig": "^1.4.1",
+    "@adonisjs/tsconfig": "^2.0.0-next.2",
     "@japa/assert": "^4.1.1",
     "@japa/expect-type": "^2.0.3",
     "@japa/runner": "^4.4.0",

@@ -9,7 +9,7 @@
 
 import { test } from '@japa/runner'
 import { Vine } from '../../src/vine/main.ts'
-import { Infer, InferInput, ValidationOptions } from '../../src/types.ts'
+import { type Infer, type InferInput, type ValidationOptions } from '../../src/types.ts'
 
 const vine = new Vine()
 

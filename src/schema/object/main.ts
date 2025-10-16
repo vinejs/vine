@@ -10,10 +10,17 @@
 import camelcase from 'camelcase'
 import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
-import { ObjectGroup } from './group.js'
+import { type ObjectGroup } from './group.js'
 import { BaseType } from '../base/main.js'
-import { GroupConditional } from './conditional.js'
-import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from '../../symbols.js'
+import { type GroupConditional } from './conditional.js'
+import {
+  type OTYPE,
+  type COTYPE,
+  PARSE,
+  UNIQUE_NAME,
+  IS_OF_TYPE,
+  type ITYPE,
+} from '../../symbols.js'
 import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../../types.js'
 
 /**

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { FieldContext } from '@vinejs/compiler/types'
+import { type FieldContext } from '@vinejs/compiler/types'
 import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 

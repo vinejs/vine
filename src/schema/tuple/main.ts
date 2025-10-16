@@ -8,7 +8,7 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, TupleNode } from '@vinejs/compiler/types'
+import { type RefsStore, type TupleNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
 import { IS_OF_TYPE, PARSE, UNIQUE_NAME } from '../../symbols.js'

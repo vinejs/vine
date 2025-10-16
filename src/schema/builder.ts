@@ -22,14 +22,14 @@ import { VineString } from './string/main.js'
 import { VineNumber } from './number/main.js'
 import { VineBoolean } from './boolean/main.js'
 import { VineLiteral } from './literal/main.js'
-import { CamelCase } from './camelcase_types.js'
+import { type CamelCase } from './camelcase_types.js'
 import { VineOptional } from './optional/main.js'
 import { VineAccepted } from './accepted/main.js'
 import { group } from './object/group_builder.js'
 import { VineNativeEnum } from './enum/native_enum.js'
 import { VineNativeFile } from './native_file/main.js'
 import { VineUnionOfTypes } from './union_of_types/main.js'
-import { ITYPE, OTYPE, COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
+import { type ITYPE, type OTYPE, type COTYPE, IS_OF_TYPE, UNIQUE_NAME } from '../symbols.js'
 import type {
   Literal,
   EnumLike,

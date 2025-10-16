@@ -8,10 +8,17 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, ArrayNode } from '@vinejs/compiler/types'
+import { type RefsStore, type ArrayNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
-import { ITYPE, OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
+import {
+  type ITYPE,
+  type OTYPE,
+  type COTYPE,
+  PARSE,
+  UNIQUE_NAME,
+  IS_OF_TYPE,
+} from '../../symbols.js'
 import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
 
 import {

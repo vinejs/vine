@@ -9,7 +9,7 @@
 
 import { SUBTYPE } from '../../symbols.js'
 import { BaseLiteralType } from '../base/literal.js'
-import { FieldOptions, Validation } from '../../types.js'
+import { type FieldOptions, type Validation } from '../../types.js'
 import { isNativeFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rules.js'
 
 /**

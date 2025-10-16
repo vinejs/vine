@@ -9,7 +9,7 @@
 
 import { test } from '@japa/runner'
 import vine from '../../../index.ts'
-import { Infer } from '../../../src/types.ts'
+import { type Infer } from '../../../src/types.ts'
 // import { requiredWhen } from '../../../src/schema/base/rules.ts'
 
 test.group('UnionOfTypes', () => {

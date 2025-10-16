@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { ConditionalFn, RefsStore, UnionNode } from '@vinejs/compiler/types'
+import { type ConditionalFn, type RefsStore, type UnionNode } from '@vinejs/compiler/types'
 
 import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, SchemaTypes } from '../../types.js'

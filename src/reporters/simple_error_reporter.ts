@@ -8,7 +8,7 @@
  */
 
 import { E_VALIDATION_ERROR } from '../errors/main.js'
-import { ValidationError } from '../errors/validation_error.js'
+import { type ValidationError } from '../errors/validation_error.js'
 import type { ErrorReporterContract, FieldContext, SimpleError } from '../types.js'
 
 /**

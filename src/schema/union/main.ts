@@ -8,7 +8,7 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, UnionNode } from '@vinejs/compiler/types'
+import { type RefsStore, type UnionNode } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
 import { UnionConditional } from './conditional.js'
