@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
-import { requiredWhen } from '../../../src/schema/base/rules.js'
+import { validator } from '../../../factories/main.ts'
+import { requiredWhen } from '../../../src/schema/base/rules.ts'
 
 test.group('Required when', () => {
   test('report error when field is missing but required', () => {

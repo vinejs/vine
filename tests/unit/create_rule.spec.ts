@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { createRule } from '../../src/vine/create_rule.js'
+import { createRule } from '../../src/vine/create_rule.ts'
 
 test.group('Create rule', () => {
   test('create a custom validation rule', ({ assert }) => {

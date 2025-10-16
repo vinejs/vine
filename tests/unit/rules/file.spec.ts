@@ -7,13 +7,13 @@
  * file that was distributed with this source code.
  */
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   maxSizeRule,
   minSizeRule,
   mimeTypesRule,
   isNativeFileRule,
-} from '../../../src/schema/native_file/rules.js'
+} from '../../../src/schema/native_file/rules.ts'
 
 test.group('File | isFileRule', () => {
   test('should pass when value is a valid file', () => {

@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import { Vine } from '../../src/vine/main.js'
-import { Infer, InferInput, ValidationOptions } from '../../src/types.js'
+import { Vine } from '../../src/vine/main.ts'
+import { Infer, InferInput, ValidationOptions } from '../../src/types.ts'
 
 const vine = new Vine()
 

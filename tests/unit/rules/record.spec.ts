@@ -8,13 +8,13 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   maxLengthRule,
   minLengthRule,
   fixedLengthRule,
   validateKeysRule,
-} from '../../../src/schema/record/rules.js'
+} from '../../../src/schema/record/rules.ts'
 
 const objectValidator = {
   rule: {

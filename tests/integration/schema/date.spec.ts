@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
+import vine from '../../../index.ts'
 import dayjs from 'dayjs'
 
 test.group('VineDate', () => {

@@ -33,7 +33,15 @@ const COMPILER_ERROR_MESSAGES = {
 
 /**
  * Vine Validator exposes the API to validate data using a pre-compiled
- * schema.
+ * schema. This class provides high-performance validation by compiling
+ * schemas once and reusing them for multiple validations.
+ *
+ * @template Schema - The schema type being validated
+ * @template MetaData - The metadata type passed to validation
+ *
+ * @example
+ * const validator = vine.compile(schema)
+ * const result = await validator.validate(data)
  */
 export class VineValidator<
   Schema extends SchemaTypes,
@@ -41,13 +49,18 @@ export class VineValidator<
 > implements StandardSchemaV1
 {
   /**
-   * Reference to static types
+   * Reference to static input type for TypeScript inference
    */
   declare [ITYPE]: Schema[typeof ITYPE];
+
+  /**
+   * Reference to static output type for TypeScript inference
+   */
   declare [OTYPE]: Schema[typeof OTYPE]
 
   /**
-   * Reference to the compiled schema
+   * Reference to the compiled schema containing the validation tree
+   * and references for reuse during validation
    */
   #compiled: {
     schema: RootNode
@@ -55,17 +68,22 @@ export class VineValidator<
   }
 
   /**
-   * Messages provider to use on the validator
+   * Messages provider instance used for internationalization
+   * and custom error message formatting
    */
   'messagesProvider': MessagesProviderContact
 
   /**
-   * Error reporter to use on the validator
+   * Error reporter factory function used for formatting
+   * and collecting validation errors
    */
   'errorReporter': () => ErrorReporterContract
 
   /**
-   * Parses schema to compiler nodes.
+   * Parses schema to compiler nodes for optimization and compilation.
+   *
+   * @param schema - The schema to parse
+   * @returns Object containing compiler node and refs
    */
   #parse(schema: Schema) {
     const refs = refsBuilder()
@@ -100,6 +118,16 @@ export class VineValidator<
       : [options: ValidationOptions<MetaData>]
   ) => Promise<Infer<Schema>>
 
+  /**
+   * Creates a new VineValidator instance with a compiled schema.
+   *
+   * @param schema - The schema to compile for validation
+   * @param options - Configuration options for the validator
+   * @param options.convertEmptyStringsToNull - Whether to convert empty strings to null
+   * @param options.metaDataValidator - Optional metadata validator function
+   * @param options.messagesProvider - Messages provider for error formatting
+   * @param options.errorReporter - Error reporter factory function
+   */
   'constructor'(
     schema: Schema,
     options: {
@@ -197,7 +225,10 @@ export class VineValidator<
   }
 
   /**
-   * Returns the compiled schema and refs.
+   * Returns the compiled schema and refs as a JSON-serializable object.
+   * Useful for caching compiled schemas or debugging validation logic.
+   *
+   * @returns Object containing cloned schema and refs
    */
   'toJSON'() {
     const { schema, refs } = this.#compiled

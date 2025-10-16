@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   inRule,
   minRule,
@@ -19,7 +19,7 @@ import {
   negativeRule,
   decimalRule,
   withoutDecimalsRule,
-} from '../../../src/schema/number/rules.js'
+} from '../../../src/schema/number/rules.ts'
 
 test.group('Number | number', () => {
   test('report when value is not a number', () => {

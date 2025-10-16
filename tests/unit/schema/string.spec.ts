@@ -10,10 +10,10 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { RuleBuilder } from '../../../src/types.js'
-import { createRule } from '../../../src/vine/create_rule.js'
-import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { RuleBuilder } from '../../../src/types.ts'
+import { createRule } from '../../../src/vine/create_rule.ts'
+import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.ts'
 import {
   inRule,
   urlRule,
@@ -49,7 +49,7 @@ import {
   escapeRule,
   normalizeUrlRule,
   mobileRule,
-} from '../../../src/schema/string/rules.js'
+} from '../../../src/schema/string/rules.ts'
 
 const vine = new Vine()
 

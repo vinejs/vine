@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { ValidationError } from '../../src/errors/validation_error.js'
+import { ValidationError } from '../../src/errors/validation_error.ts'
 
 test.group('Exception', () => {
   test('create exception with error messages', ({ assert }) => {

@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   urlRule,
   trimRule,
@@ -46,8 +46,8 @@ import {
   toCamelCaseRule,
   escapeRule,
   normalizeUrlRule,
-} from '../../../src/schema/string/rules.js'
-import type { FieldContext, Validation } from '../../../src/types.js'
+} from '../../../src/schema/string/rules.ts'
+import type { FieldContext, Validation } from '../../../src/types.ts'
 
 type DataSet = {
   errorsCount?: number

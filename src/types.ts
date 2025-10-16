@@ -286,6 +286,24 @@ export type ParserOptions = {
 export type UnionNoMatchCallback<Input> = (value: Input, field: FieldContext) => any
 
 /**
+ * Shape of the error message collected by the SimpleErrorReporter.
+ * Each error contains the validation message, field path, rule name,
+ * and optional metadata.
+ */
+export type SimpleError = {
+  /** The human-readable error message */
+  message: string
+  /** The field path where the error occurred */
+  field: string
+  /** The name of the validation rule that failed */
+  rule: string
+  /** The array index if this error is for an array element */
+  index?: number
+  /** Additional metadata about the error */
+  meta?: Record<string, any>
+}
+
+/**
  * Error reporters must implement the reporter contract interface
  */
 export interface ErrorReporterContract extends BaseReporter {
@@ -335,15 +353,15 @@ export type NumericComparisonOperators = '>' | '<' | '>=' | '<='
 export type ArrayComparisonOperators = 'in' | 'notIn'
 export type ComparisonOperators = ArrayComparisonOperators | NumericComparisonOperators | '=' | '!='
 
-type PickUndefined<T> = {
+export type PickUndefined<T> = {
   [K in keyof T]: undefined extends T[K] ? K : never
 }[keyof T]
 
-type PickNotUndefined<T> = {
+export type PickNotUndefined<T> = {
   [K in keyof T]: undefined extends T[K] ? never : K
 }[keyof T]
 
-type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
+export type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
 
 export type UndefinedOptional<T> = Id<
   {

@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
+import vine from '../../../index.ts'
 
 test.group('VineObject | flat object', () => {
   test('fail to construct schema when object is instantiated without object', async ({

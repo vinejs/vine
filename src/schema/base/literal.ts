@@ -281,32 +281,47 @@ export class TransformModifier<Schema extends ConstructableLiteralSchema<any, an
 }
 
 /**
- * The base type for creating a custom literal type. Literal type
- * is a schema type that has no children elements.
+ * The base type for creating a custom literal type. Literal types
+ * are schema types that have no children elements, such as strings,
+ * numbers, booleans, and dates.
+ *
+ * @template Input - The expected input type for this schema
+ * @template Output - The output type after validation and transformation
+ * @template CamelCaseOutput - The output type with camelCase field names
+ *
+ * @example
+ * class CustomLiteralType extends BaseLiteralType<string, string, string> {
+ *   [SUBTYPE] = 'custom'
+ *   clone() { return new CustomLiteralType() }
+ * }
  */
 export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   extends Macroable
   implements ConstructableLiteralSchema<Input, Output, CamelCaseOutput>, WithCustomRules
 {
   /**
-   * Define the input type of the schema
+   * Define the input type of the schema for TypeScript inference
    */
   declare [ITYPE]: Input;
 
   /**
-   * The output value of the field. The property points to a type only
-   * and not the real value.
+   * The output value type of the field after validation.
+   * The property points to a type only and not the real value.
    */
   declare [OTYPE]: Output;
   declare [COTYPE]: CamelCaseOutput;
 
   /**
-   * Specify the subtype of the literal schema field
+   * Specify the subtype of the literal schema field.
+   * This is used by the compiler to identify the schema type.
    */
   abstract [SUBTYPE]: string
 
   /**
-   * The child class must implement the clone method
+   * The child class must implement the clone method to create
+   * a deep copy of the schema instance.
+   *
+   * @returns A cloned instance of this schema
    */
   abstract clone(): this
 
@@ -318,15 +333,21 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   dataTypeValidator?: Validation<any>
 
   /**
-   * Field options
+   * Configuration options for this field
    */
   protected options: FieldOptions
 
   /**
-   * Set of validations to run
+   * Set of validations to run on the field value
    */
   protected validations: Validation<any>[]
 
+  /**
+   * Creates a new BaseLiteralType instance with optional configuration.
+   *
+   * @param options - Field options like bail mode and nullability
+   * @param validations - Initial set of validations to apply
+   */
   constructor(options?: Partial<FieldOptions>, validations?: Validation<any>[]) {
     super()
     this.options = {

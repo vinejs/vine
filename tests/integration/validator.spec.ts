@@ -20,9 +20,9 @@ import vine, {
   VineLiteral,
   VineBoolean,
   VineNativeFile,
-} from '../../index.js'
-import { Infer } from '../../src/types.js'
-import { ValidationError } from '../../src/errors/validation_error.js'
+} from '../../index.ts'
+import { Infer } from '../../src/types.ts'
+import { ValidationError } from '../../src/errors/validation_error.ts'
 import { StandardSchemaV1 } from '@standard-schema/spec'
 
 test.group('Validator | metadata', () => {

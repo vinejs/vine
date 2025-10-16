@@ -26,12 +26,25 @@ import {
 
 /**
  * VineNumber represents a numeric value in the validation schema.
+ * It accepts both string and number inputs and converts them to numbers,
+ * with comprehensive validation for ranges, decimals, and sign constraints.
+ *
+ * @example
+ * const schema = vine.number()
+ *   .min(0)
+ *   .max(100)
+ *   .decimal([0, 2])
+ *
+ * const result = await vine.validate({
+ *   schema,
+ *   data: "42.5"
+ * })
  */
 export class VineNumber extends BaseLiteralType<string | number, number, number> {
   declare protected options: FieldOptions & { strict?: boolean }
 
   /**
-   * Default collection of number rules
+   * Static collection of all available validation rules for numbers
    */
   static rules = {
     in: inRule,
@@ -46,24 +59,33 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
   };
 
   /**
-   * The subtype of the literal schema field
+   * The subtype identifier for the literal schema field
    */
   [SUBTYPE] = 'number';
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.number';
 
   /**
-   * Checks if the value is of number type. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value can be converted to a number.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value can be converted to a valid number
    */
   [IS_OF_TYPE] = (value: unknown) => {
     const valueAsNumber = helpers.asNumber(value)
     return !Number.isNaN(valueAsNumber)
   }
 
+  /**
+   * Creates a new VineNumber instance with optional configuration.
+   *
+   * @param options - Field options like bail mode, nullability and strict mode
+   * @param validations - Initial set of validations to apply
+   */
   constructor(
     options?: Partial<FieldOptions> & { strict?: boolean },
     validations?: Validation<any>[]
@@ -73,21 +95,30 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
   }
 
   /**
-   * Enforce a minimum value for the number input
+   * Enforce a minimum value for the number input.
+   *
+   * @param value - The minimum allowed value
+   * @returns This number schema instance for method chaining
    */
   min(value: number) {
     return this.use(minRule({ min: value }))
   }
 
   /**
-   * Enforce a maximum value for the number input
+   * Enforce a maximum value for the number input.
+   *
+   * @param value - The maximum allowed value
+   * @returns This number schema instance for method chaining
    */
   max(value: number) {
     return this.use(maxRule({ max: value }))
   }
 
   /**
-   * Enforce value to be within the range of minimum and maximum output.
+   * Enforce value to be within the range of minimum and maximum values.
+   *
+   * @param value - Tuple containing [min, max] values
+   * @returns This number schema instance for method chaining
    */
   range(value: [min: number, max: number]) {
     return this.use(rangeRule({ min: value[0], max: value[1] }))

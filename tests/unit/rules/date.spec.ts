@@ -9,7 +9,7 @@
 
 import dayjs from 'dayjs'
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   dateRule,
   afterRule,
@@ -25,7 +25,7 @@ import {
   beforeOrEqualRule,
   afterOrSameAsRule,
   beforeOrSameAsRule,
-} from '../../../src/schema/date/rules.js'
+} from '../../../src/schema/date/rules.ts'
 
 test.group('Date | date', () => {
   test('report when value is not a number or a string', () => {

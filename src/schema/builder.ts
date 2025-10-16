@@ -40,50 +40,87 @@ import type {
 } from '../types.js'
 
 /**
- * Schema builder exposes methods to construct a Vine schema. You may
- * add custom methods to it using macros.
+ * SchemaBuilder exposes methods to construct Vine validation schemas.
+ * It provides a fluent API for creating all supported schema types
+ * and can be extended with custom methods using macros.
+ *
+ * @example
+ * const builder = new SchemaBuilder()
+ * const schema = builder.object({
+ *   name: builder.string(),
+ *   age: builder.number().min(0),
+ *   email: builder.string().email()
+ * })
  */
 export class SchemaBuilder extends Macroable {
   /**
-   * Define a sub-object as a union
+   * Define a sub-object as a conditional union group
    */
   group = group
 
   /**
-   * Define a union value
+   * Define a union of multiple schema types
    */
   union = union
 
   /**
-   * Define a string value
+   * Define a string value schema with comprehensive validation rules.
+   *
+   * @returns A VineString schema instance
+   *
+   * @example
+   * vine.string().email().minLength(5)
    */
   string() {
     return new VineString()
   }
 
   /**
-   * Define a boolean value
+   * Define a boolean value schema with optional strict mode.
+   *
+   * @param options - Configuration options for boolean validation
+   * @returns A VineBoolean schema instance
+   *
+   * @example
+   * vine.boolean({ strict: true }) // Only accepts true/false
    */
   boolean(options?: { strict: boolean }) {
     return new VineBoolean(options)
   }
 
   /**
-   * Validate a checkbox to be checked
+   * Validate a checkbox or acceptance field to be checked/accepted.
+   *
+   * @returns A VineAccepted schema instance
+   *
+   * @example
+   * vine.accepted() // Validates terms acceptance
    */
   accepted() {
     return new VineAccepted()
   }
 
   /**
-   * Define a number value
+   * Define a number value schema with optional strict mode.
+   *
+   * @param options - Configuration options for number validation
+   * @returns A VineNumber schema instance
+   *
+   * @example
+   * vine.number().min(0).max(100)
    */
   number(options?: { strict: boolean }) {
     return new VineNumber(options)
   }
 
   /**
-   * Define a datetime value
+   * Define a datetime value schema with optional parsing options.
+   *
+   * @param options - Configuration options for date validation
+   * @returns A VineDate schema instance
+   *
+   * @example
+   * vine.date({ formats: ['YYYY-MM-DD'] })
    */
   date(options?: DateFieldOptions) {
     return new VineDate(options)

@@ -32,6 +32,8 @@ export { VineAccepted } from './src/schema/accepted/main.js'
 export { BaseLiteralType } from './src/schema/base/literal.js'
 export { VineNativeFile } from './src/schema/native_file/main.js'
 export { VineNativeEnum } from './src/schema/enum/native_enum.js'
+export { ValidationError } from './src/errors/validation_error.js'
+export { UnionConditional } from './src/schema/union/conditional.js'
 export { SimpleErrorReporter } from './src/reporters/simple_error_reporter.js'
 export { SimpleMessagesProvider } from './src/messages_provider/simple_messages_provider.js'
 

@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
+import vine from '../../../index.ts'
 
 test.group('File', () => {
   test('fail when value is not a file', async ({ assert }) => {

@@ -8,9 +8,9 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
-import { Infer } from '../../../src/types.js'
-// import { requiredWhen } from '../../../src/schema/base/rules.js'
+import vine from '../../../index.ts'
+import { Infer } from '../../../src/types.ts'
+// import { requiredWhen } from '../../../src/schema/base/rules.ts'
 
 test.group('UnionOfTypes', () => {
   test('report error when none of the unions match', async ({ assert }) => {

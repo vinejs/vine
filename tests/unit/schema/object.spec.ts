@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.ts'
 
 const vine = new Vine()
 

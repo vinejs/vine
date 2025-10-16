@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
-import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.js'
+import vine from '../../../index.ts'
+import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.ts'
 
 test.group('Enum', () => {
   test('fail when value is not a subset of choices', async ({ assert }) => {
