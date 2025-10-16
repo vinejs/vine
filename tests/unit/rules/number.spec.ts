@@ -236,7 +236,16 @@ test.group('Number | positive', () => {
     const positive = positiveRule()
 
     validator.withDataTypeValidator(number).execute([positive], 10).assertErrorsCount(0)
-    validator.withDataTypeValidator(number).execute([positive], '0').assertErrorsCount(0)
+  })
+
+  test('fail validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const positive = positiveRule()
+
+    validator
+      .withDataTypeValidator(number)
+      .execute([positive], '0')
+      .assertError('The dummy field must be positive')
   })
 })
 
@@ -278,6 +287,20 @@ test.group('Number | negative', () => {
 
     validator.withDataTypeValidator(number).execute([negative], '-10').assertErrorsCount(0)
     validator.withDataTypeValidator(number).execute([negative], -1).assertErrorsCount(0)
+  })
+
+  test('fail validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const negative = negativeRule()
+
+    validator
+      .withDataTypeValidator(number)
+      .execute([negative], '0')
+      .assertError('The dummy field must be negative')
+    validator
+      .withDataTypeValidator(number)
+      .execute([negative], 0)
+      .assertError('The dummy field must be negative')
   })
 })
 

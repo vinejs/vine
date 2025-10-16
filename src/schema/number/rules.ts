@@ -66,16 +66,18 @@ export const rangeRule = createRule<{ min: number; max: number }>(
 )
 
 /**
- * Enforce the value is a positive number
+ * Enforce the value is a positive number. Zero is considered a neutral
+ * number and will fail the positive validation
  */
 export const positiveRule = createRule(function positive(value, _, field) {
-  if ((value as number) < 0) {
+  if ((value as number) <= 0) {
     field.report(messages.positive, 'positive', field)
   }
 })
 
 /**
- * Enforce the value is a negative number
+ * Enforce the value is a negative number. Zero is considered a neutral
+ * number and will fail the negative validation
  */
 export const negativeRule = createRule<undefined>(function negative(value, _, field) {
   if ((value as number) >= 0) {
