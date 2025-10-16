@@ -8,7 +8,28 @@
  */
 
 /**
- * Collection of default error messages to use
+ * Default error message templates used throughout the Vine validation library.
+ * These messages support mustache-style interpolation for dynamic values like field names,
+ * expected values, and validation parameters.
+ *
+ * Message templates use {{ }} syntax for variable interpolation:
+ * - {{ field }} - The field name or custom field label
+ * - {{ min }}, {{ max }} - Numeric constraints
+ * - {{ expectedValue }} - Expected literal values
+ * - {{ otherField }} - Related field names for comparisons
+ *
+ * @example
+ * // Basic usage
+ * 'The {{ field }} field is required' // → 'The username field is required'
+ *
+ * // With custom field names
+ * fields = { 'user.email': 'Email Address' }
+ * messages = { 'required': 'The {{ field }} is required' }
+ * // → 'The Email Address is required'
+ *
+ * // With validation parameters
+ * 'The {{ field }} must be at least {{ min }} characters'
+ * // → 'The password must be at least 8 characters'
  */
 export const messages = {
   'required': 'The {{ field }} field must be defined',
@@ -52,6 +73,8 @@ export const messages = {
   'range': 'The {{ field }} field must be between {{ min }} and {{ max }}',
   'positive': 'The {{ field }} field must be positive',
   'negative': 'The {{ field }} field must be negative',
+  'nonNegative': 'The {{ field }} field must be positive or zero',
+  'nonPositive': 'The {{ field }} field must be negative or zero',
   'decimal': 'The {{ field }} field must have {{ digits }} decimal places',
   'withoutDecimals': 'The {{ field }} field must be an integer',
 
@@ -105,8 +128,25 @@ export const messages = {
 }
 
 /**
- * Collection of default fields
+ * Default field name mappings for error message formatting.
+ * Maps field paths to human-readable labels that appear in error messages.
+ *
+ * The empty string key ('') provides a fallback name for the root data object.
+ *
+ * @example
+ * // Custom field mappings
+ * const customFields = {
+ *   'user.email': 'Email Address',
+ *   'user.firstName': 'First Name',
+ *   'user.lastName': 'Last Name',
+ *   'billing.address': 'Billing Address'
+ * }
+ *
+ * // Field paths use dot notation for nested objects
+ * 'user.profile.bio' → 'Biography'
+ * 'settings.notifications.email' → 'Email Notifications'
  */
 export const fields = {
+  /** Default name for the root data object */
   '': 'data',
 }
