@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import dayjs from 'dayjs'
+import { helpers } from '../../vine/helpers.ts'
 import { BaseLiteralType } from '../base/literal.js'
 import { IS_OF_TYPE, SUBTYPE, UNIQUE_NAME } from '../../symbols.js'
 import {
@@ -25,7 +25,6 @@ import {
   afterOrSameAsRule,
   beforeOrEqualRule,
   beforeOrSameAsRule,
-  DEFAULT_DATE_FORMATS,
 } from './rules.js'
 import type {
   Validation,
@@ -77,8 +76,7 @@ export class VineDate extends BaseLiteralType<string | number, Date, Date> {
     if (typeof value !== 'string') {
       return false
     }
-
-    return dayjs(value, this.options.formats || DEFAULT_DATE_FORMATS, true).isValid()
+    return helpers.asDayJS(value, this.options.formats).dateTime.isValid()
   }
 
   declare protected options: FieldOptions & DateFieldOptions

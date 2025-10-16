@@ -8,6 +8,7 @@
  */
 
 import delve from 'dlv'
+import dayjs from 'dayjs'
 import isIP from 'validator/lib/isIP.js'
 import isJWT from 'validator/lib/isJWT.js'
 import isURL from 'validator/lib/isURL.js'
@@ -21,8 +22,11 @@ import isLatLong from 'validator/lib/isLatLong.js'
 import isDecimal from 'validator/lib/isDecimal.js'
 import isHexColor from 'validator/lib/isHexColor.js'
 import isCreditCard from 'validator/lib/isCreditCard.js'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter.js'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore.js'
 import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
 import isPassportNumber from 'validator/lib/isPassportNumber.js'
+import customParseFormat from 'dayjs/plugin/customParseFormat.js'
 import isPostalCode, { type PostalCodeLocale } from 'validator/lib/isPostalCode.js'
 import isMobilePhone, { type MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 // @ts-ignore type missing from @types/validator
@@ -30,12 +34,35 @@ import { locales as mobilePhoneLocales } from 'validator/lib/isMobilePhone.js'
 // @ts-ignore type missing from @types/validator
 import { locales as postalCodeLocales } from 'validator/lib/isPostalCode.js'
 
-import type { FieldContext } from '../types.js'
+import type { DateEqualsOptions, DateFieldOptions, FieldContext } from '../types.js'
 
+/**
+ * Values that are considered true in HTML form context.
+ * Includes boolean true, number 1, string '1', 'true', and 'on' (for checkboxes).
+ */
 const BOOLEAN_POSITIVES = ['1', 1, 'true', true, 'on']
+
+/**
+ * Values that are considered false in HTML form context.
+ * Includes boolean false, number 0, string '0', and 'false'.
+ */
 const BOOLEAN_NEGATIVES = ['0', 0, 'false', false]
 
+/**
+ * Default date formats used when no specific format is provided.
+ * Supports date-only (YYYY-MM-DD) and datetime (YYYY-MM-DD HH:mm:ss) formats.
+ */
+const DEFAULT_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss']
+
+/**
+ * Regular expression for validating ULID (Universally Unique Lexicographically Sortable Identifier) format.
+ * ULIDs are 26 characters long using Crockford's Base32 encoding.
+ */
 const ULID = /^[0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{26}$/
+
+dayjs.extend(customParseFormat)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 
 /**
  * Collection of utility helpers used across the Vine validation library.
@@ -266,6 +293,83 @@ export const helpers = {
     }
 
     return null
+  },
+
+  /**
+   * Converts a value to a Day.js date object with flexible format support.
+   * Handles timestamps, ISO dates, and custom formats with intelligent fallbacks.
+   *
+   * @param value - The value to convert to a date (string, number, Date, etc.)
+   * @param format - Date format(s) to use for parsing. Can be:
+   *   - Array of format strings (e.g., ['YYYY-MM-DD', 'DD/MM/YYYY'])
+   *   - Single format string
+   *   - Object with format and strict parsing options
+   *   - Special values: 'x' for timestamps, 'iso8601' for ISO dates
+   * @returns Object containing the parsed Day.js instance and normalized formats
+   *
+   * @example
+   * // Parse with default formats
+   * helpers.asDayJS('2023-12-25')
+   * // { dateTime: dayjs('2023-12-25'), formats: ['YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss'] }
+   *
+   * // Parse timestamp
+   * helpers.asDayJS('1703548800000', ['x'])
+   * // { dateTime: dayjs(1703548800000), formats: ['x'] }
+   *
+   * // Parse with custom format
+   * helpers.asDayJS('25/12/2023', ['DD/MM/YYYY'])
+   * // { dateTime: dayjs('25/12/2023', 'DD/MM/YYYY'), formats: ['DD/MM/YYYY'] }
+   *
+   * // ISO date fallback
+   * helpers.asDayJS('2023-12-25T10:30:00Z', ['iso8601'])
+   * // { dateTime: dayjs('2023-12-25T10:30:00Z'), formats: ['iso8601'] }
+   */
+  asDayJS(value: any, format: DateFieldOptions['formats']) {
+    let isTimestampAllowed = false
+    let isISOAllowed = false
+    let formats: DateEqualsOptions['format'] = format || DEFAULT_DATE_FORMATS
+
+    /**
+     * DayJS mutates the formats property under the hood. Therefore
+     * we have to create a shallow clone before passing formats.
+     *
+     * https://github.com/iamkun/dayjs/issues/2136
+     */
+    if (Array.isArray(formats)) {
+      formats = [...formats]
+      isTimestampAllowed = formats.includes('x')
+      isISOAllowed = formats.includes('iso8601')
+    } else if (typeof formats !== 'string') {
+      formats = { ...formats }
+      isTimestampAllowed = formats.format === 'x'
+      isISOAllowed = formats.format === 'iso'
+    }
+
+    const valueAsNumber = isTimestampAllowed ? helpers.asNumber(value) : value
+    let dateTime: dayjs.Dayjs | undefined
+
+    /**
+     * The timestamp validation does not work with formats array.
+     * Therefore we validate is separately without passing any
+     * formats.
+     *
+     * Otherwise we parse the date with formats
+     */
+    if (isTimestampAllowed && !Number.isNaN(valueAsNumber)) {
+      dateTime = dayjs(valueAsNumber)
+    } else {
+      dateTime = dayjs(value, formats, true)
+    }
+
+    /**
+     * If datetime is invalid and the ISO format is allowed,
+     * then we reattempt to parse the date without formats
+     */
+    if (!dateTime.isValid() && isISOAllowed) {
+      dateTime = dayjs(value)
+    }
+
+    return { dateTime, formats }
   },
 
   /**

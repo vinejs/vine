@@ -1002,6 +1002,23 @@ test.group('Date | afterField', () => {
     validated.assertError('The dummy field must be a date after checkin_date')
   })
 
+  test("report error when date is not after the other field's value and formatted as ISO8601", () => {
+    const date = dateRule({ formats: ['iso8601'] })
+    const afterField = afterFieldRule({ otherField: 'checkin_date' })
+    const validated = validator
+      .withContext({
+        data: {},
+        parent: {
+          checkin_date: '2022-01-22',
+        },
+      })
+      .withDataTypeValidator(date)
+      .execute([afterField], '2022-01-21')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a date after checkin_date')
+  })
+
   test("report error when month is not after the other field's value", () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterField = afterFieldRule({ otherField: 'checkin_date', compare: 'month' })
