@@ -22,6 +22,8 @@ import {
   positiveRule,
   withoutDecimalsRule,
   inRule,
+  nonNegativeRule,
+  nonPositiveRule,
 } from './rules.js'
 
 /**
@@ -55,6 +57,8 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
     decimal: decimalRule,
     negative: negativeRule,
     positive: positiveRule,
+    nonNegativeRule: nonNegativeRule,
+    nonPositiveRule: nonPositiveRule,
     withoutDecimals: withoutDecimalsRule,
   };
 
@@ -136,6 +140,20 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
    */
   negative() {
     return this.use(negativeRule())
+  }
+
+  /**
+   * Enforce the value be a positive number or zero
+   */
+  nonNegative() {
+    return this.use(nonNegativeRule())
+  }
+
+  /**
+   * Enforce the value be a negative number or zero
+   */
+  nonPositive() {
+    return this.use(nonPositiveRule())
   }
 
   /**
