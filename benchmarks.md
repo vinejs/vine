@@ -1,6 +1,6 @@
 # Benchmarks
 
-Following are the results from the benchmarks executed on the `Apple M1 Pro Mac - 16GB`. Feel free to clone this repo and re-run the benchmarks on your local computer.
+Following are the results from the benchmarks executed on the `Apple M3 Pro - 36 GB`. Feel free to clone this repo and re-run the benchmarks on your local computer.
 
 - We benchmark VineJS against only those validation libraries that offer similar API for composing schema.
 - Being slower does not mean bad. Continue using Yup or Zod if they work great for you or if performance is not a bottleneck for you.
@@ -21,11 +21,11 @@ node build/benchmarks/flat_object.js
 ===============================
 Benchmarking with flat object
 ===============================
-Vine x 11,081,135 ops/sec ±0.81% (83 runs sampled)
-Zod x 6,478,164 ops/sec ±0.11% (91 runs sampled)
-Yup x 434,455 ops/sec ±0.11% (91 runs sampled)
-Valibot x 5,619,021 ops/sec ±0.44% (91 runs sampled)
-Joi x 2,110,782 ops/sec ±0.14% (92 runs sampled)
+Vine x 13,072,620 ops/sec ±1.09% (84 runs sampled)
+Zod x 7,420,116 ops/sec ±0.34% (88 runs sampled)
+Yup x 746,769 ops/sec ±0.42% (90 runs sampled)
+Valibot x 6,558,725 ops/sec ±0.23% (90 runs sampled)
+Joi x 2,252,419 ops/sec ±0.48% (90 runs sampled)
 Fastest is Vine
 ```
 
@@ -44,11 +44,11 @@ node build/benchmarks/nested_object.js
 =================================
 Benchmarking with nested object
 =================================
-Vine x 8,373,023 ops/sec ±1.26% (86 runs sampled)
-Zod x 3,348,141 ops/sec ±0.16% (92 runs sampled)
-Yup x 150,579 ops/sec ±0.10% (92 runs sampled)
-Valibot x 3,057,636 ops/sec ±0.15% (92 runs sampled)
-Joi x 1,018,951 ops/sec ±0.11% (92 runs sampled)
+Vine x 9,445,152 ops/sec ±0.42% (88 runs sampled)
+Zod x 3,628,979 ops/sec ±0.52% (91 runs sampled)
+Yup x 344,506 ops/sec ±0.18% (91 runs sampled)
+Valibot x 3,363,940 ops/sec ±0.17% (91 runs sampled)
+Joi x 1,137,401 ops/sec ±0.41% (92 runs sampled)
 Fastest is Vine
 ```
 
@@ -67,11 +67,11 @@ node build/benchmarks/array.js
 ======================
 Benchmarking arrays
 ======================
-Vine x 6,175,760 ops/sec ±0.34% (90 runs sampled)
-Zod x 2,848,728 ops/sec ±0.35% (89 runs sampled)
-Yup x 74,826 ops/sec ±0.14% (91 runs sampled)
-Valibot x 2,835,312 ops/sec ±0.17% (91 runs sampled)
-Joi x 740,695 ops/sec ±0.62% (92 runs sampled)
+Vine x 6,810,515 ops/sec ±0.44% (87 runs sampled)
+Zod x 3,254,923 ops/sec ±0.14% (84 runs sampled)
+Yup x 202,143 ops/sec ±0.21% (91 runs sampled)
+Valibot x 3,064,924 ops/sec ±0.10% (89 runs sampled)
+Joi x 795,110 ops/sec ±0.71% (89 runs sampled)
 Fastest is Vine
 ```
 
@@ -92,9 +92,9 @@ node build/benchmarks/union.js
 =======================
 Benchmarking unions
 =======================
-Vine x 9,287,022 ops/sec ±0.33% (89 runs sampled)
-Zod x 1,998,166 ops/sec ±0.12% (91 runs sampled)
-Valibot x 1,039,123 ops/sec ±0.15% (91 runs sampled)
-Joi x 876,441 ops/sec ±0.17% (92 runs sampled)
+Vine x 9,949,804 ops/sec ±0.32% (84 runs sampled)
+Zod x 2,106,060 ops/sec ±0.15% (89 runs sampled)
+Valibot x 1,124,721 ops/sec ±0.21% (92 runs sampled)
+Joi x 957,252 ops/sec ±0.11% (92 runs sampled)
 Fastest is Vine
 ```

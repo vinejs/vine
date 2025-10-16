@@ -31,6 +31,8 @@ const COMPILER_ERROR_MESSAGES = {
   object: messages.object,
 }
 
+const EMPTY_OBJECT = {}
+
 /**
  * Vine Validator exposes the API to validate data using a pre-compiled
  * schema. This class provides high-performance validation by compiling
@@ -167,7 +169,7 @@ export class VineValidator<
         data: any,
         validateOptions?: ValidationOptions<MetaData>
       ): Promise<Infer<Schema>> => {
-        let normalizedOptions = validateOptions ?? ({} as ValidationOptions<MetaData>)
+        let normalizedOptions = validateOptions ?? (EMPTY_OBJECT as ValidationOptions<MetaData>)
         const meta = normalizedOptions.meta ?? {}
         const errorReporter = normalizedOptions.errorReporter ?? this.errorReporter
         const messagesProvider = normalizedOptions.messagesProvider ?? this.messagesProvider
@@ -180,7 +182,7 @@ export class VineValidator<
         data: any,
         validateOptions?: ValidationOptions<MetaData>
       ): Promise<Infer<Schema>> => {
-        let normalizedOptions = validateOptions ?? ({} as ValidationOptions<MetaData>)
+        let normalizedOptions = validateOptions ?? (EMPTY_OBJECT as ValidationOptions<MetaData>)
         const meta = normalizedOptions.meta ?? {}
         const errorReporter = normalizedOptions.errorReporter ?? this.errorReporter
         const messagesProvider = normalizedOptions.messagesProvider ?? this.messagesProvider
