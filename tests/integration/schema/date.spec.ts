@@ -199,4 +199,33 @@ test.group('VineDate', () => {
     assert.equal(result.created_at.getMonth(), '3')
     assert.equal(result.created_at.getFullYear(), '2018')
   })
+
+  test('pass validation when optional date field is missing', async ({ assert }) => {
+    const schema = vine.object({
+      required_date: vine.date(),
+      optional_date: vine.date().optional(),
+    })
+
+    const data = { required_date: '2024-06-15' }
+    const result = await vine.validate({ schema, data })
+
+    assert.isTrue(result.required_date instanceof Date)
+    assert.isUndefined(result.optional_date)
+  })
+
+  test('pass validation when optional date field is provided', async ({ assert }) => {
+    const schema = vine.object({
+      required_date: vine.date(),
+      optional_date: vine.date().optional(),
+    })
+
+    const data = {
+      required_date: '2024-06-15',
+      optional_date: '2024-12-25',
+    }
+    const result = await vine.validate({ schema, data })
+
+    assert.isTrue(result.required_date instanceof Date)
+    assert.isTrue(result.optional_date instanceof Date)
+  })
 })
