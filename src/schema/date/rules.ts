@@ -19,6 +19,10 @@ import type { DateEqualsOptions, DateFieldOptions, FieldContext } from '../../ty
  */
 export const dateRule = createRule<Partial<DateFieldOptions>>(
   function date(value, options, field): boolean {
+    if (!field.isDefined) {
+      return false
+    }
+
     if (typeof value !== 'string' && typeof value !== 'number') {
       field.report(messages.date, 'date', field)
       return false
