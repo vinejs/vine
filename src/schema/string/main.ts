@@ -254,7 +254,19 @@ export class VineString extends BaseLiteralType<string, string, string> {
    * Ensure the field under validation is confirmed by
    * having another field with the same name.
    */
-  confirmed(options?: { confirmationField: string }) {
+  confirmed(
+    options?:
+      | {
+          /**
+           * @deprecated
+           * Use "as" field instead
+           */
+          confirmationField?: string
+        }
+      | {
+          as?: string
+        }
+  ) {
     return this.use(confirmedRule(options))
   }
 
