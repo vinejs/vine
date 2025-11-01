@@ -21,7 +21,16 @@ import {
   IS_OF_TYPE,
   type ITYPE,
 } from '../../symbols.js'
-import type { Validation, SchemaTypes, FieldOptions, ParserOptions } from '../../types.js'
+import type {
+  Validation,
+  SchemaTypes,
+  FieldOptions,
+  ParserOptions,
+  ObjectToOptional,
+  UndefinedOptional,
+  Id,
+} from '../../types.js'
+import { type CamelCase } from '../camelcase_types.ts'
 
 /**
  * Converts schema properties to camelCase during validation.
@@ -272,6 +281,52 @@ export class VineObject<
    */
   toCamelCase() {
     return new VineCamelCaseObject(this)
+  }
+
+  /**
+   * Creates a new object with all properties marked as optional.
+   */
+  toOptional(): VineObject<
+    ObjectToOptional<Properties>,
+    Partial<Input>,
+    Partial<Output>,
+    Partial<CamelCaseOutput>
+  >
+  toOptional<
+    Keys extends keyof Properties,
+    Props extends Record<string, SchemaTypes> = Omit<Properties, Keys> &
+      ObjectToOptional<Pick<Properties, Keys>>,
+  >(
+    keys: Keys[] | readonly Keys[]
+  ): VineObject<
+    Id<Props>,
+    UndefinedOptional<{
+      [K in keyof Props]: Props[K][typeof ITYPE]
+    }>,
+    UndefinedOptional<{
+      [K in keyof Props]: Props[K][typeof OTYPE]
+    }>,
+    UndefinedOptional<{
+      [K in keyof Props as CamelCase<K & string>]: Props[K][typeof COTYPE]
+    }>
+  >
+  toOptional<Keys extends keyof Properties>(keys?: Keys[] | readonly Keys[]) {
+    const properties: Record<string, SchemaTypes> = {}
+    for (const key of Object.keys(this.#properties)) {
+      let field = this.#properties[key].clone()
+
+      if (
+        (!keys || keys.includes(key as Keys)) &&
+        'optional' in field &&
+        typeof field.optional === 'function'
+      ) {
+        field = field.optional()
+      }
+
+      properties[key] = field
+    }
+
+    return new VineObject(properties)
   }
 
   /**
