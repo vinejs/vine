@@ -363,8 +363,8 @@ export class SchemaBuilder extends Macroable {
    *
    * @example
    * vine.nativeFile()
-   *   .sizeLimit({ size: '2mb' })
-   *   .extnames(['jpg', 'png', 'gif'])
+   *   .maxSize(1024 * 1024)
+   *   .mimeTypes(['image/png', 'image/jpeg'])
    */
   nativeFile() {
     return new VineNativeFile()
