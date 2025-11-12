@@ -34,7 +34,13 @@ import { locales as mobilePhoneLocales } from 'validator/lib/isMobilePhone.js'
 // @ts-ignore type missing from @types/validator
 import { locales as postalCodeLocales } from 'validator/lib/isPostalCode.js'
 
-import type { DateEqualsOptions, DateFieldOptions, FieldContext } from '../types.js'
+import type {
+  DateEqualsOptions,
+  DateFieldOptions,
+  FieldContext,
+  ObjectToOptional,
+  SchemaTypes,
+} from '../types.js'
 
 /**
  * Values that are considered true in HTML form context.
@@ -693,5 +699,27 @@ export const helpers = {
       return delve(field.data, key)
     }
     return field.parent[key]
+  },
+
+  /**
+   * Converts all properties of an object schema to optional.
+   *
+   * @param props - The object with schema properties
+   * @returns New object with all properties marked as optional
+   */
+  optional<Props extends Record<string, SchemaTypes>>(props: Props): ObjectToOptional<Props> {
+    const result: Record<string, SchemaTypes> = {}
+
+    for (const name of Object.keys(props)) {
+      let field = props[name].clone()
+
+      if ('optional' in field && typeof field.optional === 'function') {
+        field = field.optional()
+      }
+
+      result[name] = field
+    }
+
+    return result as ObjectToOptional<Props>
   },
 }

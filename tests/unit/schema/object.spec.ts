@@ -3887,4 +3887,165 @@ test.group('VineObject | clone', () => {
       ],
     })
   })
+
+  test('convert to all properties optional', ({ assert }) => {
+    const refs = refsBuilder()
+
+    const schema = vine
+      .object({
+        username: vine.string(),
+        password: vine.string(),
+        is_remember: vine.boolean(),
+        optional: vine.string().optional(),
+        nested: vine.object({
+          prop: vine.string(),
+        }),
+      })
+      .toOptional()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'boolean',
+          fieldName: 'is_remember',
+          propertyName: 'is_remember',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              name: 'boolean',
+              ruleFnId: 'ref://3',
+            },
+          ],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'optional',
+          propertyName: 'optional',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://4',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'object',
+          fieldName: 'nested',
+          propertyName: 'nested',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          allowUnknownProperties: false,
+          validations: [],
+          groups: [],
+          parseFnId: undefined,
+          properties: [
+            {
+              type: 'literal',
+              subtype: 'string',
+              fieldName: 'prop',
+              propertyName: 'prop',
+              bail: true,
+              allowNull: false,
+              isOptional: false,
+              dataTypeValidatorFnId: 'ref://5',
+              validations: [],
+              parseFnId: undefined,
+            },
+          ],
+        },
+      ],
+    })
+  })
+
+  test('convert to some properties optional', ({ assert }) => {
+    const refs = refsBuilder()
+
+    const schema = vine
+      .object({
+        username: vine.string(),
+        password: vine.string(),
+      })
+      .toOptional(['username'])
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
 })
