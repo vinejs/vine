@@ -16,6 +16,7 @@ import {
   alphaRule,
   emailRule,
   stringRule,
+  phoneRule,
   mobileRule,
   hexCodeRule,
   endsWithRule,
@@ -212,6 +213,98 @@ test.group('String | mobile', () => {
           return {}
         }),
         value: '9883443344',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | phone', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: phoneRule(),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: phoneRule(),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: phoneRule(),
+        value: '123',
+        error: 'The dummy field must be a valid phone number',
+      },
+      {
+        errorsCount: 1,
+        rule: phoneRule(),
+        value: 'not a phone',
+        error: 'The dummy field must be a valid phone number',
+      },
+      {
+        errorsCount: 1,
+        rule: phoneRule(),
+        value: '123-abc-456',
+        error: 'The dummy field must be a valid phone number',
+      },
+      {
+        rule: phoneRule(),
+        value: '+33123456789',
+      },
+      {
+        rule: phoneRule(),
+        value: '+12125551234', // Valid NYC number instead of +1234567890
+      },
+      {
+        rule: phoneRule(),
+        value: '+447911123456',
+      },
+      {
+        errorsCount: 1,
+        rule: phoneRule({ countryCode: 'US' }),
+        value: '123',
+        error: 'The dummy field must be a valid phone number',
+      },
+      {
+        rule: phoneRule({ countryCode: 'US' }),
+        value: '(212) 555-1234', // Valid NYC number instead of (555) 123-4567
+      },
+      {
+        rule: phoneRule({ countryCode: 'US' }),
+        value: '212-555-1234', // Valid NYC number instead of 555-123-4567
+      },
+      {
+        rule: phoneRule({ countryCode: 'US' }),
+        value: '2125551234', // Valid NYC number instead of 5551234567
+      },
+      {
+        rule: phoneRule({ countryCode: 'FR' }),
+        value: '0123456789',
+      },
+      {
+        rule: phoneRule(() => {
+          return { countryCode: 'US' }
+        }),
+        value: '(212) 555-1234', // Valid NYC number instead of (555) 123-4567
+      },
+      {
+        errorsCount: 1,
+        rule: phoneRule(() => {
+          return { countryCode: 'US' }
+        }),
+        value: '123',
+        error: 'The dummy field must be a valid phone number',
+      },
+      {
+        rule: phoneRule(() => {
+          return {}
+        }),
+        value: '+14155551234', // Valid San Francisco number instead of +1234567890
       },
     ])
     .run(stringRuleValidator)
