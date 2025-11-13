@@ -18,6 +18,7 @@ import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 import type {
   URLOptions,
+  PhoneOptions,
   AlphaOptions,
   EmailOptions,
   MobileOptions,
@@ -67,6 +68,20 @@ export const mobileRule = createRule<
 
   if (!helpers.isMobilePhone(value as string, locales, normalizedOptions)) {
     field.report(messages.mobile, 'mobile', field)
+  }
+})
+
+/**
+ * Validates the value to be a valid phone number.
+ */
+export const phoneRule = createRule<
+  PhoneOptions | undefined | ((field: FieldContext) => PhoneOptions | undefined)
+>(function phone(value, options, field) {
+  const normalizedOptions = options && typeof options === 'function' ? options(field) : options
+  const countryCode = normalizedOptions?.countryCode
+
+  if (!helpers.isPhone(value as string, countryCode)) {
+    field.report(messages.phone, 'phone', field)
   }
 })
 
@@ -258,15 +273,15 @@ export const notSameAsRule = createRule<{ otherField: string }>(
  */
 export const confirmedRule = createRule<
   | {
-      /**
-       * @deprecated
-       * Use "as" field instead
-       */
-      confirmationField?: string
-    }
+    /**
+     * @deprecated
+     * Use "as" field instead
+     */
+    confirmationField?: string
+  }
   | {
-      as?: string
-    }
+    as?: string
+  }
   | undefined
 >(function confirmed(value, options, field) {
   const normalizedOptions: { confirmationField?: string; as?: string } = options ?? {}

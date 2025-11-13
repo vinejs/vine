@@ -32,6 +32,7 @@ import {
   asciiRule,
   regexRule,
   sameAsRule,
+  phoneRule,
   mobileRule,
   escapeRule,
   stringRule,
@@ -92,6 +93,7 @@ export class VineString extends BaseLiteralType<string, string, string> {
     regex: regexRule,
     escape: escapeRule,
     sameAs: sameAsRule,
+    phone: phoneRule,
     mobile: mobileRule,
     string: stringRule,
     hexCode: hexCodeRule,
@@ -185,6 +187,13 @@ export class VineString extends BaseLiteralType<string, string, string> {
   }
 
   /**
+   * Validates the value to be a valid phone number.
+   */
+  phone(...args: Parameters<typeof phoneRule>) {
+    return this.use(phoneRule(...args))
+  }
+
+  /**
    * Validates the value to be a valid IP address.
    */
   ipAddress(version?: 4 | 6) {
@@ -257,15 +266,15 @@ export class VineString extends BaseLiteralType<string, string, string> {
   confirmed(
     options?:
       | {
-          /**
-           * @deprecated
-           * Use "as" field instead
-           */
-          confirmationField?: string
-        }
+        /**
+         * @deprecated
+         * Use "as" field instead
+         */
+        confirmationField?: string
+      }
       | {
-          as?: string
-        }
+        as?: string
+      }
   ) {
     return this.use(confirmedRule(options))
   }

@@ -37,6 +37,7 @@ export const messages = {
   'string': 'The {{ field }} field must be a string',
   'email': 'The {{ field }} field must be a valid email address',
   'mobile': 'The {{ field }} field must be a valid mobile phone number',
+  'phone': 'The {{ field }} field must be a valid phone number',
   'creditCard': 'The {{ field }} field must be a valid {{ providersList }} card number',
   'passport': 'The {{ field }} field must be a valid passport number',
   'postalCode': 'The {{ field }} field must be a valid postal code',

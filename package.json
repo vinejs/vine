@@ -73,6 +73,7 @@
     "camelcase": "^8.0.0",
     "dayjs": "^1.11.18",
     "dlv": "^1.1.3",
+    "libphonenumber-js": "^1.12.26",
     "normalize-url": "^8.1.0",
     "validator": "^13.15.15"
   },

@@ -14,6 +14,7 @@ import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
 import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+import type { CountryCode } from 'libphonenumber-js'
 import type {
   ParseFn,
   RefsStore,
@@ -117,6 +118,27 @@ export { NormalizeEmailOptions }
  * }
  */
 export type URLOptions = IsURLOptions
+
+/**
+ * Options accepted by the phone number validation rule.
+ * Configures phone number validation behavior.
+ *
+ * Unlike mobile validation which is locale-based, phone validation
+ * uses international phone number standards with optional country context.
+ *
+ * @example
+ * const options: PhoneOptions = {
+ *   countryCode: 'US'
+ * }
+ */
+export type PhoneOptions = {
+  /**
+   * ISO 3166-1 alpha-2 country code for default country when validating national numbers.
+   * When provided, allows validation of national format numbers in addition to international format.
+   * If not provided, only international format (+prefix) numbers are accepted.
+   */
+  countryCode?: CountryCode
+}
 
 /**
  * Options accepted by the credit card validation rule.
@@ -238,7 +260,7 @@ export type {
  * }
  * // Status satisfies EnumLike
  */
-export type EnumLike = { [K: string]: string | number; [number: number]: string }
+export type EnumLike = { [K: string]: string | number;[number: number]: string }
 
 /**
  * Representation of validation error messages accepted by the messages provider.
@@ -709,13 +731,13 @@ export type ValidationOptions<MetaData extends Record<string, any> | undefined> 
   errorReporter?: () => ErrorReporterContract
 } & ([undefined] extends MetaData
   ? {
-      /** Optional metadata to pass to validators for additional context */
-      meta?: MetaData
-    }
+    /** Optional metadata to pass to validators for additional context */
+    meta?: MetaData
+  }
   : {
-      /** Required metadata to pass to validators for additional context */
-      meta: MetaData
-    })
+    /** Required metadata to pass to validators for additional context */
+    meta: MetaData
+  })
 
 /**
  * Utility type to infer the output type of a schema.

@@ -29,6 +29,7 @@ import isPassportNumber from 'validator/lib/isPassportNumber.js'
 import customParseFormat from 'dayjs/plugin/customParseFormat.js'
 import isPostalCode, { type PostalCodeLocale } from 'validator/lib/isPostalCode.js'
 import isMobilePhone, { type MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
+import { parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js'
 // @ts-ignore type missing from @types/validator
 import { locales as mobilePhoneLocales } from 'validator/lib/isMobilePhone.js'
 // @ts-ignore type missing from @types/validator
@@ -453,6 +454,26 @@ export const helpers = {
   isSlug: isSlug.default,
   /** Validates decimal numbers */
   isDecimal: isDecimal.default,
+
+  /**
+   * Validates phone numbers.
+   * Supports international format validation and country-specific validation.
+   *
+   * @param value - The phone number string to validate
+   * @param countryCode - Optional ISO 3166-1 alpha-2 country code for validation context
+   * @returns True if the phone number is valid according to international standards
+   *
+   * @example
+   * helpers.isPhone('+14155551234') // true (US international format)
+   * helpers.isPhone('+33123456789') // true (French international format)
+   * helpers.isPhone('0123456789', 'FR') // true (French national format)
+   * helpers.isPhone('123', 'US') // false (invalid format)
+   */
+  isPhone(value: string, countryCode?: CountryCode): boolean {
+    const phoneNumber = parsePhoneNumberFromString(value, countryCode)
+    return phoneNumber?.isValid() ?? false
+  },
+
   /** Array of supported mobile phone locales/countries */
   mobileLocales: mobilePhoneLocales as MobilePhoneLocale[],
   /** Array of supported postal code country codes */
