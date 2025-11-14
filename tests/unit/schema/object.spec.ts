@@ -4048,4 +4048,26 @@ test.group('VineObject | clone', () => {
       ],
     })
   })
+
+  test('toOptional throws error for groups and unknown properties', () => {
+    const guideSchema = vine.group([
+      vine.group.if((data) => vine.helpers.isTrue(data.hiring_guide), {
+        hiring_guide: vine.literal(true),
+        guide_name: vine.string(),
+        fees: vine.string(),
+      }),
+      vine.group.if(() => true, {
+        hiring_guide: vine.literal(false),
+      }),
+    ])
+
+    vine
+      .object({
+        visitor_name: vine.string(),
+      })
+      .merge(guideSchema)
+      .toOptional()
+  }).throws(
+    'toOptional cannot be used on schemas that have groups or allowUnknownProperties enabled'
+  )
 })

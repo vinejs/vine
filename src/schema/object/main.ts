@@ -26,11 +26,11 @@ import type {
   SchemaTypes,
   FieldOptions,
   ParserOptions,
-  ObjectToOptional,
-  UndefinedOptional,
+  PropertiesToOptional,
   Id,
+  UndefinedOptional,
 } from '../../types.js'
-import { type CamelCase } from '../camelcase_types.ts'
+import type { CamelCase } from '../camelcase_types.ts'
 
 /**
  * Converts schema properties to camelCase during validation.
@@ -286,31 +286,31 @@ export class VineObject<
   /**
    * Creates a new object with all properties marked as optional.
    */
-  toOptional(): VineObject<
-    ObjectToOptional<Properties>,
-    Partial<Input>,
-    Partial<Output>,
-    Partial<CamelCaseOutput>
-  >
   toOptional<
-    Keys extends keyof Properties,
-    Props extends Record<string, SchemaTypes> = Omit<Properties, Keys> &
-      ObjectToOptional<Pick<Properties, Keys>>,
+    Keys extends keyof Properties = keyof Properties,
+    T extends Record<string, SchemaTypes> = Omit<Properties, Keys> &
+      PropertiesToOptional<Pick<Properties, Keys>>,
   >(
-    keys: Keys[] | readonly Keys[]
+    keys?: Keys[] | readonly Keys[]
   ): VineObject<
-    Id<Props>,
+    Id<T>,
     UndefinedOptional<{
-      [K in keyof Props]: Props[K][typeof ITYPE]
+      [K in keyof T]: T[K][typeof ITYPE]
     }>,
     UndefinedOptional<{
-      [K in keyof Props]: Props[K][typeof OTYPE]
+      [K in keyof T]: T[K][typeof OTYPE]
     }>,
     UndefinedOptional<{
-      [K in keyof Props as CamelCase<K & string>]: Props[K][typeof COTYPE]
+      [K in keyof T as CamelCase<K & string>]: T[K][typeof COTYPE]
     }>
-  >
-  toOptional<Keys extends keyof Properties>(keys?: Keys[] | readonly Keys[]) {
+  > {
+    // groups and allowUnknownProperties are not allowed for complexity reasons
+    if (this.#groups.length > 0 || this.#allowUnknownProperties) {
+      throw new Error(
+        'toOptional cannot be used on schemas that have groups or allowUnknownProperties enabled'
+      )
+    }
+
     const properties: Record<string, SchemaTypes> = {}
     for (const key of Object.keys(this.#properties)) {
       let field = this.#properties[key].clone()
@@ -326,7 +326,18 @@ export class VineObject<
       properties[key] = field
     }
 
-    return new VineObject(properties)
+    return new VineObject(properties, this.cloneOptions(), this.cloneValidations()) as VineObject<
+      Id<T>,
+      UndefinedOptional<{
+        [K in keyof T]: T[K][typeof ITYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof T]: T[K][typeof OTYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof T as CamelCase<K & string>]: T[K][typeof COTYPE]
+      }>
+    >
   }
 
   /**
