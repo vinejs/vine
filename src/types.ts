@@ -260,7 +260,7 @@ export type {
  * }
  * // Status satisfies EnumLike
  */
-export type EnumLike = { [K: string]: string | number;[number: number]: string }
+export type EnumLike = { [K: string]: string | number; [number: number]: string }
 
 /**
  * Representation of validation error messages accepted by the messages provider.
@@ -731,13 +731,13 @@ export type ValidationOptions<MetaData extends Record<string, any> | undefined> 
   errorReporter?: () => ErrorReporterContract
 } & ([undefined] extends MetaData
   ? {
-    /** Optional metadata to pass to validators for additional context */
-    meta?: MetaData
-  }
+      /** Optional metadata to pass to validators for additional context */
+      meta?: MetaData
+    }
   : {
-    /** Required metadata to pass to validators for additional context */
-    meta: MetaData
-  })
+      /** Required metadata to pass to validators for additional context */
+      meta: MetaData
+    })
 
 /**
  * Utility type to infer the output type of a schema.

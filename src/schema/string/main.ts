@@ -266,15 +266,15 @@ export class VineString extends BaseLiteralType<string, string, string> {
   confirmed(
     options?:
       | {
-        /**
-         * @deprecated
-         * Use "as" field instead
-         */
-        confirmationField?: string
-      }
+          /**
+           * @deprecated
+           * Use "as" field instead
+           */
+          confirmationField?: string
+        }
       | {
-        as?: string
-      }
+          as?: string
+        }
   ) {
     return this.use(confirmedRule(options))
   }

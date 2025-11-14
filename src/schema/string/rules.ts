@@ -273,15 +273,15 @@ export const notSameAsRule = createRule<{ otherField: string }>(
  */
 export const confirmedRule = createRule<
   | {
-    /**
-     * @deprecated
-     * Use "as" field instead
-     */
-    confirmationField?: string
-  }
+      /**
+       * @deprecated
+       * Use "as" field instead
+       */
+      confirmationField?: string
+    }
   | {
-    as?: string
-  }
+      as?: string
+    }
   | undefined
 >(function confirmed(value, options, field) {
   const normalizedOptions: { confirmationField?: string; as?: string } = options ?? {}
