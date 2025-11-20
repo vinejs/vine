@@ -38,7 +38,7 @@ import type {
   DateEqualsOptions,
   DateFieldOptions,
   FieldContext,
-  ObjectToOptional,
+  PropertiesToOptional,
   SchemaTypes,
 } from '../types.js'
 
@@ -707,7 +707,7 @@ export const helpers = {
    * @param props - The object with schema properties
    * @returns New object with all properties marked as optional
    */
-  optional<Props extends Record<string, SchemaTypes>>(props: Props): ObjectToOptional<Props> {
+  optional<Props extends Record<string, SchemaTypes>>(props: Props): PropertiesToOptional<Props> {
     const result: Record<string, SchemaTypes> = {}
 
     for (const name of Object.keys(props)) {
@@ -720,6 +720,6 @@ export const helpers = {
       result[name] = field
     }
 
-    return result as ObjectToOptional<Props>
+    return result as PropertiesToOptional<Props>
   },
 }

@@ -825,6 +825,6 @@ export type UndefinedOptional<T> = Id<
  *
  * @template T - Record of property names to their schema types
  */
-export type ObjectToOptional<T extends Record<string, SchemaTypes>> = Id<{
+export type PropertiesToOptional<T extends Record<string, SchemaTypes>> = Id<{
   [K in keyof T]: T[K] extends { optional: () => infer R extends SchemaTypes } ? R : T[K]
 }>
