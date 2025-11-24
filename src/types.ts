@@ -12,6 +12,7 @@ import type { Options as UrlOptions } from 'normalize-url'
 import type { IsURLOptions } from 'validator/lib/isURL.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
+import type { VATCountryCode } from 'validator/lib/isVAT.js'
 import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 import type {
@@ -158,6 +159,20 @@ export type PassportOptions = {
 export type PostalCodeOptions = {
   /** Array of country codes for postal code validation */
   countryCode: PostalCodeLocale[]
+}
+
+/**
+ * Options accepted by the VAT number validation rule.
+ * Specifies which country codes are used for VAT number format validation.
+ *
+ * @example
+ * const options: VATOptions = {
+ *   countryCode: ['FR', 'CH', 'VE']
+ * }
+ */
+export type VATOptions = {
+  /** Array of country codes for VAT number validation */
+  countryCode: VATCountryCode[]
 }
 
 /**

@@ -26,6 +26,7 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter.js'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore.js'
 import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
 import isPassportNumber from 'validator/lib/isPassportNumber.js'
+import isVAT from 'validator/lib/isVAT.js'
 import customParseFormat from 'dayjs/plugin/customParseFormat.js'
 import isPostalCode, { type PostalCodeLocale } from 'validator/lib/isPostalCode.js'
 import isMobilePhone, { type MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
@@ -447,6 +448,8 @@ export const helpers = {
   isMobilePhone: isMobilePhone.default,
   /** Validates passport numbers for supported countries */
   isPassportNumber: isPassportNumber.default,
+  /** Validates VAT numbers for supported countries */
+  isVAT: isVAT.default,
   /** Validates postal codes for various countries */
   isPostalCode: isPostalCode.default,
   /** Validates URL slugs (lowercase, hyphenated strings) */

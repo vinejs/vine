@@ -55,6 +55,7 @@ import {
   normalizeUrlRule,
   alphaNumericRule,
   normalizeEmailRule,
+  vatRule,
 } from './rules.js'
 
 /**
@@ -102,6 +103,7 @@ export class VineString extends BaseLiteralType<string, string, string> {
     minLength: minLengthRule,
     notSameAs: notSameAsRule,
     maxLength: maxLengthRule,
+    vat: vatRule,
     ipAddress: ipAddressRule,
     creditCard: creditCardRule,
     postalCode: postalCodeRule,
@@ -182,6 +184,13 @@ export class VineString extends BaseLiteralType<string, string, string> {
    */
   mobile(...args: Parameters<typeof mobileRule>) {
     return this.use(mobileRule(...args))
+  }
+
+  /**
+   * Validates the value to be a valid VAT number.
+   */
+  vat(...args: Parameters<typeof vatRule>) {
+    return this.use(vatRule(...args))
   }
 
   /**

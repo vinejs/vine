@@ -27,6 +27,7 @@ import type {
   NormalizeUrlOptions,
   AlphaNumericOptions,
   NormalizeEmailOptions,
+  VATOptions,
 } from '../../types.js'
 
 /**
@@ -381,6 +382,23 @@ export const passportRule = createRule<
     field.report(messages.passport, 'passport', field, { countryCodes })
   }
 })
+
+/**
+ * Validates the value to be a valid VAT number.
+ */
+export const vatRule = createRule<VATOptions | ((field: FieldContext) => VATOptions)>(
+  function vat(value, options, field) {
+    const countryCodes =
+      typeof options === 'function' ? options(field).countryCode : options.countryCode
+
+    const matchesAnyCountryCode = countryCodes.find((countryCode) =>
+      helpers.isVAT(value as string, countryCode)
+    )
+    if (!matchesAnyCountryCode) {
+      field.report(messages.vat, 'vat', field, { countryCodes })
+    }
+  }
+)
 
 /**
  * Validates the value to be a valid postal code

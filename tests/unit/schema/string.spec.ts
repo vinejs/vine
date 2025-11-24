@@ -49,6 +49,7 @@ import {
   escapeRule,
   normalizeUrlRule,
   mobileRule,
+  vatRule,
 } from '../../../src/schema/string/rules.ts'
 
 const vine = new Vine()
@@ -680,6 +681,11 @@ test.group('VineString | applying rules', () => {
         name: 'normalizeUrl',
         schema: vine.string().normalizeUrl(),
         rule: normalizeUrlRule(),
+      },
+      {
+        name: 'vat',
+        schema: vine.string().vat({ countryCode: ['IN'] }),
+        rule: vatRule({ countryCode: ['IN'] }),
       },
     ])
     .run(({ assert }, { schema, rule }) => {
