@@ -60,6 +60,7 @@ export const messages = {
   'in': 'The selected {{ field }} is invalid',
   'notIn': 'The selected {{ field }} is invalid',
   'ipAddress': 'The {{ field }} field must be a valid IP address',
+  'vat': 'The {{ field }} field must be a valid VAT number',
   'uuid': 'The {{ field }} field must be a valid UUID',
   'ulid': 'The {{ field }} field must be a valid ULID',
   'hexCode': 'The {{ field }} field must be a valid hex color code',
