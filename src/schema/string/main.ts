@@ -56,6 +56,7 @@ import {
   alphaNumericRule,
   normalizeEmailRule,
   vatRule,
+  strongPasswordRule,
 } from './rules.js'
 
 /**
@@ -103,6 +104,7 @@ export class VineString extends BaseLiteralType<string, string, string> {
     minLength: minLengthRule,
     notSameAs: notSameAsRule,
     maxLength: maxLengthRule,
+    strongPassword: strongPasswordRule,
     vat: vatRule,
     ipAddress: ipAddressRule,
     creditCard: creditCardRule,
@@ -191,6 +193,13 @@ export class VineString extends BaseLiteralType<string, string, string> {
    */
   vat(...args: Parameters<typeof vatRule>) {
     return this.use(vatRule(...args))
+  }
+
+  /**
+   * Validates the value to be a strong password.
+   */
+  strongPassword(...args: Parameters<typeof strongPasswordRule>) {
+    return this.use(strongPasswordRule(...args))
   }
 
   /**
