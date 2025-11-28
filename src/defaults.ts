@@ -64,7 +64,6 @@ export const messages = {
   'uuid': 'The {{ field }} field must be a valid UUID',
   'ulid': 'The {{ field }} field must be a valid ULID',
   'hexCode': 'The {{ field }} field must be a valid hex color code',
-  'strongPassword': 'The {{ field }} field must be a strong password',
 
   'boolean': 'The value must be a boolean',
 

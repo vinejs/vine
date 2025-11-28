@@ -25,7 +25,6 @@ import isCreditCard from 'validator/lib/isCreditCard.js'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter.js'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore.js'
 import isAlphanumeric from 'validator/lib/isAlphanumeric.js'
-import isStrongPassword from 'validator/lib/isStrongPassword.js'
 import isPassportNumber from 'validator/lib/isPassportNumber.js'
 import isVAT from 'validator/lib/isVAT.js'
 import customParseFormat from 'dayjs/plugin/customParseFormat.js'
@@ -445,8 +444,6 @@ export const helpers = {
   isJWT: isJWT.default,
   /** Validates latitude/longitude coordinate pairs */
   isLatLong: isLatLong.default,
-  /** Validates strong password criteria */
-  isStrongPassword: isStrongPassword.default,
   /** Validates mobile phone numbers for various locales */
   isMobilePhone: isMobilePhone.default,
   /** Validates passport numbers for supported countries */
