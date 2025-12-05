@@ -67,7 +67,7 @@
     "@poppinss/macroable": "^1.0.3",
     "@types/validator": "^13.12.2",
     "@vinejs/compiler": "^2.5.1",
-    "camelcase": "^8.0.0",
+    "camelcase": "^9.0.0",
     "dayjs": "^1.11.13",
     "dlv": "^1.1.3",
     "normalize-url": "^8.0.1",
