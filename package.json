@@ -29,13 +29,13 @@
     "typecheck": "tsc --noEmit",
     "clean": "del-cli build",
     "precompile": "npm run lint && npm run clean",
-    "compile": "tsup-node && tsc --emitDeclarationOnly --declaration",
+    "compile": "tsdown && tsc --emitDeclarationOnly --declaration",
     "build": "npm run compile",
     "version": "npm run build",
     "prepublishOnly": "npm run build",
     "release": "npx release-it",
-    "benchmark": "node build/benchmarks/flat_object.js && node build/benchmarks/nested_object.js && node build/benchmarks/array.js && node build/benchmarks/union.js",
-    "quick:test": "node --import=ts-node-maintained/register/esm --enable-source-maps bin/test.ts"
+    "benchmark": "node --import=@poppinss/ts-exec benchmarks/flat_object.js && node --import=@poppinss/ts-exec benchmarks/nested_object.js && node --import=@poppinss/ts-exec benchmarks/array.js && node --import=@poppinss/ts-exec benchmarks/union.js",
+    "quick:test": "node --import=@poppinss/ts-exec --enable-source-maps bin/test.ts"
   },
   "devDependencies": {
     "@adonisjs/eslint-config": "^3.0.0-next.4",
@@ -58,8 +58,7 @@
     "joi": "^18.0.2",
     "prettier": "^3.7.4",
     "release-it": "^19.0.6",
-    "ts-node-maintained": "^10.9.6",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.17.2",
     "typedoc": "^0.28.15",
     "typedoc-plugin-missing-exports": "^4.1.2",
     "typescript": "^5.9.3",
@@ -97,21 +96,22 @@
     "access": "public",
     "provenance": true
   },
-  "tsup": {
+  "tsdown": {
     "entry": [
       "./index.ts",
       "./src/defaults.ts",
       "./factories/main.ts",
-      "./src/types.ts",
-      "./benchmarks/flat_object.ts",
-      "./benchmarks/nested_object.ts",
-      "./benchmarks/array.ts",
-      "./benchmarks/union.ts"
+      "./src/types.ts"
     ],
     "outDir": "./build",
     "clean": true,
+    "platform": "node",
     "format": "esm",
+    "comments": false,
+    "minify": "dce-only",
+    "fixedExtension": false,
     "dts": false,
+    "treeshake": false,
     "sourcemap": false,
     "target": "esnext"
   },
