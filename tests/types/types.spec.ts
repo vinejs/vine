@@ -200,6 +200,30 @@ test.group('Types | Flat schema', () => {
       email_11: string
     }>()
   }).tags(['@regression'])
+
+  test('mark all properties as optional', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        username: vine.string(),
+        email: vine.string(),
+        is_admin: vine.boolean(),
+      })
+      .toOptional()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username?: string | null
+      email?: string | null
+      is_admin?: boolean | string | number | null
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      username?: string
+      email?: string
+      is_admin?: boolean
+    }>()
+  })
 })
 
 test.group('Types | Re-using objects', () => {
@@ -527,6 +551,71 @@ test.group('Types | Nested schema', () => {
         twitterHandle: string
         githubUsername: string | null
       } | null
+    }>()
+  })
+
+  test('mark all top-level properties as optional', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        username: vine.string(),
+        email: vine.string(),
+        is_admin: vine.boolean(),
+        profile: vine
+          .object({
+            twitter_handle: vine.string(),
+            github_username: vine.string(),
+          })
+          .nullable(),
+      })
+      .toOptional()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username?: string | null
+      email?: string | null
+      is_admin?: boolean | string | number | null
+      profile?: {
+        twitter_handle: string
+        github_username: string
+      } | null
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      username?: string
+      email?: string
+      is_admin?: boolean
+      profile?: {
+        twitter_handle: string
+        github_username: string
+      } | null
+    }>()
+  })
+
+  test('mark all top-level properties with record as optional', ({ expectTypeOf }) => {
+    const schema = vine
+      .object({
+        username: vine.string(),
+        email: vine.string(),
+        is_admin: vine.boolean(),
+        profile: vine.record(vine.string()),
+      })
+      .toOptional()
+
+    type InputsSchema = InferInput<typeof schema>
+    expectTypeOf<InputsSchema>().toEqualTypeOf<{
+      username?: string | null
+      email?: string | null
+      is_admin?: boolean | string | number | null
+      profile?: Record<string, string> | null
+    }>()
+
+    type Schema = Infer<typeof schema>
+    expectTypeOf<Schema>().toEqualTypeOf<{
+      username?: string
+      email?: string
+      is_admin?: boolean
+      profile?: Record<string, string>
     }>()
   })
 })

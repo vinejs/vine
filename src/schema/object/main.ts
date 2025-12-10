@@ -304,7 +304,11 @@ export class VineObject<
       [K in keyof T as CamelCase<K & string>]: T[K][typeof COTYPE]
     }>
   > {
-    // groups and allowUnknownProperties are not allowed for complexity reasons
+    /**
+     * Groups cannot be optional standalone, hence they cannot be marked
+     * as optional when merged inside an object. Same is true for
+     * unknownProperties.
+     */
     if (this.#groups.length > 0 || this.#allowUnknownProperties) {
       throw new Error(
         'toOptional cannot be used on schemas that have groups or allowUnknownProperties enabled'
