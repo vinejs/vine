@@ -10,9 +10,9 @@
 import type dayjs from 'dayjs'
 import type { Options as UrlOptions } from 'normalize-url'
 import type { IsURLOptions } from 'validator/lib/isURL.js'
+import type { VATCountryCode } from 'validator/lib/isVAT.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
-import type { VATCountryCode } from 'validator/lib/isVAT.js'
 import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 import type {
@@ -33,6 +33,7 @@ import type {
 import type { helpers } from './vine/helpers.js'
 import type { ValidationError } from './errors/validation_error.js'
 import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from './symbols.js'
+import { type Prettify, type ExtractUndefined, type ExtractDefined } from '@poppinss/types'
 
 /**
  * Compiler nodes emitted by Vine during schema compilation.
@@ -696,6 +697,31 @@ export interface ErrorReporterContract extends BaseReporter {
  */
 export type MetaDataValidator = (meta: Record<string, any>) => void
 
+type BaseValidationTypes = {
+  /**
+   * Custom messages provider for internationalization and error message customization.
+   * If not provided, the default messages provider will be used.
+   */
+  messagesProvider?: MessagesProviderContact
+  /**
+   * Factory function for creating error reporters.
+   * Error reporters control how validation errors are collected and formatted.
+   */
+  errorReporter?: () => ErrorReporterContract
+}
+
+type ValidationOptionsMetaProp<MetaData extends Record<string, any> | undefined> = [
+  undefined,
+] extends MetaData
+  ? {
+      /** Optional metadata to pass to validators for additional context */
+      meta?: MetaData
+    }
+  : {
+      /** Required metadata to pass to validators for additional context */
+      meta: MetaData
+    }
+
 /**
  * Configuration options for validation operations.
  * Controls how validation is performed, how errors are reported,
@@ -710,43 +736,9 @@ export type MetaDataValidator = (meta: Record<string, any>) => void
  *   meta: { userId: '123' }
  * }
  */
-export type ValidationOptions<MetaData extends Record<string, any> | undefined> = {
-  /**
-   * Custom messages provider for internationalization and error message customization.
-   * If not provided, the default messages provider will be used.
-   */
-  messagesProvider?: MessagesProviderContact
+export type ValidationOptions<MetaData extends Record<string, any> | undefined> =
+  BaseValidationTypes & ValidationOptionsMetaProp<MetaData>
 
-  /**
-   * Factory function for creating error reporters.
-   * Error reporters control how validation errors are collected and formatted.
-   */
-  errorReporter?: () => ErrorReporterContract
-} & ([undefined] extends MetaData
-  ? {
-      /** Optional metadata to pass to validators for additional context */
-      meta?: MetaData
-    }
-  : {
-      /** Required metadata to pass to validators for additional context */
-      meta: MetaData
-    })
-
-/**
- * Utility type to infer the output type of a schema.
- * Extracts the validated output type from a schema definition.
- *
- * @template Schema - The schema to infer the type from
- *
- * @example
- * const userSchema = vine.object({
- *   name: vine.string(),
- *   age: vine.number()
- * })
- *
- * type User = Infer<typeof userSchema>
- * // type User = { name: string; age: number }
- */
 export type Infer<Schema extends { [OTYPE]: any }> = Schema[typeof OTYPE]
 
 /**
@@ -788,34 +780,6 @@ export type ArrayComparisonOperators = 'in' | 'notIn'
 export type ComparisonOperators = ArrayComparisonOperators | NumericComparisonOperators | '=' | '!='
 
 /**
- * Utility type to extract keys from a type where the value can be undefined.
- * Used internally for making optional properties truly optional in TypeScript.
- *
- * @template T - The type to extract undefined-able keys from
- */
-export type PickUndefined<T> = {
-  [K in keyof T]: undefined extends T[K] ? K : never
-}[keyof T]
-
-/**
- * Utility type to extract keys from a type where the value cannot be undefined.
- * Used internally for identifying required properties in TypeScript.
- *
- * @template T - The type to extract non-undefined keys from
- */
-export type PickNotUndefined<T> = {
-  [K in keyof T]: undefined extends T[K] ? never : K
-}[keyof T]
-
-/**
- * Identity type that preserves the structure of a type.
- * Used to flatten intersection types for better TypeScript display.
- *
- * @template T - The type to preserve/flatten
- */
-export type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
-
-/**
  * Utility type that makes properties with undefined values optional.
  * Transforms properties that allow undefined into truly optional properties,
  * improving the developer experience by not requiring explicit undefined values.
@@ -827,11 +791,11 @@ export type Id<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
  * type After = UndefinedOptional<Before>
  * // After = { name: string; age?: number }
  */
-export type UndefinedOptional<T> = Id<
+export type UndefinedOptional<T> = Prettify<
   {
-    [K in PickUndefined<T>]?: T[K]
+    [K in ExtractUndefined<T>]?: T[K]
   } & {
-    [K in PickNotUndefined<T>]: T[K]
+    [K in ExtractDefined<T>]: T[K]
   }
 >
 
@@ -840,6 +804,6 @@ export type UndefinedOptional<T> = Id<
  *
  * @template T - Record of property names to their schema types
  */
-export type PropertiesToOptional<T extends Record<string, SchemaTypes>> = Id<{
+export type PropertiesToOptional<T extends Record<string, SchemaTypes>> = {
   [K in keyof T]: T[K] extends { optional: () => infer R extends SchemaTypes } ? R : T[K]
-}>
+}

@@ -27,7 +27,6 @@ import type {
   FieldOptions,
   ParserOptions,
   PropertiesToOptional,
-  Id,
   UndefinedOptional,
 } from '../../types.js'
 import type { CamelCase } from '../camelcase_types.ts'
@@ -293,7 +292,7 @@ export class VineObject<
   >(
     keys?: Keys[] | readonly Keys[]
   ): VineObject<
-    Id<T>,
+    T,
     UndefinedOptional<{
       [K in keyof T]: T[K][typeof ITYPE]
     }>,
@@ -331,7 +330,7 @@ export class VineObject<
     }
 
     return new VineObject(properties, this.cloneOptions(), this.cloneValidations()) as VineObject<
-      Id<T>,
+      T,
       UndefinedOptional<{
         [K in keyof T]: T[K][typeof ITYPE]
       }>,

@@ -42,6 +42,7 @@ import type {
   PropertiesToOptional,
   SchemaTypes,
 } from '../types.js'
+import { type Prettify } from '@poppinss/types'
 
 /**
  * Values that are considered true in HTML form context.
@@ -710,7 +711,9 @@ export const helpers = {
    * @param props - The object with schema properties
    * @returns New object with all properties marked as optional
    */
-  optional<Props extends Record<string, SchemaTypes>>(props: Props): PropertiesToOptional<Props> {
+  optional<Props extends Record<string, SchemaTypes>>(
+    props: Props
+  ): Prettify<PropertiesToOptional<Props>> {
     const result: Record<string, SchemaTypes> = {}
 
     for (const name of Object.keys(props)) {
@@ -723,6 +726,6 @@ export const helpers = {
       result[name] = field
     }
 
-    return result as PropertiesToOptional<Props>
+    return result as Prettify<PropertiesToOptional<Props>>
   },
 }
