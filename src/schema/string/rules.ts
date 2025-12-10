@@ -28,7 +28,6 @@ import type {
   AlphaNumericOptions,
   NormalizeEmailOptions,
   VATOptions,
-  StrongPasswordOptions,
 } from '../../types.js'
 
 /**
@@ -364,19 +363,6 @@ export const creditCardRule = createRule<
         providersList: providers.join('/'),
       })
     }
-  }
-})
-
-/**
- * Validates the value to be a strong password.
- */
-export const strongPasswordRule = createRule<
-  StrongPasswordOptions | undefined | ((field: FieldContext) => StrongPasswordOptions | undefined)
->(function strongPassword(value, options, field) {
-  const normalizedOptions = typeof options === 'function' ? options(field) : options
-
-  if (!helpers.isStrongPassword(value as string, normalizedOptions)) {
-    field.report(messages.strongPassword, 'strongPassword', field)
   }
 })
 

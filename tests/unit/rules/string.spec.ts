@@ -47,7 +47,6 @@ import {
   escapeRule,
   normalizeUrlRule,
   vatRule,
-  strongPasswordRule,
 } from '../../../src/schema/string/rules.ts'
 import type { FieldContext, Validation } from '../../../src/types.ts'
 
@@ -1699,97 +1698,6 @@ test.group('String | vat', () => {
         }),
         value: 'DE136695976',
         error: 'The dummy field must be a valid VAT number',
-      },
-    ])
-    .run(stringRuleValidator)
-})
-
-test.group('String | strongPassword', () => {
-  test('validate {value}')
-    .with([
-      {
-        errorsCount: 1,
-        rule: strongPasswordRule(),
-        value: 22,
-        error: 'The dummy field must be a string',
-      },
-      {
-        errorsCount: 1,
-        rule: strongPasswordRule(),
-        value: 'weak',
-        error: 'The dummy field must be a strong password',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule(),
-        value: 'StrongP@ss1',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule(),
-        value: 'MyP@ssw0rd!',
-      },
-      {
-        errorsCount: 1,
-        rule: strongPasswordRule({ minLength: 12 }),
-        value: 'Short@1',
-        error: 'The dummy field must be a strong password',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule({ minLength: 12 }),
-        value: 'LongP@ssw0rd!',
-      },
-      {
-        errorsCount: 1,
-        rule: strongPasswordRule({ minLowercase: 2 }),
-        value: 'PASSWORD1!',
-        error: 'The dummy field must be a strong password',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule({ minLowercase: 2 }),
-        value: 'PASSword1!',
-      },
-      {
-        errorsCount: 1,
-        rule: strongPasswordRule({ minUppercase: 2 }),
-        value: 'Password1!',
-        error: 'The dummy field must be a strong password',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule({ minUppercase: 2 }),
-        value: 'PAssword1!',
-      },
-      {
-        errorsCount: 1,
-        rule: strongPasswordRule({ minNumbers: 2 }),
-        value: 'Password1!',
-        error: 'The dummy field must be a strong password',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule({ minNumbers: 2 }),
-        value: 'Password12!',
-      },
-      {
-        errorsCount: 1,
-        rule: strongPasswordRule({ minSymbols: 2 }),
-        value: 'Password1!',
-        error: 'The dummy field must be a strong password',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule({ minSymbols: 2 }),
-        value: 'Password1!@',
-      },
-      {
-        errorsCount: 0,
-        rule: strongPasswordRule(() => {
-          return { minLength: 10, minUppercase: 1, minLowercase: 1, minNumbers: 1, minSymbols: 1 }
-        }),
-        value: 'MyP@ssw0rd',
       },
     ])
     .run(stringRuleValidator)

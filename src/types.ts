@@ -13,7 +13,6 @@ import type { IsURLOptions } from 'validator/lib/isURL.js'
 import type { IsEmailOptions } from 'validator/lib/isEmail.js'
 import type { PostalCodeLocale } from 'validator/lib/isPostalCode.js'
 import type { VATCountryCode } from 'validator/lib/isVAT.js'
-import type { StrongPasswordOptions } from 'validator/lib/isStrongPassword.js'
 import type { NormalizeEmailOptions } from 'validator/lib/normalizeEmail.js'
 import type { IsMobilePhoneOptions, MobilePhoneLocale } from 'validator/lib/isMobilePhone.js'
 import type {
@@ -92,22 +91,6 @@ export type Literal = string | number | bigint | boolean | null | undefined
  * }
  */
 export type EmailOptions = IsEmailOptions
-
-/**
- * Options accepted by the strong password validation rule.
- * Configures the criteria for what constitutes a strong password,
- * including length requirements and character type inclusion.
- *
- * @example
- * const options: StrongPasswordOptions = {
- *   minLength: 8,
- *   minLowercase: 1,
- *   minUppercase: 1,
- *   minNumbers: 1,
- *   minSymbols: 1
- * }
- */
-export { StrongPasswordOptions }
 
 /**
  * Options accepted by the normalize email transformation.
