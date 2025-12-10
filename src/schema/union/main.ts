@@ -26,14 +26,13 @@ import { VineNull } from '../null/main.js'
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
-  implements
-    ConstructableSchema<
-      Conditional[typeof ITYPE],
-      Conditional[typeof OTYPE],
-      Conditional[typeof COTYPE]
-    >
-{
+export class VineUnion<
+  Conditional extends UnionConditional<SchemaTypes>,
+> implements ConstructableSchema<
+  Conditional[typeof ITYPE],
+  Conditional[typeof OTYPE],
+  Conditional[typeof COTYPE]
+> {
   declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]

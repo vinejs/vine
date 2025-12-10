@@ -27,14 +27,13 @@ import { ConditionalValidations } from './conditional_rules.js'
 /**
  * Modifies the schema type to allow null values
  */
-export class NullableModifier<Schema extends ConstructableLiteralSchema<any, any, any>>
-  implements
-    ConstructableLiteralSchema<
-      Schema[typeof ITYPE] | null,
-      Schema[typeof OTYPE] | null,
-      Schema[typeof COTYPE] | null
-    >
-{
+export class NullableModifier<
+  Schema extends ConstructableLiteralSchema<any, any, any>,
+> implements ConstructableLiteralSchema<
+  Schema[typeof ITYPE] | null,
+  Schema[typeof OTYPE] | null,
+  Schema[typeof COTYPE] | null
+> {
   /**
    * Define the input type of the schema
    */
@@ -256,9 +255,10 @@ export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any
  * const schema = vine.string().transform((value) => value.toUpperCase())
  * // Input: "hello" -> Output: "HELLO"
  */
-export class TransformModifier<Schema extends ConstructableLiteralSchema<any, any, any>, Output>
-  implements ConstructableLiteralSchema<Schema[typeof ITYPE], Output, Output>
-{
+export class TransformModifier<
+  Schema extends ConstructableLiteralSchema<any, any, any>,
+  Output,
+> implements ConstructableLiteralSchema<Schema[typeof ITYPE], Output, Output> {
   /**
    * Define the input type of the schema (unchanged from parent)
    */

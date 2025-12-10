@@ -35,14 +35,13 @@ import { ConditionalValidations } from './conditional_rules.js'
  * // Accepts: "hello", null
  * // Rejects: undefined, 123
  */
-export class NullableModifier<Schema extends ConstructableSchema<any, any, any>>
-  implements
-    ConstructableSchema<
-      Schema[typeof ITYPE] | null,
-      Schema[typeof OTYPE] | null,
-      Schema[typeof COTYPE] | null
-    >
-{
+export class NullableModifier<
+  Schema extends ConstructableSchema<any, any, any>,
+> implements ConstructableSchema<
+  Schema[typeof ITYPE] | null,
+  Schema[typeof OTYPE] | null,
+  Schema[typeof COTYPE] | null
+> {
   /**
    * Define the input type of the schema, including null
    */

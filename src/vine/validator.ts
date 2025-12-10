@@ -48,8 +48,7 @@ const EMPTY_OBJECT = {}
 export class VineValidator<
   Schema extends SchemaTypes,
   MetaData extends undefined | Record<string, any>,
-> implements StandardSchemaV1
-{
+> implements StandardSchemaV1 {
   /**
    * Reference to static input type for TypeScript inference
    */
