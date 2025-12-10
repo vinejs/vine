@@ -208,7 +208,7 @@ test.group('Types | Flat schema', () => {
         email: vine.string(),
         is_admin: vine.boolean(),
       })
-      .toOptional()
+      .partial()
 
     type InputsSchema = InferInput<typeof schema>
     expectTypeOf<InputsSchema>().toEqualTypeOf<{
@@ -567,7 +567,7 @@ test.group('Types | Nested schema', () => {
           })
           .nullable(),
       })
-      .toOptional()
+      .partial()
 
     type InputsSchema = InferInput<typeof schema>
     expectTypeOf<InputsSchema>().toEqualTypeOf<{
@@ -600,7 +600,7 @@ test.group('Types | Nested schema', () => {
         is_admin: vine.boolean(),
         profile: vine.record(vine.string()),
       })
-      .toOptional()
+      .partial()
 
     type InputsSchema = InferInput<typeof schema>
     expectTypeOf<InputsSchema>().toEqualTypeOf<{

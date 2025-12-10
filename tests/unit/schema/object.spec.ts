@@ -3901,7 +3901,7 @@ test.group('VineObject | clone', () => {
           prop: vine.string(),
         }),
       })
-      .toOptional()
+      .partial()
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'object',
@@ -4007,7 +4007,7 @@ test.group('VineObject | clone', () => {
         username: vine.string(),
         password: vine.string(),
       })
-      .toOptional(['username'])
+      .partial(['username'])
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'object',
@@ -4066,7 +4066,7 @@ test.group('VineObject | clone', () => {
         visitor_name: vine.string(),
       })
       .merge(guideSchema)
-      .toOptional()
+      .partial()
   }).throws(
     'toOptional cannot be used on schemas that have groups or allowUnknownProperties enabled'
   )

@@ -285,7 +285,7 @@ export class VineObject<
   /**
    * Creates a new object with all properties marked as optional.
    */
-  toOptional<
+  partial<
     Keys extends keyof Properties = keyof Properties,
     T extends Record<string, SchemaTypes> = Omit<Properties, Keys> &
       PropertiesToOptional<Pick<Properties, Keys>>,
