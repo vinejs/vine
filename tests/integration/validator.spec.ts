@@ -758,3 +758,38 @@ test.group('Validator | bail mode disabled', () => {
     )
   })
 })
+
+test.group('Validator | clone', () => {
+  test('access validator schema and clone it', async ({ assert }) => {
+    const createAuthorValidator = vine.compile(
+      vine.object({
+        name: vine.string(),
+        email: vine.string().email(),
+        role: vine.string().in((field) => {
+          assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
+          return field.meta.choices
+        }),
+      })
+    )
+
+    const updateAuthorValidator = vine.compile(createAuthorValidator.schema.clone().partial())
+    await assert.validationOutput(updateAuthorValidator.validate({}), {})
+    await assert.validationErrors(createAuthorValidator.validate({}), [
+      {
+        field: 'name',
+        message: 'The name field must be defined',
+        rule: 'required',
+      },
+      {
+        field: 'email',
+        message: 'The email field must be defined',
+        rule: 'required',
+      },
+      {
+        field: 'role',
+        message: 'The role field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+})

@@ -130,7 +130,7 @@ export class VineValidator<
    * @param options.errorReporter - Error reporter factory function
    */
   'constructor'(
-    schema: Schema,
+    public schema: Schema,
     options: {
       convertEmptyStringsToNull: boolean
       metaDataValidator?: MetaDataValidator
