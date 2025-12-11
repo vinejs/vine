@@ -20,7 +20,7 @@ test.group('VineFile', () => {
     const schema = vine.nativeFile()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -36,7 +36,7 @@ test.group('VineFile', () => {
     const schema = vine.nativeFile().nullable()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -52,7 +52,7 @@ test.group('VineFile', () => {
     const schema = vine.nativeFile().optional()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -68,7 +68,7 @@ test.group('VineFile', () => {
     const schema = vine.nativeFile().bail(false)
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -84,7 +84,7 @@ test.group('VineFile', () => {
     const schema = vine.nativeFile().parse(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -100,7 +100,7 @@ test.group('VineFile', () => {
     const schema = vine.nativeFile().transform(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -119,7 +119,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -132,7 +132,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -150,7 +150,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -163,7 +163,7 @@ test.group('VineFile', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -182,7 +182,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -195,7 +195,7 @@ test.group('VineFile', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -215,7 +215,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -228,7 +228,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -246,7 +246,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -259,7 +259,7 @@ test.group('VineFile', () => {
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
-      subtype: 'file',
+      subtype: 'nativeFile',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
