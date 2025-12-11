@@ -8,9 +8,9 @@
  */
 
 import { enumRule } from './rules.js'
+import { SUBTYPE } from '../../symbols.js'
 import { BaseLiteralType } from '../base/literal.js'
 import type { FieldContext, FieldOptions, Validation } from '../../types.js'
-import { SUBTYPE } from '../../symbols.js'
 
 /**
  * VineEnum represents an enum data type that performs validation

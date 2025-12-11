@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { SUBTYPE } from '../../symbols.js'
+import { IS_OF_TYPE, SUBTYPE, UNIQUE_NAME } from '../../symbols.js'
 import { BaseLiteralType } from '../base/literal.js'
 import { type FieldOptions, type Validation } from '../../types.js'
 import { isNativeFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rules.js'
@@ -16,7 +16,32 @@ import { isNativeFileRule, maxSizeRule, mimeTypesRule, minSizeRule } from './rul
  * VineNativeFile represents a platform native File class instance.
  */
 export class VineNativeFile extends BaseLiteralType<File, File, File> {
-  [SUBTYPE] = 'file'
+  /**
+   * Static collection of all available validation rules for enums
+   */
+  static rules = {
+    maxSize: maxSizeRule,
+    mimeTypes: mimeTypesRule,
+    minSize: minSizeRule,
+  };
+
+  [SUBTYPE] = 'nativeFile';
+
+  /**
+   * Unique name identifier for union type resolution
+   */
+  [UNIQUE_NAME] = 'vine.nativeFile';
+
+  /**
+   * Type checker function to determine if a value is a native file.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value is a native file
+   */
+  [IS_OF_TYPE] = (value: unknown) => {
+    return value instanceof File
+  }
 
   constructor(options?: Partial<FieldOptions>, validations?: Validation<any>[]) {
     super(options, validations || [])
