@@ -29,7 +29,7 @@ test.group('Validator | metadata', () => {
   test('pass metadata to the validation pipeline', async ({ assert }) => {
     assert.plan(2)
 
-    const author = vine.object({
+    const validator = vine.create({
       name: vine.string(),
       email: vine.string().email(),
       role: vine.string().in((field) => {
@@ -37,8 +37,6 @@ test.group('Validator | metadata', () => {
         return field.meta.choices
       }),
     })
-
-    const validator = vine.compile(author)
     await assert.validationOutput(
       validator.validate(
         { name: 'virk', email: 'foo@bar.com', role: 'guest' },
@@ -51,7 +49,7 @@ test.group('Validator | metadata', () => {
   test('define metadata types', async ({ assert }) => {
     assert.plan(2)
 
-    const author = vine.object({
+    const validator = vine.withMetaData<{ choices: string[] }>().create({
       name: vine.string(),
       email: vine.string().email(),
       role: vine.string().in((field) => {
@@ -59,8 +57,6 @@ test.group('Validator | metadata', () => {
         return field.meta.choices
       }),
     })
-
-    const validator = vine.withMetaData<{ choices: string[] }>().compile(author)
     await assert.validationOutput(
       validator.validate(
         { name: 'virk', email: 'foo@bar.com', role: 'guest' },
@@ -73,20 +69,18 @@ test.group('Validator | metadata', () => {
   test('validate metadata', async ({ assert }) => {
     assert.plan(3)
 
-    const author = vine.object({
-      name: vine.string(),
-      email: vine.string().email(),
-      role: vine.string().in((field) => {
-        assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
-        return field.meta.choices
-      }),
-    })
-
     const validator = vine
       .withMetaData<{ choices: string[] }>((meta) => {
         assert.deepEqual(meta, { choices: ['admin', 'guest'] })
       })
-      .compile(author)
+      .create({
+        name: vine.string(),
+        email: vine.string().email(),
+        role: vine.string().in((field) => {
+          assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
+          return field.meta.choices
+        }),
+      })
     await assert.validationOutput(
       validator.validate(
         { name: 'virk', email: 'foo@bar.com', role: 'guest' },
@@ -97,20 +91,18 @@ test.group('Validator | metadata', () => {
   })
 
   test('fail when metadata validation fails', async ({ assert }) => {
-    const author = vine.object({
-      name: vine.string(),
-      email: vine.string().email(),
-      role: vine.string().in((field) => {
-        assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
-        return field.meta.choices
-      }),
-    })
-
     const validator = vine
       .withMetaData<{ choices: string[] }>(() => {
         throw new Error('Invalid metadata')
       })
-      .compile(author)
+      .create({
+        name: vine.string(),
+        email: vine.string().email(),
+        role: vine.string().in((field) => {
+          assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
+          return field.meta.choices
+        }),
+      })
 
     validator.validate(
       { name: 'virk', email: 'foo@bar.com', role: 'guest' },
@@ -211,7 +203,7 @@ test.group('Validator | extend schema classes', () => {
 
 test.group('Validator | toJSON', () => {
   test('get JSON representation of the schema', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       name: vine.string(),
       email: vine.string().email(),
       role: vine.string().in((field) => {
@@ -219,8 +211,6 @@ test.group('Validator | toJSON', () => {
         return field.meta.choices
       }),
     })
-
-    const validator = vine.compile(author)
     assert.snapshot(validator.toJSON()).matchInline(`
       {
         "refs": {
@@ -324,37 +314,33 @@ test.group('Validator | tryValidator', () => {
     assert,
     expectTypeOf,
   }) => {
-    const author = vine.object({
+    const validator = vine.create({
       name: vine.string(),
       email: vine.string().email(),
     })
-
-    const validator = vine.compile(author)
     const [error, result] = await validator.tryValidate({})
     assert.instanceOf(error, ValidationError)
     assert.isNull(result)
 
     if (error) {
-      expectTypeOf(result).toMatchTypeOf(null)
-      expectTypeOf(error).toMatchTypeOf<ValidationError>()
+      expectTypeOf(result).toEqualTypeOf(null)
+      expectTypeOf(error).toEqualTypeOf<ValidationError>()
     }
     if (result) {
-      expectTypeOf(error).toMatchTypeOf(null)
-      expectTypeOf(result).toMatchTypeOf<Infer<typeof validator>>()
+      expectTypeOf(error).toEqualTypeOf(null)
+      expectTypeOf(result).toEqualTypeOf<Infer<typeof validator>>()
     }
   })
 
   test('rethrow non ValidationError errors', async () => {
-    const author = vine.object({
-      name: vine.string(),
-      email: vine.string().email(),
-    })
-
     const validator = vine
       .withMetaData<{ choices: string[] }>(() => {
         throw new Error('Invalid metadata')
       })
-      .compile(author)
+      .create({
+        name: vine.string(),
+        email: vine.string().email(),
+      })
 
     await validator.tryValidate(
       {},
@@ -367,12 +353,10 @@ test.group('Validator | tryValidator', () => {
   }).throws('Invalid metadata')
 
   test('return validated data', async ({ assert, expectTypeOf }) => {
-    const author = vine.object({
+    const validator = vine.create({
       name: vine.string(),
       email: vine.string().email(),
     })
-
-    const validator = vine.compile(author)
     const [error, result] = await validator.tryValidate({
       name: 'virk',
       email: 'foo@bar.com',
@@ -385,25 +369,23 @@ test.group('Validator | tryValidator', () => {
     })
 
     if (error) {
-      expectTypeOf(result).toMatchTypeOf(null)
-      expectTypeOf(error).toMatchTypeOf<ValidationError>()
+      expectTypeOf(result).toEqualTypeOf(null)
+      expectTypeOf(error).toEqualTypeOf<ValidationError>()
     }
     if (result) {
-      expectTypeOf(error).toMatchTypeOf(null)
-      expectTypeOf(result).toMatchTypeOf<Infer<typeof validator>>()
+      expectTypeOf(error).toEqualTypeOf(null)
+      expectTypeOf(result).toEqualTypeOf<Infer<typeof validator>>()
     }
   })
 })
 
 test.group('Validator | regression', () => {
   test('validate field names with dots inside them', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       'hub.mode': vine.literal('subscribe'),
       'hub.challenge': vine.number(),
       'hub.verify_token': vine.literal('env'),
     })
-
-    const validator = vine.compile(author)
     await assert.validationOutput(
       validator.validate({
         'hub.mode': 'subscribe',
@@ -419,13 +401,13 @@ test.group('Validator | regression', () => {
   })
 
   test('validate field names with hyphens inside them', async ({ assert }) => {
-    const author = vine
-      .object({
-        'aws-address': vine.string(),
-      })
-      .toCamelCase()
-
-    const validator = vine.compile(author)
+    const validator = vine.create(
+      vine
+        .object({
+          'aws-address': vine.string(),
+        })
+        .toCamelCase()
+    )
     await assert.validationOutput(
       validator.validate({
         'aws-address': 'foo',
@@ -437,21 +419,21 @@ test.group('Validator | regression', () => {
   })
 
   test('allow object keys to be numeric', async ({ assert }) => {
-    const author = vine
-      .object({
-        days_of_week: vine.object({
-          '0': vine.string(),
-          '1': vine.string(),
-          '2': vine.string(),
-          '3': vine.string(),
-          '4': vine.string(),
-          '5': vine.string(),
-          '6': vine.string(),
-        }),
-      })
-      .toCamelCase()
-
-    const validator = vine.compile(author)
+    const validator = vine.create(
+      vine
+        .object({
+          days_of_week: vine.object({
+            '0': vine.string(),
+            '1': vine.string(),
+            '2': vine.string(),
+            '3': vine.string(),
+            '4': vine.string(),
+            '5': vine.string(),
+            '6': vine.string(),
+          }),
+        })
+        .toCamelCase()
+    )
     await assert.validationOutput(
       validator.validate({
         days_of_week: {
@@ -484,12 +466,10 @@ test.group('Validator | standard validator', () => {
     assert,
     expectTypeOf,
   }) => {
-    const author = vine.object({
+    const validator = vine.create({
       name: vine.string(),
       email: vine.string().email(),
     })
-
-    const validator = vine.compile(author)
 
     expectTypeOf<StandardSchemaV1.InferInput<typeof validator>>().toEqualTypeOf<{
       name: string
@@ -533,12 +513,10 @@ test.group('Validator | standard validator', () => {
     expectTypeOf,
   }) => {
     assert.plan(2)
-    const author = vine.object({
+    const validator = vine.create({
       name: vine.string(),
       email: vine.string().email(),
     })
-
-    const validator = vine.compile(author)
 
     expectTypeOf<StandardSchemaV1.InferInput<typeof validator>>().toEqualTypeOf<{
       name: string
@@ -575,11 +553,9 @@ test.group('Validator | standard validator', () => {
 
 test.group('Validator | bail mode disabled', () => {
   test('run all string validation rules when bail mode is disabled', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       email: vine.string().email().minLength(5).bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(validator.validate({ email: 'foo' }), [
       {
         field: 'email',
@@ -598,11 +574,9 @@ test.group('Validator | bail mode disabled', () => {
   })
 
   test('do not run all validation rules when value is not a string', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       email: vine.string().email().minLength(5).bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(validator.validate({ email: 22 }), [
       {
         field: 'email',
@@ -613,11 +587,9 @@ test.group('Validator | bail mode disabled', () => {
   })
 
   test('run all number validation rules when bail mode is disabled', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       score: vine.number().min(10).positive().bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(validator.validate({ score: -2 }), [
       {
         field: 'score',
@@ -636,11 +608,9 @@ test.group('Validator | bail mode disabled', () => {
   })
 
   test('do not run all validation rules when value is not a number', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       score: vine.number().min(10).positive().bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(validator.validate({ score: 'foo' }), [
       {
         field: 'score',
@@ -651,11 +621,9 @@ test.group('Validator | bail mode disabled', () => {
   })
 
   test('run all array validation rules when bail mode is disabled', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       scores: vine.array(vine.number()).minLength(3).distinct().bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(validator.validate({ scores: [1, 1] }), [
       {
         field: 'scores',
@@ -677,11 +645,9 @@ test.group('Validator | bail mode disabled', () => {
   })
 
   test('do not run all validation rules when value is not an array', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       scores: vine.array(vine.number()).minLength(3).distinct().bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(validator.validate({ scores: 1 }), [
       {
         field: 'scores',
@@ -692,7 +658,7 @@ test.group('Validator | bail mode disabled', () => {
   })
 
   test('run all record validation rules when bail mode is disabled', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       colors: vine
         .record(vine.string())
         .minLength(4)
@@ -703,8 +669,6 @@ test.group('Validator | bail mode disabled', () => {
         })
         .bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(
       validator.validate({
         colors: {
@@ -731,7 +695,7 @@ test.group('Validator | bail mode disabled', () => {
   })
 
   test('do not run all validation rules when value is not an object', async ({ assert }) => {
-    const author = vine.object({
+    const validator = vine.create({
       colors: vine
         .record(vine.string())
         .minLength(4)
@@ -742,8 +706,6 @@ test.group('Validator | bail mode disabled', () => {
         })
         .bail(false),
     })
-
-    const validator = vine.compile(author)
     await assert.validationErrors(
       validator.validate({
         colors: [],
@@ -759,20 +721,49 @@ test.group('Validator | bail mode disabled', () => {
   })
 })
 
-test.group('Validator | clone', () => {
+test.group('Validator', () => {
   test('access validator schema and clone it', async ({ assert }) => {
-    const createAuthorValidator = vine.compile(
-      vine.object({
-        name: vine.string(),
-        email: vine.string().email(),
-        role: vine.string().in((field) => {
-          assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
-          return field.meta.choices
-        }),
-      })
-    )
+    const createAuthorValidator = vine.create({
+      name: vine.string(),
+      email: vine.string().email(),
+      role: vine.string().in((field) => {
+        assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
+        return field.meta.choices
+      }),
+    })
 
-    const updateAuthorValidator = vine.compile(createAuthorValidator.schema.clone().partial())
+    const updateAuthorValidator = vine.create(createAuthorValidator.schema.partial())
+    await assert.validationOutput(updateAuthorValidator.validate({}), {})
+    await assert.validationErrors(createAuthorValidator.validate({}), [
+      {
+        field: 'name',
+        message: 'The name field must be defined',
+        rule: 'required',
+      },
+      {
+        field: 'email',
+        message: 'The email field must be defined',
+        rule: 'required',
+      },
+      {
+        field: 'role',
+        message: 'The role field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('create top-level object validator', async ({ assert }) => {
+    const createAuthorValidator = vine.create({
+      name: vine.string(),
+      email: vine.string().email(),
+      role: vine.string().in((field) => {
+        assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
+        return field.meta.choices
+      }),
+    })
+
+    const updateAuthorValidator = vine.create(createAuthorValidator.schema.partial())
     await assert.validationOutput(updateAuthorValidator.validate({}), {})
     await assert.validationErrors(createAuthorValidator.validate({}), [
       {

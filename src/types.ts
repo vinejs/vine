@@ -34,6 +34,9 @@ import type { helpers } from './vine/helpers.js'
 import type { ValidationError } from './errors/validation_error.js'
 import type { OTYPE, COTYPE, PARSE, VALIDATION, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from './symbols.js'
 import { type Prettify, type ExtractUndefined, type ExtractDefined } from '@poppinss/types'
+import { type VineValidator } from './vine/validator.ts'
+import { type VineObject } from './schema/object/main.ts'
+import { type CamelCase } from './schema/camelcase_types.ts'
 
 /**
  * Compiler nodes emitted by Vine during schema compilation.
@@ -740,6 +743,31 @@ export type ValidationOptions<MetaData extends Record<string, any> | undefined> 
   BaseValidationTypes & ValidationOptionsMetaProp<MetaData>
 
 export type Infer<Schema extends { [OTYPE]: any }> = Schema[typeof OTYPE]
+
+export interface ValidatorBuilder<MetaData extends Record<string, any>> {
+  /**
+   * @deprecated Instead use "create"
+   */
+  compile<Schema extends SchemaTypes>(schema: Schema): VineValidator<Schema, MetaData>
+  create<
+    Properties extends Record<string, SchemaTypes>,
+    Schema extends VineObject<
+      Properties,
+      UndefinedOptional<{
+        [K in keyof Properties]: Properties[K][typeof ITYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof Properties]: Properties[K][typeof OTYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof Properties as CamelCase<K & string>]: Properties[K][typeof COTYPE]
+      }>
+    >,
+  >(
+    properties: Properties
+  ): VineValidator<Schema, MetaData>
+  create<Schema extends SchemaTypes>(schema: Schema): VineValidator<Schema, MetaData>
+}
 
 /**
  * Utility type to infer the input type of a schema.

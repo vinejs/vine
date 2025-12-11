@@ -2153,13 +2153,11 @@ test.group('Types | UnionOfTypes', () => {
 
 test.group('Types | compiled schema', () => {
   test('infer types from compiled schema', ({ expectTypeOf }) => {
-    const schema = vine.compile(
-      vine.object({
-        username: vine.string(),
-        email: vine.string(),
-        is_admin: vine.boolean(),
-      })
-    )
+    const schema = vine.create({
+      username: vine.string(),
+      email: vine.string(),
+      is_admin: vine.boolean(),
+    })
 
     type InputsSchema = InferInput<typeof schema>
     expectTypeOf<InputsSchema>().toEqualTypeOf<{
@@ -2177,13 +2175,11 @@ test.group('Types | compiled schema', () => {
   })
 
   test('ensure type-safety for metadata', ({ expectTypeOf }) => {
-    const schema = vine.withMetaData<{ userId: number }>().compile(
-      vine.object({
-        username: vine.string(),
-        email: vine.string(),
-        is_admin: vine.boolean(),
-      })
-    )
+    const schema = vine.withMetaData<{ userId: number }>().create({
+      username: vine.string(),
+      email: vine.string(),
+      is_admin: vine.boolean(),
+    })
 
     // @ts-expect-error
     schema.validate({})

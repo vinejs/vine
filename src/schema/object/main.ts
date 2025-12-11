@@ -8,6 +8,7 @@
  */
 
 import camelcase from 'camelcase'
+import { type Prettify } from '@poppinss/types'
 import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 import { type ObjectGroup } from './group.js'
@@ -292,7 +293,7 @@ export class VineObject<
   >(
     keys?: Keys[] | readonly Keys[]
   ): VineObject<
-    T,
+    Prettify<T>,
     UndefinedOptional<{
       [K in keyof T]: T[K][typeof ITYPE]
     }>,

@@ -131,7 +131,7 @@ export class VineValidator<
    */
   'constructor'(
     public schema: Schema,
-    options: {
+    protected options: {
       convertEmptyStringsToNull: boolean
       metaDataValidator?: MetaDataValidator
       messagesProvider: MessagesProviderContact

@@ -23,7 +23,11 @@ import type {
   ValidationOptions,
   ErrorReporterContract,
   MessagesProviderContact,
+  UndefinedOptional,
+  ValidatorBuilder,
 } from '../types.js'
+import { VineObject } from '../schema/object/main.ts'
+import { type ITYPE, type OTYPE, type COTYPE, PARSE } from '../symbols.ts'
 
 /**
  * Main Vine class that provides a fluent API for creating validation schemas
@@ -74,6 +78,8 @@ export class Vine extends SchemaBuilder {
    * @param schema - The validation schema to compile
    * @returns A compiled validator instance
    *
+   * @deprecated Instead use "create"
+   *
    * @example
    * const validate = vine.compile(schema)
    * await validate({ data })
@@ -84,6 +90,41 @@ export class Vine extends SchemaBuilder {
       messagesProvider: this.messagesProvider,
       errorReporter: this.errorReporter,
     })
+  }
+
+  create<
+    Properties extends Record<string, SchemaTypes>,
+    Schema extends VineObject<
+      Properties,
+      UndefinedOptional<{
+        [K in keyof Properties]: Properties[K][typeof ITYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof Properties]: Properties[K][typeof OTYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof Properties]: Properties[K][typeof COTYPE]
+      }>
+    >,
+  >(properties: Properties): VineValidator<Schema, Record<string, any> | undefined>
+
+  create<Schema extends SchemaTypes>(
+    schema: Schema
+  ): VineValidator<Schema, Record<string, any> | undefined>
+
+  create<SchemaOrProperties extends Record<string, SchemaTypes> | SchemaTypes>(
+    schemaOrProperties: SchemaOrProperties
+  ) {
+    const validatorOptions = {
+      convertEmptyStringsToNull: this.convertEmptyStringsToNull,
+      messagesProvider: this.messagesProvider,
+      errorReporter: this.errorReporter,
+    }
+
+    if (PARSE in schemaOrProperties) {
+      return new VineValidator(schemaOrProperties, validatorOptions)
+    }
+    return new VineValidator(new VineObject(schemaOrProperties), validatorOptions)
   }
 
   /**
@@ -99,16 +140,30 @@ export class Vine extends SchemaBuilder {
    * await validate(data, { meta: { userId: '123' } })
    */
   withMetaData<MetaData extends Record<string, any>>(callback?: MetaDataValidator) {
-    return {
-      compile: <Schema extends SchemaTypes>(schema: Schema) => {
-        return new VineValidator<Schema, MetaData>(schema, {
+    const builder: ValidatorBuilder<MetaData> = {
+      compile: (schema) => {
+        return new VineValidator(schema, {
           convertEmptyStringsToNull: this.convertEmptyStringsToNull,
           messagesProvider: this.messagesProvider,
           errorReporter: this.errorReporter,
           metaDataValidator: callback,
         })
       },
+      create: (schemaOrProperties: Record<string, SchemaTypes> | SchemaTypes) => {
+        const validatorOptions = {
+          convertEmptyStringsToNull: this.convertEmptyStringsToNull,
+          messagesProvider: this.messagesProvider,
+          errorReporter: this.errorReporter,
+          metaDataValidator: callback,
+        }
+
+        if (PARSE in schemaOrProperties) {
+          return new VineValidator(schemaOrProperties, validatorOptions)
+        }
+        return new VineValidator(new VineObject(schemaOrProperties), validatorOptions)
+      },
     }
+    return builder
   }
 
   /**
