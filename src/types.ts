@@ -835,3 +835,9 @@ export type UndefinedOptional<T> = Prettify<
 export type PropertiesToOptional<T extends Record<string, SchemaTypes>> = {
   [K in keyof T]: T[K] extends { optional: () => infer R extends SchemaTypes } ? R : T[K]
 }
+
+/**
+ * A container to define global transforms for certain data-types. Currently
+ * only date global transform can be defined
+ */
+export interface VineGlobalTransforms {}

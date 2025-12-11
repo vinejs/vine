@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import { type VineGlobalTransforms } from './types.ts'
+
 /**
  * Default error message templates used throughout the Vine validation library.
  * These messages support mustache-style interpolation for dynamic values like field names,
@@ -151,3 +153,7 @@ export const fields = {
   /** Default name for the root data object */
   '': 'data',
 }
+
+export const globalTransforms: {
+  date?: (value: Date) => VineGlobalTransforms extends { date: infer D } ? D : Date
+} = {}

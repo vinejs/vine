@@ -32,13 +32,25 @@ import type {
   FieldContext,
   DateFieldOptions,
   DateEqualsOptions,
+  VineGlobalTransforms,
 } from '../../types.js'
+import { globalTransforms } from '../../defaults.ts'
 
 /**
  * VineDate represents a Date object created by parsing a
  * string or number value as a date.
  */
-export class VineDate extends BaseLiteralType<string | number, Date, Date> {
+export class VineDate extends BaseLiteralType<
+  string | number,
+  VineGlobalTransforms extends { date: infer D } ? D : Date,
+  VineGlobalTransforms extends { date: infer D } ? D : Date
+> {
+  static transform(
+    transformer: (value: Date) => VineGlobalTransforms extends { date: infer D } ? D : Date
+  ) {
+    globalTransforms.date = transformer
+  }
+
   /**
    * Available VineDate rules
    */

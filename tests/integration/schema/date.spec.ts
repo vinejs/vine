@@ -7,8 +7,9 @@
  * file that was distributed with this source code.
  */
 
+import { DateTime } from 'luxon'
 import { test } from '@japa/runner'
-import vine from '../../../index.ts'
+import vine, { VineDate } from '../../../index.ts'
 import dayjs from 'dayjs'
 
 test.group('VineDate', () => {
@@ -227,5 +228,23 @@ test.group('VineDate', () => {
 
     assert.isTrue(result.required_date instanceof Date)
     assert.isTrue(result.optional_date instanceof Date)
+  })
+
+  test('transform date to a custom value via global transforms', async ({ assert }) => {
+    const schema = vine.object({
+      created_at: vine.date().before('today'),
+    })
+    VineDate.transform((value) => DateTime.fromJSDate(value) as any)
+
+    const data = { created_at: '2024-10-01' }
+    const result = await vine.validate({ schema, data })
+    const createdAt = result.created_at as unknown as DateTime
+
+    assert.isTrue(DateTime.isDateTime(createdAt))
+    assert.equal(createdAt.day, 1)
+    assert.equal(createdAt.month, 10)
+    assert.equal(createdAt.year, 2024)
+    assert.equal(createdAt.minute, 0)
+    assert.equal(createdAt.hour, 0)
   })
 })

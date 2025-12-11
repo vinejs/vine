@@ -8,7 +8,7 @@
  */
 
 import dayjs, { type Dayjs } from 'dayjs'
-import { messages } from '../../defaults.js'
+import { globalTransforms, messages } from '../../defaults.js'
 import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 import type { DateEqualsOptions, DateFieldOptions, FieldContext } from '../../types.js'
@@ -40,7 +40,10 @@ export const dateRule = createRule<Partial<DateFieldOptions>>(
 
     field.$value = dateTime
     field.$formats = formats
-    field.mutate(dateTime.toDate(), field)
+    field.mutate(
+      globalTransforms.date ? globalTransforms.date(dateTime.toDate()) : dateTime.toDate(),
+      field
+    )
     return true
   }
 )
