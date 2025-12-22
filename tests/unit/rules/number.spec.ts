@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   inRule,
   minRule,
@@ -19,7 +19,9 @@ import {
   negativeRule,
   decimalRule,
   withoutDecimalsRule,
-} from '../../../src/schema/number/rules.js'
+  nonNegativeRule,
+  nonPositiveRule,
+} from '../../../src/schema/number/rules.ts'
 
 test.group('Number | number', () => {
   test('report when value is not a number', () => {
@@ -236,7 +238,65 @@ test.group('Number | positive', () => {
     const positive = positiveRule()
 
     validator.withDataTypeValidator(number).execute([positive], 10).assertErrorsCount(0)
-    validator.withDataTypeValidator(number).execute([positive], '0').assertErrorsCount(0)
+  })
+
+  test('fail validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const positive = positiveRule()
+
+    validator
+      .withDataTypeValidator(number)
+      .execute([positive], '0')
+      .assertError('The dummy field must be positive')
+  })
+})
+
+test.group('Number | nonNegative', () => {
+  test('skip validation when value is not a number', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+    const validated = validator.withDataTypeValidator(number).execute([positiveOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('skip validation when value is not a number with bail mode disabled', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(number)
+      .execute([positiveOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('report error when value is negative', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+
+    const validated = validator.withDataTypeValidator(number).execute([positiveOrZero], -10)
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be positive or zero')
+
+    const validated1 = validator.withDataTypeValidator(number).execute([positiveOrZero], '-10')
+    validated1.assertErrorsCount(1)
+    validated1.assertError('The dummy field must be positive or zero')
+  })
+
+  test('pass validation when value is positive', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+
+    validator.withDataTypeValidator(number).execute([positiveOrZero], 10).assertErrorsCount(0)
+  })
+
+  test('pass validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+    validator.withDataTypeValidator(number).execute([positiveOrZero], '0').assertErrorsCount(0)
   })
 })
 
@@ -278,6 +338,72 @@ test.group('Number | negative', () => {
 
     validator.withDataTypeValidator(number).execute([negative], '-10').assertErrorsCount(0)
     validator.withDataTypeValidator(number).execute([negative], -1).assertErrorsCount(0)
+  })
+
+  test('fail validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const negative = negativeRule()
+
+    validator
+      .withDataTypeValidator(number)
+      .execute([negative], '0')
+      .assertError('The dummy field must be negative')
+    validator
+      .withDataTypeValidator(number)
+      .execute([negative], 0)
+      .assertError('The dummy field must be negative')
+  })
+})
+
+test.group('Number | nonPositive', () => {
+  test('skip validation when value is not a number', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+    const validated = validator.withDataTypeValidator(number).execute([negativeOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('skip validation when value is not a number with bail mode disabled', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(number)
+      .execute([negativeOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('report error when value is positive', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+
+    const validated = validator.withDataTypeValidator(number).execute([negativeOrZero], 1)
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be negative or zero')
+
+    const validated1 = validator.withDataTypeValidator(number).execute([negativeOrZero], '10')
+    validated1.assertErrorsCount(1)
+    validated1.assertError('The dummy field must be negative or zero')
+  })
+
+  test('pass validation when value is negative', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+
+    validator.withDataTypeValidator(number).execute([negativeOrZero], '-10').assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([negativeOrZero], -1).assertErrorsCount(0)
+  })
+
+  test('pass validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+
+    validator.withDataTypeValidator(number).execute([negativeOrZero], '0').assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([negativeOrZero], 0).assertErrorsCount(0)
   })
 })
 

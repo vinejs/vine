@@ -9,7 +9,7 @@
 
 import dayjs from 'dayjs'
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   dateRule,
   afterRule,
@@ -25,7 +25,7 @@ import {
   beforeOrEqualRule,
   afterOrSameAsRule,
   beforeOrSameAsRule,
-} from '../../../src/schema/date/rules.js'
+} from '../../../src/schema/date/rules.ts'
 
 test.group('Date | date', () => {
   test('report when value is not a number or a string', () => {
@@ -987,6 +987,23 @@ test.group('Date | afterField', () => {
 
   test("report error when date is not after the other field's value", () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
+    const afterField = afterFieldRule({ otherField: 'checkin_date' })
+    const validated = validator
+      .withContext({
+        data: {},
+        parent: {
+          checkin_date: '2022-01-22',
+        },
+      })
+      .withDataTypeValidator(date)
+      .execute([afterField], '2022-01-21')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a date after checkin_date')
+  })
+
+  test("report error when date is not after the other field's value and formatted as ISO8601", () => {
+    const date = dateRule({ formats: ['iso8601'] })
     const afterField = afterFieldRule({ otherField: 'checkin_date' })
     const validated = validator
       .withContext({

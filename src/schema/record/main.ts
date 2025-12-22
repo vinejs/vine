@@ -8,10 +8,17 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, RecordNode } from '@vinejs/compiler/types'
+import { type RefsStore, type RecordNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
-import { ITYPE, OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
+import {
+  type ITYPE,
+  type OTYPE,
+  type COTYPE,
+  PARSE,
+  UNIQUE_NAME,
+  IS_OF_TYPE,
+} from '../../symbols.js'
 import type {
   CompilerNodes,
   FieldOptions,
@@ -20,7 +27,7 @@ import type {
   Validation,
 } from '../../types.js'
 import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from './rules.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * VineRecord represents an object of key-value pair in which

@@ -8,9 +8,9 @@
  */
 
 import { ObjectGroup } from './group.js'
-import { CamelCase } from '../camelcase_types.js'
+import { type CamelCase } from '../camelcase_types.js'
 import { GroupConditional } from './conditional.js'
-import { OTYPE, COTYPE, ITYPE } from '../../symbols.js'
+import { type OTYPE, type COTYPE, type ITYPE } from '../../symbols.js'
 import type { FieldContext, SchemaTypes, UndefinedOptional } from '../../types.js'
 
 /**

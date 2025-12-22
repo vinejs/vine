@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { FieldContext } from '@vinejs/compiler/types'
+import { type FieldContext } from '@vinejs/compiler/types'
 import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
@@ -20,7 +20,6 @@ export const minLengthRule = createRule<{ min: number }>(
      * Value will always be an object if the field is valid.
      */
     if (Object.keys(value as Record<string, any>).length < options.min) {
-      field.report(messages['record.minLength'], 'record.minLength', field, options)
       field.report(messages['record.minLength'], 'record.minLength', field, options)
     }
   },

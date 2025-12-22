@@ -55,12 +55,29 @@ import {
   normalizeUrlRule,
   alphaNumericRule,
   normalizeEmailRule,
+  vatRule,
 } from './rules.js'
 
 /**
  * VineString represents a string value in the validation schema.
+ * It provides comprehensive string validation with built-in rules
+ * for common patterns like email, URL, UUID, and more.
+ *
+ * @example
+ * const schema = vine.string()
+ *   .email()
+ *   .minLength(5)
+ *   .maxLength(100)
+ *
+ * const result = await vine.validate({
+ *   schema,
+ *   data: 'user@example.com'
+ * })
  */
 export class VineString extends BaseLiteralType<string, string, string> {
+  /**
+   * Static collection of all available validation rules for strings
+   */
   static rules = {
     in: inRule,
     jwt: jwtRule,
@@ -86,6 +103,7 @@ export class VineString extends BaseLiteralType<string, string, string> {
     minLength: minLengthRule,
     notSameAs: notSameAsRule,
     maxLength: maxLengthRule,
+    vat: vatRule,
     ipAddress: ipAddressRule,
     creditCard: creditCardRule,
     postalCode: postalCodeRule,
@@ -101,44 +119,61 @@ export class VineString extends BaseLiteralType<string, string, string> {
   };
 
   /**
-   * The subtype of the literal schema field
+   * The subtype identifier for the literal schema field
    */
   [SUBTYPE] = 'string';
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.string';
 
   /**
-   * Checks if the value is of string type. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value is a string.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value is a string
    */
   [IS_OF_TYPE] = (value: unknown) => {
     return typeof value === 'string'
   }
 
+  /**
+   * Creates a new VineString instance with optional configuration.
+   *
+   * @param options - Field options like bail mode and nullability
+   * @param validations - Initial set of validations to apply
+   */
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations || [])
     this.dataTypeValidator = stringRule()
   }
 
   /**
-   * Validates the value to be a valid URL
+   * Validates the value to be a valid URL.
+   *
+   * @param args - Optional URL validation options
+   * @returns This string schema instance for method chaining
    */
   url(...args: Parameters<typeof urlRule>) {
     return this.use(urlRule(...args))
   }
 
   /**
-   * Validates the value to be an active URL
+   * Validates the value to be an active URL by making an HTTP request.
+   *
+   * @returns This string schema instance for method chaining
    */
   activeUrl() {
     return this.use(activeUrlRule())
   }
 
   /**
-   * Validates the value to be a valid email address
+   * Validates the value to be a valid email address.
+   *
+   * @param args - Optional email validation options
+   * @returns This string schema instance for method chaining
    */
   email(...args: Parameters<typeof emailRule>) {
     return this.use(emailRule(...args))
@@ -149,6 +184,13 @@ export class VineString extends BaseLiteralType<string, string, string> {
    */
   mobile(...args: Parameters<typeof mobileRule>) {
     return this.use(mobileRule(...args))
+  }
+
+  /**
+   * Validates the value to be a valid VAT number.
+   */
+  vat(...args: Parameters<typeof vatRule>) {
+    return this.use(vatRule(...args))
   }
 
   /**
@@ -188,21 +230,30 @@ export class VineString extends BaseLiteralType<string, string, string> {
   }
 
   /**
-   * Enforce a minimum length on a string field
+   * Enforce a minimum length on a string field.
+   *
+   * @param expectedLength - The minimum required length
+   * @returns This string schema instance for method chaining
    */
   minLength(expectedLength: number) {
     return this.use(minLengthRule({ min: expectedLength }))
   }
 
   /**
-   * Enforce a maximum length on a string field
+   * Enforce a maximum length on a string field.
+   *
+   * @param expectedLength - The maximum allowed length
+   * @returns This string schema instance for method chaining
    */
   maxLength(expectedLength: number) {
     return this.use(maxLengthRule({ max: expectedLength }))
   }
 
   /**
-   * Enforce a fixed length on a string field
+   * Enforce a fixed length on a string field.
+   *
+   * @param expectedLength - The exact required length
+   * @returns This string schema instance for method chaining
    */
   fixedLength(expectedLength: number) {
     return this.use(fixedLengthRule({ size: expectedLength }))
@@ -212,7 +263,19 @@ export class VineString extends BaseLiteralType<string, string, string> {
    * Ensure the field under validation is confirmed by
    * having another field with the same name.
    */
-  confirmed(options?: { confirmationField: string }) {
+  confirmed(
+    options?:
+      | {
+          /**
+           * @deprecated
+           * Use "as" field instead
+           */
+          confirmationField?: string
+        }
+      | {
+          as?: string
+        }
+  ) {
     return this.use(confirmedRule(options))
   }
 
@@ -373,7 +436,9 @@ export class VineString extends BaseLiteralType<string, string, string> {
 
   /**
    * Clones the VineString schema type. The applied options
-   * and validations are copied to the new instance
+   * and validations are copied to the new instance.
+   *
+   * @returns A cloned instance of this VineString schema
    */
   clone(): this {
     return new VineString(this.cloneOptions(), this.cloneValidations()) as this

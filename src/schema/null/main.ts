@@ -12,7 +12,7 @@ import type { LiteralNode, RefsStore } from '@vinejs/compiler/types'
 
 import type { FieldOptions, ParserOptions, ConstructableSchema } from '../../types.js'
 import { OTYPE, COTYPE, PARSE, ITYPE, SUBTYPE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Specify a null value inside a union.

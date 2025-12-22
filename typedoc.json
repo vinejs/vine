@@ -1,0 +1,16 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "@vinejs/vine",
+  "out": "docs",
+  "theme": "default",
+  "includeVersion": true,
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "readme": "none",
+  "gitRevision": "main",
+  "plugin": ["typedoc-plugin-missing-exports"],
+  "entryPoints": ["./index.ts", "./src/defaults.ts", "./factories/main.ts", "./src/types.ts"],
+  "sort": ["source-order"]
+}

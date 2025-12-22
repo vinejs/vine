@@ -7,13 +7,13 @@
  * file that was distributed with this source code.
  */
 
-import { ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
+import { type ObjectGroupNode, type RefsStore } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
-import { GroupConditional } from './conditional.js'
+import { type GroupConditional } from './conditional.js'
 import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
 import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Object group represents a group with multiple conditionals, where each

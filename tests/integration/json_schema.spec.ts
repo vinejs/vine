@@ -1,13 +1,13 @@
 import { test } from '@japa/runner'
 import vine from '../../index.js'
 import Ajv from 'ajv'
-import { SchemaTypes } from '../../src/types.js'
+import { type SchemaTypes } from '../../src/types.js'
 import { inspect } from 'node:util'
 
 const ajv = new Ajv()
 
 function validate(schema: SchemaTypes, value: any) {
-  const validator = ajv.compile(vine.compile(schema).toJSONSchema())
+  const validator = ajv.compile(vine.create(schema).toJSONSchema())
   return validator(value)
 }
 

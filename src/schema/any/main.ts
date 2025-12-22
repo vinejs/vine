@@ -10,8 +10,8 @@
 import { BaseLiteralType } from '../base/literal.js'
 import type { FieldOptions, ParserOptions, Validation } from '../../types.js'
 import { PARSE, SUBTYPE } from '../../symbols.js'
-import { RefsStore, LiteralNode } from '@vinejs/compiler/types'
-import { JSONSchema7 } from 'json-schema'
+import { type RefsStore, type LiteralNode } from '@vinejs/compiler/types'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * VineAny represents a value that can be anything

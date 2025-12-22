@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import vine from '../../index.js'
-import { SchemaTypes } from '../../src/types.js'
-import { JSONSchema7 } from 'json-schema'
+import { type SchemaTypes } from '../../src/types.js'
+import { type JSONSchema7 } from 'json-schema'
 import { BOOLEAN_NEGATIVES, BOOLEAN_POSITIVES } from '../../src/vine/helpers.js'
 
 enum Roles {
@@ -52,7 +52,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
 
@@ -77,7 +77,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@string'])
@@ -102,7 +102,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@enum'])
@@ -124,7 +124,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@boolean'])
@@ -174,7 +174,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@any'])
@@ -222,7 +222,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@record'])
@@ -304,7 +304,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@object'])
@@ -349,7 +349,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@array'])
@@ -395,7 +395,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@tuple'])
@@ -419,7 +419,7 @@ test.group('JsonSchema', () => {
       ],
     ])
     .run(({ assert }, [_, schema, expected]) => {
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
       assert.deepEqual(validator.toJSONSchema(), expected)
     })
     .tags(['@literal'])
@@ -434,7 +434,7 @@ test.group('JsonSchema', () => {
         ),
       ])
 
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
 
       assert.deepEqual(validator.toJSONSchema(), {
         anyOf: [
@@ -454,7 +454,7 @@ test.group('JsonSchema', () => {
     .run(({ assert }) => {
       const schema = vine.unionOfTypes([vine.string().email(), vine.number()])
 
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
 
       assert.deepEqual(validator.toJSONSchema(), {
         anyOf: [{ type: 'string', format: 'email' }, { type: 'number' }],
@@ -483,7 +483,7 @@ test.group('JsonSchema', () => {
         })
         .merge(guideSchema)
 
-      const validator = vine.compile(schema)
+      const validator = vine.create(schema)
 
       assert.deepEqual(validator.toJSONSchema(), {
         anyOf: [

@@ -7,8 +7,9 @@
  * file that was distributed with this source code.
  */
 
+import { DateTime } from 'luxon'
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
+import vine, { VineDate } from '../../../index.ts'
 import dayjs from 'dayjs'
 
 test.group('VineDate', () => {
@@ -198,5 +199,52 @@ test.group('VineDate', () => {
     assert.equal(result.created_at.getDate(), '4')
     assert.equal(result.created_at.getMonth(), '3')
     assert.equal(result.created_at.getFullYear(), '2018')
+  })
+
+  test('pass validation when optional date field is missing', async ({ assert }) => {
+    const schema = vine.object({
+      required_date: vine.date(),
+      optional_date: vine.date().optional(),
+    })
+
+    const data = { required_date: '2024-06-15' }
+    const result = await vine.validate({ schema, data })
+
+    assert.isTrue(result.required_date instanceof Date)
+    assert.isUndefined(result.optional_date)
+  })
+
+  test('pass validation when optional date field is provided', async ({ assert }) => {
+    const schema = vine.object({
+      required_date: vine.date(),
+      optional_date: vine.date().optional(),
+    })
+
+    const data = {
+      required_date: '2024-06-15',
+      optional_date: '2024-12-25',
+    }
+    const result = await vine.validate({ schema, data })
+
+    assert.isTrue(result.required_date instanceof Date)
+    assert.isTrue(result.optional_date instanceof Date)
+  })
+
+  test('transform date to a custom value via global transforms', async ({ assert }) => {
+    const schema = vine.object({
+      created_at: vine.date().before('today'),
+    })
+    VineDate.transform((value) => DateTime.fromJSDate(value) as any)
+
+    const data = { created_at: '2024-10-01' }
+    const result = await vine.validate({ schema, data })
+    const createdAt = result.created_at as unknown as DateTime
+
+    assert.isTrue(DateTime.isDateTime(createdAt))
+    assert.equal(createdAt.day, 1)
+    assert.equal(createdAt.month, 10)
+    assert.equal(createdAt.year, 2024)
+    assert.equal(createdAt.minute, 0)
+    assert.equal(createdAt.hour, 0)
   })
 })

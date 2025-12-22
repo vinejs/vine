@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import dayjs from 'dayjs'
+import { helpers } from '../../vine/helpers.ts'
 import { BaseLiteralType } from '../base/literal.js'
 import { IS_OF_TYPE, SUBTYPE, UNIQUE_NAME } from '../../symbols.js'
 import {
@@ -25,7 +25,6 @@ import {
   afterOrSameAsRule,
   beforeOrEqualRule,
   beforeOrSameAsRule,
-  DEFAULT_DATE_FORMATS,
 } from './rules.js'
 import type {
   Validation,
@@ -33,13 +32,25 @@ import type {
   FieldContext,
   DateFieldOptions,
   DateEqualsOptions,
+  VineGlobalTransforms,
 } from '../../types.js'
+import { globalTransforms } from '../../defaults.ts'
 
 /**
  * VineDate represents a Date object created by parsing a
  * string or number value as a date.
  */
-export class VineDate extends BaseLiteralType<string | number, Date, Date> {
+export class VineDate extends BaseLiteralType<
+  string | number,
+  VineGlobalTransforms extends { date: infer D } ? D : Date,
+  VineGlobalTransforms extends { date: infer D } ? D : Date
+> {
+  static transform(
+    transformer: (value: Date) => VineGlobalTransforms extends { date: infer D } ? D : Date
+  ) {
+    globalTransforms.date = transformer
+  }
+
   /**
    * Available VineDate rules
    */
@@ -77,8 +88,7 @@ export class VineDate extends BaseLiteralType<string | number, Date, Date> {
     if (typeof value !== 'string') {
       return false
     }
-
-    return dayjs(value, this.options.formats || DEFAULT_DATE_FORMATS, true).isValid()
+    return helpers.asDayJS(value, this.options.formats).dateTime.isValid()
   }
 
   declare protected options: FieldOptions & DateFieldOptions

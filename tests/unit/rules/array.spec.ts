@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   compactRule,
   distinctRule,
@@ -16,7 +16,7 @@ import {
   maxLengthRule,
   minLengthRule,
   fixedLengthRule,
-} from '../../../src/schema/array/rules.js'
+} from '../../../src/schema/array/rules.ts'
 
 const arrayValidator = {
   rule: {

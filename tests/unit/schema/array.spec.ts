@@ -10,9 +10,9 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import type { RuleBuilder } from '../../../src/types.js'
-import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import type { RuleBuilder } from '../../../src/types.ts'
+import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.ts'
 import {
   compactRule,
   distinctRule,
@@ -20,7 +20,7 @@ import {
   maxLengthRule,
   minLengthRule,
   fixedLengthRule,
-} from '../../../src/schema/array/rules.js'
+} from '../../../src/schema/array/rules.ts'
 
 const vine = new Vine()
 

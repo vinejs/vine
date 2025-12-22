@@ -93,13 +93,17 @@ export const rangeRule = createRule<{ min: number; max: number }>(
 )
 
 /**
- * Enforce the value is a positive number
+ * Enforce the value is a positive number. Zero is considered a neutral
+ * number and will fail the positive validation.
+ *
+ * A number greater than (0). For example, (1,2,3,0.5).
  */
 export const positiveRule = createRule(
   function positive(value, _, field) {
-    if ((value as number) < 0) {
-      field.report(messages.positive, 'positive', field)
+    if ((value as number) > 0) {
+      return
     }
+    field.report(messages.positive, 'positive', field)
   },
   {
     toJSONSchema: (schema) => {
@@ -109,13 +113,17 @@ export const positiveRule = createRule(
 )
 
 /**
- * Enforce the value is a negative number
+ * Enforce the value is a negative number. Zero is considered a neutral
+ * number and will fail the negative validation.
+ *
+ * A number less than (0). For example, (-1,-2,-3,-0.5)
  */
 export const negativeRule = createRule<undefined>(
   function negative(value, _, field) {
-    if ((value as number) >= 0) {
-      field.report(messages.negative, 'negative', field)
+    if ((value as number) < 0) {
+      return
     }
+    field.report(messages.negative, 'negative', field)
   },
   {
     toJSONSchema: (schema) => {
@@ -123,6 +131,28 @@ export const negativeRule = createRule<undefined>(
     },
   }
 )
+
+/**
+ * A number that is either positive or zero (greater than or equal to (0)).
+ * For example, (0,1,2,0.5).
+ */
+export const nonNegativeRule = createRule<undefined>(function nonNegative(value, _, field) {
+  if ((value as number) >= 0) {
+    return
+  }
+  field.report(messages.nonNegative, 'nonNegative', field)
+})
+
+/**
+ * A number that is either negative or zero (less than or equal to (0)).
+ * For example, (0,-1,-2,-0.5)
+ */
+export const nonPositiveRule = createRule(function nonPositive(value, _, field) {
+  if ((value as number) <= 0) {
+    return
+  }
+  field.report(messages.nonPositive, 'nonPositive', field)
+})
 
 /**
  * Enforce the value to have a fixed or range of decimals
@@ -147,7 +177,6 @@ export const decimalRule = createRule<{ range: [number, number?] }>(
 export const withoutDecimalsRule = createRule(
   function withoutDecimals(value, _, field) {
     if (!Number.isInteger(value)) {
-      field.report(messages.withoutDecimals, 'withoutDecimals', field)
       field.report(messages.withoutDecimals, 'withoutDecimals', field)
     }
   },

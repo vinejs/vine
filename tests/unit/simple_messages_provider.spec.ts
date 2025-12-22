@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import { fieldContext } from '../../factories/main.js'
-import { SimpleMessagesProvider } from '../../src/messages_provider/simple_messages_provider.js'
+import { fieldContext } from '../../factories/main.ts'
+import { SimpleMessagesProvider } from '../../src/messages_provider/simple_messages_provider.ts'
 
 test.group('Simple messages provider | resolving messages', () => {
   test('get custom message for a rule', ({ assert }) => {

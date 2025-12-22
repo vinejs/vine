@@ -12,7 +12,7 @@ import { helpers } from '../../vine/helpers.js'
 import { BaseLiteralType } from '../base/literal.js'
 import { IS_OF_TYPE, SUBTYPE, UNIQUE_NAME } from '../../symbols.js'
 import type { FieldOptions, Literal, Validation } from '../../types.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * VineLiteral represents a type that matches an exact value

@@ -7,8 +7,31 @@
  * file that was distributed with this source code.
  */
 
+import { type VineGlobalTransforms } from './types.ts'
+
 /**
- * Collection of default error messages to use
+ * Default error message templates used throughout the Vine validation library.
+ * These messages support mustache-style interpolation for dynamic values like field names,
+ * expected values, and validation parameters.
+ *
+ * Message templates use {{ }} syntax for variable interpolation:
+ * - {{ field }} - The field name or custom field label
+ * - {{ min }}, {{ max }} - Numeric constraints
+ * - {{ expectedValue }} - Expected literal values
+ * - {{ otherField }} - Related field names for comparisons
+ *
+ * @example
+ * // Basic usage
+ * 'The {{ field }} field is required' // → 'The username field is required'
+ *
+ * // With custom field names
+ * fields = { 'user.email': 'Email Address' }
+ * messages = { 'required': 'The {{ field }} is required' }
+ * // → 'The Email Address is required'
+ *
+ * // With validation parameters
+ * 'The {{ field }} must be at least {{ min }} characters'
+ * // → 'The password must be at least 8 characters'
  */
 export const messages = {
   'required': 'The {{ field }} field must be defined',
@@ -31,7 +54,7 @@ export const messages = {
   'minLength': 'The {{ field }} field must have at least {{ min }} characters',
   'maxLength': 'The {{ field }} field must not be greater than {{ max }} characters',
   'fixedLength': 'The {{ field }} field must be {{ size }} characters long',
-  'confirmed': 'The {{ field }} field and {{ otherField }} field must be the same',
+  'confirmed': 'The {{ originalField }} field and {{ otherField }} field must be the same',
   'endsWith': 'The {{ field }} field must end with {{ substring }}',
   'startsWith': 'The {{ field }} field must start with {{ substring }}',
   'sameAs': 'The {{ field }} field and {{ otherField }} field must be the same',
@@ -39,6 +62,7 @@ export const messages = {
   'in': 'The selected {{ field }} is invalid',
   'notIn': 'The selected {{ field }} is invalid',
   'ipAddress': 'The {{ field }} field must be a valid IP address',
+  'vat': 'The {{ field }} field must be a valid VAT number',
   'uuid': 'The {{ field }} field must be a valid UUID',
   'ulid': 'The {{ field }} field must be a valid ULID',
   'hexCode': 'The {{ field }} field must be a valid hex color code',
@@ -52,6 +76,8 @@ export const messages = {
   'range': 'The {{ field }} field must be between {{ min }} and {{ max }}',
   'positive': 'The {{ field }} field must be positive',
   'negative': 'The {{ field }} field must be negative',
+  'nonNegative': 'The {{ field }} field must be positive or zero',
+  'nonPositive': 'The {{ field }} field must be negative or zero',
   'decimal': 'The {{ field }} field must have {{ digits }} decimal places',
   'withoutDecimals': 'The {{ field }} field must be an integer',
 
@@ -97,11 +123,37 @@ export const messages = {
 
   'date.weekend': 'The {{ field }} field is not a weekend',
   'date.weekday': 'The {{ field }} field is not a weekday',
+
+  'nativeFile': 'The {{ field }} field must be a valid file',
+  'nativeFile.minSize': 'The {{ field }} field must be at least {{ min }} bytes in size',
+  'nativeFile.maxSize': 'The {{ field }} field must not exceed {{ max }} bytes in size',
+  'nativeFile.mimeTypes': 'The {{ field }} mime type is invalid',
 }
 
 /**
- * Collection of default fields
+ * Default field name mappings for error message formatting.
+ * Maps field paths to human-readable labels that appear in error messages.
+ *
+ * The empty string key ('') provides a fallback name for the root data object.
+ *
+ * @example
+ * // Custom field mappings
+ * const customFields = {
+ *   'user.email': 'Email Address',
+ *   'user.firstName': 'First Name',
+ *   'user.lastName': 'Last Name',
+ *   'billing.address': 'Billing Address'
+ * }
+ *
+ * // Field paths use dot notation for nested objects
+ * 'user.profile.bio' → 'Biography'
+ * 'settings.notifications.email' → 'Email Notifications'
  */
 export const fields = {
+  /** Default name for the root data object */
   '': 'data',
 }
+
+export const globalTransforms: {
+  date?: (value: Date) => VineGlobalTransforms extends { date: infer D } ? D : Date
+} = {}

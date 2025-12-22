@@ -8,7 +8,7 @@
  */
 
 import camelcase from 'camelcase'
-import { RefsStore, TupleNode } from '@vinejs/compiler/types'
+import { type RefsStore, type TupleNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
 import { IS_OF_TYPE, PARSE, UNIQUE_NAME } from '../../symbols.js'
@@ -19,7 +19,7 @@ import type {
   SchemaTypes,
   Validation,
 } from '../../types.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * VineTuple is an array with known length and may have different

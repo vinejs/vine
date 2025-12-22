@@ -9,7 +9,7 @@
 
 import { createRule } from '../../vine/create_rule.js'
 import { messages } from '../../defaults.js'
-import { FieldContext } from '@vinejs/compiler/types'
+import { type FieldContext } from '@vinejs/compiler/types'
 
 /**
  * Enum rule is used to validate the field's value to be one

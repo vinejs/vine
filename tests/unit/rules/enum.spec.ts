@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import { enumRule } from '../../../src/schema/enum/rules.js'
-import { ValidatorFactory } from '../../../factories/validator.js'
+import { enumRule } from '../../../src/schema/enum/rules.ts'
+import { ValidatorFactory } from '../../../factories/validator.ts'
 
 test.group('Rules | enum', () => {
   test('report error when field value is not a subset of pre-defined choices', () => {

@@ -8,9 +8,9 @@
  */
 
 import { test } from '@japa/runner'
-import { fieldContext } from '../../factories/main.js'
-import { ValidationError } from '../../src/errors/validation_error.js'
-import { SimpleErrorReporter } from '../../src/reporters/simple_error_reporter.js'
+import { fieldContext } from '../../factories/main.ts'
+import { ValidationError } from '../../src/errors/validation_error.ts'
+import { SimpleErrorReporter } from '../../src/reporters/simple_error_reporter.ts'
 
 test.group('Simple error reporter', () => {
   test('collect reported errors', ({ assert }) => {

@@ -11,7 +11,7 @@ import type { ConditionalFn, ObjectGroupNode, RefsStore } from '@vinejs/compiler
 
 import { OTYPE, COTYPE, PARSE, ITYPE } from '../../symbols.js'
 import type { CompilerNodes, ParserOptions, SchemaTypes } from '../../types.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Group conditional represents a sub-set of object wrapped

@@ -8,7 +8,7 @@
  */
 
 import camelcase from 'camelcase'
-import { CompilerNodes, RefsStore, UnionNode } from '@vinejs/compiler/types'
+import { type CompilerNodes, type RefsStore, type UnionNode } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
 import { UnionConditional } from './conditional.js'
@@ -22,20 +22,19 @@ import type {
 } from '../../types.js'
 import { VineOptional } from '../optional/main.js'
 import { VineNull } from '../null/main.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
-  implements
-    ConstructableSchema<
-      Conditional[typeof ITYPE],
-      Conditional[typeof OTYPE],
-      Conditional[typeof COTYPE]
-    >
-{
+export class VineUnion<
+  Conditional extends UnionConditional<SchemaTypes>,
+> implements ConstructableSchema<
+  Conditional[typeof ITYPE],
+  Conditional[typeof OTYPE],
+  Conditional[typeof COTYPE]
+> {
   declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]

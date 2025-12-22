@@ -8,58 +8,99 @@
  */
 
 import camelcase from 'camelcase'
+import { type Prettify } from '@poppinss/types'
+import type { ObjectGroupNode, ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
-import { ObjectGroup } from './group.js'
+import { type ObjectGroup } from './group.js'
 import { BaseType } from '../base/main.js'
-import { GroupConditional } from './conditional.js'
-import { OTYPE, COTYPE, PARSE, UNIQUE_NAME, IS_OF_TYPE, ITYPE } from '../../symbols.js'
+import { type GroupConditional } from './conditional.js'
+import {
+  type OTYPE,
+  type COTYPE,
+  PARSE,
+  UNIQUE_NAME,
+  IS_OF_TYPE,
+  type ITYPE,
+} from '../../symbols.js'
 import type {
   Validation,
   SchemaTypes,
   FieldOptions,
   ParserOptions,
   CompilerNodes,
+  PropertiesToOptional,
+  UndefinedOptional,
 } from '../../types.js'
-import { JSONSchema7 } from 'json-schema'
-import { ObjectGroupNode, ObjectNode, RefsStore } from '@vinejs/compiler/types'
+import { type JSONSchema7 } from 'json-schema'
+import type { CamelCase } from '../camelcase_types.ts'
 
 /**
- * Converts schema properties to camelCase
+ * Converts schema properties to camelCase during validation.
+ * This is a wrapper around VineObject that automatically converts
+ * property names from snake_case to camelCase in the output.
+ *
+ * @template Schema - The underlying VineObject schema type
+ *
+ * @example
+ * const schema = vine.object({
+ *   first_name: vine.string(),
+ *   last_name: vine.string()
+ * }).camelCase()
+ *
+ * // Output will have: { firstName: string, lastName: string }
  */
 export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> extends BaseType<
   Schema[typeof ITYPE],
   Schema[typeof COTYPE],
   Schema[typeof COTYPE]
 > {
+  /**
+   * Reference to the underlying object schema
+   */
   #schema: Schema;
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'types.object';
 
   /**
-   * Checks if the value is of object type. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value is an object.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value is a non-null object and not an array
    */
   [IS_OF_TYPE] = (value: unknown) => {
     return value !== null && typeof value === 'object' && !Array.isArray(value)
   }
 
+  /**
+   * Creates a new VineCamelCaseObject instance wrapping the given schema.
+   *
+   * @param schema - The VineObject schema to wrap with camelCase conversion
+   */
   constructor(schema: Schema) {
     super()
     this.#schema = schema
   }
 
   /**
-   * Clone object
+   * Clone object with camelCase conversion preserved.
+   *
+   * @returns A cloned instance of this VineCamelCaseObject schema
    */
   clone(): this {
     return new VineCamelCaseObject<Schema>(this.#schema.clone()) as this
   }
 
   /**
-   * Compiles the schema type to a compiler node
+   * Compiles the schema type to a compiler node with camelCase enabled.
+   *
+   * @param propertyName - Name of the property being compiled
+   * @param refs - Reference store for the compiler
+   * @param options - Parser options
+   * @returns Compiled object node with camelCase conversion
    */
   [PARSE](
     propertyName: string,
@@ -72,8 +113,26 @@ export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> 
 }
 
 /**
- * VineObject represents an object value in the validation
- * schema.
+ * VineObject represents an object value in the validation schema.
+ * It validates objects with predefined properties, supports conditional
+ * groups, and provides control over unknown properties.
+ *
+ * @template Properties - Record of property names to their schema types
+ * @template Input - The expected input type for this object
+ * @template Output - The output type after validation and transformation
+ * @template CamelCaseOutput - The output type with camelCase property names
+ *
+ * @example
+ * const schema = vine.object({
+ *   name: vine.string(),
+ *   email: vine.string().email(),
+ *   age: vine.number().min(0)
+ * })
+ *
+ * const result = await vine.validate({
+ *   schema,
+ *   data: { name: 'John', email: 'john@example.com', age: 30 }
+ * })
  */
 export class VineObject<
   Properties extends Record<string, SchemaTypes>,
@@ -82,28 +141,33 @@ export class VineObject<
   CamelCaseOutput,
 > extends BaseType<Input, Output, CamelCaseOutput> {
   /**
-   * Object properties
+   * Object properties mapping property names to their validation schemas
    */
   #properties: Properties
 
   /**
-   * Object groups to merge based on conditionals
+   * Object groups to merge based on conditionals.
+   * These allow adding properties dynamically based on conditions.
    */
   #groups: ObjectGroup<GroupConditional<any, any, any, any>>[] = []
 
   /**
-   * Whether or not to allow unknown properties
+   * Whether or not to allow unknown properties that are not defined
+   * in the schema. When false, unknown properties cause validation errors.
    */
   #allowUnknownProperties: boolean = false;
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.object';
 
   /**
-   * Checks if the value is of object type. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value is an object.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value is a non-null object and not an array
    */
   [IS_OF_TYPE] = (value: unknown) => {
     return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -259,6 +323,67 @@ export class VineObject<
     }
 
     return schema
+  }
+
+  /*
+   * Creates a new object with all properties marked as optional.
+   */
+  partial<
+    Keys extends keyof Properties = keyof Properties,
+    T extends Record<string, SchemaTypes> = Omit<Properties, Keys> &
+      PropertiesToOptional<Pick<Properties, Keys>>,
+  >(
+    keys?: Keys[] | readonly Keys[]
+  ): VineObject<
+    Prettify<T>,
+    UndefinedOptional<{
+      [K in keyof T]: T[K][typeof ITYPE]
+    }>,
+    UndefinedOptional<{
+      [K in keyof T]: T[K][typeof OTYPE]
+    }>,
+    UndefinedOptional<{
+      [K in keyof T as CamelCase<K & string>]: T[K][typeof COTYPE]
+    }>
+  > {
+    /**
+     * Groups cannot be optional standalone, hence they cannot be marked
+     * as optional when merged inside an object. Same is true for
+     * unknownProperties.
+     */
+    if (this.#groups.length > 0 || this.#allowUnknownProperties) {
+      throw new Error(
+        'toOptional cannot be used on schemas that have groups or allowUnknownProperties enabled'
+      )
+    }
+
+    const properties: Record<string, SchemaTypes> = {}
+    for (const key of Object.keys(this.#properties)) {
+      let field = this.#properties[key].clone()
+
+      if (
+        (!keys || keys.includes(key as Keys)) &&
+        'optional' in field &&
+        typeof field.optional === 'function'
+      ) {
+        field = field.optional()
+      }
+
+      properties[key] = field
+    }
+
+    return new VineObject(properties, this.cloneOptions(), this.cloneValidations()) as VineObject<
+      T,
+      UndefinedOptional<{
+        [K in keyof T]: T[K][typeof ITYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof T]: T[K][typeof OTYPE]
+      }>,
+      UndefinedOptional<{
+        [K in keyof T as CamelCase<K & string>]: T[K][typeof COTYPE]
+      }>
+    >
   }
 
   /**

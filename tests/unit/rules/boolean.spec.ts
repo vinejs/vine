@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
-import { booleanRule } from '../../../src/schema/boolean/rules.js'
+import { validator } from '../../../factories/main.ts'
+import { booleanRule } from '../../../src/schema/boolean/rules.ts'
 
 test.group('Boolean | boolean', () => {
   test('report when value is not a boolean', () => {

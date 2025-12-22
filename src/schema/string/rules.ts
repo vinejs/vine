@@ -27,6 +27,7 @@ import type {
   NormalizeUrlOptions,
   AlphaNumericOptions,
   NormalizeEmailOptions,
+  VATOptions,
 } from '../../types.js'
 
 /**
@@ -136,7 +137,6 @@ export const hexCodeRule = createRule(
 export const urlRule = createRule<URLOptions | undefined>(
   function url(value, options, field) {
     if (!helpers.isURL(value as string, options)) {
-      field.report(messages.url, 'url', field)
       field.report(messages.url, 'url', field)
     }
   },
@@ -351,20 +351,48 @@ export const notSameAsRule = createRule<{ otherField: string }>(
  * Ensure the field under validation is confirmed by
  * having another field with the same name
  */
-export const confirmedRule = createRule<{ confirmationField: string } | undefined>(
-  function confirmed(value, options, field) {
-    const otherField = options?.confirmationField || `${field.name}_confirmation`
-    const input = field.parent[otherField]
-
-    /**
-     * Performing validation and reporting error
-     */
-    if (input !== value) {
-      field.report(messages.confirmed, 'confirmed', field, { otherField })
-      return
+export const confirmedRule = createRule<
+  | {
+      /**
+       * @deprecated
+       * Use "as" field instead
+       */
+      confirmationField?: string
     }
+  | {
+      as?: string
+    }
+  | undefined
+>(function confirmed(value, options, field) {
+  const normalizedOptions: { confirmationField?: string; as?: string } = options ?? {}
+  const otherField =
+    normalizedOptions.as ?? normalizedOptions.confirmationField ?? `${field.name}_confirmation`
+  const input = field.parent[otherField]
+
+  /**
+   * Performing validation and reporting error
+   */
+  if (input !== value) {
+    field.report(
+      messages.confirmed,
+      'confirmed',
+      {
+        ...field,
+        name: otherField,
+        wildCardPath: `${field.wildCardPath.replace(String(field.name), otherField)}`,
+        isDefined: true,
+        isValid: false,
+        value: input,
+        getFieldPath() {
+          const parentPath = field.getFieldPath()
+          return `${parentPath.replace(String(field.name), otherField)}`
+        },
+      },
+      { otherField, originalField: field.name }
+    )
+    return
   }
-)
+})
 
 /**
  * Ensure the field's value under validation is a subset of the pre-defined list.
@@ -450,6 +478,23 @@ export const passportRule = createRule<
 })
 
 /**
+ * Validates the value to be a valid VAT number.
+ */
+export const vatRule = createRule<VATOptions | ((field: FieldContext) => VATOptions)>(
+  function vat(value, options, field) {
+    const countryCodes =
+      typeof options === 'function' ? options(field).countryCode : options.countryCode
+
+    const matchesAnyCountryCode = countryCodes.find((countryCode) =>
+      helpers.isVAT(value as string, countryCode)
+    )
+    if (!matchesAnyCountryCode) {
+      field.report(messages.vat, 'vat', field, { countryCodes })
+    }
+  }
+)
+
+/**
  * Validates the value to be a valid postal code
  */
 export const postalCodeRule = createRule<
@@ -478,7 +523,7 @@ export const postalCodeRule = createRule<
 /**
  * Validates the value to be a valid UUID
  */
-export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5)[] } | undefined>(
+export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)[] } | undefined>(
   function uuid(value, options, field) {
     if (!options || !options.version) {
       if (!helpers.isUUID(value as string)) {

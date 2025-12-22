@@ -28,7 +28,7 @@ import type {
   ConstructableSchema,
 } from '../../types.js'
 import { ConditionalValidations } from '../base/conditional_rules.js'
-import { JSONSchema7 } from 'json-schema'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Specify an optional value inside a union.

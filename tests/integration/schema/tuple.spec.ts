@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
+import vine from '../../../index.ts'
 
 test.group('VineTuple', () => {
   test('fail when value is not an array', async ({ assert }) => {

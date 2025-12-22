@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { ErrorReporterContract } from '@vinejs/compiler/types'
+import { type ErrorReporterContract } from '@vinejs/compiler/types'
 
 import { helpers } from '../src/vine/helpers.js'
 import type { FieldContext, MessagesProviderContact } from '../src/types.js'
