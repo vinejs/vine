@@ -8,7 +8,7 @@
  */
 
 import camelcase from 'camelcase'
-import { type CompilerNodes, type RefsStore, type UnionNode } from '@vinejs/compiler/types'
+import { type RefsStore, type UnionNode } from '@vinejs/compiler/types'
 
 import { messages } from '../../defaults.js'
 import { UnionConditional } from './conditional.js'
@@ -18,7 +18,7 @@ import type {
   ParserOptions,
   ConstructableSchema,
   UnionNoMatchCallback,
-  RefIdentifier,
+  WithJSONSchema,
 } from '../../types.js'
 import { VineOptional } from '../optional/main.js'
 import { VineNull } from '../null/main.js'
@@ -28,13 +28,15 @@ import { type JSONSchema7 } from 'json-schema'
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnion<
-  Conditional extends UnionConditional<SchemaTypes>,
-> implements ConstructableSchema<
-  Conditional[typeof ITYPE],
-  Conditional[typeof OTYPE],
-  Conditional[typeof COTYPE]
-> {
+export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
+  implements
+    ConstructableSchema<
+      Conditional[typeof ITYPE],
+      Conditional[typeof OTYPE],
+      Conditional[typeof COTYPE]
+    >,
+    WithJSONSchema
+{
   declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]
@@ -87,16 +89,9 @@ export class VineUnion<
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(
-    conditions: ({
-      conditionalFnRefId: RefIdentifier
-      schema: CompilerNodes
-    } & {
-      jsonSchema: JSONSchema7
-    })[]
-  ): JSONSchema7 {
+  toJSONSchema(): JSONSchema7 {
     return {
-      anyOf: conditions.map((condition) => condition.jsonSchema),
+      anyOf: this.#conditionals.map((conditional) => conditional.toJSONSchema()).filter(Boolean),
     }
   }
 
@@ -113,22 +108,15 @@ export class VineUnion<
   /**
    * Compiles to a union
    */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): UnionNode & { jsonSchema: JSONSchema7 } {
-    const parsedConditions = this.#conditionals.map((conditional) =>
-      conditional[PARSE](propertyName, refs, options)
-    )
-
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): UnionNode {
     return {
       type: 'union',
       fieldName: propertyName,
       propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
       elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
-      conditions: parsedConditions,
-      jsonSchema: this.toJSONSchema(parsedConditions),
+      conditions: this.#conditionals.map((conditional) =>
+        conditional[PARSE](propertyName, refs, options)
+      ),
     }
   }
 }

@@ -3,6 +3,7 @@ import vine from '../../index.js'
 import { type SchemaTypes } from '../../src/types.js'
 import { type JSONSchema7 } from 'json-schema'
 import { BOOLEAN_NEGATIVES, BOOLEAN_POSITIVES } from '../../src/vine/helpers.js'
+import { createRule } from '../../src/vine/create_rule.ts'
 
 enum Roles {
   ADMIN = 'admin',
@@ -86,11 +87,11 @@ test.group('JsonSchema', () => {
     .with<[string, SchemaTypes, JSONSchema7][]>([
       ['no type', vine.enum([1, 3]), { enum: [1, 3] }],
       ['native enum', vine.enum(Roles), { enum: ['admin', 'moderator'] }],
-      ['nullable', vine.enum([1, 3]).nullable(), { anyOf: [{ type: 'null' }, { enum: [1, 3] }] }],
+      ['nullable', vine.enum([1, 3]).nullable(), { anyOf: [{ enum: [1, 3] }, { type: 'null' }] }],
       [
         'nullable with predifined type',
         vine.enum(['foo', 'baz']).meta({ type: 'string' }).nullable(),
-        { anyOf: [{ type: 'null' }, { type: 'string', enum: ['foo', 'baz'] }] },
+        { anyOf: [{ type: 'string', enum: ['foo', 'baz'] }, { type: 'null' }] },
       ],
       [
         'meta',
@@ -115,7 +116,7 @@ test.group('JsonSchema', () => {
       [
         'not strict nullable',
         vine.boolean().nullable(),
-        { anyOf: [{ type: 'null' }, { enum: [...BOOLEAN_POSITIVES, ...BOOLEAN_NEGATIVES] }] },
+        { anyOf: [{ enum: [...BOOLEAN_POSITIVES, ...BOOLEAN_NEGATIVES] }, { type: 'null' }] },
       ],
       [
         'meta',
@@ -227,7 +228,6 @@ test.group('JsonSchema', () => {
     })
     .tags(['@record'])
 
-  // TODO: We might want to add `additionalProperties: false`
   test('vine.object() - {0}')
     .with<[string, SchemaTypes, JSONSchema7][]>([
       [
@@ -277,6 +277,8 @@ test.group('JsonSchema', () => {
           properties: {
             foo: {
               type: 'number',
+              // @ts-expect-error -- this is not part of standard (used for context)
+              isOptional: true,
             },
             baz: {
               type: 'string',
@@ -409,7 +411,7 @@ test.group('JsonSchema', () => {
         'nullable',
         vine.literal('str').nullable(),
         {
-          anyOf: [{ type: 'null' }, { type: 'string', enum: ['str'] }],
+          anyOf: [{ type: 'string', enum: ['str'] }, { type: 'null' }],
         },
       ],
       [
@@ -488,16 +490,6 @@ test.group('JsonSchema', () => {
       assert.deepEqual(validator.toJSONSchema(), {
         anyOf: [
           {
-            type: 'object',
-            properties: {
-              name: { type: 'string' },
-              group_size: { type: 'number' },
-              phone_number: { type: 'string' },
-            },
-            required: ['name', 'group_size', 'phone_number'],
-            additionalProperties: false,
-          },
-          {
             anyOf: [
               {
                 type: 'object',
@@ -517,8 +509,30 @@ test.group('JsonSchema', () => {
               },
             ],
           },
+          {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              group_size: { type: 'number' },
+              phone_number: { type: 'string' },
+            },
+            required: ['name', 'group_size', 'phone_number'],
+            additionalProperties: false,
+          },
         ],
       } satisfies JSONSchema7)
     })
     .tags(['@group'])
+
+  test('allow custom rules to modify schema', ({ assert }) => {
+    const rule = createRule(() => {}, {
+      toJSONSchema: (schema) => {
+        schema.type = 'string'
+      },
+    })
+
+    assert.deepEqual(vine.number().use(rule()).toJSONSchema(), {
+      type: 'string',
+    })
+  })
 })

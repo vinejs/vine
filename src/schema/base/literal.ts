@@ -98,6 +98,38 @@ export class NullableModifier<
     return new MetaModifier(this, meta)
   }
 
+  toJSONSchema(): JSONSchema7 {
+    const schema = this.#parent.toJSONSchema?.() ?? {}
+
+    if (schema.anyOf) {
+      schema.anyOf.push({ type: 'null' })
+      return schema
+    }
+
+    if (schema.enum) {
+      return {
+        anyOf: [schema, { type: 'null' }],
+      }
+    }
+
+    if (schema.type === undefined) {
+      schema.type = 'null'
+      return schema
+    }
+
+    if (typeof schema.type === 'string') {
+      schema.type = [schema.type, 'null']
+      return schema
+    }
+
+    if (Array.isArray(schema.type)) {
+      schema.type.push('null')
+      return schema
+    }
+
+    return schema
+  }
+
   /**
    * Compiles to compiler node
    */
@@ -105,39 +137,9 @@ export class NullableModifier<
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
+  ): LiteralNode & { subtype: string } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.allowNull = true
-
-    // TODO: We might want to dedupe
-    if (output.jsonSchema.anyOf) {
-      output.jsonSchema.anyOf.push({ type: 'null' })
-      return output
-    }
-
-    if (output.jsonSchema.enum) {
-      output.jsonSchema = {
-        anyOf: [{ type: 'null' }, output.jsonSchema],
-      }
-
-      return output
-    }
-
-    if (output.jsonSchema.type === undefined) {
-      output.jsonSchema.type = 'null'
-      return output
-    }
-
-    if (typeof output.jsonSchema.type === 'string') {
-      output.jsonSchema.type = [output.jsonSchema.type, 'null']
-      return output
-    }
-
-    if (Array.isArray(output.jsonSchema.type)) {
-      output.jsonSchema.type.push('null')
-      return output
-    }
-
     return output
   }
 }
@@ -181,6 +183,25 @@ export class MetaModifier<
   }
 
   /**
+   * Apply a transformation to the final validated value.
+   * The transformer receives the validated value and can convert it to any new datatype.
+   *
+   * @template TransformedOutput - The type of the transformed output
+   * @param transformer - Function to transform the validated value
+   * @returns A new TransformModifier wrapping this schema
+   *
+   * @example
+   * vine.string().nullable().transform((value) => {
+   *   return value ? value.toUpperCase() : null
+   * })
+   */
+  transform<TransformedOutput>(
+    transformer: Transformer<this, TransformedOutput>
+  ): TransformModifier<this, TransformedOutput> {
+    return new TransformModifier(transformer, this)
+  }
+
+  /**
    * Mark the field under validation to be null. The null value will
    * be written to the output as well.
    *
@@ -199,6 +220,14 @@ export class MetaModifier<
     return new MetaModifier(this.#parent.clone(), this.#meta) as this
   }
 
+  toJSONSchema(): JSONSchema7 {
+    const schema = this.#parent.toJSONSchema?.() ?? {}
+    return {
+      ...schema,
+      ...this.#meta,
+    }
+  }
+
   /**
    * Compiles to compiler node
    */
@@ -206,16 +235,9 @@ export class MetaModifier<
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
+  ): LiteralNode & { subtype: string } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.allowNull = true
-
-    // TODO: We might want to deepmerge
-    output.jsonSchema = {
-      ...output.jsonSchema,
-      ...this.#meta,
-    }
-
     return output
   }
 }
@@ -347,13 +369,29 @@ export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any
   }
 
   /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
+  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+    return {
+      ...this.#parent.toJSONSchema(),
+      // Custom property allowing object schema type to set property as not required.
+      isOptional: true,
+    }
+  }
+
+  /**
    * Compiles to compiler node
    */
   [PARSE](
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
+  ): LiteralNode & { subtype: string } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.isOptional = true
     output.validations = output.validations.concat(this.compileValidations(refs))
@@ -435,13 +473,25 @@ export class TransformModifier<
   }
 
   /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    return this.#parent.toJSONSchema()
+  }
+
+  /**
    * Compiles to compiler node
    */
   [PARSE](
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
+  ): LiteralNode & { subtype: string } {
     const output = this.#parent[PARSE](propertyName, refs, options)
     output.transformFnId = refs.trackTransformer(this.#transform)
     return output
@@ -508,7 +558,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   /**
    * Configuration options for this field including bail mode, nullability, and parsing
    */
-  protected options: FieldOptions
+  options: FieldOptions
 
   /**
    * Array of validation rules to apply to the field value
@@ -586,10 +636,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
     return this.validations.map((validation) => this.compileValidation(validation, refs))
   }
 
-  /**
-   * Transforms into JSONSchema.
-   */
-  protected toJSONSchema() {
+  toJSONSchema(): JSONSchema7 {
     const schema: JSONSchema7 = {}
 
     if (this.dataTypeValidator?.rule.toJSONSchema) {
@@ -698,7 +745,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
+  ): LiteralNode & { subtype: string } {
     return {
       type: 'literal',
       subtype: this[SUBTYPE],
@@ -712,7 +759,6 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
       isOptional: this.options.isOptional,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      jsonSchema: this.toJSONSchema(),
     }
   }
 }

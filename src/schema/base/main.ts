@@ -97,6 +97,36 @@ export class NullableModifier<
     return new NullableModifier(this.#parent.clone()) as this
   }
 
+  toJSONSchema(): JSONSchema7 {
+    const schema = this.#parent.toJSONSchema?.()
+
+    if (!schema) {
+      return { type: 'null' }
+    }
+
+    if (schema.anyOf) {
+      schema.anyOf.push({ type: 'null' })
+      return schema
+    }
+
+    if (schema.type === undefined) {
+      schema.type = 'null'
+      return schema
+    }
+
+    if (typeof schema.type === 'string') {
+      schema.type = [schema.type, 'null']
+      return schema
+    }
+
+    if (Array.isArray(schema.type)) {
+      schema.type.push('null')
+      return schema
+    }
+
+    return schema
+  }
+
   /**
    * Compiles to compiler node by delegating to the parent schema
    * and setting the allowNull flag.
@@ -110,27 +140,6 @@ export class NullableModifier<
     const output = this.#parent[PARSE](propertyName, refs, options)
     if (output.type !== 'union') {
       output.allowNull = true
-
-      // TODO: We might want to dedupe
-      if (output.jsonSchema.anyOf) {
-        output.jsonSchema.anyOf.push({ type: 'null' })
-        return output
-      }
-
-      if (output.jsonSchema.type === undefined) {
-        output.jsonSchema.type = 'null'
-        return output
-      }
-
-      if (typeof output.jsonSchema.type === 'string') {
-        output.jsonSchema.type = [output.jsonSchema.type, 'null']
-        return output
-      }
-
-      if (Array.isArray(output.jsonSchema.type)) {
-        output.jsonSchema.type.push('null')
-        return output
-      }
     }
 
     return output
@@ -172,15 +181,25 @@ export class MetaModifier<
     return new MetaModifier(this.#parent.clone(), this.#meta) as this
   }
 
-  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes {
-    const output = this.#parent[PARSE](propertyName, refs, options)
-
-    output.jsonSchema = {
-      ...output.jsonSchema,
+  toJSONSchema(): JSONSchema7 {
+    const parent = this.#parent.toJSONSchema?.() ?? {}
+    return {
+      ...parent,
       ...this.#meta,
     }
+  }
 
-    return output
+  /**
+   * Compiles to compiler node by delegating to the parent schema
+   * and setting the allowNull flag.
+   *
+   * @param propertyName - Name of the property being compiled
+   * @param refs - Reference store for the compiler
+   * @param options - Parser options
+   * @returns Compiled compiler node with null support
+   */
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes {
+    return this.#parent[PARSE](propertyName, refs, options)
   }
 }
 
@@ -310,6 +329,14 @@ export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
     return new OptionalModifier(this.#parent.clone(), this.cloneValidations()) as this
   }
 
+  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+    return {
+      ...this.#parent.toJSONSchema(),
+      // Custom property allowing object schema type to set property as not required.
+      isOptional: true,
+    }
+  }
+
   /**
    * Compiles to compiler node
    */
@@ -355,6 +382,18 @@ export abstract class BaseType<Input, Output, CamelCaseOutput>
    * @returns Compiled compiler node
    */
   abstract [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes
+
+  /**
+   * The child class must implement the toJSONSchema method to
+   * support converting into a JSON Schema.
+   *
+   * Otherwise it returns an empty schema which is considered as any.
+   *
+   * @returns JSON Schema
+   */
+  toJSONSchema(): JSONSchema7 {
+    return {}
+  }
 
   /**
    * The child class must implement the clone method to create

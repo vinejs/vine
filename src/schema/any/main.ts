@@ -8,9 +8,8 @@
  */
 
 import { BaseLiteralType } from '../base/literal.js'
-import type { FieldOptions, ParserOptions, Validation } from '../../types.js'
-import { PARSE, SUBTYPE } from '../../symbols.js'
-import { type RefsStore, type LiteralNode } from '@vinejs/compiler/types'
+import type { FieldOptions, Validation } from '../../types.js'
+import { SUBTYPE } from '../../symbols.js'
 import { type JSONSchema7 } from 'json-schema'
 
 /**
@@ -37,7 +36,7 @@ export class VineAny extends BaseLiteralType<any, any, any> {
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(): JSONSchema7 {
+  toJSONSchema(): JSONSchema7 {
     const schema: JSONSchema7 = {
       anyOf: [
         { type: 'string' },
@@ -53,19 +52,6 @@ export class VineAny extends BaseLiteralType<any, any, any> {
       validation.rule.toJSONSchema(schema, validation.options)
     }
 
-    return schema
-  }
-
-  /**
-   * Compiles the schema type to a compiler node
-   */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
-    const schema = super[PARSE](propertyName, refs, options)
-    schema.jsonSchema = this.toJSONSchema()
     return schema
   }
 }

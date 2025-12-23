@@ -20,11 +20,11 @@ import {
   IS_OF_TYPE,
 } from '../../symbols.js'
 import type {
-  CompilerNodes,
   FieldOptions,
   ParserOptions,
   SchemaTypes,
   Validation,
+  WithJSONSchema,
 } from '../../types.js'
 
 import {
@@ -55,11 +55,10 @@ import { type JSONSchema7 } from 'json-schema'
  *   data: ['user1@example.com', 'user2@example.com']
  * })
  */
-export class VineArray<Schema extends SchemaTypes> extends BaseType<
-  Schema[typeof ITYPE][],
-  Schema[typeof OTYPE][],
-  Schema[typeof COTYPE][]
-> {
+export class VineArray<Schema extends SchemaTypes>
+  extends BaseType<Schema[typeof ITYPE][], Schema[typeof OTYPE][], Schema[typeof COTYPE][]>
+  implements WithJSONSchema
+{
   /**
    * Static collection of all available validation rules for arrays
    */
@@ -176,12 +175,11 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(node: CompilerNodes): JSONSchema7 {
+  toJSONSchema(): JSONSchema7 {
     const schema: JSONSchema7 = {
       type: 'array',
+      items: this.#schema.toJSONSchema?.() ?? {},
     }
-
-    schema.items = node.jsonSchema
 
     for (const validation of this.validations) {
       if (!validation.rule.toJSONSchema) continue
@@ -199,12 +197,7 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
    * @param options - Parser options
    * @returns Compiled array node for validation
    */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): ArrayNode & { jsonSchema: JSONSchema7 } {
-    const parsed = this.#schema[PARSE]('*', refs, options)
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ArrayNode {
     return {
       type: 'array',
       fieldName: propertyName,
@@ -212,10 +205,9 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
       bail: this.options.bail,
       allowNull: this.options.allowNull,
       isOptional: this.options.isOptional,
-      each: parsed,
+      each: this.#schema[PARSE]('*', refs, options),
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      jsonSchema: this.toJSONSchema(parsed),
     }
   }
 }

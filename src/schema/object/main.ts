@@ -9,7 +9,7 @@
 
 import camelcase from 'camelcase'
 import { type Prettify } from '@poppinss/types'
-import type { ObjectGroupNode, ObjectNode, RefsStore } from '@vinejs/compiler/types'
+import type { ObjectNode, RefsStore } from '@vinejs/compiler/types'
 
 import { type ObjectGroup } from './group.js'
 import { BaseType } from '../base/main.js'
@@ -27,9 +27,9 @@ import type {
   SchemaTypes,
   FieldOptions,
   ParserOptions,
-  CompilerNodes,
   PropertiesToOptional,
   UndefinedOptional,
+  WithJSONSchema,
 } from '../../types.js'
 import { type JSONSchema7 } from 'json-schema'
 import type { CamelCase } from '../camelcase_types.ts'
@@ -94,6 +94,11 @@ export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> 
     return new VineCamelCaseObject<Schema>(this.#schema.clone()) as this
   }
 
+  toJSONSchema(): JSONSchema7 {
+    // TODO: We might want to camel case properties here aswell
+    return this.#schema.toJSONSchema()
+  }
+
   /**
    * Compiles the schema type to a compiler node with camelCase enabled.
    *
@@ -102,11 +107,7 @@ export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> 
    * @param options - Parser options
    * @returns Compiled object node with camelCase conversion
    */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): ObjectNode & { jsonSchema: JSONSchema7 } {
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ObjectNode {
     options.toCamelCase = true
     return this.#schema[PARSE](propertyName, refs, options)
   }
@@ -139,7 +140,10 @@ export class VineObject<
   Input,
   Output,
   CamelCaseOutput,
-> extends BaseType<Input, Output, CamelCaseOutput> {
+>
+  extends BaseType<Input, Output, CamelCaseOutput>
+  implements WithJSONSchema
+{
   /**
    * Object properties mapping property names to their validation schemas
    */
@@ -289,17 +293,24 @@ export class VineObject<
     return new VineCamelCaseObject(this)
   }
 
-  /**
-   * Transforms into JSONSchema.
-   */
-  protected toJSONSchema(
-    nodes: CompilerNodes[],
-    groups: (ObjectGroupNode & { jsonSchema: JSONSchema7 })[]
-  ): JSONSchema7 {
-    const schema: JSONSchema7 & { properties: {}; required: [] } = {
+  toJSONSchema(): JSONSchema7 {
+    const properties: Record<string, JSONSchema7> = {}
+    const required: string[] = []
+
+    for (const [key, property] of Object.entries(this.getProperties())) {
+      if (!property.toJSONSchema) continue
+      const schema = property.toJSONSchema()
+      properties[key] = schema
+
+      if (!('isOptional' in schema) || schema.isOptional !== true) {
+        required.push(key)
+      }
+    }
+
+    const schema: JSONSchema7 = {
       type: 'object',
-      properties: {},
-      required: [],
+      properties,
+      required,
       additionalProperties: this.#allowUnknownProperties,
     }
 
@@ -308,17 +319,9 @@ export class VineObject<
       validation.rule.toJSONSchema(schema, validation.options)
     }
 
-    for (const node of nodes) {
-      schema.properties[node.propertyName] = node.jsonSchema
-
-      if (!('isOptional' in node) || !node.isOptional) {
-        schema.required.push(node.propertyName)
-      }
-    }
-
-    if (groups.length > 0) {
+    if (this.#groups.length > 0) {
       return {
-        anyOf: [schema, ...groups.map((group) => group.jsonSchema)],
+        anyOf: [...this.#groups.map((group) => group.toJSONSchema()), schema],
       }
     }
 
@@ -389,19 +392,7 @@ export class VineObject<
   /**
    * Compiles the schema type to a compiler node
    */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): ObjectNode & { jsonSchema: JSONSchema7 } {
-    const parsedProperties = Object.keys(this.#properties).map((property) => {
-      return this.#properties[property][PARSE](property, refs, options)
-    })
-
-    const parsedGroups = this.#groups.map((group) => {
-      return group[PARSE](refs, options)
-    })
-
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ObjectNode {
     return {
       type: 'object',
       fieldName: propertyName,
@@ -412,9 +403,12 @@ export class VineObject<
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       allowUnknownProperties: this.#allowUnknownProperties,
       validations: this.compileValidations(refs),
-      properties: parsedProperties,
-      groups: parsedGroups,
-      jsonSchema: this.toJSONSchema(parsedProperties, parsedGroups),
+      properties: Object.keys(this.#properties).map((property) => {
+        return this.#properties[property][PARSE](property, refs, options)
+      }),
+      groups: this.#groups.map((group) => {
+        return group[PARSE](refs, options)
+      }),
     }
   }
 }

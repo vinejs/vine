@@ -13,11 +13,11 @@ import { type RefsStore, type TupleNode } from '@vinejs/compiler/types'
 import { BaseType } from '../base/main.js'
 import { IS_OF_TYPE, PARSE, UNIQUE_NAME } from '../../symbols.js'
 import type {
-  CompilerNodes,
   FieldOptions,
   ParserOptions,
   SchemaTypes,
   Validation,
+  WithJSONSchema,
 } from '../../types.js'
 import { type JSONSchema7 } from 'json-schema'
 
@@ -30,7 +30,10 @@ export class VineTuple<
   Input extends any[],
   Output extends any[],
   CamelCaseOutput extends any[],
-> extends BaseType<Input, Output, CamelCaseOutput> {
+>
+  extends BaseType<Input, Output, CamelCaseOutput>
+  implements WithJSONSchema
+{
   #schemas: [...Schema]
 
   /**
@@ -94,17 +97,20 @@ export class VineTuple<
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(nodes: CompilerNodes[]) {
-    const schema: JSONSchema7 & { items?: JSONSchema7[] } = {
-      type: 'array',
-      minItems: nodes.length,
-      maxItems: nodes.length,
-      additionalItems: false,
+  toJSONSchema() {
+    const items: JSONSchema7[] = []
+    for (const item of this.#schemas) {
+      if (!item.toJSONSchema) continue
+      items.push(item.toJSONSchema())
     }
 
-    for (const node of nodes) {
-      if (!schema.items) schema.items = []
-      schema.items.push(node.jsonSchema)
+    const schema: JSONSchema7 = {
+      type: 'array',
+      minItems: this.#schemas.length,
+      maxItems: this.#schemas.length,
+      additionalItems: false,
+      // Items should NEVER be a list of empty items according to standard
+      items: items.length > 0 ? items : undefined,
     }
 
     for (const validation of this.validations) {
@@ -118,13 +124,7 @@ export class VineTuple<
   /**
    * Compiles to array data type
    */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): TupleNode & { jsonSchema: JSONSchema7 } {
-    const parsed = this.#schemas.map((schema, index) => schema[PARSE](String(index), refs, options))
-
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): TupleNode {
     return {
       type: 'tuple',
       fieldName: propertyName,
@@ -135,8 +135,7 @@ export class VineTuple<
       allowUnknownProperties: this.#allowUnknownProperties,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      properties: parsed,
-      jsonSchema: this.toJSONSchema(parsed),
+      properties: this.#schemas.map((schema, index) => schema[PARSE](String(index), refs, options)),
     }
   }
 }

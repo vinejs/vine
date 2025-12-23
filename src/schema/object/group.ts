@@ -12,7 +12,7 @@ import { type ObjectGroupNode, type RefsStore } from '@vinejs/compiler/types'
 import { messages } from '../../defaults.js'
 import { type GroupConditional } from './conditional.js'
 import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
-import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
+import type { ParserOptions, UnionNoMatchCallback, WithJSONSchema } from '../../types.js'
 import { type JSONSchema7 } from 'json-schema'
 
 /**
@@ -20,7 +20,9 @@ import { type JSONSchema7 } from 'json-schema'
  * condition returns a set of object properties to merge into the
  * existing object.
  */
-export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any>> {
+export class ObjectGroup<
+  Conditional extends GroupConditional<any, any, any, any>,
+> implements WithJSONSchema {
   declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]
@@ -37,11 +39,9 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(
-    groups: (ObjectGroupNode['conditions'][number] & { jsonSchema: JSONSchema7 })[]
-  ): JSONSchema7 {
+  toJSONSchema(): JSONSchema7 {
     return {
-      anyOf: groups.map((group) => group.jsonSchema),
+      anyOf: this.#conditionals.map((conditional) => conditional.toJSONSchema()),
     }
   }
 
@@ -66,16 +66,11 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any
   /**
    * Compiles the group
    */
-  [PARSE](refs: RefsStore, options: ParserOptions): ObjectGroupNode & { jsonSchema: JSONSchema7 } {
-    const parsedConditions = this.#conditionals.map((conditional) =>
-      conditional[PARSE](refs, options)
-    )
-
+  [PARSE](refs: RefsStore, options: ParserOptions): ObjectGroupNode {
     return {
       type: 'group',
       elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
-      conditions: parsedConditions,
-      jsonSchema: this.toJSONSchema(parsedConditions),
+      conditions: this.#conditionals.map((conditional) => conditional[PARSE](refs, options)),
     }
   }
 }

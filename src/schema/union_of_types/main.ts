@@ -17,7 +17,7 @@ import type {
   ParserOptions,
   ConstructableSchema,
   UnionNoMatchCallback,
-  CompilerNodes,
+  WithJSONSchema,
 } from '../../types.js'
 import { VineOptional } from '../optional/main.js'
 import { VineNull } from '../null/main.js'
@@ -27,11 +27,11 @@ import { type JSONSchema7 } from 'json-schema'
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnionOfTypes<Schema extends SchemaTypes> implements ConstructableSchema<
-  Schema[typeof ITYPE],
-  Schema[typeof OTYPE],
-  Schema[typeof COTYPE]
-> {
+export class VineUnionOfTypes<Schema extends SchemaTypes>
+  implements
+    ConstructableSchema<Schema[typeof ITYPE], Schema[typeof OTYPE], Schema[typeof COTYPE]>,
+    WithJSONSchema
+{
   declare [ITYPE]: Schema[typeof ITYPE];
   declare [OTYPE]: Schema[typeof OTYPE];
   declare [COTYPE]: Schema[typeof COTYPE]
@@ -89,36 +89,29 @@ export class VineUnionOfTypes<Schema extends SchemaTypes> implements Constructab
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(nodes: CompilerNodes[]): JSONSchema7 {
+  toJSONSchema(): JSONSchema7 {
     return {
-      anyOf: nodes.map((node) => node.jsonSchema),
+      anyOf: this.#schemas.map((schema) => schema.toJSONSchema?.()).filter(Boolean),
     }
   }
 
   /**
    * Compiles to a union
    */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): UnionNode & { jsonSchema: JSONSchema7 } {
-    const parsedConditions = this.#schemas.map((schema) => {
-      return {
-        conditionalFnRefId: refs.trackConditional((value, field) => {
-          return schema[IS_OF_TYPE]!(value, field)
-        }),
-        schema: schema[PARSE](propertyName, refs, options),
-      }
-    })
-
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): UnionNode {
     return {
       type: 'union',
       fieldName: propertyName,
       propertyName: options.toCamelCase ? camelcase(propertyName) : propertyName,
       elseConditionalFnRefId: refs.trackConditional(this.#otherwiseCallback),
-      conditions: parsedConditions,
-      jsonSchema: this.toJSONSchema(parsedConditions.map((c) => c.schema)),
+      conditions: this.#schemas.map((schema) => {
+        return {
+          conditionalFnRefId: refs.trackConditional((value, field) => {
+            return schema[IS_OF_TYPE]!(value, field)
+          }),
+          schema: schema[PARSE](propertyName, refs, options),
+        }
+      }),
     }
   }
 }

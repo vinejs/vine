@@ -52,14 +52,13 @@ import { type JSONSchema7 } from 'json-schema'
  *   validations: []
  * }
  */
-export type CompilerNodes = (
+export type CompilerNodes =
   | (LiteralNode & { subtype: string })
   | ObjectNode
   | ArrayNode
   | UnionNode
   | RecordNode
   | TupleNode
-) & { jsonSchema: JSONSchema7 }
 
 /**
  * Options accepted by the mobile number validation rule.
@@ -326,6 +325,9 @@ export interface ConstructableSchema<Inputs, Output, CamelCaseOutput> {
   [UNIQUE_NAME]?: string
   /** Type checking function for union type resolution */
   [IS_OF_TYPE]?: (value: unknown, field: FieldContext) => boolean
+
+  /** Transforms your schema type into JSONSchema7 */
+  toJSONSchema(): JSONSchema7
 }
 
 /**
@@ -361,9 +363,11 @@ export interface ConstructableLiteralSchema<Inputs, Output, CamelCaseOutput> {
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 }
+  ): LiteralNode & { subtype: string }
   /** Creates a deep copy of the schema instance */
   clone(): this
+  /** Transforms your schema type into JSONSchema7 */
+  toJSONSchema(): JSONSchema7
 
   /**
    * Unique identifier for the schema type.
@@ -396,6 +400,16 @@ export interface WithCustomRules {
    * schema.use(myCustomRule({ strict: true }))
    */
   use(validation: Validation<any> | RuleBuilder): this
+}
+
+/**
+ * Interface for schema types that support converting into JSON Schema.
+ *
+ * @example
+ * const schema = vine.string().toJSONSchema()
+ */
+export interface WithJSONSchema {
+  toJSONSchema(): JSONSchema7
 }
 
 /**

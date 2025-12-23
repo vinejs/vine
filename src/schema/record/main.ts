@@ -20,11 +20,11 @@ import {
   IS_OF_TYPE,
 } from '../../symbols.js'
 import type {
-  CompilerNodes,
   FieldOptions,
   ParserOptions,
   SchemaTypes,
   Validation,
+  WithJSONSchema,
 } from '../../types.js'
 import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from './rules.js'
 import { type JSONSchema7 } from 'json-schema'
@@ -33,11 +33,14 @@ import { type JSONSchema7 } from 'json-schema'
  * VineRecord represents an object of key-value pair in which
  * keys are unknown
  */
-export class VineRecord<Schema extends SchemaTypes> extends BaseType<
-  { [K: string]: Schema[typeof ITYPE] },
-  { [K: string]: Schema[typeof OTYPE] },
-  { [K: string]: Schema[typeof COTYPE] }
-> {
+export class VineRecord<Schema extends SchemaTypes>
+  extends BaseType<
+    { [K: string]: Schema[typeof ITYPE] },
+    { [K: string]: Schema[typeof OTYPE] },
+    { [K: string]: Schema[typeof COTYPE] }
+  >
+  implements WithJSONSchema
+{
   /**
    * Default collection of record rules
    */
@@ -111,13 +114,13 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(node: CompilerNodes) {
-    const schema: JSONSchema7 & {} = {
+  toJSONSchema() {
+    const schema = {
       type: 'object',
       additionalProperties: {},
-    }
+    } satisfies JSONSchema7
 
-    schema.additionalProperties = node.jsonSchema
+    schema.additionalProperties = this.#schema.toJSONSchema?.() ?? {}
 
     for (const validation of this.validations) {
       if (!validation.rule.toJSONSchema) continue
@@ -130,12 +133,7 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
   /**
    * Compiles to record data type
    */
-  [PARSE](
-    propertyName: string,
-    refs: RefsStore,
-    options: ParserOptions
-  ): RecordNode & { jsonSchema: JSONSchema7 } {
-    const parsed = this.#schema[PARSE]('*', refs, options)
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): RecordNode {
     return {
       type: 'record',
       fieldName: propertyName,
@@ -143,10 +141,9 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
       bail: this.options.bail,
       allowNull: this.options.allowNull,
       isOptional: this.options.isOptional,
-      each: parsed,
+      each: this.#schema[PARSE]('*', refs, options),
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      jsonSchema: this.toJSONSchema(parsed),
     }
   }
 }

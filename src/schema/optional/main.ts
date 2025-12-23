@@ -171,6 +171,13 @@ export class VineOptional<Output>
     })
   }
 
+  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+    return {
+      // Custom property allowing object schema type to set property as not required.
+      isOptional: true,
+    }
+  }
+
   /**
    * Compiles the schema type to a compiler node
    */
@@ -178,7 +185,7 @@ export class VineOptional<Output>
     propertyName: string,
     refs: RefsStore,
     options: ParserOptions
-  ): LiteralNode & { subtype: string; jsonSchema: JSONSchema7 } {
+  ): LiteralNode & { subtype: string } {
     return {
       type: 'literal',
       subtype: this[SUBTYPE],
@@ -189,7 +196,6 @@ export class VineOptional<Output>
       isOptional: this.options.isOptional,
       parseFnId: this.options.parse ? refs.trackParser(this.options.parse) : undefined,
       validations: this.compileValidations(refs),
-      jsonSchema: {},
     }
   }
 }

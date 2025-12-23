@@ -20,7 +20,6 @@ import type {
   MetaDataValidator,
   ValidationOptions,
   ErrorReporterContract,
-  CompilerNodes,
 } from '../types.js'
 import { type JSONSchema7 } from 'json-schema'
 
@@ -69,6 +68,12 @@ export class VineValidator<
     schema: RootNode
     refs: Refs
   }
+
+  /**
+   * JSON Schema is only computed when asked.
+   * We cache it in validator for reusability.
+   */
+  #jsonSchema?: JSONSchema7
 
   /**
    * Messages provider instance used for internationalization
@@ -242,8 +247,11 @@ export class VineValidator<
   }
 
   'toJSONSchema'(): JSONSchema7 {
-    const schema = this.#compiled.schema.schema as CompilerNodes
-    return schema.jsonSchema
+    if (!this.#jsonSchema) {
+      this.#jsonSchema = this.schema.toJSONSchema()
+    }
+
+    return this.#jsonSchema
   }
 
   readonly '~standard': StandardSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> = {

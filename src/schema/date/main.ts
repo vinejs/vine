@@ -91,7 +91,7 @@ export class VineDate extends BaseLiteralType<
     return helpers.asDayJS(value, this.options.formats).dateTime.isValid()
   }
 
-  declare protected options: FieldOptions & DateFieldOptions
+  declare options: FieldOptions & DateFieldOptions
 
   constructor(options?: Partial<FieldOptions> & DateFieldOptions, validations?: Validation<any>[]) {
     super(options, validations || [])

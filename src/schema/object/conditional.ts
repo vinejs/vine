@@ -10,7 +10,7 @@
 import type { ConditionalFn, ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 
 import { OTYPE, COTYPE, PARSE, ITYPE } from '../../symbols.js'
-import type { CompilerNodes, ParserOptions, SchemaTypes } from '../../types.js'
+import type { ParserOptions, SchemaTypes, WithJSONSchema } from '../../types.js'
 import { type JSONSchema7 } from 'json-schema'
 
 /**
@@ -22,7 +22,7 @@ export class GroupConditional<
   Input,
   Output,
   CamelCaseOutput,
-> {
+> implements WithJSONSchema {
   declare [ITYPE]: Input;
   declare [OTYPE]: Output;
   declare [COTYPE]: CamelCaseOutput
@@ -45,43 +45,39 @@ export class GroupConditional<
   /**
    * Transforms into JSONSchema.
    */
-  protected toJSONSchema(nodes: CompilerNodes[]) {
-    const schema: JSONSchema7 & { properties: {}; required: [] } = {
-      type: 'object',
-      properties: {},
-      required: [],
-    }
+  toJSONSchema(): JSONSchema7 {
+    const properties: Record<string, JSONSchema7> = {}
+    const required: string[] = []
 
-    for (const node of nodes) {
-      schema.properties[node.propertyName] = node.jsonSchema
+    for (const [key, property] of Object.entries(this.#properties)) {
+      const schema = property.toJSONSchema()
+      properties[key] = schema
 
-      if (!('isOptional' in node) || !node.isOptional) {
-        schema.required.push(node.propertyName)
+      if (!('isOptional' in property) || property.isOptional !== true) {
+        required.push(key)
       }
     }
 
-    return schema
+    return {
+      type: 'object',
+      properties,
+      required,
+    }
   }
 
   /**
    * Compiles to a union conditional
    */
-  [PARSE](
-    refs: RefsStore,
-    options: ParserOptions
-  ): ObjectGroupNode['conditions'][number] & { jsonSchema: JSONSchema7 } {
-    const parsedProperties = Object.keys(this.#properties).map((property) => {
-      return this.#properties[property][PARSE](property, refs, options)
-    })
-
+  [PARSE](refs: RefsStore, options: ParserOptions): ObjectGroupNode['conditions'][number] {
     return {
       schema: {
         type: 'sub_object',
-        properties: parsedProperties,
+        properties: Object.keys(this.#properties).map((property) => {
+          return this.#properties[property][PARSE](property, refs, options)
+        }),
         groups: [], // Compiler allows nested groups, but we are not implementing it
       },
       conditionalFnRefId: refs.trackConditional(this.#conditional),
-      jsonSchema: this.toJSONSchema(parsedProperties),
     }
   }
 }
