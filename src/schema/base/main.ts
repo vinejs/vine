@@ -22,6 +22,7 @@ import type {
   WithCustomRules,
 } from '../../types.js'
 import { ConditionalValidations } from './conditional_rules.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Modifies the schema type to allow null values in addition to the
@@ -79,6 +80,14 @@ export class NullableModifier<
   }
 
   /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
+  /**
    * Creates a fresh instance of the underlying schema type
    * and wraps it inside the nullable modifier.
    *
@@ -86,6 +95,36 @@ export class NullableModifier<
    */
   clone(): this {
     return new NullableModifier(this.#parent.clone()) as this
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    const schema = this.#parent.toJSONSchema?.()
+
+    if (!schema) {
+      return { type: 'null' }
+    }
+
+    if (schema.anyOf) {
+      schema.anyOf.push({ type: 'null' })
+      return schema
+    }
+
+    if (schema.type === undefined) {
+      schema.type = 'null'
+      return schema
+    }
+
+    if (typeof schema.type === 'string') {
+      schema.type = [schema.type, 'null']
+      return schema
+    }
+
+    if (Array.isArray(schema.type)) {
+      schema.type.push('null')
+      return schema
+    }
+
+    return schema
   }
 
   /**
@@ -104,6 +143,63 @@ export class NullableModifier<
     }
 
     return output
+  }
+}
+
+export class MetaModifier<
+  Schema extends ConstructableSchema<any, any, any>,
+> implements ConstructableSchema<
+  Schema[typeof ITYPE],
+  Schema[typeof OTYPE],
+  Schema[typeof COTYPE]
+> {
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Schema[typeof ITYPE];
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [OTYPE]: Schema[typeof OTYPE];
+  declare [COTYPE]: Schema[typeof COTYPE]
+
+  #parent: Schema
+  #meta: JSONSchema7 | Object
+
+  constructor(parent: Schema, meta: JSONSchema7 | Object) {
+    this.#parent = parent
+    this.#meta = meta
+  }
+
+  /**
+   * Creates a fresh instance of the underlying schema type
+   * and wraps it inside the meta modifier
+   */
+  clone(): this {
+    return new MetaModifier(this.#parent.clone(), this.#meta) as this
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    const parent = this.#parent.toJSONSchema?.() ?? {}
+    return {
+      ...parent,
+      ...this.#meta,
+    }
+  }
+
+  /**
+   * Compiles to compiler node by delegating to the parent schema
+   * and setting the allowNull flag.
+   *
+   * @param propertyName - Name of the property being compiled
+   * @param refs - Reference store for the compiler
+   * @param options - Parser options
+   * @returns Compiled compiler node with null support
+   */
+  [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes {
+    return this.#parent[PARSE](propertyName, refs, options)
   }
 }
 
@@ -210,6 +306,14 @@ export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
   }
 
   /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
+  /**
    * Push a validation to the validations chain.
    */
   use(validation: Validation<any> | RuleBuilder): this {
@@ -223,6 +327,14 @@ export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
    */
   clone(): this {
     return new OptionalModifier(this.#parent.clone(), this.cloneValidations()) as this
+  }
+
+  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+    return {
+      ...this.#parent.toJSONSchema(),
+      // Custom property allowing object schema type to set property as not required.
+      isOptional: true,
+    }
   }
 
   /**
@@ -270,6 +382,18 @@ export abstract class BaseType<Input, Output, CamelCaseOutput>
    * @returns Compiled compiler node
    */
   abstract [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): CompilerNodes
+
+  /**
+   * The child class must implement the toJSONSchema method to
+   * support converting into a JSON Schema.
+   *
+   * Otherwise it returns an empty schema which is considered as any.
+   *
+   * @returns JSON Schema
+   */
+  toJSONSchema(): JSONSchema7 {
+    return {}
+  }
 
   /**
    * The child class must implement the clone method to create
@@ -422,5 +546,13 @@ export abstract class BaseType<Input, Output, CamelCaseOutput>
    */
   nullable(): NullableModifier<this> {
     return new NullableModifier(this)
+  }
+
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7): MetaModifier<this> {
+    return new MetaModifier(this, meta)
   }
 }

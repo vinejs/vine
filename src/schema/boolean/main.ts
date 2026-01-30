@@ -34,7 +34,7 @@ export class VineBoolean extends BaseLiteralType<boolean | string | number, bool
     boolean: booleanRule,
   }
 
-  declare protected options: FieldOptions & { strict?: boolean };
+  declare options: FieldOptions & { strict?: boolean };
 
   /**
    * The subtype identifier for the literal schema field

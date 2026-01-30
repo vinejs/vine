@@ -28,6 +28,7 @@ import type {
   ConstructableSchema,
 } from '../../types.js'
 import { ConditionalValidations } from '../base/conditional_rules.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Specify an optional value inside a union.
@@ -168,6 +169,13 @@ export class VineOptional<Output>
       ...this.options,
       allowNull: true,
     })
+  }
+
+  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+    return {
+      // Custom property allowing object schema type to set property as not required.
+      isOptional: true,
+    }
   }
 
   /**

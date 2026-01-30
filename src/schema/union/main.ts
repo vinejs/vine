@@ -18,21 +18,25 @@ import type {
   ParserOptions,
   ConstructableSchema,
   UnionNoMatchCallback,
+  WithJSONSchema,
 } from '../../types.js'
 import { VineOptional } from '../optional/main.js'
 import { VineNull } from '../null/main.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Vine union represents a union data type. A union is a collection
  * of conditionals and each condition has an associated schema
  */
-export class VineUnion<
-  Conditional extends UnionConditional<SchemaTypes>,
-> implements ConstructableSchema<
-  Conditional[typeof ITYPE],
-  Conditional[typeof OTYPE],
-  Conditional[typeof COTYPE]
-> {
+export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
+  implements
+    ConstructableSchema<
+      Conditional[typeof ITYPE],
+      Conditional[typeof OTYPE],
+      Conditional[typeof COTYPE]
+    >,
+    WithJSONSchema
+{
   declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]
@@ -80,6 +84,15 @@ export class VineUnion<
   otherwise(callback: UnionNoMatchCallback<Record<string, unknown>>): this {
     this.#otherwiseCallback = callback
     return this
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  toJSONSchema(): JSONSchema7 {
+    return {
+      anyOf: this.#conditionals.map((conditional) => conditional.toJSONSchema()).filter(Boolean),
+    }
   }
 
   /**

@@ -19,7 +19,13 @@ import {
   UNIQUE_NAME,
   IS_OF_TYPE,
 } from '../../symbols.js'
-import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import type {
+  FieldOptions,
+  ParserOptions,
+  SchemaTypes,
+  Validation,
+  WithJSONSchema,
+} from '../../types.js'
 
 import {
   compactRule,
@@ -29,6 +35,7 @@ import {
   maxLengthRule,
   fixedLengthRule,
 } from './rules.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * VineArray represents an array schema type in the validation pipeline.
@@ -48,11 +55,10 @@ import {
  *   data: ['user1@example.com', 'user2@example.com']
  * })
  */
-export class VineArray<Schema extends SchemaTypes> extends BaseType<
-  Schema[typeof ITYPE][],
-  Schema[typeof OTYPE][],
-  Schema[typeof COTYPE][]
-> {
+export class VineArray<Schema extends SchemaTypes>
+  extends BaseType<Schema[typeof ITYPE][], Schema[typeof OTYPE][], Schema[typeof COTYPE][]>
+  implements WithJSONSchema
+{
   /**
    * Static collection of all available validation rules for arrays
    */
@@ -164,6 +170,23 @@ export class VineArray<Schema extends SchemaTypes> extends BaseType<
    */
   clone(): this {
     return new VineArray(this.#schema.clone(), this.cloneOptions(), this.cloneValidations()) as this
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  toJSONSchema(): JSONSchema7 {
+    const schema: JSONSchema7 = {
+      type: 'array',
+      items: this.#schema.toJSONSchema?.() ?? {},
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
+    }
+
+    return schema
   }
 
   /**

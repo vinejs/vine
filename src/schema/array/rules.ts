@@ -14,26 +14,40 @@ import { createRule } from '../../vine/create_rule.js'
 /**
  * Enforce a minimum length on an array field
  */
-export const minLengthRule = createRule<{ min: number }>(function minLength(value, options, field) {
-  /**
-   * Value will always be an array if the field is valid.
-   */
-  if ((value as unknown[]).length < options.min) {
-    field.report(messages['array.minLength'], 'array.minLength', field, options)
+export const minLengthRule = createRule<{ min: number }>(
+  function minLength(value, options, field) {
+    /**
+     * Value will always be an array if the field is valid.
+     */
+    if ((value as unknown[]).length < options.min) {
+      field.report(messages['array.minLength'], 'array.minLength', field, options)
+    }
+  },
+  {
+    toJSONSchema: (schema, options) => {
+      schema.minItems = options.min
+    },
   }
-})
+)
 
 /**
  * Enforce a maximum length on an array field
  */
-export const maxLengthRule = createRule<{ max: number }>(function maxLength(value, options, field) {
-  /**
-   * Value will always be an array if the field is valid.
-   */
-  if ((value as unknown[]).length > options.max) {
-    field.report(messages['array.maxLength'], 'array.maxLength', field, options)
+export const maxLengthRule = createRule<{ max: number }>(
+  function maxLength(value, options, field) {
+    /**
+     * Value will always be an array if the field is valid.
+     */
+    if ((value as unknown[]).length > options.max) {
+      field.report(messages['array.maxLength'], 'array.maxLength', field, options)
+    }
+  },
+  {
+    toJSONSchema: (schema, options) => {
+      schema.maxItems = options.max
+    },
   }
-})
+)
 
 /**
  * Enforce a fixed length on an array field
@@ -46,20 +60,33 @@ export const fixedLengthRule = createRule<{ size: number }>(
     if ((value as unknown[]).length !== options.size) {
       field.report(messages['array.fixedLength'], 'array.fixedLength', field, options)
     }
+  },
+  {
+    toJSONSchema: (schema, options) => {
+      schema.minItems = options.size
+      schema.maxItems = options.size
+    },
   }
 )
 
 /**
  * Ensure the array is not empty
  */
-export const notEmptyRule = createRule<undefined>(function notEmpty(value, _, field) {
-  /**
-   * Value will always be an array if the field is valid.
-   */
-  if ((value as unknown[]).length <= 0) {
-    field.report(messages.notEmpty, 'notEmpty', field)
+export const notEmptyRule = createRule<undefined>(
+  function notEmpty(value, _, field) {
+    /**
+     * Value will always be an array if the field is valid.
+     */
+    if ((value as unknown[]).length <= 0) {
+      field.report(messages.notEmpty, 'notEmpty', field)
+    }
+  },
+  {
+    toJSONSchema: (schema) => {
+      schema.minItems = 1
+    },
   }
-})
+)
 
 /**
  * Ensure array elements are distinct/unique
@@ -72,6 +99,11 @@ export const distinctRule = createRule<{ fields?: string | string[] }>(
     if (!helpers.isDistinct(value as any[], options.fields)) {
       field.report(messages.distinct, 'distinct', field, options)
     }
+  },
+  {
+    toJSONSchema: (schema) => {
+      schema.uniqueItems = true
+    },
   }
 )
 

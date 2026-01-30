@@ -23,6 +23,7 @@ import type {
   WithCustomRules,
 } from '../../types.js'
 import { ConditionalValidations } from './conditional_rules.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Modifies the schema type to allow null values
@@ -87,6 +88,144 @@ export class NullableModifier<
     transformer: Transformer<this, TransformedOutput>
   ): TransformModifier<this, TransformedOutput> {
     return new TransformModifier(transformer, this)
+  }
+
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    const schema = this.#parent.toJSONSchema?.() ?? {}
+
+    if (schema.anyOf) {
+      schema.anyOf.push({ type: 'null' })
+      return schema
+    }
+
+    if (schema.enum) {
+      return {
+        anyOf: [schema, { type: 'null' }],
+      }
+    }
+
+    if (schema.type === undefined) {
+      schema.type = 'null'
+      return schema
+    }
+
+    if (typeof schema.type === 'string') {
+      schema.type = [schema.type, 'null']
+      return schema
+    }
+
+    if (Array.isArray(schema.type)) {
+      schema.type.push('null')
+      return schema
+    }
+
+    return schema
+  }
+
+  /**
+   * Compiles to compiler node
+   */
+  [PARSE](
+    propertyName: string,
+    refs: RefsStore,
+    options: ParserOptions
+  ): LiteralNode & { subtype: string } {
+    const output = this.#parent[PARSE](propertyName, refs, options)
+    output.allowNull = true
+    return output
+  }
+}
+
+/**
+ * Adds meta data to the schema type.
+ */
+export class MetaModifier<
+  Schema extends ConstructableLiteralSchema<any, any, any>,
+> implements ConstructableLiteralSchema<
+  Schema[typeof ITYPE],
+  Schema[typeof OTYPE],
+  Schema[typeof COTYPE]
+> {
+  /**
+   * Define the input type of the schema
+   */
+  declare [ITYPE]: Schema[typeof ITYPE];
+
+  /**
+   * The output value of the field. The property points to a type only
+   * and not the real value.
+   */
+  declare [OTYPE]: Schema[typeof OTYPE];
+  declare [COTYPE]: Schema[typeof COTYPE]
+
+  #parent: Schema
+  #meta: JSONSchema7
+
+  constructor(parent: Schema, meta: JSONSchema7) {
+    this.#parent = parent
+    this.#meta = meta
+  }
+
+  /**
+   * Mark the field under validation as optional. An optional
+   * field allows both null and undefined values.
+   */
+  optional(): OptionalModifier<this> {
+    return new OptionalModifier(this)
+  }
+
+  /**
+   * Apply a transformation to the final validated value.
+   * The transformer receives the validated value and can convert it to any new datatype.
+   *
+   * @template TransformedOutput - The type of the transformed output
+   * @param transformer - Function to transform the validated value
+   * @returns A new TransformModifier wrapping this schema
+   *
+   * @example
+   * vine.string().nullable().transform((value) => {
+   *   return value ? value.toUpperCase() : null
+   * })
+   */
+  transform<TransformedOutput>(
+    transformer: Transformer<this, TransformedOutput>
+  ): TransformModifier<this, TransformedOutput> {
+    return new TransformModifier(transformer, this)
+  }
+
+  /**
+   * Mark the field under validation to be null. The null value will
+   * be written to the output as well.
+   *
+   * If `optional` and `nullable` are used together, then both undefined
+   * and null values will be allowed.
+   */
+  nullable(): NullableModifier<this> {
+    return new NullableModifier(this)
+  }
+
+  /**
+   * Creates a fresh instance of the underlying schema type
+   * and wraps it inside the meta modifier
+   */
+  clone(): this {
+    return new MetaModifier(this.#parent.clone(), this.#meta) as this
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    const schema = this.#parent.toJSONSchema?.() ?? {}
+    return {
+      ...schema,
+      ...this.#meta,
+    }
   }
 
   /**
@@ -230,6 +369,22 @@ export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any
   }
 
   /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
+  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+    return {
+      ...this.#parent.toJSONSchema(),
+      // Custom property allowing object schema type to set property as not required.
+      isOptional: true,
+    }
+  }
+
+  /**
    * Compiles to compiler node
    */
   [PARSE](
@@ -318,6 +473,18 @@ export class TransformModifier<
   }
 
   /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    return this.#parent.toJSONSchema()
+  }
+
+  /**
    * Compiles to compiler node
    */
   [PARSE](
@@ -391,7 +558,7 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
   /**
    * Configuration options for this field including bail mode, nullability, and parsing
    */
-  protected options: FieldOptions
+  options: FieldOptions
 
   /**
    * Array of validation rules to apply to the field value
@@ -469,6 +636,21 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
     return this.validations.map((validation) => this.compileValidation(validation, refs))
   }
 
+  toJSONSchema(): JSONSchema7 {
+    const schema: JSONSchema7 = {}
+
+    if (this.dataTypeValidator?.rule.toJSONSchema) {
+      this.dataTypeValidator.rule.toJSONSchema(schema, this.dataTypeValidator.options)
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
+    }
+
+    return schema
+  }
+
   /**
    * Define a method to parse the input value. The method
    * is invoked before any validation and hence you must
@@ -529,6 +711,14 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
    */
   nullable(): NullableModifier<this> {
     return new NullableModifier(this)
+  }
+
+  /**
+   * Add meta to the field that can be retrieved once compiled.
+   * It is also merged with the json-schema.
+   */
+  meta(meta: JSONSchema7 | Object): MetaModifier<this> {
+    return new MetaModifier(this, meta)
   }
 
   /**

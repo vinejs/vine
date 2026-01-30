@@ -19,18 +19,28 @@ import {
   UNIQUE_NAME,
   IS_OF_TYPE,
 } from '../../symbols.js'
-import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import type {
+  FieldOptions,
+  ParserOptions,
+  SchemaTypes,
+  Validation,
+  WithJSONSchema,
+} from '../../types.js'
 import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from './rules.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * VineRecord represents an object of key-value pair in which
  * keys are unknown
  */
-export class VineRecord<Schema extends SchemaTypes> extends BaseType<
-  { [K: string]: Schema[typeof ITYPE] },
-  { [K: string]: Schema[typeof OTYPE] },
-  { [K: string]: Schema[typeof COTYPE] }
-> {
+export class VineRecord<Schema extends SchemaTypes>
+  extends BaseType<
+    { [K: string]: Schema[typeof ITYPE] },
+    { [K: string]: Schema[typeof OTYPE] },
+    { [K: string]: Schema[typeof COTYPE] }
+  >
+  implements WithJSONSchema
+{
   /**
    * Default collection of record rules
    */
@@ -99,6 +109,25 @@ export class VineRecord<Schema extends SchemaTypes> extends BaseType<
       this.cloneOptions(),
       this.cloneValidations()
     ) as this
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  toJSONSchema() {
+    const schema = {
+      type: 'object',
+      additionalProperties: {},
+    } satisfies JSONSchema7
+
+    schema.additionalProperties = this.#schema.toJSONSchema?.() ?? {}
+
+    for (const validation of this.validations) {
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
+    }
+
+    return schema
   }
 
   /**

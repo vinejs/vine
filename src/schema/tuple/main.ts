@@ -12,7 +12,14 @@ import { type RefsStore, type TupleNode } from '@vinejs/compiler/types'
 
 import { BaseType } from '../base/main.js'
 import { IS_OF_TYPE, PARSE, UNIQUE_NAME } from '../../symbols.js'
-import type { FieldOptions, ParserOptions, SchemaTypes, Validation } from '../../types.js'
+import type {
+  FieldOptions,
+  ParserOptions,
+  SchemaTypes,
+  Validation,
+  WithJSONSchema,
+} from '../../types.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * VineTuple is an array with known length and may have different
@@ -23,7 +30,10 @@ export class VineTuple<
   Input extends any[],
   Output extends any[],
   CamelCaseOutput extends any[],
-> extends BaseType<Input, Output, CamelCaseOutput> {
+>
+  extends BaseType<Input, Output, CamelCaseOutput>
+  implements WithJSONSchema
+{
   #schemas: [...Schema]
 
   /**
@@ -82,6 +92,33 @@ export class VineTuple<
     }
 
     return cloned as this
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  toJSONSchema() {
+    const items: JSONSchema7[] = []
+    for (const item of this.#schemas) {
+      if (!item.toJSONSchema) continue
+      items.push(item.toJSONSchema())
+    }
+
+    const schema: JSONSchema7 = {
+      type: 'array',
+      minItems: this.#schemas.length,
+      maxItems: this.#schemas.length,
+      additionalItems: false,
+      // Items should NEVER be a list of empty items according to standard
+      items: items.length > 0 ? items : undefined,
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
+    }
+
+    return schema
   }
 
   /**

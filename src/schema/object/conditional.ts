@@ -10,7 +10,8 @@
 import type { ConditionalFn, ObjectGroupNode, RefsStore } from '@vinejs/compiler/types'
 
 import { OTYPE, COTYPE, PARSE, ITYPE } from '../../symbols.js'
-import type { ParserOptions, SchemaTypes } from '../../types.js'
+import type { ParserOptions, SchemaTypes, WithJSONSchema } from '../../types.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Group conditional represents a sub-set of object wrapped
@@ -21,7 +22,7 @@ export class GroupConditional<
   Input,
   Output,
   CamelCaseOutput,
-> {
+> implements WithJSONSchema {
   declare [ITYPE]: Input;
   declare [OTYPE]: Output;
   declare [COTYPE]: CamelCaseOutput
@@ -39,6 +40,29 @@ export class GroupConditional<
   constructor(conditional: ConditionalFn<Record<string, unknown>>, properties: Properties) {
     this.#properties = properties
     this.#conditional = conditional
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  toJSONSchema(): JSONSchema7 {
+    const properties: Record<string, JSONSchema7> = {}
+    const required: string[] = []
+
+    for (const [key, property] of Object.entries(this.#properties)) {
+      const schema = property.toJSONSchema()
+      properties[key] = schema
+
+      if (!('isOptional' in property) || property.isOptional !== true) {
+        required.push(key)
+      }
+    }
+
+    return {
+      type: 'object',
+      properties,
+      required,
+    }
   }
 
   /**

@@ -43,7 +43,7 @@ import {
  * })
  */
 export class VineNumber extends BaseLiteralType<string | number, number, number> {
-  declare protected options: FieldOptions & { strict?: boolean }
+  declare options: FieldOptions & { strict?: boolean }
 
   /**
    * Static collection of all available validation rules for numbers

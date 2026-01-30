@@ -12,14 +12,17 @@ import { type ObjectGroupNode, type RefsStore } from '@vinejs/compiler/types'
 import { messages } from '../../defaults.js'
 import { type GroupConditional } from './conditional.js'
 import { ITYPE, OTYPE, COTYPE, PARSE } from '../../symbols.js'
-import type { ParserOptions, UnionNoMatchCallback } from '../../types.js'
+import type { ParserOptions, UnionNoMatchCallback, WithJSONSchema } from '../../types.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Object group represents a group with multiple conditionals, where each
  * condition returns a set of object properties to merge into the
  * existing object.
  */
-export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any>> {
+export class ObjectGroup<
+  Conditional extends GroupConditional<any, any, any, any>,
+> implements WithJSONSchema {
   declare [ITYPE]: Conditional[typeof ITYPE];
   declare [OTYPE]: Conditional[typeof OTYPE];
   declare [COTYPE]: Conditional[typeof COTYPE]
@@ -31,6 +34,15 @@ export class ObjectGroup<Conditional extends GroupConditional<any, any, any, any
 
   constructor(conditionals: Conditional[]) {
     this.#conditionals = conditionals
+  }
+
+  /**
+   * Transforms into JSONSchema.
+   */
+  toJSONSchema(): JSONSchema7 {
+    return {
+      anyOf: this.#conditionals.map((conditional) => conditional.toJSONSchema()),
+    }
   }
 
   /**

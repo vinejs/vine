@@ -10,13 +10,19 @@
 import camelcase from 'camelcase'
 import type { LiteralNode, RefsStore } from '@vinejs/compiler/types'
 
-import type { FieldOptions, ParserOptions, ConstructableSchema } from '../../types.js'
+import type {
+  FieldOptions,
+  ParserOptions,
+  ConstructableSchema,
+  WithJSONSchema,
+} from '../../types.js'
 import { OTYPE, COTYPE, PARSE, ITYPE, SUBTYPE, UNIQUE_NAME, IS_OF_TYPE } from '../../symbols.js'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Specify a null value inside a union.
  */
-export class VineNull implements ConstructableSchema<null, null, null> {
+export class VineNull implements ConstructableSchema<null, null, null>, WithJSONSchema {
   /**
    * The input type of the schema
    */
@@ -74,6 +80,10 @@ export class VineNull implements ConstructableSchema<null, null, null> {
    */
   clone(): this {
     return new VineNull(this.cloneOptions()) as this
+  }
+
+  toJSONSchema(): JSONSchema7 {
+    return { type: 'null' }
   }
 
   /**

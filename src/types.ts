@@ -37,6 +37,7 @@ import { type Prettify, type ExtractUndefined, type ExtractDefined } from '@popp
 import { type VineValidator } from './vine/validator.ts'
 import { type VineObject } from './schema/object/main.ts'
 import { type CamelCase } from './schema/camelcase_types.ts'
+import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Compiler nodes emitted by Vine during schema compilation.
@@ -324,6 +325,9 @@ export interface ConstructableSchema<Inputs, Output, CamelCaseOutput> {
   [UNIQUE_NAME]?: string
   /** Type checking function for union type resolution */
   [IS_OF_TYPE]?: (value: unknown, field: FieldContext) => boolean
+
+  /** Transforms your schema type into JSONSchema7 */
+  toJSONSchema(): JSONSchema7
 }
 
 /**
@@ -362,6 +366,8 @@ export interface ConstructableLiteralSchema<Inputs, Output, CamelCaseOutput> {
   ): LiteralNode & { subtype: string }
   /** Creates a deep copy of the schema instance */
   clone(): this
+  /** Transforms your schema type into JSONSchema7 */
+  toJSONSchema(): JSONSchema7
 
   /**
    * Unique identifier for the schema type.
@@ -394,6 +400,16 @@ export interface WithCustomRules {
    * schema.use(myCustomRule({ strict: true }))
    */
   use(validation: Validation<any> | RuleBuilder): this
+}
+
+/**
+ * Interface for schema types that support converting into JSON Schema.
+ *
+ * @example
+ * const schema = vine.string().toJSONSchema()
+ */
+export interface WithJSONSchema {
+  toJSONSchema(): JSONSchema7
 }
 
 /**
@@ -438,6 +454,11 @@ export type Validator<Options extends any> = (
   field: FieldContext
 ) => any | Promise<any>
 
+export type JsonSchemaModifier<Options extends any> = (
+  schema: JSONSchema7,
+  options: Options
+) => void
+
 /**
  * A validation rule combines a validator function with metadata needed
  * for compilation and execution. This is the building block of all
@@ -464,6 +485,7 @@ export type ValidationRule<Options extends any> = {
   isAsync: boolean
   /** Whether the rule runs even when the field value is undefined/null */
   implicit: boolean
+  toJSONSchema?: JsonSchemaModifier<Options>
 }
 
 /**

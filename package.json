@@ -50,6 +50,8 @@
     "@release-it/conventional-changelog": "^10.0.3",
     "@swc/core": "1.15.3",
     "@types/dlv": "^1.1.5",
+    "@types/json-schema": "^7.0.15",
+    "ajv": "^6.12.6",
     "@types/luxon": "^3.7.1",
     "@types/node": "^25.0.0",
     "benchmark": "^2.1.4",

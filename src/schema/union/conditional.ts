@@ -36,6 +36,10 @@ export class UnionConditional<Schema extends SchemaTypes> {
     this.#conditional = conditional
   }
 
+  toJSONSchema() {
+    return this.#schema.toJSONSchema?.()
+  }
+
   /**
    * Compiles to a union conditional
    */

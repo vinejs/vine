@@ -29,7 +29,9 @@ import type {
   ParserOptions,
   PropertiesToOptional,
   UndefinedOptional,
+  WithJSONSchema,
 } from '../../types.js'
+import { type JSONSchema7 } from 'json-schema'
 import type { CamelCase } from '../camelcase_types.ts'
 
 /**
@@ -92,6 +94,11 @@ export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> 
     return new VineCamelCaseObject<Schema>(this.#schema.clone()) as this
   }
 
+  toJSONSchema(): JSONSchema7 {
+    // TODO: We might want to camel case properties here aswell
+    return this.#schema.toJSONSchema()
+  }
+
   /**
    * Compiles the schema type to a compiler node with camelCase enabled.
    *
@@ -133,7 +140,10 @@ export class VineObject<
   Input,
   Output,
   CamelCaseOutput,
-> extends BaseType<Input, Output, CamelCaseOutput> {
+>
+  extends BaseType<Input, Output, CamelCaseOutput>
+  implements WithJSONSchema
+{
   /**
    * Object properties mapping property names to their validation schemas
    */
@@ -283,7 +293,42 @@ export class VineObject<
     return new VineCamelCaseObject(this)
   }
 
-  /**
+  toJSONSchema(): JSONSchema7 {
+    const properties: Record<string, JSONSchema7> = {}
+    const required: string[] = []
+
+    for (const [key, property] of Object.entries(this.getProperties())) {
+      if (!property.toJSONSchema) continue
+      const schema = property.toJSONSchema()
+      properties[key] = schema
+
+      if (!('isOptional' in schema) || schema.isOptional !== true) {
+        required.push(key)
+      }
+    }
+
+    const schema: JSONSchema7 = {
+      type: 'object',
+      properties,
+      required,
+      additionalProperties: this.#allowUnknownProperties,
+    }
+
+    for (const validation of this.validations) {
+      if (!validation.rule.toJSONSchema) continue
+      validation.rule.toJSONSchema(schema, validation.options)
+    }
+
+    if (this.#groups.length > 0) {
+      return {
+        anyOf: [...this.#groups.map((group) => group.toJSONSchema()), schema],
+      }
+    }
+
+    return schema
+  }
+
+  /*
    * Creates a new object with all properties marked as optional.
    */
   partial<
