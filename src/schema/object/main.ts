@@ -188,9 +188,13 @@ export class VineObject<
   }
 
   /**
-   * Returns a clone copy of the object properties. The object groups
-   * are not copied to keep the implementations simple and easy to
-   * reason about.
+   * Returns a cloned copy of all object properties with their validation schemas.
+   * Note: Object groups are not included to keep implementations simple.
+   *
+   * @returns Cloned properties record
+   *
+   * @example
+   * const properties = schema.getProperties()
    */
   getProperties(): Properties {
     return Object.keys(this.#properties).reduce((result, key) => {
@@ -202,8 +206,19 @@ export class VineObject<
   }
 
   /**
-   * Returns a clone copy of the cherry picked object properties including
-   * only the mentioned properties.
+   * Returns a cloned subset of object properties containing only the specified keys.
+   *
+   * @param keys - Array of property keys to include
+   * @returns Picked properties record
+   *
+   * @example
+   * const userSchema = vine.object({
+   *   name: vine.string(),
+   *   email: vine.string().email(),
+   *   password: vine.string()
+   * })
+   *
+   * const publicFields = userSchema.pick(['name', 'email'])
    */
   pick<Keys extends keyof Properties>(keys: Keys[] | readonly Keys[]): Pick<Properties, Keys> {
     const result = {} as Pick<Properties, Keys>
@@ -214,8 +229,19 @@ export class VineObject<
   }
 
   /**
-   * Returns a cloned copy of the cherry picked object properties without
-   * the mentioned properties
+   * Returns a cloned copy of object properties excluding the specified keys.
+   *
+   * @param keys - Array of property keys to exclude
+   * @returns Omitted properties record
+   *
+   * @example
+   * const userSchema = vine.object({
+   *   name: vine.string(),
+   *   email: vine.string().email(),
+   *   password: vine.string()
+   * })
+   *
+   * const withoutPassword = userSchema.omit(['password'])
    */
   omit<Keys extends keyof Properties>(keys: Keys[] | readonly Keys[]): Omit<Properties, Keys> {
     const result = {} as Omit<Properties, Keys>
@@ -230,7 +256,17 @@ export class VineObject<
   }
 
   /**
-   * Copy unknown properties to the final output.
+   * Allows unknown properties to pass through validation and be included in the output.
+   * By default, objects with properties not defined in the schema will fail validation.
+   *
+   * @returns This object schema with unknown properties allowed
+   *
+   * @example
+   * const schema = vine.object({
+   *   name: vine.string()
+   * }).allowUnknownProperties()
+   *
+   * // Now { name: 'John', extra: 'value' } will pass validation
    */
   allowUnknownProperties<Value>(): VineObject<
     Properties,
@@ -248,8 +284,21 @@ export class VineObject<
   }
 
   /**
-   * Merge a union to the object groups. The union can be a "vine.union"
-   * with objects, or a "vine.object.union" with properties.
+   * Merges conditional property groups into the object schema. Groups allow
+   * adding properties dynamically based on runtime conditions.
+   *
+   * @param group - The conditional group to merge
+   * @returns This object schema with the group merged
+   *
+   * @example
+   * const schema = vine.object({
+   *   type: vine.string()
+   * }).merge(
+   *   vine.group([
+   *     vine.group.if('type', 'user', { name: vine.string() }),
+   *     vine.group.if('type', 'admin', { permissions: vine.array(vine.string()) })
+   *   ])
+   * )
    */
   merge<Group extends ObjectGroup<GroupConditional<any, any, any, any>>>(
     group: Group
@@ -269,7 +318,9 @@ export class VineObject<
   }
 
   /**
-   * Clone object
+   * Clones the VineObject schema including all properties, validations, groups, and options.
+   *
+   * @returns A cloned instance of this VineObject schema
    */
   clone(): this {
     const cloned = new VineObject<Properties, Input, Output, CamelCaseOutput>(
@@ -287,7 +338,18 @@ export class VineObject<
   }
 
   /**
-   * Applies camelcase transform
+   * Converts object property names to camelCase in the validation output.
+   * Useful when accepting snake_case input but wanting camelCase output.
+   *
+   * @returns A VineCamelCaseObject wrapper for this schema
+   *
+   * @example
+   * const schema = vine.object({
+   *   first_name: vine.string(),
+   *   last_name: vine.string()
+   * }).toCamelCase()
+   *
+   * // Output: { firstName: string, lastName: string }
    */
   toCamelCase() {
     return new VineCamelCaseObject(this)
@@ -298,7 +360,10 @@ export class VineObject<
     const required: string[] = []
 
     for (const [key, property] of Object.entries(this.getProperties())) {
-      if (!property.toJSONSchema) continue
+      if (!property.toJSONSchema) {
+        continue
+      }
+
       const schema = property.toJSONSchema()
       properties[key] = schema
 
@@ -315,7 +380,9 @@ export class VineObject<
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.toJSONSchema) continue
+      if (!validation.rule.toJSONSchema) {
+        continue
+      }
       validation.rule.toJSONSchema(schema, validation.options)
     }
 
@@ -328,8 +395,27 @@ export class VineObject<
     return schema
   }
 
-  /*
-   * Creates a new object with all properties marked as optional.
+  /**
+   * Creates a new object schema with all properties (or specified properties) marked as optional.
+   * This is useful for update/PATCH operations where not all fields are required.
+   *
+   * @param keys - Optional array of property keys to make optional. If omitted, all properties become optional.
+   * @returns A new VineObject schema with optional properties
+   *
+   * @example
+   * // Make all properties optional
+   * const updateSchema = createSchema.partial()
+   *
+   * @example
+   * // Make only specific properties optional
+   * const userSchema = vine.object({
+   *   name: vine.string(),
+   *   email: vine.string().email(),
+   *   age: vine.number()
+   * })
+   *
+   * const updateUserSchema = userSchema.partial(['name', 'age'])
+   * // email remains required, name and age become optional
    */
   partial<
     Keys extends keyof Properties = keyof Properties,

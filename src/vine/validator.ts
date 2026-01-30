@@ -89,9 +89,10 @@ export class VineValidator<
 
   /**
    * Parses schema to compiler nodes for optimization and compilation.
+   * This internal method converts the schema into an AST representation
+   * that can be efficiently compiled into validation functions.
    *
    * @param schema - The schema to parse
-   * @returns Object containing compiler node and refs
    */
   #parse(schema: Schema) {
     const refs = refsBuilder()
@@ -105,19 +106,28 @@ export class VineValidator<
   }
 
   /**
-   * Validate data against a schema. Optionally, you can share metaData with
-   * the validator
+   * Validates data against the compiled schema. Returns the validated and typed data
+   * or throws a ValidationError if validation fails.
    *
-   * ```ts
-   * await validator.validate(data)
-   * await validator.validate(data, { meta: {} })
+   * @param data - The data to validate
+   * @param options - Optional validation options including metadata, custom error reporter, and messages provider
    *
+   * @example
+   * await validator.validate({ name: 'John', age: 30 })
+   *
+   * @example
+   * // With metadata
+   * await validator.validate(data, {
+   *   meta: { userId: '123' }
+   * })
+   *
+   * @example
+   * // With custom error reporter and messages provider
    * await validator.validate(data, {
    *   meta: { userId: auth.user.id },
-   *   errorReporter,
-   *   messagesProvider
+   *   errorReporter: () => new CustomErrorReporter(),
+   *   messagesProvider: customMessagesProvider
    * })
-   * ```
    */
   declare 'validate': (
     data: any,
@@ -198,22 +208,34 @@ export class VineValidator<
   }
 
   /**
-   * Performs validation without throwing the validation
-   * exception. Instead, the validation errors are
-   * returned as the first argument.
+   * Performs validation without throwing a ValidationError exception.
+   * Instead, returns a tuple where the first element is the error (if any)
+   * and the second is the validated data (if successful).
    *
+   * @param data - The data to validate
+   * @param options - Optional validation options including metadata, custom error reporter, and messages provider
    *
-   * ```ts
-   * await validator.tryValidate(data)
-   * await validator.tryValidate(data, { meta: {} })
+   * @example
+   * const [error, result] = await validator.tryValidate(data)
+   * if (error) {
+   *   console.log(error.messages)
+   * } else {
+   *   console.log(result)
+   * }
    *
-   * await validator.tryValidate(data, {
-   *   meta: { userId: auth.user.id },
-   *   errorReporter,
-   *   messagesProvider
+   * @example
+   * // With metadata
+   * const [error, result] = await validator.tryValidate(data, {
+   *   meta: { userId: '123' }
    * })
-   * ```
    *
+   * @example
+   * // With custom error reporter
+   * const [error, result] = await validator.tryValidate(data, {
+   *   meta: { userId: auth.user.id },
+   *   errorReporter: () => new CustomErrorReporter(),
+   *   messagesProvider: customMessagesProvider
+   * })
    */
   async 'tryValidate'(
     data: any,
@@ -236,7 +258,10 @@ export class VineValidator<
    * Returns the compiled schema and refs as a JSON-serializable object.
    * Useful for caching compiled schemas or debugging validation logic.
    *
-   * @returns Object containing cloned schema and refs
+   * @example
+   * const compiled = validator.toJSON()
+   * console.log(compiled.schema)
+   * console.log(compiled.refs)
    */
   'toJSON'() {
     const { schema, refs } = this.#compiled
@@ -246,6 +271,14 @@ export class VineValidator<
     }
   }
 
+  /**
+   * Converts the validator's schema to JSON Schema Draft 7 format.
+   * The result is cached for subsequent calls.
+   *
+   * @example
+   * const jsonSchema = validator.toJSONSchema()
+   * console.log(JSON.stringify(jsonSchema, null, 2))
+   */
   'toJSONSchema'(): JSONSchema7 {
     if (!this.#jsonSchema) {
       this.#jsonSchema = this.schema.toJSONSchema()

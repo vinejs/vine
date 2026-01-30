@@ -76,13 +76,17 @@ export class Vine extends SchemaBuilder {
    * when validating multiple data sets against the same schema.
    *
    * @param schema - The validation schema to compile
-   * @returns A compiled validator instance
    *
    * @deprecated Instead use "create"
    *
    * @example
+   * const schema = vine.object({
+   *   name: vine.string(),
+   *   age: vine.number()
+   * })
+   *
    * const validate = vine.compile(schema)
-   * await validate({ data })
+   * await validate.validate({ name: 'John', age: 30 })
    */
   compile<Schema extends SchemaTypes>(schema: Schema) {
     return new VineValidator<Schema, Record<string, any> | undefined>(schema, {
@@ -92,6 +96,22 @@ export class Vine extends SchemaBuilder {
     })
   }
 
+  /**
+   * Creates a pre-compiled validator from a schema or object properties. This method
+   * provides better performance when validating multiple data sets against the same schema
+   * by compiling the schema once and reusing the validator.
+   *
+   * @param properties - Object properties where each key is a field name and value is a schema
+   *
+   * @example
+   * // Create validator from object properties
+   * const validate = vine.create({
+   *   name: vine.string(),
+   *   age: vine.number()
+   * })
+   *
+   * const result = await validate.validate({ name: 'John', age: 30 })
+   */
   create<
     Properties extends Record<string, SchemaTypes>,
     Schema extends VineObject<
@@ -108,6 +128,23 @@ export class Vine extends SchemaBuilder {
     >,
   >(properties: Properties): VineValidator<Schema, Record<string, any> | undefined>
 
+  /**
+   * Creates a pre-compiled validator from a schema. This method provides better performance
+   * when validating multiple data sets against the same schema by compiling the schema once
+   * and reusing the validator.
+   *
+   * @param schema - The validation schema to compile
+   *
+   * @example
+   * // Create validator from a schema
+   * const schema = vine.object({
+   *   name: vine.string(),
+   *   email: vine.string().email()
+   * })
+   *
+   * const validate = vine.create(schema)
+   * const result = await validate.validate({ name: 'John', email: 'john@example.com' })
+   */
   create<Schema extends SchemaTypes>(
     schema: Schema
   ): VineValidator<Schema, Record<string, any> | undefined>
@@ -129,15 +166,31 @@ export class Vine extends SchemaBuilder {
 
   /**
    * Define a callback to validate the metadata given to the validator
-   * at runtime. Useful for passing additional context like user IDs or permissions.
+   * at runtime. Useful for passing additional context like user IDs or permissions
+   * that can be used within custom validation rules.
    *
-   * @param callback - Optional validator function for metadata
-   * @returns Object with compile method that accepts metadata type
+   * @param callback - Optional validator function for metadata validation
    *
    * @example
-   * const validate = vine.withMetaData<{ userId: string }>()
-   *   .compile(schema)
-   * await validate(data, { meta: { userId: '123' } })
+   * // Without metadata validation
+   * const validate = vine.withMetaData<{ userId: string }>().create({
+   *   title: vine.string(),
+   *   description: vine.string()
+   * })
+   *
+   * await validate.validate(data, { meta: { userId: '123' } })
+   *
+   * @example
+   * // With metadata validation
+   * const validate = vine
+   *   .withMetaData<{ userId: string }>((meta) => {
+   *     if (!meta.userId) {
+   *       throw new Error('userId is required in metadata')
+   *     }
+   *   })
+   *   .create(schema)
+   *
+   * await validate.validate(data, { meta: { userId: '123' } })
    */
   withMetaData<MetaData extends Record<string, any>>(callback?: MetaDataValidator) {
     const builder: ValidatorBuilder<MetaData> = {

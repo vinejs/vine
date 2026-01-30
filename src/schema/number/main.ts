@@ -129,43 +129,74 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
   }
 
   /**
-   * Enforce the value be a positive number
+   * Enforces the value to be a positive number (greater than 0).
+   *
+   * @returns This number schema instance for method chaining
+   *
+   * @example
+   * vine.number().positive()  // Accepts 1, 100.5, etc. Rejects 0, -1
    */
   positive() {
     return this.use(positiveRule())
   }
 
   /**
-   * Enforce the value be a negative number
+   * Enforces the value to be a negative number (less than 0).
+   *
+   * @returns This number schema instance for method chaining
+   *
+   * @example
+   * vine.number().negative()  // Accepts -1, -100.5, etc. Rejects 0, 1
    */
   negative() {
     return this.use(negativeRule())
   }
 
   /**
-   * Enforce the value be a positive number or zero
+   * Enforces the value to be a non-negative number (greater than or equal to 0).
+   *
+   * @returns This number schema instance for method chaining
+   *
+   * @example
+   * vine.number().nonNegative()  // Accepts 0, 1, 100.5, etc. Rejects -1
    */
   nonNegative() {
     return this.use(nonNegativeRule())
   }
 
   /**
-   * Enforce the value be a negative number or zero
+   * Enforces the value to be a non-positive number (less than or equal to 0).
+   *
+   * @returns This number schema instance for method chaining
+   *
+   * @example
+   * vine.number().nonPositive()  // Accepts 0, -1, -100.5, etc. Rejects 1
    */
   nonPositive() {
     return this.use(nonPositiveRule())
   }
 
   /**
-   * Enforce the value to have fixed or range
-   * of decimal places
+   * Enforces the value to have a fixed number or range of decimal places.
+   *
+   * @param range - Exact number of decimal places or [min, max] range
+   * @returns This number schema instance for method chaining
+   *
+   * @example
+   * vine.number().decimal(2)       // Accepts 1.23, rejects 1.2 or 1.234
+   * vine.number().decimal([0, 2])  // Accepts 1, 1.2, 1.23
    */
   decimal(range: number | [number, number]) {
     return this.use(decimalRule({ range: Array.isArray(range) ? range : [range] }))
   }
 
   /**
-   * Enforce the value to be an integer (aka without decimals)
+   * Enforces the value to be an integer without decimal places.
+   *
+   * @returns This number schema instance for method chaining
+   *
+   * @example
+   * vine.number().withoutDecimals()  // Accepts 42, -10, rejects 42.5
    */
   withoutDecimals() {
     return this.use(withoutDecimalsRule())
@@ -173,14 +204,22 @@ export class VineNumber extends BaseLiteralType<string | number, number, number>
 
   /**
    * Clones the VineNumber schema type. The applied options
-   * and validations are copied to the new instance
+   * and validations are copied to the new instance.
+   *
+   * @returns A cloned instance of this VineNumber schema
    */
   clone(): this {
     return new VineNumber(this.cloneOptions(), this.cloneValidations()) as this
   }
 
   /**
-   * Enforce the value to be in a list of allowed values
+   * Enforces the value to be one of the specified allowed values.
+   *
+   * @param values - Array of allowed numeric values
+   * @returns This number schema instance for method chaining
+   *
+   * @example
+   * vine.number().in([1, 2, 3, 5, 8, 13])  // Only Fibonacci numbers allowed
    */
   in(values: number[]) {
     return this.use(inRule({ values }))
