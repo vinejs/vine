@@ -8,7 +8,7 @@
  */
 
 import { Compiler, refsBuilder } from '@vinejs/compiler'
-import type { StandardSchemaV1 } from '@standard-schema/spec'
+import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
 import type { MessagesProviderContact, Refs, RootNode } from '@vinejs/compiler/types'
 
 import { messages } from '../defaults.js'
@@ -254,9 +254,20 @@ export class VineValidator<
     return this.#jsonSchema
   }
 
-  readonly '~standard': StandardSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> = {
+  readonly '~standard': StandardSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> &
+    StandardJSONSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> = {
     version: 1,
     vendor: 'vinejs',
+
+    jsonSchema: {
+      input: () => {
+        return this.toJSONSchema() as Record<string, unknown>
+      },
+      output: () => {
+        throw new Error('Vine.js does not support creating validators using JSON Schema.')
+      },
+    },
+
     validate: async (data: unknown) => {
       const [error, result] = await this.tryValidate(data, {} as any)
       if (result) {

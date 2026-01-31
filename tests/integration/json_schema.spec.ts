@@ -3,6 +3,7 @@ import vine from '../../index.js'
 import Ajv from 'ajv'
 import { type SchemaTypes } from '../../src/types.js'
 import { inspect } from 'node:util'
+import { type StandardJSONSchemaV1 } from '@standard-schema/spec'
 
 const ajv = new Ajv()
 
@@ -668,4 +669,43 @@ test.group('JsonSchema', () => {
       }
     })
     .tags(['@literal'])
+})
+
+test.group('JsonSchema | StandardJsonSchema', () => {
+  test('should respect StandardJSONSchemaV1 type', ({ expectTypeOf }) => {
+    const validator = vine.create({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    expectTypeOf<StandardJSONSchemaV1>(validator)
+  })
+
+  test('convert to json-schema as per standard schema spec', ({ assert }) => {
+    const validator = vine.create({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const result = validator['~standard'].jsonSchema.input({ target: 'draft-2020-12' })
+
+    assert.deepEqual(result, {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        email: { type: 'string', format: 'email' },
+      },
+      additionalProperties: false,
+      required: ['name', 'email'],
+    })
+  })
+
+  test('convert from json-schema as per standard schema spec should throw', ({ assert }) => {
+    const validator = vine.create({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    assert.throws(() => validator['~standard'].jsonSchema.output({ target: 'draft-2020-12' }))
+  })
 })
