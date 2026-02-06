@@ -12,8 +12,13 @@ import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
- * Verifies two equals are equal considering the HTML forms
- * serialization behavior.
+ * Validates that two values are equal, considering HTML form serialization behavior.
+ * Compares values using normalized comparison that handles type coercion.
+ *
+ * @example
+ * vine.literal('admin')
+ * vine.literal(42)
+ * vine.literal(true)
  */
 export const equalsRule = createRule<{ expectedValue: any }>(
   function equals(value, options, field) {

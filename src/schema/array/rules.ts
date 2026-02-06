@@ -12,7 +12,12 @@ import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
- * Enforce a minimum length on an array field
+ * Enforce a minimum length on an array field.
+ *
+ * Validates that an array contains at least the specified number of elements.
+ *
+ * @example
+ * vine.array(vine.string()).minLength(2)
  */
 export const minLengthRule = createRule<{ min: number }>(
   function minLength(value, options, field) {
@@ -31,7 +36,12 @@ export const minLengthRule = createRule<{ min: number }>(
 )
 
 /**
- * Enforce a maximum length on an array field
+ * Enforce a maximum length on an array field.
+ *
+ * Validates that an array contains at most the specified number of elements.
+ *
+ * @example
+ * vine.array(vine.string()).maxLength(10)
  */
 export const maxLengthRule = createRule<{ max: number }>(
   function maxLength(value, options, field) {
@@ -50,7 +60,12 @@ export const maxLengthRule = createRule<{ max: number }>(
 )
 
 /**
- * Enforce a fixed length on an array field
+ * Enforce a fixed length on an array field.
+ *
+ * Validates that an array contains exactly the specified number of elements.
+ *
+ * @example
+ * vine.array(vine.string()).fixedLength(5)
  */
 export const fixedLengthRule = createRule<{ size: number }>(
   function fixedLength(value, options, field) {
@@ -70,7 +85,12 @@ export const fixedLengthRule = createRule<{ size: number }>(
 )
 
 /**
- * Ensure the array is not empty
+ * Ensure the array is not empty.
+ *
+ * Validates that an array contains at least one element.
+ *
+ * @example
+ * vine.array(vine.string()).notEmpty()
  */
 export const notEmptyRule = createRule<undefined>(
   function notEmpty(value, _, field) {
@@ -89,7 +109,25 @@ export const notEmptyRule = createRule<undefined>(
 )
 
 /**
- * Ensure array elements are distinct/unique
+ * Ensure array elements are distinct/unique.
+ *
+ * For primitive arrays, validates that all elements are unique.
+ * For object arrays, validates uniqueness based on specified field(s).
+ *
+ * @example
+ * // Validate primitive array uniqueness
+ * vine.array(vine.string()).distinct()
+ *
+ * @example
+ * // Validate object array uniqueness by field
+ * vine.array(vine.object({ id: vine.number() })).distinct('id')
+ *
+ * @example
+ * // Validate object array uniqueness by multiple fields
+ * vine.array(vine.object({
+ *   name: vine.string(),
+ *   email: vine.string()
+ * })).distinct(['name', 'email'])
  */
 export const distinctRule = createRule<{ fields?: string | string[] }>(
   function distinct(value, options, field) {
@@ -108,7 +146,15 @@ export const distinctRule = createRule<{ fields?: string | string[] }>(
 )
 
 /**
- * Removes empty strings, null and undefined values from the array
+ * Removes empty strings, null and undefined values from the array.
+ *
+ * This rule mutates the array by filtering out falsy values and empty strings.
+ * It does not fail validation but transforms the input by removing unwanted values.
+ *
+ * @example
+ * vine.array(vine.string()).compact()
+ * // Input: ['a', '', null, 'b', undefined]
+ * // Output: ['a', 'b']
  */
 export const compactRule = createRule<undefined>(function compact(value, _, field) {
   /**

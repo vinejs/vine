@@ -22,8 +22,26 @@ import type {
 import { type JSONSchema7 } from 'json-schema'
 
 /**
- * VineTuple is an array with known length and may have different
- * schema type for each array element.
+ * VineTuple represents a fixed-length array where each position has a specific schema type.
+ * Unlike VineArray which uses the same schema for all elements, tuples allow different
+ * types at different positions, similar to TypeScript tuples.
+ *
+ * @template Schema - Array of schema types for each tuple position
+ * @template Input - Expected input type for the tuple
+ * @template Output - Output type after validation and transformation
+ * @template CamelCaseOutput - Output type with camelCase property names
+ *
+ * @example
+ * const schema = vine.tuple([
+ *   vine.string(),
+ *   vine.number(),
+ *   vine.boolean()
+ * ])
+ *
+ * const result = await vine.validate({
+ *   schema,
+ *   data: ['hello', 42, true]
+ * })
  */
 export class VineTuple<
   Schema extends SchemaTypes[],
@@ -34,33 +52,57 @@ export class VineTuple<
   extends BaseType<Input, Output, CamelCaseOutput>
   implements WithJSONSchema
 {
+  /**
+   * Array of schemas defining the type for each tuple position
+   */
   #schemas: [...Schema]
 
   /**
-   * Whether or not to allow unknown properties
+   * Whether to allow additional elements beyond the defined tuple length
    */
   #allowUnknownProperties: boolean = false;
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.array';
 
   /**
-   * Checks if the value is of array type. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value is an array.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value is an array
    */
   [IS_OF_TYPE] = (value: unknown) => {
     return Array.isArray(value)
   }
 
+  /**
+   * Creates a new VineTuple instance with position-specific schemas.
+   *
+   * @param schemas - Array of schemas defining validation for each tuple position
+   * @param options - Field options like bail mode and nullability
+   * @param validations - Initial set of validations to apply
+   */
   constructor(schemas: [...Schema], options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations)
     this.#schemas = schemas
   }
 
   /**
-   * Copy unknown properties to the final output.
+   * Allows additional elements beyond the defined tuple length to pass through validation.
+   * By default, tuples enforce exact length matching. This method relaxes that constraint.
+   *
+   * @returns This tuple schema with unknown properties allowed
+   *
+   * @example
+   * const schema = vine.tuple([
+   *   vine.string(),
+   *   vine.number()
+   * ]).allowUnknownProperties()
+   *
+   * // Now ['hello', 42, 'extra'] will pass validation
    */
   allowUnknownProperties<Value>(): VineTuple<
     Schema,
@@ -78,7 +120,9 @@ export class VineTuple<
   }
 
   /**
-   * Clone object
+   * Clones the VineTuple schema including all position schemas, validations, and options.
+   *
+   * @returns A cloned instance of this VineTuple schema
    */
   clone(): this {
     const cloned = new VineTuple<Schema, Input, Output, CamelCaseOutput>(
@@ -95,7 +139,9 @@ export class VineTuple<
   }
 
   /**
-   * Transforms into JSONSchema.
+   * Converts the tuple schema to JSON Schema format.
+   *
+   * @returns JSON Schema representation of this tuple
    */
   toJSONSchema() {
     const items: JSONSchema7[] = []
@@ -125,7 +171,12 @@ export class VineTuple<
   }
 
   /**
-   * Compiles to array data type
+   * Compiles the tuple schema to a compiler node for validation.
+   *
+   * @param propertyName - Name of the property being compiled
+   * @param refs - Reference store for the compiler
+   * @param options - Parser options
+   * @returns Compiled tuple node for validation
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): TupleNode {
     return {

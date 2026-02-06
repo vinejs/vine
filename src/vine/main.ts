@@ -149,6 +149,9 @@ export class Vine extends SchemaBuilder {
     schema: Schema
   ): VineValidator<Schema, Record<string, any> | undefined>
 
+  /**
+   * Internal implementation that handles both schema and properties overloads.
+   */
   create<SchemaOrProperties extends Record<string, SchemaTypes> | SchemaTypes>(
     schemaOrProperties: SchemaOrProperties
   ) {

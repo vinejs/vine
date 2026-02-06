@@ -37,14 +37,34 @@ import type {
 import { globalTransforms } from '../../defaults.ts'
 
 /**
- * VineDate represents a Date object created by parsing a
- * string or number value as a date.
+ * VineDate represents a Date object created by parsing a string or number value as a date.
+ * It accepts various date formats and converts them to JavaScript Date objects,
+ * with comprehensive validation rules for date comparisons and ranges.
+ *
+ * @example
+ * const schema = vine.date()
+ *   .after('today')
+ *   .before('2025-12-31')
+ *
+ * const result = await vine.validate({
+ *   schema,
+ *   data: '2025-06-15'
+ * })
  */
 export class VineDate extends BaseLiteralType<
   string | number,
   VineGlobalTransforms extends { date: infer D } ? D : Date,
   VineGlobalTransforms extends { date: infer D } ? D : Date
 > {
+  /**
+   * Sets a global transformer function for all date values.
+   * The transformer is applied to every validated date value.
+   *
+   * @param transformer - Function that transforms a Date object to a custom type
+   *
+   * @example
+   * VineDate.transform((value) => value.toISOString())
+   */
   static transform(
     transformer: (value: Date) => VineGlobalTransforms extends { date: infer D } ? D : Date
   ) {
@@ -52,7 +72,7 @@ export class VineDate extends BaseLiteralType<
   }
 
   /**
-   * Available VineDate rules
+   * Static collection of all available validation rules for dates
    */
   static rules = {
     equals: equalsRule,
@@ -71,18 +91,21 @@ export class VineDate extends BaseLiteralType<
   };
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.date';
 
   /**
-   * The subtype of the literal schema field
+   * The subtype identifier for the literal schema field
    */
   [SUBTYPE] = 'date';
 
   /**
-   * Checks if the value is of date type. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value can be parsed as a date.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value can be parsed as a valid date
    */
   [IS_OF_TYPE] = (value: unknown) => {
     if (typeof value !== 'string') {
@@ -93,16 +116,29 @@ export class VineDate extends BaseLiteralType<
 
   declare options: FieldOptions & DateFieldOptions
 
+  /**
+   * Creates a new VineDate instance with optional configuration.
+   *
+   * @param options - Field options including date formats and nullability
+   * @param validations - Initial set of validations to apply
+   */
   constructor(options?: Partial<FieldOptions> & DateFieldOptions, validations?: Validation<any>[]) {
     super(options, validations || [])
     this.dataTypeValidator = dateRule(options || {})
   }
 
   /**
-   * The equals rule compares the input value to be same
-   * as the expected value.
+   * Validates the date to be equal to the expected value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed.
+   * @param expectedValue - The expected date value or 'today'
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().equals('2025-01-01')
+   * vine.date().equals('today')
+   * vine.date().equals('2025-01-01', { compare: 'month' })
    */
   equals(
     expectedValue: string | ((field: FieldContext) => string),
@@ -112,10 +148,17 @@ export class VineDate extends BaseLiteralType<
   }
 
   /**
-   * The after rule compares the input value to be after
-   * the expected value.
+   * Validates the date to be after the expected value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed.
+   * @param expectedValue - The expected date value, 'today', or 'tomorrow'
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().after('today')
+   * vine.date().after('2025-01-01')
+   * vine.date().after('tomorrow', { compare: 'hour' })
    */
   after(
     expectedValue:
@@ -129,10 +172,16 @@ export class VineDate extends BaseLiteralType<
   }
 
   /**
-   * The after or equal rule compares the input value to be
-   * after or equal to the expected value.
+   * Validates the date to be after or equal to the expected value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed.
+   * @param expectedValue - The expected date value, 'today', or 'tomorrow'
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().afterOrEqual('today')
+   * vine.date().afterOrEqual('2025-01-01')
    */
   afterOrEqual(
     expectedValue:
@@ -146,10 +195,17 @@ export class VineDate extends BaseLiteralType<
   }
 
   /**
-   * The before rule compares the input value to be before
-   * the expected value.
+   * Validates the date to be before the expected value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed.
+   * @param expectedValue - The expected date value, 'today', or 'yesterday'
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().before('today')
+   * vine.date().before('2025-12-31')
+   * vine.date().before('yesterday')
    */
   before(
     expectedValue:
@@ -163,10 +219,16 @@ export class VineDate extends BaseLiteralType<
   }
 
   /**
-   * The before rule compares the input value to be before
-   * the expected value.
+   * Validates the date to be before or equal to the expected value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed.
+   * @param expectedValue - The expected date value, 'today', or 'yesterday'
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().beforeOrEqual('today')
+   * vine.date().beforeOrEqual('2025-12-31')
    */
   beforeOrEqual(
     expectedValue:
@@ -180,75 +242,118 @@ export class VineDate extends BaseLiteralType<
   }
 
   /**
-   * The sameAs rule expects the input value to be same
-   * as the value of the other field.
+   * Validates the date to be equal to another field's value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed
+   * @param otherField - The name of the other field to compare with
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().sameAs('startDate')
+   * vine.date().sameAs('birthDate', { compare: 'month' })
    */
   sameAs(otherField: string, options?: DateEqualsOptions): this {
     return this.use(sameAsRule({ otherField, ...options }))
   }
 
   /**
-   * The notSameAs rule expects the input value to be different
-   * from the other field's value
+   * Validates the date to be different from another field's value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed
+   * @param otherField - The name of the other field to compare with
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().notSameAs('endDate')
+   * vine.date().notSameAs('previousDate')
    */
-
   notSameAs(otherField: string, options?: DateEqualsOptions): this {
     return this.use(notSameAsRule({ otherField, ...options }))
   }
 
   /**
-   * The afterField rule expects the input value to be after
-   * the other field's value.
+   * Validates the date to be after another field's value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed
+   * @param otherField - The name of the other field to compare with
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().afterField('startDate')
+   * vine.date().afterField('createdAt', { compare: 'minute' })
    */
   afterField(otherField: string, options?: DateEqualsOptions): this {
     return this.use(afterFieldRule({ otherField, ...options }))
   }
 
   /**
-   * The afterOrSameAs rule expects the input value to be after
-   * or equal to the other field's value.
+   * Validates the date to be after or equal to another field's value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed
+   * @param otherField - The name of the other field to compare with
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().afterOrSameAs('startDate')
    */
   afterOrSameAs(otherField: string, options?: DateEqualsOptions): this {
     return this.use(afterOrSameAsRule({ otherField, ...options }))
   }
 
   /**
-   * The beforeField rule expects the input value to be before
-   * the other field's value.
+   * Validates the date to be before another field's value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed
+   * @param otherField - The name of the other field to compare with
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().beforeField('endDate')
+   * vine.date().beforeField('expiresAt')
    */
   beforeField(otherField: string, options?: DateEqualsOptions): this {
     return this.use(beforeFieldRule({ otherField, ...options }))
   }
 
   /**
-   * The beforeOrSameAs rule expects the input value to be before
-   * or same as the other field's value.
+   * Validates the date to be before or equal to another field's value.
+   * By default, compares day, month, and year.
    *
-   * By default, the comparions of day, month and years are performed
+   * @param otherField - The name of the other field to compare with
+   * @param options - Comparison options (compare unit and format)
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().beforeOrSameAs('endDate')
    */
   beforeOrSameAs(otherField: string, options?: DateEqualsOptions): this {
     return this.use(beforeOrSameAsRule({ otherField, ...options }))
   }
 
   /**
-   * The weekend rule ensures the date falls on a weekend
+   * Validates the date to fall on a weekend (Saturday or Sunday).
+   *
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().weekend()
    */
   weekend(): this {
     return this.use(weekendRule())
   }
 
   /**
-   * The weekday rule ensures the date falls on a weekday
+   * Validates the date to fall on a weekday (Monday to Friday).
+   *
+   * @returns This date schema instance for method chaining
+   *
+   * @example
+   * vine.date().weekday()
    */
   weekday(): this {
     return this.use(weekdayRule())
@@ -256,7 +361,9 @@ export class VineDate extends BaseLiteralType<
 
   /**
    * Clones the VineDate schema type. The applied options
-   * and validations are copied to the new instance
+   * and validations are copied to the new instance.
+   *
+   * @returns A cloned instance of this VineDate schema
    */
   clone(): this {
     return new VineDate(this.cloneOptions(), this.cloneValidations()) as this

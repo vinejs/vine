@@ -12,8 +12,12 @@ import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
- * Enforce the value to be a number or a string representation
- * of a number
+ * Enforces the value to be a number or a string representation of a number.
+ * Converts string numbers to actual numbers and validates against NaN and Infinity.
+ *
+ * @example
+ * vine.number()
+ * vine.number({ strict: true })
  */
 export const numberRule = createRule<{ strict?: boolean }>(
   function number(value, options, field) {
@@ -44,7 +48,12 @@ export const numberRule = createRule<{ strict?: boolean }>(
 )
 
 /**
- * Enforce a minimum value on a number field
+ * Enforces a minimum value on a number field.
+ * The number must be greater than or equal to the specified minimum.
+ *
+ * @example
+ * vine.number().min(0)
+ * vine.number().min(18)
  */
 export const minRule = createRule<{ min: number }>(
   function min(value, options, field) {
@@ -60,7 +69,12 @@ export const minRule = createRule<{ min: number }>(
 )
 
 /**
- * Enforce a maximum value on a number field
+ * Enforces a maximum value on a number field.
+ * The number must be less than or equal to the specified maximum.
+ *
+ * @example
+ * vine.number().max(100)
+ * vine.number().max(65)
  */
 export const maxRule = createRule<{ max: number }>(
   function max(value, options, field) {
@@ -76,7 +90,12 @@ export const maxRule = createRule<{ max: number }>(
 )
 
 /**
- * Enforce a range of values on a number field.
+ * Enforces the value to be within a range of minimum and maximum values.
+ * The number must be between min and max (inclusive).
+ *
+ * @example
+ * vine.number().range([1, 100])
+ * vine.number().range([18, 65])
  */
 export const rangeRule = createRule<{ min: number; max: number }>(
   function range(value, options, field) {
@@ -93,10 +112,11 @@ export const rangeRule = createRule<{ min: number; max: number }>(
 )
 
 /**
- * Enforce the value is a positive number. Zero is considered a neutral
- * number and will fail the positive validation.
+ * Enforces the value to be a positive number (greater than 0).
+ * Zero is considered neutral and will fail this validation.
  *
- * A number greater than (0). For example, (1,2,3,0.5).
+ * @example
+ * vine.number().positive()
  */
 export const positiveRule = createRule(
   function positive(value, _, field) {
@@ -113,10 +133,11 @@ export const positiveRule = createRule(
 )
 
 /**
- * Enforce the value is a negative number. Zero is considered a neutral
- * number and will fail the negative validation.
+ * Enforces the value to be a negative number (less than 0).
+ * Zero is considered neutral and will fail this validation.
  *
- * A number less than (0). For example, (-1,-2,-3,-0.5)
+ * @example
+ * vine.number().negative()
  */
 export const negativeRule = createRule<undefined>(
   function negative(value, _, field) {
@@ -133,8 +154,11 @@ export const negativeRule = createRule<undefined>(
 )
 
 /**
- * A number that is either positive or zero (greater than or equal to (0)).
- * For example, (0,1,2,0.5).
+ * Enforces the value to be a non-negative number (greater than or equal to 0).
+ * Accepts zero and all positive numbers.
+ *
+ * @example
+ * vine.number().nonNegative()
  */
 export const nonNegativeRule = createRule<undefined>(function nonNegative(value, _, field) {
   if ((value as number) >= 0) {
@@ -144,8 +168,11 @@ export const nonNegativeRule = createRule<undefined>(function nonNegative(value,
 })
 
 /**
- * A number that is either negative or zero (less than or equal to (0)).
- * For example, (0,-1,-2,-0.5)
+ * Enforces the value to be a non-positive number (less than or equal to 0).
+ * Accepts zero and all negative numbers.
+ *
+ * @example
+ * vine.number().nonPositive()
  */
 export const nonPositiveRule = createRule(function nonPositive(value, _, field) {
   if ((value as number) <= 0) {
@@ -155,9 +182,13 @@ export const nonPositiveRule = createRule(function nonPositive(value, _, field) 
 })
 
 /**
- * Enforce the value to have a fixed or range of decimals
+ * Enforces the value to have a fixed number or range of decimal places.
+ * Validates the precision of the decimal number.
+ *
+ * @example
+ * vine.number().decimal(2)
+ * vine.number().decimal([0, 2])
  */
-// TODO: Handle json-schema. Range can be handled with anyOf but we have floating point precision issues
 export const decimalRule = createRule<{ range: [number, number?] }>(
   function decimal(value, options, field) {
     if (
@@ -172,7 +203,11 @@ export const decimalRule = createRule<{ range: [number, number?] }>(
 )
 
 /**
- * Enforce the value to not have decimal places
+ * Enforces the value to be an integer without decimal places.
+ * The number must be a whole number.
+ *
+ * @example
+ * vine.number().withoutDecimals()
  */
 export const withoutDecimalsRule = createRule(
   function withoutDecimals(value, _, field) {
@@ -188,7 +223,12 @@ export const withoutDecimalsRule = createRule(
 )
 
 /**
- * Enforce the value to be in a list of allowed values
+ * Enforces the value to be one of the specified allowed values.
+ * The number must match one of the values in the provided list.
+ *
+ * @example
+ * vine.number().in([1, 2, 3, 5, 8, 13])
+ * vine.number().in([10, 20, 30])
  */
 export const inRule = createRule<{ values: number[] }>(
   function inValues(value, options, field) {

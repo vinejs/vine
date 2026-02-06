@@ -14,8 +14,23 @@ import type { ParserOptions, SchemaTypes, WithJSONSchema } from '../../types.js'
 import { type JSONSchema7 } from 'json-schema'
 
 /**
- * Group conditional represents a sub-set of object wrapped
- * inside a conditional
+ * GroupConditional represents a subset of object properties that are conditionally
+ * validated and merged based on a runtime condition. This allows schemas to have
+ * different required fields depending on the values in the object being validated.
+ *
+ * @template Properties - Record of property names to their schema types
+ * @template Input - Expected input type for these properties
+ * @template Output - Output type after validation and transformation
+ * @template CamelCaseOutput - Output type with camelCase property names
+ *
+ * @example
+ * vine.group.if(
+ *   (value) => value.shipping_required === true,
+ *   {
+ *     shipping_address: vine.string(),
+ *     shipping_method: vine.string()
+ *   }
+ * )
  */
 export class GroupConditional<
   Properties extends Record<string, SchemaTypes>,
@@ -28,22 +43,30 @@ export class GroupConditional<
   declare [COTYPE]: CamelCaseOutput
 
   /**
-   * Properties to merge when conditonal is true
+   * Properties to validate and merge when the conditional evaluates to true
    */
   #properties: Properties
 
   /**
-   * Conditional to evaluate
+   * Conditional function that determines whether to validate these properties
    */
   #conditional: ConditionalFn<Record<string, unknown>>
 
+  /**
+   * Creates a new GroupConditional with a condition and properties.
+   *
+   * @param conditional - Function that returns truthy value when properties should be validated
+   * @param properties - Properties to validate and merge when condition is true
+   */
   constructor(conditional: ConditionalFn<Record<string, unknown>>, properties: Properties) {
     this.#properties = properties
     this.#conditional = conditional
   }
 
   /**
-   * Transforms into JSONSchema.
+   * Converts the conditional properties to JSON Schema format.
+   *
+   * @returns JSON Schema representation of this conditional's properties
    */
   toJSONSchema(): JSONSchema7 {
     const properties: Record<string, JSONSchema7> = {}
@@ -66,7 +89,11 @@ export class GroupConditional<
   }
 
   /**
-   * Compiles to a union conditional
+   * Compiles the conditional to a compiler node for validation.
+   *
+   * @param refs - Reference store for the compiler
+   * @param options - Parser options
+   * @returns Compiled conditional node
    */
   [PARSE](refs: RefsStore, options: ParserOptions): ObjectGroupNode['conditions'][number] {
     return {

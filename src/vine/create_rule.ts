@@ -28,7 +28,7 @@ type GetArgs<T> = undefined extends T ? [options?: T] : [options: T]
  * @param metaData.name - Custom name for the rule (defaults to function name)
  * @param metaData.implicit - Whether the rule runs on null/undefined values
  * @param metaData.isAsync - Whether the validator is async (auto-detected if not specified)
- * @returns A rule factory function that can be used with schema.use()
+ * @param metaData.toJSONSchema - Optional function to modify the JSON Schema representation
  *
  * @example
  * // Simple validation rule
@@ -65,6 +65,7 @@ export function createRule<Options = undefined>(
     implicit?: boolean
     /** Whether the validator function is async */
     isAsync?: boolean
+    /** Optional function to modify the JSON Schema representation */
     toJSONSchema?: JsonSchemaModifier<Options>
   }
 ) {

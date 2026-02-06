@@ -10,19 +10,38 @@ import type {
 } from '../../types.js'
 
 /**
- * Set of conditional rules to mark a field as required using
- * runtime checks
+ * Abstract base class providing conditional validation methods for making fields
+ * required based on runtime conditions. This class is extended by schema types
+ * that support conditional validation.
+ *
+ * @example
+ * vine.string().optional().requiredWhen('role', '=', 'admin')
  */
 export abstract class ConditionalValidations {
+  /**
+   * Adds a validation rule to the schema's validation chain.
+   * Must be implemented by the extending class.
+   *
+   * @param validation - The validation rule or rule builder to add
+   */
   abstract use(validation: Validation<any> | RuleBuilder): this
 
   /**
-   * Define a callback to conditionally require a field at
-   * runtime.
+   * Marks the field as required when a condition is met. Can be used with a callback
+   * or with comparison operators to compare another field's value.
    *
-   * The callback method should return "true" to mark the
-   * field as required, or "false" to skip the required
-   * validation
+   * @param otherField - Field name to compare or callback function
+   * @param operator - Comparison operator (=, !=, in, notIn, >, <, >=, <=)
+   * @param expectedValue - Expected value to compare against
+   *
+   * @example
+   * vine.string().optional().requiredWhen('role', '=', 'admin')
+   *
+   * @example
+   * vine.string().optional().requiredWhen('age', '>', 18)
+   *
+   * @example
+   * vine.string().optional().requiredWhen((field) => field.data.isAdmin === true)
    */
   requiredWhen<Operator extends ComparisonOperators>(
     otherField: string,
@@ -89,9 +108,15 @@ export abstract class ConditionalValidations {
   }
 
   /**
-   * Mark the field under validation as required when all
-   * the other fields are present with value other
-   * than `undefined` or `null`.
+   * Marks the field as required when all specified fields exist (are not undefined or null).
+   *
+   * @param fields - Field name or array of field names to check for existence
+   *
+   * @example
+   * vine.string().optional().requiredIfExists('email')
+   *
+   * @example
+   * vine.string().optional().requiredIfExists(['firstName', 'lastName'])
    */
   requiredIfExists(fields: string | string[]) {
     const fieldsToExist = Array.isArray(fields) ? fields : [fields]
@@ -105,9 +130,12 @@ export abstract class ConditionalValidations {
   }
 
   /**
-   * Mark the field under validation as required when any
-   * one of the other fields are present with non-nullable
-   * value.
+   * Marks the field as required when any one of the specified fields exists (is not undefined or null).
+   *
+   * @param fields - Array of field names to check for existence
+   *
+   * @example
+   * vine.string().optional().requiredIfAnyExists(['email', 'phone'])
    */
   requiredIfAnyExists(fields: string[]) {
     return this.use(
@@ -120,9 +148,15 @@ export abstract class ConditionalValidations {
   }
 
   /**
-   * Mark the field under validation as required when all
-   * the other fields are missing or their value is
-   * `undefined` or `null`.
+   * Marks the field as required when all specified fields are missing (undefined or null).
+   *
+   * @param fields - Field name or array of field names to check for absence
+   *
+   * @example
+   * vine.string().optional().requiredIfMissing('addressId')
+   *
+   * @example
+   * vine.string().optional().requiredIfMissing(['street', 'city'])
    */
   requiredIfMissing(fields: string | string[]) {
     const fieldsToExist = Array.isArray(fields) ? fields : [fields]
@@ -136,8 +170,12 @@ export abstract class ConditionalValidations {
   }
 
   /**
-   * Mark the field under validation as required when any
-   * one of the other fields are missing.
+   * Marks the field as required when any one of the specified fields is missing (undefined or null).
+   *
+   * @param fields - Array of field names to check for absence
+   *
+   * @example
+   * vine.string().optional().requiredIfAnyMissing(['street', 'city', 'zipCode'])
    */
   requiredIfAnyMissing(fields: string[]) {
     return this.use(

@@ -94,6 +94,11 @@ export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> 
     return new VineCamelCaseObject<Schema>(this.#schema.clone()) as this
   }
 
+  /**
+   * Converts the object schema to JSON Schema format.
+   *
+   * @returns JSON Schema representation of this object
+   */
   toJSONSchema(): JSONSchema7 {
     return this.#schema.toJSONSchema()
   }
@@ -176,6 +181,14 @@ export class VineObject<
     return value !== null && typeof value === 'object' && !Array.isArray(value)
   }
 
+  /**
+   * Creates a new VineObject instance with property schemas and optional configuration.
+   *
+   * @param properties - Record of property names to their validation schemas
+   * @param options - Field options like bail mode and nullability
+   * @param validations - Initial set of validations to apply
+   * @throws Error if properties is not provided
+   */
   constructor(properties: Properties, options?: FieldOptions, validations?: Validation<any>[]) {
     if (!properties) {
       throw new Error(
@@ -354,6 +367,11 @@ export class VineObject<
     return new VineCamelCaseObject(this)
   }
 
+  /**
+   * Converts the object schema to JSON Schema format.
+   *
+   * @returns JSON Schema representation of this object
+   */
   toJSONSchema(): JSONSchema7 {
     const properties: Record<string, JSONSchema7> = {}
     const required: string[] = []
@@ -475,7 +493,12 @@ export class VineObject<
   }
 
   /**
-   * Compiles the schema type to a compiler node
+   * Compiles the schema type to a compiler node for validation.
+   *
+   * @param propertyName - Name of the property being compiled
+   * @param refs - Reference store for the compiler
+   * @param options - Parser options
+   * @returns Compiled object node for validation
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): ObjectNode {
     return {

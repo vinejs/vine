@@ -30,8 +30,28 @@ import { fixedLengthRule, maxLengthRule, minLengthRule, validateKeysRule } from 
 import { type JSONSchema7 } from 'json-schema'
 
 /**
- * VineRecord represents an object of key-value pair in which
- * keys are unknown
+ * VineRecord represents an object with dynamic keys where all values share the same schema.
+ * Unlike VineObject which has predefined properties, records allow any string key
+ * but enforce consistent value types across all keys.
+ *
+ * @template Schema - The schema type for validating all record values
+ *
+ * @example
+ * const schema = vine.record(vine.number())
+ *
+ * const result = await vine.validate({
+ *   schema,
+ *   data: { a: 1, b: 2, c: 3 }
+ * })
+ *
+ * @example
+ * // Record with complex value types
+ * const schema = vine.record(
+ *   vine.object({
+ *     name: vine.string(),
+ *     age: vine.number()
+ *   })
+ * )
  */
 export class VineRecord<Schema extends SchemaTypes>
   extends BaseType<
@@ -42,7 +62,7 @@ export class VineRecord<Schema extends SchemaTypes>
   implements WithJSONSchema
 {
   /**
-   * Default collection of record rules
+   * Static collection of all available validation rules for records
    */
   static rules = {
     maxLength: maxLengthRule,
@@ -51,57 +71,91 @@ export class VineRecord<Schema extends SchemaTypes>
     validateKeys: validateKeysRule,
   }
 
+  /**
+   * The schema used to validate each value in the record
+   */
   #schema: Schema;
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.object';
 
   /**
-   * Checks if the value is of object type. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value is an object.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value is a non-null object and not an array
    */
   [IS_OF_TYPE] = (value: unknown) => {
     return value !== null && typeof value === 'object' && !Array.isArray(value)
   }
 
+  /**
+   * Creates a new VineRecord instance with value schema and optional configuration.
+   *
+   * @param schema - The schema to validate each record value
+   * @param options - Field options like bail mode and nullability
+   * @param validations - Initial set of validations to apply
+   */
   constructor(schema: Schema, options?: FieldOptions, validations?: Validation<any>[]) {
     super(options, validations)
     this.#schema = schema
   }
 
   /**
-   * Enforce a minimum length on an object field
+   * Enforce a minimum number of properties on the record.
+   *
+   * @param expectedLength - The minimum required number of key-value pairs
+   * @returns This record schema instance for method chaining
    */
   minLength(expectedLength: number) {
     return this.use(minLengthRule({ min: expectedLength }))
   }
 
   /**
-   * Enforce a maximum length on an object field
+   * Enforce a maximum number of properties on the record.
+   *
+   * @param expectedLength - The maximum allowed number of key-value pairs
+   * @returns This record schema instance for method chaining
    */
   maxLength(expectedLength: number) {
     return this.use(maxLengthRule({ max: expectedLength }))
   }
 
   /**
-   * Enforce a fixed length on an object field
+   * Enforce an exact number of properties on the record.
+   *
+   * @param expectedLength - The exact required number of key-value pairs
+   * @returns This record schema instance for method chaining
    */
   fixedLength(expectedLength: number) {
     return this.use(fixedLengthRule({ size: expectedLength }))
   }
 
   /**
-   * Register a callback to validate the object keys
+   * Register a custom callback to validate the record's keys.
+   * Useful for enforcing key naming patterns or checking key existence.
+   *
+   * @param args - Arguments to pass to the validateKeys rule
+   * @returns This record schema instance for method chaining
+   *
+   * @example
+   * vine.record(vine.string()).validateKeys((keys, field) => {
+   *   if (!keys.every(key => /^[a-z_]+$/.test(key))) {
+   *     field.report('Keys must be lowercase with underscores', 'invalidKeys', field)
+   *   }
+   * })
    */
   validateKeys(...args: Parameters<typeof validateKeysRule>) {
     return this.use(validateKeysRule(...args))
   }
 
   /**
-   * Clones the VineRecord schema type. The applied options
-   * and validations are copied to the new instance
+   * Clones the VineRecord schema including the value schema, options, and validations.
+   *
+   * @returns A cloned instance of this VineRecord schema
    */
   clone(): this {
     return new VineRecord(
@@ -112,7 +166,9 @@ export class VineRecord<Schema extends SchemaTypes>
   }
 
   /**
-   * Transforms into JSONSchema.
+   * Converts the record schema to JSON Schema format.
+   *
+   * @returns JSON Schema representation of this record
    */
   toJSONSchema() {
     const schema = {
@@ -131,7 +187,12 @@ export class VineRecord<Schema extends SchemaTypes>
   }
 
   /**
-   * Compiles to record data type
+   * Compiles the record schema to a compiler node for validation.
+   *
+   * @param propertyName - Name of the property being compiled
+   * @param refs - Reference store for the compiler
+   * @param options - Parser options
+   * @returns Compiled record node for validation
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): RecordNode {
     return {

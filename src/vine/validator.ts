@@ -24,7 +24,8 @@ import type {
 import { type JSONSchema7 } from 'json-schema'
 
 /**
- * Error messages to share with the compiler
+ * Error messages to share with the compiler.
+ * Maps core validation types to their default error messages.
  */
 const COMPILER_ERROR_MESSAGES = {
   required: messages.required,
@@ -32,6 +33,9 @@ const COMPILER_ERROR_MESSAGES = {
   object: messages.object,
 }
 
+/**
+ * Reusable empty object to avoid creating new instances for default options.
+ */
 const EMPTY_OBJECT = {}
 
 /**
@@ -287,6 +291,13 @@ export class VineValidator<
     return this.#jsonSchema
   }
 
+  /**
+   * Standard Schema V1 compliance implementation.
+   * Provides interoperability with other validation libraries through the
+   * Standard Schema specification.
+   *
+   * @see https://github.com/standard-schema/standard-schema
+   */
   readonly '~standard': StandardSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> &
     StandardJSONSchemaV1.Props<Schema[typeof ITYPE], Schema[typeof OTYPE]> = {
     version: 1,

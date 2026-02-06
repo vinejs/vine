@@ -20,44 +20,67 @@ import { OTYPE, COTYPE, PARSE, ITYPE, SUBTYPE, UNIQUE_NAME, IS_OF_TYPE } from '.
 import { type JSONSchema7 } from 'json-schema'
 
 /**
- * Specify a null value inside a union.
+ * VineNull represents a schema type that only accepts null values.
+ * Typically used inside union types to explicitly allow null as a valid value.
+ *
+ * @example
+ * const schema = vine.union([
+ *   vine.string(),
+ *   vine.null()
+ * ])
+ *
+ * const result = await vine.validate({
+ *   schema,
+ *   data: null
+ * })
  */
 export class VineNull implements ConstructableSchema<null, null, null>, WithJSONSchema {
   /**
-   * The input type of the schema
+   * The input type of the schema (type-only property)
    */
   declare [ITYPE]: null;
 
   /**
-   * The output value of the field. The property points to a type only
-   * and not the real value.
+   * The output type of the schema (type-only property)
    */
   declare [OTYPE]: null;
+
+  /**
+   * The camelCase output type of the schema (type-only property)
+   */
   declare [COTYPE]: null;
 
   /**
-   * The subtype of the literal schema field
+   * The subtype identifier for the literal schema field
    */
   [SUBTYPE]: string = 'null';
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.null';
 
   /**
-   * Checks if the value is null. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value is null.
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
+   * @returns True if the value is null
    */
   [IS_OF_TYPE] = (value: unknown) => {
     return value === null
   }
 
   /**
-   * Field options
+   * Field configuration options
    */
   protected options: FieldOptions
 
+  /**
+   * Creates a new VineNull instance with optional configuration.
+   *
+   * @param options - Field options like bail mode (defaults allow null)
+   */
   constructor(options?: Partial<FieldOptions>) {
     this.options = {
       bail: true,
@@ -68,7 +91,7 @@ export class VineNull implements ConstructableSchema<null, null, null>, WithJSON
   }
 
   /**
-   * Shallow clones the options
+   * Creates a shallow clone of the field options.
    */
   protected cloneOptions(): FieldOptions {
     return { ...this.options }
@@ -76,18 +99,28 @@ export class VineNull implements ConstructableSchema<null, null, null>, WithJSON
 
   /**
    * Clones the VineNull schema type. The applied options
-   * and validations are copied to the new instance
+   * are copied to the new instance.
+   *
+   * @returns A cloned instance of this VineNull schema
    */
   clone(): this {
     return new VineNull(this.cloneOptions()) as this
   }
 
+  /**
+   * Converts the schema to JSON Schema format.
+   * Returns a schema with type 'null'.
+   */
   toJSONSchema(): JSONSchema7 {
     return { type: 'null' }
   }
 
   /**
-   * Compiles the schema type to a compiler node
+   * Compiles the schema type to a compiler node for validation.
+   *
+   * @param propertyName - The name of the property being validated
+   * @param refs - Reference store for tracking parsers and validators
+   * @param options - Parser options including camelCase conversion
    */
   [PARSE](
     propertyName: string,

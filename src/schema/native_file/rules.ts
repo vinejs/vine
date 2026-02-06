@@ -11,8 +11,11 @@ import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
- * Validates the value to be an instance of the platform native File
- * class
+ * Validates that the value is an instance of the platform native File class.
+ * This is the primary type validator for native file fields.
+ *
+ * @example
+ * vine.string().use(isNativeFileRule())
  */
 export const isNativeFileRule = createRule(function file(value, _, field): boolean {
   if (!field.isDefined) {
@@ -28,7 +31,13 @@ export const isNativeFileRule = createRule(function file(value, _, field): boole
 })
 
 /**
- * Enforce the file size to be atleast the provided minimum size
+ * Validates that the file size is at least the specified minimum size in bytes.
+ *
+ * @example
+ * vine.file().use(minSizeRule({ min: 1024 })) // At least 1KB
+ *
+ * @example
+ * vine.file().minSize(1024) // Shorthand method
  */
 export const minSizeRule = createRule<{ min: number }>(function minSize(value, options, field) {
   if ((value as File).size < options.min) {
@@ -40,7 +49,13 @@ export const minSizeRule = createRule<{ min: number }>(function minSize(value, o
 })
 
 /**
- * Limit the maximum file size
+ * Validates that the file size does not exceed the specified maximum size in bytes.
+ *
+ * @example
+ * vine.file().use(maxSizeRule({ max: 2097152 })) // Max 2MB
+ *
+ * @example
+ * vine.file().maxSize(2097152) // Shorthand method
  */
 export const maxSizeRule = createRule<{ max: number }>(function minSize(value, options, field) {
   if ((value as File).size > options.max) {
@@ -49,7 +64,15 @@ export const maxSizeRule = createRule<{ max: number }>(function minSize(value, o
 })
 
 /**
- * Enforce the file type to be one of the specified file types
+ * Validates that the file's MIME type is one of the allowed types.
+ *
+ * @example
+ * vine.file().use(mimeTypesRule({
+ *   mimeTypes: ['image/jpeg', 'image/png']
+ * }))
+ *
+ * @example
+ * vine.file().mimeTypes(['image/jpeg', 'image/png']) // Shorthand method
  */
 export const mimeTypesRule = createRule<{ mimeTypes: string[] }>((value, options, field) => {
   const mimeType = (value as File).type

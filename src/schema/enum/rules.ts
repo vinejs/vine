@@ -12,8 +12,18 @@ import { messages } from '../../defaults.js'
 import { type FieldContext } from '@vinejs/compiler/types'
 
 /**
- * Enum rule is used to validate the field's value to be one
- * from the pre-defined choices.
+ * Enum rule validates that a field's value is one of the pre-defined choices.
+ *
+ * The choices can be provided as a static array or as a function that returns
+ * an array, allowing for dynamic choice lists based on the field context.
+ *
+ * @example
+ * vine.string().use(enumRule({ choices: ['red', 'blue', 'green'] }))
+ *
+ * @example
+ * vine.string().use(enumRule({
+ *   choices: (field) => field.data.availableColors
+ * }))
  */
 export const enumRule = createRule<{
   choices: readonly any[] | ((field: FieldContext) => readonly any[])

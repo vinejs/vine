@@ -154,6 +154,24 @@ export const fields = {
   '': 'data',
 }
 
+/**
+ * Global transformation registry for schema types.
+ * Allows registering global transforms that automatically apply to all schema instances of a given type.
+ *
+ * Currently supports:
+ * - `date`: Transform all Date values after validation
+ *
+ * The transform function receives the validated value and returns a transformed version.
+ * Type inference automatically updates the output type based on the transform return type.
+ *
+ * @example
+ * // Transform all dates to ISO strings
+ * globalTransforms.date = (value) => value.toISOString()
+ *
+ * @example
+ * // Transform all dates to timestamps
+ * globalTransforms.date = (value) => value.getTime()
+ */
 export const globalTransforms: {
   date?: (value: Date) => VineGlobalTransforms extends { date: infer D } ? D : Date
 } = {}

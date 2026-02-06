@@ -31,52 +31,80 @@ import { ConditionalValidations } from '../base/conditional_rules.js'
 import { type JSONSchema7 } from 'json-schema'
 
 /**
- * Specify an optional value inside a union.
+ * VineOptional represents an optional value inside a union or schema.
+ * It allows both null and undefined values to pass validation.
+ *
+ * This type is typically used with unions to make certain branches
+ * optional, or to explicitly mark a field as allowing undefined/null values.
+ *
+ * @template Output - The output type when the value is defined
+ *
+ * @example
+ * const schema = vine.object({
+ *   name: vine.string().optional()
+ * })
+ *
+ * @example
+ * const schema = vine.unionOfTypes([
+ *   vine.string(),
+ *   vine.optional()
+ * ])
  */
 export class VineOptional<Output>
   extends ConditionalValidations
   implements ConstructableSchema<null | undefined, Output, Output>
 {
   /**
-   * The input type of the schema
+   * The input type of the schema (null or undefined)
    */
   declare [ITYPE]: null | undefined;
 
   /**
-   * The output value of the field. The property points to a type only
-   * and not the real value.
+   * The output type of the schema when value is defined
    */
   declare [OTYPE]: Output;
+
+  /**
+   * The camelCase output type of the schema
+   */
   declare [COTYPE]: Output;
 
   /**
-   * The subtype of the literal schema field
+   * The subtype identifier for the literal schema field
    */
   [SUBTYPE]: string = 'optional';
 
   /**
-   * The property must be implemented for "unionOfTypes"
+   * Unique name identifier for union type resolution
    */
   [UNIQUE_NAME] = 'vine.optional';
 
   /**
-   * Checks if the value is undefined or null. The method must be
-   * implemented for "unionOfTypes"
+   * Type checker function to determine if a value is optional (null or undefined).
+   * Required for "unionOfTypes" functionality.
+   *
+   * @param value - The value to check
    */
   [IS_OF_TYPE] = (value: unknown) => {
     return value === null || value === undefined
   }
 
   /**
-   * Field options
+   * Field options controlling validation behavior
    */
   protected options: FieldOptions
 
   /**
-   * Set of validations to run
+   * Set of validations to run on the field
    */
   protected validations: Validation<any>[]
 
+  /**
+   * Creates a new VineOptional instance.
+   *
+   * @param options - Field options like bail mode and nullability
+   * @param validations - Initial set of validations to apply
+   */
   constructor(options?: Partial<FieldOptions>, validations?: Validation<any>[]) {
     super()
     this.options = {
@@ -89,8 +117,10 @@ export class VineOptional<Output>
   }
 
   /**
-   * Shallow clones the validations. Since, there are no API's to mutate
+   * Shallow clones the validations. Since there are no APIs to mutate
    * the validation options, we can safely copy them by reference.
+   *
+   * @returns Array of cloned validation objects
    */
   protected cloneValidations(): Validation<any>[] {
     return this.validations.map((validation) => {
@@ -102,14 +132,18 @@ export class VineOptional<Output>
   }
 
   /**
-   * Shallow clones the options
+   * Shallow clones the field options.
+   *
+   * @returns Cloned field options object
    */
   protected cloneOptions(): FieldOptions {
     return { ...this.options }
   }
 
   /**
-   * Compiles validations
+   * Compiles validations into a format suitable for the compiler.
+   *
+   * @param refs - Reference store for tracking validators
    */
   protected compileValidations(refs: RefsStore) {
     return this.validations.map((validation) => {
@@ -127,8 +161,9 @@ export class VineOptional<Output>
   /**
    * Define a method to parse the input value. The method
    * is invoked before any validation and hence you must
-   * perform type-checking to know the value you are
-   * working it.
+   * perform type-checking to know the value you are working with.
+   *
+   * @param callback - Parser function to transform the input value
    */
   parse(callback: Parser): this {
     this.options.parse = callback
@@ -137,6 +172,8 @@ export class VineOptional<Output>
 
   /**
    * Push a validation to the validations chain.
+   *
+   * @param validation - Validation rule or rule builder to add
    */
   use(validation: Validation<any> | RuleBuilder): this {
     this.validations.push(VALIDATION in validation ? validation[VALIDATION]() : validation)
@@ -146,6 +183,8 @@ export class VineOptional<Output>
   /**
    * Enable/disable the bail mode. In bail mode, the field validations
    * are stopped after the first error.
+   *
+   * @param state - True to enable bail mode, false to disable
    */
   bail(state: boolean) {
     this.options.bail = state
@@ -153,16 +192,19 @@ export class VineOptional<Output>
   }
 
   /**
-   * Clones the VineNull schema type. The applied options
-   * and validations are copied to the new instance
+   * Clones the VineOptional schema type. The applied options
+   * and validations are copied to the new instance.
+   *
+   * @returns A cloned instance of this VineOptional schema
    */
   clone(): this {
     return new VineOptional(this.cloneOptions(), this.cloneValidations()) as this
   }
 
   /**
-   * Mark the field under validation to be null. The null value will
-   * be written to the output as well.
+   * Mark the field under validation to be nullable. The null value will
+   * be written to the output as well. When combined with optional,
+   * both null and undefined values are allowed.
    */
   nullable() {
     return new VineOptional<undefined | null>({
@@ -171,12 +213,19 @@ export class VineOptional<Output>
     })
   }
 
+  /**
+   * Transforms into JSON Schema format.
+   */
   toJSONSchema(): JSONSchema7 {
     return {}
   }
 
   /**
-   * Compiles the schema type to a compiler node
+   * Compiles the schema type to a compiler node.
+   *
+   * @param propertyName - The name of the property being validated
+   * @param refs - Reference store for tracking validators and parsers
+   * @param options - Parser options including camelCase transformation
    */
   [PARSE](
     propertyName: string,

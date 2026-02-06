@@ -31,7 +31,11 @@ import type {
 } from '../../types.js'
 
 /**
- * Validates the value to be a string
+ * Validates the value to be a string.
+ * Reports an error if the value is not of type string.
+ *
+ * @example
+ * vine.string()
  */
 export const stringRule = createRule(
   function string(value, _, field) {
@@ -54,7 +58,12 @@ export const stringRule = createRule(
 )
 
 /**
- * Validates the value to be a valid email address
+ * Validates the value to be a valid email address.
+ * Supports various email validation options including domain-specific rules.
+ *
+ * @example
+ * vine.string().email()
+ * vine.string().email({ allow_ip_domain: true })
  */
 export const emailRule = createRule<EmailOptions | undefined>(
   function email(value, options, field) {
@@ -70,7 +79,13 @@ export const emailRule = createRule<EmailOptions | undefined>(
 )
 
 /**
- * Validates the value to be a valid mobile number
+ * Validates the value to be a valid mobile phone number for specified locales.
+ * Supports locale-specific mobile number formats and strict mode validation.
+ *
+ * @example
+ * vine.string().mobile()
+ * vine.string().mobile({ locale: ['en-US', 'en-GB'] })
+ * vine.string().mobile({ locale: ['en-US'], strictMode: true })
  */
 export const mobileRule = createRule<
   MobileOptions | undefined | ((field: FieldContext) => MobileOptions | undefined)
@@ -84,7 +99,13 @@ export const mobileRule = createRule<
 })
 
 /**
- * Validates the value to be a valid IP address.
+ * Validates the value to be a valid IP address (IPv4 or IPv6).
+ * Optionally restricts to a specific IP version.
+ *
+ * @example
+ * vine.string().ipAddress()
+ * vine.string().ipAddress({ version: 4 })
+ * vine.string().ipAddress({ version: 6 })
  */
 export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>(
   function ipAddress(value, options, field) {
@@ -100,7 +121,12 @@ export const ipAddressRule = createRule<{ version: 4 | 6 } | undefined>(
 )
 
 /**
- * Validates the value against a regular expression
+ * Validates the value against a custom regular expression pattern.
+ * The value must match the provided regular expression.
+ *
+ * @example
+ * vine.string().regex(/^[A-Z]{3}\d{3}$/)
+ * vine.string().regex(/^\d{4}-\d{2}-\d{2}$/)
  */
 export const regexRule = createRule<RegExp>(
   function regex(value, expression, field) {
@@ -116,7 +142,11 @@ export const regexRule = createRule<RegExp>(
 )
 
 /**
- * Validates the value to be a valid hex color code
+ * Validates the value to be a valid hexadecimal color code.
+ * Accepts formats like #FFF, #FFFFFF, or #FFFFFFFF.
+ *
+ * @example
+ * vine.string().hexCode()
  */
 export const hexCodeRule = createRule(
   function hexCode(value, _, field) {
@@ -132,7 +162,13 @@ export const hexCodeRule = createRule(
 )
 
 /**
- * Validates the value to be a valid URL
+ * Validates the value to be a valid URL.
+ * Supports various URL validation options including protocol requirements.
+ *
+ * @example
+ * vine.string().url()
+ * vine.string().url({ require_protocol: true })
+ * vine.string().url({ protocols: ['https'] })
  */
 export const urlRule = createRule<URLOptions | undefined>(
   function url(value, options, field) {
@@ -148,7 +184,11 @@ export const urlRule = createRule<URLOptions | undefined>(
 )
 
 /**
- * Validates the value to be an active URL
+ * Validates the value to be an active URL by making an HTTP request.
+ * Checks if the URL is reachable and returns a successful response.
+ *
+ * @example
+ * vine.string().activeUrl()
  */
 export const activeUrlRule = createRule(async function activeUrl(value, _, field) {
   if (!(await helpers.isActiveURL(value as string))) {
@@ -157,7 +197,13 @@ export const activeUrlRule = createRule(async function activeUrl(value, _, field
 })
 
 /**
- * Validates the value to contain only letters
+ * Validates the value to contain only alphabetic characters.
+ * Supports options to allow spaces, dashes, and underscores.
+ *
+ * @example
+ * vine.string().alpha()
+ * vine.string().alpha({ allowSpaces: true })
+ * vine.string().alpha({ allowDashes: true, allowUnderscores: true })
  */
 export const alphaRule = createRule<AlphaOptions | undefined>(
   function alpha(value, options, field) {
@@ -200,7 +246,13 @@ export const alphaRule = createRule<AlphaOptions | undefined>(
 )
 
 /**
- * Validates the value to contain only letters and numbers
+ * Validates the value to contain only alphanumeric characters (letters and numbers).
+ * Supports options to allow spaces, dashes, and underscores.
+ *
+ * @example
+ * vine.string().alphaNumeric()
+ * vine.string().alphaNumeric({ allowSpaces: true })
+ * vine.string().alphaNumeric({ allowDashes: true, allowUnderscores: true })
  */
 export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
   function alphaNumeric(value, options, field) {
@@ -243,7 +295,11 @@ export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
 )
 
 /**
- * Enforce a minimum length on a string field
+ * Enforces a minimum length on a string field.
+ * The string must have at least the specified number of characters.
+ *
+ * @example
+ * vine.string().minLength(5)
  */
 export const minLengthRule = createRule<{ min: number }>(
   function minLength(value, options, field) {
@@ -259,7 +315,11 @@ export const minLengthRule = createRule<{ min: number }>(
 )
 
 /**
- * Enforce a maximum length on a string field
+ * Enforces a maximum length on a string field.
+ * The string must not exceed the specified number of characters.
+ *
+ * @example
+ * vine.string().maxLength(100)
  */
 export const maxLengthRule = createRule<{ max: number }>(
   function maxLength(value, options, field) {
@@ -275,7 +335,11 @@ export const maxLengthRule = createRule<{ max: number }>(
 )
 
 /**
- * Enforce a fixed length on a string field
+ * Enforces a fixed length on a string field.
+ * The string must have exactly the specified number of characters.
+ *
+ * @example
+ * vine.string().fixedLength(10)
  */
 export const fixedLengthRule = createRule<{ size: number }>(
   function fixedLength(value, options, field) {
@@ -292,7 +356,12 @@ export const fixedLengthRule = createRule<{ size: number }>(
 )
 
 /**
- * Ensure the value ends with the pre-defined substring
+ * Ensures the value ends with the specified substring.
+ * The comparison is case-sensitive.
+ *
+ * @example
+ * vine.string().endsWith('.com')
+ * vine.string().endsWith('_test')
  */
 export const endsWithRule = createRule<{ substring: string }>(
   function endsWith(value, options, field) {
@@ -303,7 +372,12 @@ export const endsWithRule = createRule<{ substring: string }>(
 )
 
 /**
- * Ensure the value starts with the pre-defined substring
+ * Ensures the value starts with the specified substring.
+ * The comparison is case-sensitive.
+ *
+ * @example
+ * vine.string().startsWith('https://')
+ * vine.string().startsWith('prefix_')
  */
 export const startsWithRule = createRule<{ substring: string }>(
   function startsWith(value, options, field) {
@@ -314,7 +388,12 @@ export const startsWithRule = createRule<{ substring: string }>(
 )
 
 /**
- * Ensure the field's value under validation is the same as the other field's value
+ * Ensures the field's value under validation is the same as the other field's value.
+ * Useful for confirmation fields like password verification.
+ *
+ * @example
+ * vine.string().sameAs('password')
+ * vine.string().sameAs('email')
  */
 export const sameAsRule = createRule<{ otherField: string }>(
   function sameAs(value, options, field) {
@@ -331,7 +410,12 @@ export const sameAsRule = createRule<{ otherField: string }>(
 )
 
 /**
- * Ensure the field's value under validation is different from another field's value
+ * Ensures the field's value under validation is different from another field's value.
+ * Useful for ensuring new values differ from old ones (e.g., new password vs old password).
+ *
+ * @example
+ * vine.string().notSameAs('oldPassword')
+ * vine.string().notSameAs('previousEmail')
  */
 export const notSameAsRule = createRule<{ otherField: string }>(
   function notSameAs(value, options, field) {
@@ -348,8 +432,12 @@ export const notSameAsRule = createRule<{ otherField: string }>(
 )
 
 /**
- * Ensure the field under validation is confirmed by
- * having another field with the same name
+ * Ensures the field under validation is confirmed by having another field with the same name
+ * (with "_confirmation" suffix by default). The values of both fields must match.
+ *
+ * @example
+ * vine.string().confirmed()
+ * vine.string().confirmed({ as: 'passwordConfirm' })
  */
 export const confirmedRule = createRule<
   | {
@@ -395,7 +483,12 @@ export const confirmedRule = createRule<
 })
 
 /**
- * Ensure the field's value under validation is a subset of the pre-defined list.
+ * Ensures the field's value under validation is one of the pre-defined choices.
+ * Accepts a static array of choices or a function that returns choices dynamically.
+ *
+ * @example
+ * vine.string().in(['red', 'green', 'blue'])
+ * vine.string().in((field) => getUserRoles(field.meta.userId))
  */
 export const inRule = createRule<{ choices: string[] | ((field: FieldContext) => string[]) }>(
   function inList(value, options, field) {
@@ -412,7 +505,12 @@ export const inRule = createRule<{ choices: string[] | ((field: FieldContext) =>
 )
 
 /**
- * Ensure the field's value under validation is not inside the pre-defined list.
+ * Ensures the field's value under validation is not in the pre-defined list.
+ * Accepts a static array or a function that returns disallowed values dynamically.
+ *
+ * @example
+ * vine.string().notIn(['admin', 'root', 'system'])
+ * vine.string().notIn((field) => getBlacklistedUsernames())
  */
 export const notInRule = createRule<{ list: string[] | ((field: FieldContext) => string[]) }>(
   function notIn(value, options, field) {
@@ -429,7 +527,13 @@ export const notInRule = createRule<{ list: string[] | ((field: FieldContext) =>
 )
 
 /**
- * Validates the value to be a valid credit card number
+ * Validates the value to be a valid credit card number.
+ * Optionally restricts validation to specific card providers.
+ *
+ * @example
+ * vine.string().creditCard()
+ * vine.string().creditCard({ provider: ['visa', 'mastercard'] })
+ * vine.string().creditCard({ provider: ['amex', 'discover'] })
  */
 export const creditCardRule = createRule<
   CreditCardOptions | undefined | ((field: FieldContext) => CreditCardOptions | void | undefined)
@@ -461,7 +565,12 @@ export const creditCardRule = createRule<
 })
 
 /**
- * Validates the value to be a valid passport number
+ * Validates the value to be a valid passport number for specified countries.
+ * Requires country codes to determine the expected passport format.
+ *
+ * @example
+ * vine.string().passport({ countryCode: ['US', 'GB', 'CA'] })
+ * vine.string().passport({ countryCode: ['FR', 'DE'] })
  */
 export const passportRule = createRule<
   PassportOptions | ((field: FieldContext) => PassportOptions)
@@ -478,7 +587,12 @@ export const passportRule = createRule<
 })
 
 /**
- * Validates the value to be a valid VAT number.
+ * Validates the value to be a valid VAT (Value Added Tax) number for specified countries.
+ * Requires country codes to determine the expected VAT format.
+ *
+ * @example
+ * vine.string().vat({ countryCode: ['FR', 'CH', 'VE'] })
+ * vine.string().vat({ countryCode: ['GB', 'DE'] })
  */
 export const vatRule = createRule<VATOptions | ((field: FieldContext) => VATOptions)>(
   function vat(value, options, field) {
@@ -495,7 +609,13 @@ export const vatRule = createRule<VATOptions | ((field: FieldContext) => VATOpti
 )
 
 /**
- * Validates the value to be a valid postal code
+ * Validates the value to be a valid postal code.
+ * Optionally restricts validation to specific country codes.
+ *
+ * @example
+ * vine.string().postalCode()
+ * vine.string().postalCode({ countryCode: ['US', 'GB', 'CA'] })
+ * vine.string().postalCode({ countryCode: ['FR', 'DE'] })
  */
 export const postalCodeRule = createRule<
   PostalCodeOptions | undefined | ((field: FieldContext) => PostalCodeOptions | void | undefined)
@@ -521,7 +641,13 @@ export const postalCodeRule = createRule<
 })
 
 /**
- * Validates the value to be a valid UUID
+ * Validates the value to be a valid UUID (Universally Unique Identifier).
+ * Optionally restricts validation to specific UUID versions.
+ *
+ * @example
+ * vine.string().uuid()
+ * vine.string().uuid({ version: [4] })
+ * vine.string().uuid({ version: [1, 4, 5] })
  */
 export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)[] } | undefined>(
   function uuid(value, options, field) {
@@ -546,7 +672,11 @@ export const uuidRule = createRule<{ version?: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8)[]
 )
 
 /**
- * Validates the value to be a valid ULID
+ * Validates the value to be a valid ULID (Universally Unique Lexicographically Sortable Identifier).
+ * ULIDs are 26 characters long and sortable by time.
+ *
+ * @example
+ * vine.string().ulid()
  */
 export const ulidRule = createRule(
   function ulid(value, _, field) {
@@ -562,7 +692,11 @@ export const ulidRule = createRule(
 )
 
 /**
- * Validates the value contains ASCII characters only
+ * Validates the value contains only ASCII characters (codes 0-127).
+ * Rejects any characters outside the standard ASCII range.
+ *
+ * @example
+ * vine.string().ascii()
  */
 export const asciiRule = createRule(function ascii(value, _, field) {
   if (!helpers.isAscii(value as string)) {
@@ -571,7 +705,11 @@ export const asciiRule = createRule(function ascii(value, _, field) {
 })
 
 /**
- * Validates the value to be a valid IBAN number
+ * Validates the value to be a valid IBAN (International Bank Account Number).
+ * Validates format, check digits, and country-specific patterns.
+ *
+ * @example
+ * vine.string().iban()
  */
 export const ibanRule = createRule(function iban(value, _, field) {
   if (!helpers.isIBAN(value as string)) {
@@ -580,7 +718,11 @@ export const ibanRule = createRule(function iban(value, _, field) {
 })
 
 /**
- * Validates the value to be a valid JWT token
+ * Validates the value to be a valid JWT (JSON Web Token).
+ * Validates the token structure but does not verify the signature.
+ *
+ * @example
+ * vine.string().jwt()
  */
 export const jwtRule = createRule(function jwt(value, _, field) {
   if (!helpers.isJWT(value as string)) {
@@ -589,7 +731,11 @@ export const jwtRule = createRule(function jwt(value, _, field) {
 })
 
 /**
- * Ensure the value is a string with latitude and longitude coordinates
+ * Ensures the value is a string containing valid latitude and longitude coordinates.
+ * Accepts format like "40.7128,-74.0060" (latitude,longitude).
+ *
+ * @example
+ * vine.string().coordinates()
  */
 export const coordinatesRule = createRule(function coordinates(value, _, field) {
   if (!helpers.isLatLong(value as string)) {
@@ -598,7 +744,11 @@ export const coordinatesRule = createRule(function coordinates(value, _, field) 
 })
 
 /**
- * Trims whitespaces around the string value
+ * Trims leading and trailing whitespace from the string value.
+ * Mutates the field value by removing whitespace characters.
+ *
+ * @example
+ * vine.string().trim()
  */
 export const trimRule = createRule(function trim(value, _, field) {
   if (!field.isValid) {
@@ -609,7 +759,12 @@ export const trimRule = createRule(function trim(value, _, field) {
 })
 
 /**
- * Normalizes the email address
+ * Normalizes the email address by applying transformations.
+ * Supports options like lowercasing and removing dots from Gmail addresses.
+ *
+ * @example
+ * vine.string().email().normalizeEmail()
+ * vine.string().email().normalizeEmail({ gmail_remove_dots: true })
  */
 export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
   function normalizeEmail(value, options, field) {
@@ -622,7 +777,12 @@ export const normalizeEmailRule = createRule<NormalizeEmailOptions | undefined>(
 )
 
 /**
- * Converts the field value to UPPERCASE.
+ * Converts the field value to UPPERCASE using locale-aware conversion.
+ * Mutates the field value to uppercase.
+ *
+ * @example
+ * vine.string().toUpperCase()
+ * vine.string().toUpperCase('tr-TR')
  */
 export const toUpperCaseRule = createRule<string | string[] | undefined>(
   function toUpperCase(value, locales, field) {
@@ -635,7 +795,12 @@ export const toUpperCaseRule = createRule<string | string[] | undefined>(
 )
 
 /**
- * Converts the field value to lowercase.
+ * Converts the field value to lowercase using locale-aware conversion.
+ * Mutates the field value to lowercase.
+ *
+ * @example
+ * vine.string().toLowerCase()
+ * vine.string().toLowerCase('tr-TR')
  */
 export const toLowerCaseRule = createRule<string | string[] | undefined>(
   function toLowerCase(value, locales, field) {
@@ -649,6 +814,10 @@ export const toLowerCaseRule = createRule<string | string[] | undefined>(
 
 /**
  * Converts the field value to camelCase.
+ * Transforms strings like "hello_world" to "helloWorld".
+ *
+ * @example
+ * vine.string().toCamelCase()
  */
 export const toCamelCaseRule = createRule(function toCamelCase(value, _, field) {
   if (!field.isValid) {
@@ -659,7 +828,11 @@ export const toCamelCaseRule = createRule(function toCamelCase(value, _, field) 
 })
 
 /**
- * Escape string for HTML entities
+ * Escapes HTML entities in the string to prevent XSS attacks.
+ * Converts characters like <, >, &, ", ' to their HTML entity equivalents.
+ *
+ * @example
+ * vine.string().escape()
  */
 export const escapeRule = createRule(function escape(value, _, field) {
   if (!field.isValid) {
@@ -670,7 +843,13 @@ export const escapeRule = createRule(function escape(value, _, field) {
 })
 
 /**
- * Normalize a URL
+ * Normalizes a URL by applying standardization rules.
+ * Supports options like removing trailing slashes, sorting query parameters, and stripping default ports.
+ *
+ * @example
+ * vine.string().url().normalizeUrl()
+ * vine.string().url().normalizeUrl({ stripWWW: true })
+ * vine.string().url().normalizeUrl({ sortQueryParameters: true })
  */
 export const normalizeUrlRule = createRule<undefined | NormalizeUrlOptions>(
   function normalizeUrlValue(value, options, field) {

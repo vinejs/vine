@@ -24,23 +24,65 @@ import { VineNull } from '../null/main.js'
 import { type JSONSchema7 } from 'json-schema'
 
 /**
- * Vine union represents a union data type. A union is a collection
- * of conditionals and each condition has an associated schema
+ * Vine union of types represents a union data type that automatically
+ * determines which schema to apply based on the value's type.
+ *
+ * Unlike regular unions that require explicit conditionals, unionOfTypes
+ * uses each schema's IS_OF_TYPE method to automatically detect the
+ * appropriate schema based on the input value's type.
+ *
+ * @template Schema - The schema types that make up this union
+ *
+ * @example
+ * const schema = vine.unionOfTypes([
+ *   vine.string(),
+ *   vine.number(),
+ *   vine.boolean()
+ * ])
+ *
+ * @example
+ * const schema = vine.unionOfTypes([
+ *   vine.object({ type: vine.literal('user'), name: vine.string() }),
+ *   vine.object({ type: vine.literal('admin'), permissions: vine.array(vine.string()) })
+ * ])
  */
 export class VineUnionOfTypes<Schema extends SchemaTypes>
   implements
     ConstructableSchema<Schema[typeof ITYPE], Schema[typeof OTYPE], Schema[typeof COTYPE]>,
     WithJSONSchema
 {
+  /**
+   * The input type of the schema
+   */
   declare [ITYPE]: Schema[typeof ITYPE];
+
+  /**
+   * The output type of the schema
+   */
   declare [OTYPE]: Schema[typeof OTYPE];
+
+  /**
+   * The camelCase output type of the schema
+   */
   declare [COTYPE]: Schema[typeof COTYPE]
 
+  /**
+   * Array of schemas to match against
+   */
   #schemas: Schema[]
+
+  /**
+   * Callback to invoke when no schema type matches
+   */
   #otherwiseCallback: UnionNoMatchCallback<Record<string, unknown>> = (_, field) => {
     field.report(messages.unionOfTypes, 'unionOfTypes', field)
   }
 
+  /**
+   * Creates a new VineUnionOfTypes instance with the specified schemas.
+   *
+   * @param schemas - Array of schemas to match against input values
+   */
   constructor(schemas: Schema[]) {
     this.#schemas = schemas
   }
@@ -96,7 +138,14 @@ export class VineUnionOfTypes<Schema extends SchemaTypes>
   }
 
   /**
-   * Compiles to a union
+   * Compiles the union of types schema to a compiler node.
+   *
+   * Creates conditional branches for each schema using their IS_OF_TYPE
+   * methods to determine which schema matches the input value.
+   *
+   * @param propertyName - The name of the property being validated
+   * @param refs - Reference store for tracking validators and conditionals
+   * @param options - Parser options including camelCase transformation
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): UnionNode {
     return {

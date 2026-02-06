@@ -14,8 +14,28 @@ import { type OTYPE, type COTYPE, type ITYPE } from '../../symbols.js'
 import type { FieldContext, SchemaTypes, UndefinedOptional } from '../../types.js'
 
 /**
- * Create an object group. Groups are used to conditionally merge properties
- * to an existing object.
+ * Creates an object group that conditionally merges properties into an existing object
+ * based on runtime validation logic. Groups enable dynamic schema composition where
+ * different properties are required based on conditional rules.
+ *
+ * @param conditionals - Array of conditional property sets to evaluate
+ * @returns ObjectGroup instance that can be merged into a VineObject
+ *
+ * @example
+ * const schema = vine.object({
+ *   account_type: vine.string()
+ * }).merge(
+ *   vine.group([
+ *     vine.group.if((value) => value.account_type === 'personal', {
+ *       first_name: vine.string(),
+ *       last_name: vine.string()
+ *     }),
+ *     vine.group.if((value) => value.account_type === 'business', {
+ *       company_name: vine.string(),
+ *       tax_id: vine.string()
+ *     })
+ *   ])
+ * )
  */
 export function group<Conditional extends GroupConditional<any, any, any, any>>(
   conditionals: Conditional[]
@@ -24,7 +44,29 @@ export function group<Conditional extends GroupConditional<any, any, any, any>>(
 }
 
 /**
- * Wrap object properties inside a conditonal
+ * Wraps object properties inside a conditional statement that evaluates at validation time.
+ * Properties are only validated and merged if the condition returns a truthy value.
+ *
+ * @param conditon - Callback function that receives the object value and field context
+ * @param properties - Properties to merge when the condition is truthy
+ * @returns GroupConditional instance for use in vine.group()
+ *
+ * @example
+ * vine.group([
+ *   vine.group.if(
+ *     (value) => value.type === 'admin',
+ *     {
+ *       permissions: vine.array(vine.string()),
+ *       access_level: vine.number()
+ *     }
+ *   ),
+ *   vine.group.if(
+ *     (value) => value.type === 'user',
+ *     {
+ *       username: vine.string()
+ *     }
+ *   )
+ * ])
  */
 group.if = function groupIf<Properties extends Record<string, SchemaTypes>>(
   conditon: (value: Record<string, unknown>, field: FieldContext) => any,
@@ -45,7 +87,21 @@ group.if = function groupIf<Properties extends Record<string, SchemaTypes>>(
 }
 
 /**
- * Wrap object properties inside an else conditon
+ * Wraps object properties inside an "else" condition that always evaluates to true.
+ * Use this as a fallback when no other conditions in the group match.
+ *
+ * @param properties - Properties to merge when no other condition matches
+ * @returns GroupConditional instance that always matches
+ *
+ * @example
+ * vine.group([
+ *   vine.group.if((value) => value.role === 'admin', {
+ *     admin_key: vine.string()
+ *   }),
+ *   vine.group.else({
+ *     user_key: vine.string()
+ *   })
+ * ])
  */
 group.else = function groupElse<Properties extends Record<string, SchemaTypes>>(
   properties: Properties

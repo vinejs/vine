@@ -10,16 +10,28 @@
 import { messages } from '../../defaults.js'
 import { createRule } from '../../vine/create_rule.js'
 
+/**
+ * Array of accepted values for checkbox/acceptance validation
+ */
 const ACCEPTED_VALUES = ['on', '1', 'yes', 'true', true, 1]
 
 /**
- * Validates the value to be present and have one of
- * the following values.
+ * Validates that the value is present and has one of the accepted values.
+ * This rule is used for checkbox and acceptance field validation.
  *
- * - "on"
- * - "1"
- * - "yes"
- * - "true"
+ * Accepted values are:
+ * - "on" (HTML checkbox default when checked)
+ * - "1" (string)
+ * - "yes" (string)
+ * - "true" (string)
+ * - true (boolean)
+ * - 1 (number)
+ *
+ * @example
+ * vine.accepted()
+ *
+ * @example
+ * vine.string().use(acceptedRule())
  */
 export const acceptedRule = createRule(function accepted(value, _, field) {
   if (!ACCEPTED_VALUES.includes(value as any)) {

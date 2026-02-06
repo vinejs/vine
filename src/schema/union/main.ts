@@ -26,7 +26,27 @@ import { type JSONSchema7 } from 'json-schema'
 
 /**
  * Vine union represents a union data type. A union is a collection
- * of conditionals and each condition has an associated schema
+ * of conditionals and each condition has an associated schema.
+ *
+ * Unions allow you to define validation logic where different schemas
+ * are applied based on runtime conditions. Each conditional is evaluated
+ * in order, and the first matching condition's schema is used for validation.
+ *
+ * @template Conditional - The union conditional type extending UnionConditional
+ *
+ * @example
+ * const schema = vine.object({
+ *   userType: vine.string(),
+ *   data: vine.union([
+ *     vine.union.if(
+ *       (value) => value.userType === 'admin',
+ *       vine.object({ permissions: vine.array(vine.string()) })
+ *     ),
+ *     vine.union.else(
+ *       vine.object({ role: vine.string() })
+ *     )
+ *   ])
+ * })
  */
 export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
   implements
@@ -37,15 +57,38 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
     >,
     WithJSONSchema
 {
+  /**
+   * The input type of the schema
+   */
   declare [ITYPE]: Conditional[typeof ITYPE];
+
+  /**
+   * The output type of the schema
+   */
   declare [OTYPE]: Conditional[typeof OTYPE];
+
+  /**
+   * The camelCase output type of the schema
+   */
   declare [COTYPE]: Conditional[typeof COTYPE]
 
+  /**
+   * Array of conditional branches to evaluate
+   */
   #conditionals: Conditional[]
+
+  /**
+   * Callback to invoke when no conditional matches
+   */
   #otherwiseCallback: UnionNoMatchCallback<Record<string, unknown>> = (_, field) => {
     field.report(messages.union, 'union', field)
   }
 
+  /**
+   * Creates a new VineUnion instance with the specified conditionals.
+   *
+   * @param conditionals - Array of conditional branches to evaluate
+   */
   constructor(conditionals: Conditional[]) {
     this.#conditionals = conditionals
   }
@@ -106,7 +149,11 @@ export class VineUnion<Conditional extends UnionConditional<SchemaTypes>>
   }
 
   /**
-   * Compiles to a union
+   * Compiles the union schema to a compiler node.
+   *
+   * @param propertyName - The name of the property being validated
+   * @param refs - Reference store for tracking validators and conditionals
+   * @param options - Parser options including camelCase transformation
    */
   [PARSE](propertyName: string, refs: RefsStore, options: ParserOptions): UnionNode {
     return {

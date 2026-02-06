@@ -603,41 +603,35 @@ export const helpers = {
   },
 
   /**
-   * Check if all the elements inside the dataset are unique.
+   * Checks if all elements in an array are unique.
+   * For arrays of objects, you can specify one or more fields that must be unique.
+   * Null and undefined values are ignored during uniqueness checks.
    *
-   * In case of an array of objects, you must provide one or more keys
-   * for the fields that must be unique across the objects.
+   * @param dataSet - The array to check for uniqueness
+   * @param fields - Optional field name(s) to check for uniqueness in object arrays
    *
-   * ```ts
+   * @example
+   * // Check uniqueness in primitive array
    * helpers.isDistinct([1, 2, 4, 5]) // true
+   * helpers.isDistinct([1, 2, 2, 5]) // false
    *
+   * @example
    * // Null and undefined values are ignored
    * helpers.isDistinct([1, null, 2, null, 4, 5]) // true
    *
+   * @example
+   * // Check uniqueness by single field in object array
    * helpers.isDistinct([
-   *   {
-   *     email: 'foo@bar.com',
-   *     name: 'foo'
-   *   },
-   *   {
-   *     email: 'baz@bar.com',
-   *     name: 'baz'
-   *   }
+   *   { email: 'foo@bar.com', name: 'foo' },
+   *   { email: 'baz@bar.com', name: 'baz' }
    * ], 'email') // true
    *
+   * @example
+   * // Check uniqueness by multiple fields (composite key)
    * helpers.isDistinct([
-   *   {
-   *     email: 'foo@bar.com',
-   *     tenant_id: 1,
-   *     name: 'foo'
-   *   },
-   *   {
-   *     email: 'foo@bar.com',
-   *     tenant_id: 2,
-   *     name: 'baz'
-   *   }
-   * ], ['email', 'tenant_id']) // true
-   * ```
+   *   { email: 'foo@bar.com', tenant_id: 1, name: 'foo' },
+   *   { email: 'foo@bar.com', tenant_id: 2, name: 'baz' }
+   * ], ['email', 'tenant_id']) // true (same email, different tenant)
    */
   isDistinct: (dataSet: any[], fields?: string | string[]): boolean => {
     const uniqueItems: Set<any> = new Set()
@@ -707,9 +701,20 @@ export const helpers = {
 
   /**
    * Converts all properties of an object schema to optional.
+   * This is useful when you want to make all fields in a schema optional
+   * at once, such as for update operations where all fields are optional.
    *
    * @param props - The object with schema properties
-   * @returns New object with all properties marked as optional
+   *
+   * @example
+   * const createUserSchema = {
+   *   name: vine.string(),
+   *   email: vine.string().email(),
+   *   age: vine.number()
+   * }
+   *
+   * // Make all fields optional for updates
+   * const updateUserSchema = helpers.optional(createUserSchema)
    */
   optional<Props extends Record<string, SchemaTypes>>(
     props: Props
