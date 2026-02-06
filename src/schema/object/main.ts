@@ -95,7 +95,6 @@ export class VineCamelCaseObject<Schema extends VineObject<any, any, any, any>> 
   }
 
   toJSONSchema(): JSONSchema7 {
-    // TODO: We might want to camel case properties here aswell
     return this.#schema.toJSONSchema()
   }
 
@@ -367,7 +366,7 @@ export class VineObject<
       const schema = property.toJSONSchema()
       properties[key] = schema
 
-      if (!('isOptional' in schema) || schema.isOptional !== true) {
+      if (property.isOptional !== true && property.allowNull !== true) {
         required.push(key)
       }
     }

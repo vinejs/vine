@@ -100,7 +100,9 @@ export class VineTuple<
   toJSONSchema() {
     const items: JSONSchema7[] = []
     for (const item of this.#schemas) {
-      if (!item.toJSONSchema) continue
+      if (!item.toJSONSchema) {
+        continue
+      }
       items.push(item.toJSONSchema())
     }
 
@@ -109,12 +111,13 @@ export class VineTuple<
       minItems: this.#schemas.length,
       maxItems: this.#schemas.length,
       additionalItems: false,
-      // Items should NEVER be a list of empty items according to standard
-      items: items.length > 0 ? items : undefined,
+      items: items,
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.toJSONSchema) continue
+      if (!validation.rule.toJSONSchema) {
+        continue
+      }
       validation.rule.toJSONSchema(schema, validation.options)
     }
 

@@ -171,11 +171,8 @@ export class VineOptional<Output>
     })
   }
 
-  toJSONSchema(): JSONSchema7 & { isOptional: true } {
-    return {
-      // Custom property allowing object schema type to set property as not required.
-      isOptional: true,
-    }
+  toJSONSchema(): JSONSchema7 {
+    return {}
   }
 
   /**

@@ -1,18 +1,34 @@
+/*
+ * @vinejs/vine
+ *
+ * (c) VineJS
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+import { Ajv } from 'ajv'
 import { test } from '@japa/runner'
-import vine from '../../index.js'
-import Ajv from 'ajv'
-import { type SchemaTypes } from '../../src/types.js'
 import { inspect } from 'node:util'
+import addFormats from 'ajv-formats'
 import { type StandardJSONSchemaV1 } from '@standard-schema/spec'
 
-const ajv = new Ajv()
+import vine from '../../index.js'
+import { type SchemaTypes } from '../../src/types.js'
+
+const ajv = new Ajv({ unicodeRegExp: false })
+addFormats.default(ajv)
 
 function validate(schema: SchemaTypes, value: any) {
   const validator = ajv.compile(vine.create(schema).toJSONSchema())
   return validator(value)
 }
 
-type Dataset = [title: string, validator: SchemaTypes, tests: [value: any, expected: boolean][]]
+type Dataset = [
+  title: string,
+  validator: SchemaTypes,
+  tests: [value: any, expected: boolean | { fails: boolean }][],
+]
 
 test.group('JsonSchema', () => {
   test('vine.any() - {0}')
@@ -619,20 +635,24 @@ test.group('JsonSchema', () => {
         'empty',
         vine.tuple([]).nullable(),
         [
-          [[], true],
-          [[null], false],
-          [['test'], false],
+          [[], { fails: true }],
+          [[null], { fails: true }],
+          [['test'], { fails: true }],
         ],
       ],
     ] as Dataset[])
     .run(({ assert }, [, validator, tests]) => {
       for (const [value, expected] of tests) {
-        const result = validate(validator, value)
-        assert.equal(
-          result,
-          expected,
-          `Expected ${inspect(value)} validation to be ${expected} but got ${result}`
-        )
+        if (expected && typeof expected === 'object' && 'fails' in expected && expected.fails) {
+          assert.throws(() => validate(validator, value))
+        } else {
+          const result = validate(validator, value)
+          assert.equal(
+            result,
+            expected,
+            `Expected ${inspect(value)} validation to be ${expected} but got ${result}`
+          )
+        }
       }
     })
     .tags(['@tuple'])

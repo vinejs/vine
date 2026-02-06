@@ -35,6 +35,11 @@ export class NullableModifier<
   Schema[typeof OTYPE] | null,
   Schema[typeof COTYPE] | null
 > {
+  allowNull: boolean = true
+  get isOptional() {
+    return this.#parent.isOptional
+  }
+
   /**
    * Define the input type of the schema
    */
@@ -154,6 +159,13 @@ export class MetaModifier<
   Schema[typeof OTYPE],
   Schema[typeof COTYPE]
 > {
+  get isOptional() {
+    return this.#parent.isOptional
+  }
+  get allowNull() {
+    return this.#parent.allowNull
+  }
+
   /**
    * Define the input type of the schema
    */
@@ -263,6 +275,11 @@ export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any
     >,
     WithCustomRules
 {
+  isOptional: boolean = true
+  get allowNull() {
+    return this.#parent.allowNull
+  }
+
   /**
    * Define the input type of the schema, including undefined and null
    */
@@ -376,11 +393,9 @@ export class OptionalModifier<Schema extends ConstructableLiteralSchema<any, any
     return new MetaModifier(this, meta)
   }
 
-  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+  toJSONSchema(): JSONSchema7 {
     return {
       ...this.#parent.toJSONSchema(),
-      // Custom property allowing object schema type to set property as not required.
-      isOptional: true,
     }
   }
 
@@ -414,6 +429,13 @@ export class TransformModifier<
   Schema extends ConstructableLiteralSchema<any, any, any>,
   Output,
 > implements ConstructableLiteralSchema<Schema[typeof ITYPE], Output, Output> {
+  get isOptional() {
+    return this.#parent.isOptional
+  }
+  get allowNull() {
+    return this.#parent.allowNull
+  }
+
   /**
    * Define the input type of the schema (unchanged from parent)
    */
@@ -644,7 +666,9 @@ export abstract class BaseLiteralType<Input, Output, CamelCaseOutput>
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.toJSONSchema) continue
+      if (!validation.rule.toJSONSchema) {
+        continue
+      }
       validation.rule.toJSONSchema(schema, validation.options)
     }
 

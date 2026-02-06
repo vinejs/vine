@@ -7,11 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import Ajv from 'ajv'
+import { Ajv } from 'ajv'
 import { test } from '@japa/runner'
+import addFormats from 'ajv-formats'
+
 import vine from '../../index.ts'
 
 const ajv = new Ajv({ allErrors: true })
+addFormats.default(ajv)
 
 test.group('JSON Schema Validator | tryValidator', () => {
   test('return validation errors without throwing an exception', async ({ assert }) => {
@@ -27,17 +30,17 @@ test.group('JSON Schema Validator | tryValidator', () => {
     assert.deepEqual(validate.errors, [
       {
         keyword: 'required',
-        dataPath: '',
+        instancePath: '',
         schemaPath: '#/required',
         params: { missingProperty: 'name' },
-        message: "should have required property 'name'",
+        message: "must have required property 'name'",
       },
       {
         keyword: 'required',
-        dataPath: '',
+        instancePath: '',
         schemaPath: '#/required',
         params: { missingProperty: 'email' },
-        message: "should have required property 'email'",
+        message: "must have required property 'email'",
       },
     ])
   })
@@ -116,24 +119,24 @@ test.group('JSON Schema Validator', () => {
     assert.deepEqual(validate2.errors, [
       {
         keyword: 'required',
-        dataPath: '',
+        instancePath: '',
         schemaPath: '#/required',
         params: { missingProperty: 'name' },
-        message: "should have required property 'name'",
+        message: "must have required property 'name'",
       },
       {
         keyword: 'required',
-        dataPath: '',
+        instancePath: '',
         schemaPath: '#/required',
         params: { missingProperty: 'email' },
-        message: "should have required property 'email'",
+        message: "must have required property 'email'",
       },
       {
         keyword: 'required',
-        dataPath: '',
+        instancePath: '',
         schemaPath: '#/required',
         params: { missingProperty: 'role' },
-        message: "should have required property 'role'",
+        message: "must have required property 'role'",
       },
     ])
   })

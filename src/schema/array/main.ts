@@ -182,7 +182,9 @@ export class VineArray<Schema extends SchemaTypes>
     }
 
     for (const validation of this.validations) {
-      if (!validation.rule.toJSONSchema) continue
+      if (!validation.rule.toJSONSchema) {
+        continue
+      }
       validation.rule.toJSONSchema(schema, validation.options)
     }
 

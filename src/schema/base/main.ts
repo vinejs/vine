@@ -43,6 +43,11 @@ export class NullableModifier<
   Schema[typeof OTYPE] | null,
   Schema[typeof COTYPE] | null
 > {
+  allowNull: boolean = true
+  get isOptional() {
+    return this.#parent.isOptional
+  }
+
   /**
    * Define the input type of the schema, including null
    */
@@ -153,6 +158,14 @@ export class MetaModifier<
   Schema[typeof OTYPE],
   Schema[typeof COTYPE]
 > {
+  get allowNull() {
+    return this.#parent.allowNull
+  }
+
+  get isOptional() {
+    return this.#parent.isOptional
+  }
+
   /**
    * Define the input type of the schema
    */
@@ -225,6 +238,11 @@ export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
     >,
     WithCustomRules
 {
+  isOptional: boolean = true
+  get allowNull() {
+    return this.#parent.allowNull
+  }
+
   /**
    * Define the input type of the schema, including undefined and null
    */
@@ -329,11 +347,9 @@ export class OptionalModifier<Schema extends ConstructableSchema<any, any, any>>
     return new OptionalModifier(this.#parent.clone(), this.cloneValidations()) as this
   }
 
-  toJSONSchema(): JSONSchema7 & { isOptional: true } {
+  toJSONSchema(): JSONSchema7 {
     return {
       ...this.#parent.toJSONSchema(),
-      // Custom property allowing object schema type to set property as not required.
-      isOptional: true,
     }
   }
 

@@ -1,9 +1,19 @@
+/*
+ * @vinejs/vine
+ *
+ * (c) VineJS
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 import { test } from '@japa/runner'
+import { type JSONSchema7 } from 'json-schema'
+
 import vine from '../../index.js'
 import { type SchemaTypes } from '../../src/types.js'
-import { type JSONSchema7 } from 'json-schema'
-import { BOOLEAN_NEGATIVES, BOOLEAN_POSITIVES } from '../../src/vine/helpers.js'
 import { createRule } from '../../src/vine/create_rule.ts'
+import { BOOLEAN_NEGATIVES, BOOLEAN_POSITIVES } from '../../src/vine/helpers.js'
 
 enum Roles {
   ADMIN = 'admin',
@@ -277,8 +287,6 @@ test.group('JsonSchema', () => {
           properties: {
             foo: {
               type: 'number',
-              // @ts-expect-error -- this is not part of standard (used for context)
-              isOptional: true,
             },
             baz: {
               type: 'string',

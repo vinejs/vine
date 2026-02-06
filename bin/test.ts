@@ -42,11 +42,11 @@ configure({
   suites: [
     {
       name: 'unit',
-      files: ['tests/unit/**/*.spec(.js|.ts)'],
+      files: ['tests/unit/**/*.spec.ts'],
     },
     {
       name: 'integration',
-      files: ['tests/integration/**/*.spec(.js|.ts)'],
+      files: ['tests/integration/**/*.spec.ts'],
     },
   ],
   plugins: [assert(), expectTypeOf(), snapshot()],
