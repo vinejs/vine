@@ -114,7 +114,7 @@ export class SimpleMessagesProvider implements MessagesProviderContact {
    * // Returns: "The username must be at least 5 characters"
    */
   getMessage(rawMessage: string, rule: string, field: FieldContext, args?: Record<string, any>) {
-    const fieldName = this.#fields[field.name] || field.name
+    const fieldName = this.#fields[field.getFieldPath()] || this.#fields[field.name] || field.name
 
     /**
      * 1st priority: Field-specific messages (highest specificity)
