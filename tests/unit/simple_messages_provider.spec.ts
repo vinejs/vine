@@ -87,6 +87,26 @@ test.group('Simple messages provider | resolving fields', () => {
     )
   })
 
+  test('substitue nested field name in custom message', ({ assert }) => {
+    const provider = new SimpleMessagesProvider(
+      {
+        required: 'The {{ field }} field is required',
+      },
+      {
+        'auth.username': 'nested user name',
+        'username': 'root user name',
+      }
+    )
+
+    const field = fieldContext.create('auth.username', undefined)
+    field.name = 'username'
+
+    assert.equal(
+      provider.getMessage('Enter value', 'required', field),
+      'The nested user name field is required'
+    )
+  })
+
   test('substitue field name in field message', ({ assert }) => {
     const provider = new SimpleMessagesProvider(
       {
