@@ -1,4 +1,4 @@
-import { requiredWhen } from './rules.js'
+import { requiredWhenRule } from './rules.js'
 import { helpers } from '../../vine/helpers.js'
 import type {
   Validation,
@@ -62,7 +62,7 @@ export abstract class ConditionalValidations {
      * The equality check if self implemented
      */
     if (typeof otherField === 'function') {
-      return this.use(requiredWhen(otherField))
+      return this.use(requiredWhenRule(otherField))
     }
 
     /**
@@ -100,7 +100,7 @@ export abstract class ConditionalValidations {
      * Registering rule with custom implementation
      */
     return this.use(
-      requiredWhen((field) => {
+      requiredWhenRule((field) => {
         const otherFieldValue = helpers.getNestedValue(otherField, field)
         return checker(otherFieldValue)
       })
@@ -121,7 +121,7 @@ export abstract class ConditionalValidations {
   requiredIfExists(fields: string | string[]) {
     const fieldsToExist = Array.isArray(fields) ? fields : [fields]
     return this.use(
-      requiredWhen((field) => {
+      requiredWhenRule((field) => {
         return fieldsToExist.every((otherField) => {
           return helpers.exists(helpers.getNestedValue(otherField, field))
         })
@@ -139,7 +139,7 @@ export abstract class ConditionalValidations {
    */
   requiredIfAnyExists(fields: string[]) {
     return this.use(
-      requiredWhen((field) => {
+      requiredWhenRule((field) => {
         return fields.some((otherField) =>
           helpers.exists(helpers.getNestedValue(otherField, field))
         )
@@ -161,7 +161,7 @@ export abstract class ConditionalValidations {
   requiredIfMissing(fields: string | string[]) {
     const fieldsToExist = Array.isArray(fields) ? fields : [fields]
     return this.use(
-      requiredWhen((field) => {
+      requiredWhenRule((field) => {
         return fieldsToExist.every((otherField) =>
           helpers.isMissing(helpers.getNestedValue(otherField, field))
         )
@@ -179,7 +179,7 @@ export abstract class ConditionalValidations {
    */
   requiredIfAnyMissing(fields: string[]) {
     return this.use(
-      requiredWhen((field) => {
+      requiredWhenRule((field) => {
         return fields.some((otherField) =>
           helpers.isMissing(helpers.getNestedValue(otherField, field))
         )

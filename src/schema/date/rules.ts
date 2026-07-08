@@ -92,10 +92,7 @@ export const equalsRule = createRule<
 export const afterRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'tomorrow'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'tomorrow' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function after(_, options, field) {
   const compare = options.compare || 'day'
@@ -138,10 +135,7 @@ export const afterRule = createRule<
 export const afterOrEqualRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'tomorrow'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'tomorrow' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function afterOrEqual(_, options, field) {
   const compare = options.compare || 'day'
@@ -185,10 +179,7 @@ export const afterOrEqualRule = createRule<
 export const beforeRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'yesterday'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'yesterday' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function before(_, options, field) {
   const compare = options.compare || 'day'
@@ -231,10 +222,7 @@ export const beforeRule = createRule<
 export const beforeOrEqualRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'yesterday'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'yesterday' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
 >(function beforeOrEqual(_, options, field) {
   const compare = options.compare || 'day'

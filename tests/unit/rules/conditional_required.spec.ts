@@ -9,11 +9,11 @@
 
 import { test } from '@japa/runner'
 import { validator } from '../../../factories/main.ts'
-import { requiredWhen } from '../../../src/schema/base/rules.ts'
+import { requiredWhenRule } from '../../../src/schema/base/rules.ts'
 
 test.group('Required when', () => {
   test('report error when field is missing but required', () => {
-    const boolean = requiredWhen(() => {
+    const boolean = requiredWhenRule(() => {
       return true
     })
     const validated = validator.execute(boolean, undefined)
@@ -22,7 +22,7 @@ test.group('Required when', () => {
   })
 
   test('report error when field is null but required', () => {
-    const boolean = requiredWhen(() => {
+    const boolean = requiredWhenRule(() => {
       return true
     })
     const validated = validator.execute(boolean, null)
@@ -31,7 +31,7 @@ test.group('Required when', () => {
   })
 
   test('do not report error when field is missing but not required', () => {
-    const boolean = requiredWhen(() => {
+    const boolean = requiredWhenRule(() => {
       return false
     })
     const validated = validator.execute(boolean, undefined)
@@ -39,7 +39,7 @@ test.group('Required when', () => {
   })
 
   test('do not report error when field is null but not required', () => {
-    const boolean = requiredWhen(() => {
+    const boolean = requiredWhenRule(() => {
       return false
     })
     const validated = validator.execute(boolean, null)

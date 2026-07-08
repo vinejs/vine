@@ -9,7 +9,7 @@ Assert.macro('validationErrors', async function (this: Assert, promiseLike, mess
 
   try {
     await promiseLike
-  } catch (error) {
+  } catch (error: any) {
     hasFailed = true
     this.instanceOf(error, ValidationError)
     this.deepEqual(error.messages, messages)

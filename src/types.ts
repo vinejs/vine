@@ -53,12 +53,7 @@ import { type JSONSchema7 } from 'json-schema'
  * }
  */
 export type CompilerNodes =
-  | (LiteralNode & { subtype: string })
-  | ObjectNode
-  | ArrayNode
-  | UnionNode
-  | RecordNode
-  | TupleNode
+  (LiteralNode & { subtype: string }) | ObjectNode | ArrayNode | UnionNode | RecordNode | TupleNode
 
 /**
  * Options accepted by the mobile number validation rule.

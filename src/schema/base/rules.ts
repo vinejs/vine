@@ -22,7 +22,7 @@ import { createRule } from '../../vine/create_rule.js'
  *   return field.data.role === 'admin'
  * }))
  */
-export const requiredWhen = createRule<(field: FieldContext) => boolean>(
+export const requiredWhenRule = createRule<(field: FieldContext) => boolean>(
   function requiredWhen(_, checker, field) {
     const shouldBeRequired = checker(field)
     if (!field.isDefined && shouldBeRequired) {

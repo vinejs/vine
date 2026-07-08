@@ -25,7 +25,7 @@ test.group('Exception', () => {
 
     try {
       throw new ValidationError([{ message: 'Field is required' }])
-    } catch (error) {
+    } catch (error: any) {
       assert.match(error.stack.split('\n')[1], /validation_error.spec.ts/)
     }
   })

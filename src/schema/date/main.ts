@@ -162,10 +162,7 @@ export class VineDate extends BaseLiteralType<
    */
   after(
     expectedValue:
-      | 'today'
-      | 'tomorrow'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string),
+      'today' | 'tomorrow' | (string & { _?: never }) | ((field: FieldContext) => string),
     options?: DateEqualsOptions
   ): this {
     return this.use(afterRule({ expectedValue, ...options }))
@@ -185,10 +182,7 @@ export class VineDate extends BaseLiteralType<
    */
   afterOrEqual(
     expectedValue:
-      | 'today'
-      | 'tomorrow'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string),
+      'today' | 'tomorrow' | (string & { _?: never }) | ((field: FieldContext) => string),
     options?: DateEqualsOptions
   ): this {
     return this.use(afterOrEqualRule({ expectedValue, ...options }))
@@ -209,10 +203,7 @@ export class VineDate extends BaseLiteralType<
    */
   before(
     expectedValue:
-      | 'today'
-      | 'yesterday'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string),
+      'today' | 'yesterday' | (string & { _?: never }) | ((field: FieldContext) => string),
     options?: DateEqualsOptions
   ): this {
     return this.use(beforeRule({ expectedValue, ...options }))
@@ -232,10 +223,7 @@ export class VineDate extends BaseLiteralType<
    */
   beforeOrEqual(
     expectedValue:
-      | 'today'
-      | 'yesterday'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string),
+      'today' | 'yesterday' | (string & { _?: never }) | ((field: FieldContext) => string),
     options?: DateEqualsOptions
   ): this {
     return this.use(beforeOrEqualRule({ expectedValue, ...options }))
