@@ -349,6 +349,20 @@ test.group('Array | distinct', () => {
 
     validated.assertSucceeded()
   })
+
+  test('skip when object has null/undefined items', () => {
+    const distinct = distinctRule({ fields: 'email' })
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
+      {
+        email: null,
+      },
+      {
+        email: undefined,
+      },
+    ])
+
+    validated.assertSucceeded()
+  })
 })
 
 test.group('Array | compact', () => {

@@ -662,7 +662,14 @@ export const helpers = {
        * required for uniqueness check
        */
       if (helpers.isObject(item) && helpers.hasKeys(item, fieldsList)) {
-        const element = fieldsList.map((field) => item[field]).join('_')
+        const values = fieldsList.map((field) => item[field])
+
+        // Ignore if any uniqueness field is null/undefined
+        if (values.some((value) => !helpers.exists(value))) {
+          continue
+        }
+
+        const element = values.join('_')
         if (uniqueItems.has(element)) {
           return false
         } else {
