@@ -669,7 +669,13 @@ export const helpers = {
           continue
         }
 
-        const element = values.join('_')
+        /**
+         * Serialize the values to a structured key so the field position and
+         * value type are preserved. A positional "join" collapses distinct
+         * inputs to the same key: ['a_b', 'c'] and ['a', 'b_c'] both become
+         * 'a_b_c', and 1 and '1' both become '1'.
+         */
+        const element = JSON.stringify(values)
         if (uniqueItems.has(element)) {
           return false
         } else {

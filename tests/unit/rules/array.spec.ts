@@ -363,6 +363,64 @@ test.group('Array | distinct', () => {
 
     validated.assertSucceeded()
   })
+
+  test('treat distinct composite keys that share a positional join as unique', () => {
+    /**
+     * A "join" based key collapses these to the same "foo_bar_baz" string and
+     * reports a false duplicate. A structured key keeps them distinct.
+     */
+    const distinct = distinctRule({ fields: ['email', 'company_id'] })
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
+      {
+        email: 'foo_bar',
+        company_id: 'baz',
+      },
+      {
+        email: 'foo',
+        company_id: 'bar_baz',
+      },
+    ])
+
+    validated.assertSucceeded()
+  })
+
+  test('treat number and string with same characters as distinct values', () => {
+    /**
+     * A "join" based key coerces both to the "1" string and reports a false
+     * duplicate. A structured key keeps the number and string distinct.
+     */
+    const distinct = distinctRule({ fields: 'id' })
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
+      {
+        id: 1,
+      },
+      {
+        id: '1',
+      },
+    ])
+
+    validated.assertSucceeded()
+  })
+
+  test('report error when composite keys are genuinely duplicated', () => {
+    /**
+     * Guards against the structured key being too lax: identical values must
+     * still be caught as duplicates.
+     */
+    const distinct = distinctRule({ fields: ['email', 'company_id'] })
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
+      {
+        email: 'foo_bar',
+        company_id: 'baz',
+      },
+      {
+        email: 'foo_bar',
+        company_id: 'baz',
+      },
+    ])
+
+    validated.assertError('The dummy field has duplicate values')
+  })
 })
 
 test.group('Array | compact', () => {
