@@ -496,16 +496,31 @@ test.group('Validator | standard validator', () => {
       {
         field: 'name',
         message: 'The name field must be defined',
-        path: 'name',
+        path: ['name'],
         rule: 'required',
       },
       {
         field: 'email',
         message: 'The email field must be defined',
-        path: 'email',
+        path: ['email'],
         rule: 'required',
       },
     ])
+  })
+
+  test('return nested field path as an array per standard validator spec', async ({ assert }) => {
+    const validator = vine.create(
+      vine.object({
+        user: vine.object({
+          name: vine.string(),
+        }),
+      })
+    )
+
+    const result = await validator['~standard'].validate({ user: {} })
+
+    assert.isDefined(result.issues)
+    assert.deepEqual(result.issues![0].path, ['user', 'name'])
   })
 
   test('return validated output as per standard validator spec', async ({
