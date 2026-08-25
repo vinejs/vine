@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
-import { Vine } from '../../../src/vine/main.js'
+import { PARSE } from '../../../src/symbols.ts'
+import { Vine } from '../../../src/vine/main.ts'
 
 const vine = new Vine()
 
@@ -20,6 +20,7 @@ test.group('VineAccepted', () => {
     const schema = vine.accepted()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -31,6 +32,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -41,6 +43,7 @@ test.group('VineAccepted', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -52,6 +55,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -62,6 +66,7 @@ test.group('VineAccepted', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -73,6 +78,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -83,6 +89,7 @@ test.group('VineAccepted', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -94,6 +101,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -103,6 +111,7 @@ test.group('VineAccepted', () => {
     const schema = vine.accepted().parse(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -114,6 +123,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
+          name: 'accepted',
         },
       ],
     })
@@ -123,6 +133,7 @@ test.group('VineAccepted', () => {
     const schema = vine.accepted().transform(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -135,6 +146,7 @@ test.group('VineAccepted', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -148,6 +160,7 @@ test.group('VineAccepted | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -159,11 +172,13 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -175,6 +190,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -186,6 +202,7 @@ test.group('VineAccepted | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -197,11 +214,13 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -213,6 +232,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -224,6 +244,7 @@ test.group('VineAccepted | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -235,11 +256,13 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -251,6 +274,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -262,6 +286,7 @@ test.group('VineAccepted | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -273,11 +298,13 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -289,6 +316,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -300,6 +328,7 @@ test.group('VineAccepted | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -311,12 +340,14 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -329,6 +360,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
@@ -340,6 +372,7 @@ test.group('VineAccepted | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -351,11 +384,13 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
+          name: 'accepted',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'checkbox',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -367,6 +402,7 @@ test.group('VineAccepted | clone', () => {
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
+          name: 'accepted',
         },
       ],
     })

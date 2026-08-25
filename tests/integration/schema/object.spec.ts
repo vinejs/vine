@@ -8,9 +8,19 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
+import vine from '../../../index.ts'
 
 test.group('VineObject | flat object', () => {
+  test('fail to construct schema when object is instantiated without object', async ({
+    assert,
+  }) => {
+    assert.throws(
+      // @ts-expect-error
+      () => vine.object(),
+      'Missing properties for "vine.object". Use an empty object if you do not want to validate any specific fields'
+    )
+  })
+
   test('fail when value is not an object', async ({ assert }) => {
     const schema = vine.object({
       username: vine.string(),
@@ -99,6 +109,52 @@ test.group('VineObject | flat object', () => {
     }
 
     await assert.validationOutput(vine.validate({ schema, data }), data)
+  })
+
+  test('cherry pick properties from an existing object', async ({ assert }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const schema = vine.object({
+      ...author.pick(['name']),
+      body: vine.string(),
+    })
+
+    const data = {
+      name: 'virk',
+      email: 'foo@bar.com',
+      body: 'This is post 101',
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      name: 'virk',
+      body: 'This is post 101',
+    })
+  })
+
+  test('omit properties from an existing object', async ({ assert }) => {
+    const author = vine.object({
+      name: vine.string(),
+      email: vine.string().email(),
+    })
+
+    const schema = vine.object({
+      ...author.omit(['name']),
+      body: vine.string(),
+    })
+
+    const data = {
+      name: 'virk',
+      email: 'foo@bar.com',
+      body: 'This is post 101',
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      email: 'foo@bar.com',
+      body: 'This is post 101',
+    })
   })
 })
 

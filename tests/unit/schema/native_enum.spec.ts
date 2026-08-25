@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
-import { Vine } from '../../../src/vine/main.js'
+import { PARSE } from '../../../src/symbols.ts'
+import { Vine } from '../../../src/vine/main.ts'
 
 const vine = new Vine()
 enum Role {
@@ -25,6 +25,7 @@ test.group('VineNativeEnum', () => {
     const schema = vine.enum(Role)
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -35,6 +36,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -46,6 +48,7 @@ test.group('VineNativeEnum', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -56,6 +59,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -67,6 +71,7 @@ test.group('VineNativeEnum', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -77,6 +82,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -88,6 +94,7 @@ test.group('VineNativeEnum', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -98,6 +105,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -108,6 +116,7 @@ test.group('VineNativeEnum', () => {
     const schema = vine.enum(Role).transform(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -119,6 +128,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -129,6 +139,7 @@ test.group('VineNativeEnum', () => {
     const schema = vine.enum(Role).parse(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -139,6 +150,7 @@ test.group('VineNativeEnum', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://2',
         },
       ],
@@ -153,6 +165,7 @@ test.group('VineNativeEnum | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -163,12 +176,14 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -179,6 +194,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -191,6 +207,7 @@ test.group('VineNativeEnum | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -201,12 +218,14 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -217,6 +236,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -229,6 +249,7 @@ test.group('VineNativeEnum | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -239,12 +260,14 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -255,6 +278,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -267,6 +291,7 @@ test.group('VineNativeEnum | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -277,12 +302,14 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -293,6 +320,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -305,6 +333,7 @@ test.group('VineNativeEnum | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -315,6 +344,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -322,6 +352,7 @@ test.group('VineNativeEnum | clone', () => {
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -333,6 +364,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
@@ -345,6 +377,7 @@ test.group('VineNativeEnum | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -355,12 +388,14 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://1',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'enum',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -371,6 +406,7 @@ test.group('VineNativeEnum | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'enumList',
           ruleFnId: 'ref://2',
         },
       ],

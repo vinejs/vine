@@ -10,9 +10,9 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
-import { booleanRule } from '../../../src/schema/boolean/rules.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.ts'
+import { booleanRule } from '../../../src/schema/boolean/rules.ts'
 
 const vine = new Vine()
 
@@ -21,6 +21,7 @@ test.group('VineBoolean', () => {
     const schema = vine.boolean()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -29,6 +30,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -42,6 +44,7 @@ test.group('VineBoolean', () => {
     const schema = vine.boolean({ strict: true })
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -50,6 +53,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -69,6 +73,7 @@ test.group('VineBoolean', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -77,6 +82,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -90,6 +96,7 @@ test.group('VineBoolean', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -98,6 +105,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -111,6 +119,7 @@ test.group('VineBoolean', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -119,6 +128,7 @@ test.group('VineBoolean', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -131,6 +141,7 @@ test.group('VineBoolean', () => {
     const schema = vine.boolean().parse(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -139,6 +150,7 @@ test.group('VineBoolean', () => {
       parseFnId: 'ref://1',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -151,6 +163,7 @@ test.group('VineBoolean', () => {
     const schema = vine.boolean().transform(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -160,6 +173,7 @@ test.group('VineBoolean', () => {
       transformFnId: 'ref://2',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -203,6 +217,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -211,6 +226,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -219,6 +235,7 @@ test.group('VineBoolean | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -227,6 +244,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -241,6 +259,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -249,6 +268,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -257,6 +277,7 @@ test.group('VineBoolean | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -265,6 +286,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -279,6 +301,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -287,6 +310,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -295,6 +319,7 @@ test.group('VineBoolean | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -303,6 +328,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -317,6 +343,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -325,6 +352,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -333,6 +361,7 @@ test.group('VineBoolean | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -341,6 +370,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -355,6 +385,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -363,6 +394,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -372,6 +404,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -381,6 +414,7 @@ test.group('VineBoolean | clone', () => {
       transformFnId: 'ref://2',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -395,6 +429,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -403,6 +438,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -411,6 +447,7 @@ test.group('VineBoolean | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -419,6 +456,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: 'ref://1',
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -434,6 +472,7 @@ test.group('VineBoolean | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -442,6 +481,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://1',
@@ -450,6 +490,7 @@ test.group('VineBoolean | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'boolean',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -458,6 +499,7 @@ test.group('VineBoolean | clone', () => {
       parseFnId: undefined,
       validations: [
         {
+          name: 'boolean',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',

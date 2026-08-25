@@ -16,3 +16,5 @@ import { ValidatorFactory } from './validator.js'
  */
 export const validator = new ValidatorFactory()
 export const fieldContext = new FieldFactory()
+
+export { FieldFactory, ValidatorFactory }

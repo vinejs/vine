@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
-import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.js'
+import vine from '../../../index.ts'
+import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.ts'
 
 test.group('Enum', () => {
   test('fail when value is not a subset of choices', async ({ assert }) => {
@@ -44,6 +44,20 @@ test.group('Enum', () => {
 
     await assert.validationOutput(vine.validate({ schema, data }), {
       role: 'admin',
+    })
+  })
+
+  test('allow enum to be nullable', async ({ assert }) => {
+    const schema = vine.object({
+      role: vine.enum(['admin', 'moderator', 'owner', 'user']).nullable(),
+    })
+
+    const data = {
+      role: null,
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      role: null,
     })
   })
 })

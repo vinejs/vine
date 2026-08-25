@@ -10,9 +10,9 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import type { RuleBuilder } from '../../../src/types.js'
-import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import type { RuleBuilder } from '../../../src/types.ts'
+import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.ts'
 import {
   compactRule,
   distinctRule,
@@ -20,7 +20,7 @@ import {
   maxLengthRule,
   minLengthRule,
   fixedLengthRule,
-} from '../../../src/schema/array/rules.js'
+} from '../../../src/schema/array/rules.ts'
 
 const vine = new Vine()
 
@@ -56,35 +56,27 @@ test.group('VineArray', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -124,35 +116,27 @@ test.group('VineArray', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -192,35 +176,27 @@ test.group('VineArray', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -260,35 +236,27 @@ test.group('VineArray', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -317,11 +285,13 @@ test.group('VineArray', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://3',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'maxLength',
           ruleFnId: 'ref://4',
         },
       ],
@@ -340,35 +310,27 @@ test.group('VineArray', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -408,35 +370,27 @@ test.group('VineArray', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -476,35 +430,27 @@ test.group('VineArray', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -561,35 +507,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -617,35 +555,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -684,35 +614,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -740,35 +662,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -807,35 +721,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -863,35 +769,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -931,35 +829,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -988,35 +878,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1046,6 +928,7 @@ test.group('VineArray | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://3',
         },
       ],
@@ -1064,35 +947,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1109,11 +984,13 @@ test.group('VineArray | clone', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://3',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'maxLength',
           ruleFnId: 'ref://4',
         },
       ],
@@ -1132,35 +1009,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1200,35 +1069,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1256,35 +1117,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1326,35 +1179,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1382,35 +1227,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1452,35 +1289,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1508,35 +1337,27 @@ test.group('VineArray | clone', () => {
         properties: [
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://1',
+            validations: [],
           },
           {
             type: 'literal',
+            subtype: 'string',
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            dataTypeValidatorFnId: 'ref://2',
+            validations: [],
           },
         ],
       },
@@ -1560,25 +1381,22 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://2',
         },
       ],
       parseFnId: undefined,
       each: {
         type: 'literal',
+        subtype: 'string',
         fieldName: '*',
         propertyName: '*',
         bail: true,
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1604,25 +1422,22 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'maxLength',
           ruleFnId: 'ref://2',
         },
       ],
       parseFnId: undefined,
       each: {
         type: 'literal',
+        subtype: 'string',
         fieldName: '*',
         propertyName: '*',
         bail: true,
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1648,25 +1463,22 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'fixedLength',
           ruleFnId: 'ref://2',
         },
       ],
       parseFnId: undefined,
       each: {
         type: 'literal',
+        subtype: 'string',
         fieldName: '*',
         propertyName: '*',
         bail: true,
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1692,25 +1504,22 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'notEmpty',
           ruleFnId: 'ref://2',
         },
       ],
       parseFnId: undefined,
       each: {
         type: 'literal',
+        subtype: 'string',
         fieldName: '*',
         propertyName: '*',
         bail: true,
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1736,25 +1545,22 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'distinct',
           ruleFnId: 'ref://2',
         },
       ],
       parseFnId: undefined,
       each: {
         type: 'literal',
+        subtype: 'string',
         fieldName: '*',
         propertyName: '*',
         bail: true,
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1780,25 +1586,22 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'compact',
           ruleFnId: 'ref://2',
         },
       ],
       parseFnId: undefined,
       each: {
         type: 'literal',
+        subtype: 'string',
         fieldName: '*',
         propertyName: '*',
         bail: true,
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 
@@ -1831,25 +1634,22 @@ test.group('VineArray | applying rules', () => {
         {
           implicit: false,
           isAsync: false,
+          name: 'minLength',
           ruleFnId: 'ref://2',
         },
       ],
       parseFnId: undefined,
       each: {
         type: 'literal',
+        subtype: 'string',
         fieldName: '*',
         propertyName: '*',
         bail: true,
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        dataTypeValidatorFnId: 'ref://1',
+        validations: [],
       },
     })
 

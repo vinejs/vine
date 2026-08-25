@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.ts'
 
 const vine = new Vine()
 
@@ -51,18 +51,14 @@ test.group('VineTuple', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -86,18 +82,14 @@ test.group('VineTuple', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -121,34 +113,26 @@ test.group('VineTuple', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
         {
           type: 'literal',
+          subtype: 'number',
           fieldName: '1',
           propertyName: '1',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -172,18 +156,14 @@ test.group('VineTuple', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -207,18 +187,14 @@ test.group('VineTuple', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -242,18 +218,14 @@ test.group('VineTuple', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -277,18 +249,14 @@ test.group('VineTuple', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -357,18 +325,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -387,18 +351,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -423,18 +383,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -453,18 +409,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -489,34 +441,26 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
         {
           type: 'literal',
+          subtype: 'number',
           fieldName: '1',
           propertyName: '1',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -534,34 +478,26 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://3',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://3',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
         {
           type: 'literal',
+          subtype: 'number',
           fieldName: '1',
           propertyName: '1',
           bail: true,
+          dataTypeValidatorFnId: 'ref://4',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://4',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -586,18 +522,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -616,18 +548,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -652,18 +580,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -682,18 +606,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -718,18 +638,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -748,18 +664,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://3',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://3',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -784,18 +696,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -814,18 +722,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -850,18 +754,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -880,18 +780,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -916,18 +812,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://1',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -946,18 +838,14 @@ test.group('VineTuple | clone', () => {
       properties: [
         {
           type: 'literal',
+          subtype: 'string',
           fieldName: '0',
           propertyName: '0',
           bail: true,
+          dataTypeValidatorFnId: 'ref://2',
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          validations: [],
           parseFnId: undefined,
         },
       ],

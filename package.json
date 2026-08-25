@@ -1,7 +1,7 @@
 {
   "name": "@vinejs/vine",
   "description": "Form data validation library for Node.js",
-  "version": "2.1.0",
+  "version": "4.4.0",
   "engines": {
     "node": ">=18.16.0"
   },
@@ -23,63 +23,73 @@
   "scripts": {
     "pretest": "npm run lint",
     "test": "c8 npm run quick:test",
-    "quick:test": "node --loader=ts-node/esm --enable-source-maps bin/test.ts",
-    "clean": "del-cli build",
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "docs": "typedoc",
     "typecheck": "tsc --noEmit",
+    "clean": "del-cli build",
     "precompile": "npm run lint && npm run clean",
-    "compile": "tsup-node && tsc --emitDeclarationOnly --declaration",
+    "compile": "tsdown && tsc --emitDeclarationOnly --declaration",
     "build": "npm run compile",
-    "release": "npx release-it",
     "version": "npm run build",
     "prepublishOnly": "npm run build",
-    "lint": "eslint . --ext=.ts",
-    "format": "prettier --write .",
-    "benchmark": "node build/benchmarks/flat_object.js && node build/benchmarks/nested_object.js && node build/benchmarks/array.js && node build/benchmarks/union.js",
-    "sync-labels": "github-label-sync --labels .github/labels.json vinejs/vine"
+    "release": "npx release-it",
+    "benchmark": "node --import=@poppinss/ts-exec benchmarks/flat_object.js && node --import=@poppinss/ts-exec benchmarks/nested_object.js && node --import=@poppinss/ts-exec benchmarks/array.js && node --import=@poppinss/ts-exec benchmarks/union.js",
+    "quick:test": "node --import=@poppinss/ts-exec --enable-source-maps bin/test.ts"
   },
   "devDependencies": {
-    "@adonisjs/eslint-config": "^1.3.0",
-    "@adonisjs/prettier-config": "^1.3.0",
-    "@adonisjs/tsconfig": "^1.3.0",
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@japa/assert": "^3.0.0",
-    "@japa/expect-type": "^2.0.2",
-    "@japa/runner": "^3.1.4",
-    "@japa/snapshot": "^2.0.5",
-    "@swc/core": "^1.5.3",
-    "@types/dlv": "^1.1.4",
-    "@types/node": "^20.12.10",
-    "ajv": "^8.13.0",
+    "@adonisjs/eslint-config": "^3.1.0",
+    "@adonisjs/prettier-config": "^1.5.0",
+    "@adonisjs/tsconfig": "^2.0.0",
+    "@ark/attest": "^0.56.3",
+    "@japa/assert": "^4.2.0",
+    "@japa/expect-type": "^2.0.4",
+    "@japa/runner": "^5.3.0",
+    "@japa/snapshot": "^2.0.10",
+    "@poppinss/ts-exec": "^1.4.4",
+    "@release-it/conventional-changelog": "^11.0.1",
+    "@swc/core": "1.15.43",
+    "@types/dlv": "^1.1.5",
+    "@types/json-schema": "^7.0.15",
+    "@types/luxon": "^3.7.2",
+    "@types/node": "^26.1.1",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "benchmark": "^2.1.4",
-    "c8": "^9.1.0",
-    "del-cli": "^5.1.0",
-    "eslint": "^8.57.0",
-    "github-label-sync": "^2.3.1",
-    "husky": "^9.0.11",
-    "joi": "^17.13.1",
-    "prettier": "^3.2.5",
-    "release-it": "^17.2.1",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.0.2",
-    "typescript": "^5.4.5",
-    "valibot": "^0.30.0",
-    "yup": "^1.4.0",
-    "zod": "^3.23.7"
+    "c8": "^11.0.0",
+    "del-cli": "^7.0.0",
+    "eslint": "^10.6.0",
+    "joi": "^18.2.3",
+    "luxon": "^3.7.2",
+    "prettier": "^3.9.4",
+    "release-it": "^20.2.1",
+    "tsdown": "^0.22.3",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-missing-exports": "^4.1.4",
+    "typescript": "^6.0.3",
+    "valibot": "^1.4.2",
+    "yup": "^1.7.1",
+    "zod": "^4.4.3"
   },
   "dependencies": {
-    "@poppinss/macroable": "^1.0.2",
-    "@types/validator": "^13.11.9",
-    "@vinejs/compiler": "^2.5.0",
-    "camelcase": "^8.0.0",
-    "dayjs": "^1.11.11",
+    "@poppinss/macroable": "^1.1.2",
+    "@poppinss/types": "^1.2.1",
+    "@standard-schema/spec": "^1.1.0",
+    "@types/validator": "^13.15.10",
+    "@vinejs/compiler": "^4.1.3",
+    "camelcase": "^9.0.0",
+    "dayjs": "^1.11.21",
     "dlv": "^1.1.3",
-    "normalize-url": "^8.0.1",
-    "validator": "^13.11.0"
+    "normalize-url": "^9.0.1",
+    "validator": "^13.15.35"
   },
   "author": "virk,vinejs",
   "license": "MIT",
   "homepage": "https://github.com/vinejs/vine#readme",
+  "keywords": [
+    "validator",
+    "validation"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vinejs/vine.git"
@@ -87,31 +97,51 @@
   "bugs": {
     "url": "https://github.com/vinejs/vine/issues"
   },
-  "keywords": [],
-  "types": "./build/index.d.ts",
-  "eslintConfig": {
-    "extends": "@adonisjs/eslint-config/package"
-  },
-  "prettier": "@adonisjs/prettier-config",
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
   "publishConfig": {
     "access": "public",
-    "tag": "latest"
+    "provenance": true
+  },
+  "tsdown": {
+    "entry": [
+      "./index.ts",
+      "./src/defaults.ts",
+      "./factories/main.ts",
+      "./src/types.ts"
+    ],
+    "outDir": "./build",
+    "clean": true,
+    "platform": "node",
+    "format": "esm",
+    "comments": false,
+    "minify": "dce-only",
+    "fixedExtension": false,
+    "dts": false,
+    "treeshake": false,
+    "sourcemap": false,
+    "target": "esnext"
   },
   "release-it": {
     "git": {
+      "requireCleanWorkingDir": true,
+      "requireUpstream": true,
       "commitMessage": "chore(release): ${version}",
       "tagAnnotation": "v${version}",
+      "push": true,
       "tagName": "v${version}"
     },
     "github": {
-      "release": true,
-      "releaseName": "v${version}",
-      "web": true
+      "release": true
+    },
+    "npm": {
+      "publish": true,
+      "skipChecks": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "angular"
+        }
+      }
     }
   },
   "c8": {
@@ -126,25 +156,5 @@
       "benchmarks/**"
     ]
   },
-  "directories": {
-    "test": "tests"
-  },
-  "tsup": {
-    "entry": [
-      "./index.ts",
-      "./src/defaults.ts",
-      "./factories/main.ts",
-      "./src/types.ts",
-      "./benchmarks/flat_object.ts",
-      "./benchmarks/nested_object.ts",
-      "./benchmarks/array.ts",
-      "./benchmarks/union.ts"
-    ],
-    "outDir": "./build",
-    "clean": true,
-    "format": "esm",
-    "dts": false,
-    "sourcemap": true,
-    "target": "esnext"
-  }
+  "prettier": "@adonisjs/prettier-config"
 }

@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   urlRule,
   trimRule,
@@ -46,8 +46,9 @@ import {
   toCamelCaseRule,
   escapeRule,
   normalizeUrlRule,
-} from '../../../src/schema/string/rules.js'
-import type { FieldContext, Validation } from '../../../src/types.js'
+  vatRule,
+} from '../../../src/schema/string/rules.ts'
+import type { FieldContext, Validation } from '../../../src/types.ts'
 
 type DataSet = {
   errorsCount?: number
@@ -68,11 +69,13 @@ async function stringRuleValidator(_: any, dataset: DataSet) {
     ? await validator
         .bail(dataset.bail === false ? false : true)
         .withContext(dataset.field || {})
-        .executeAsync([string, dataset.rule], dataset.value)
+        .withDataTypeValidator(string)
+        .executeAsync([dataset.rule], dataset.value)
     : validator
         .bail(dataset.bail === false ? false : true)
         .withContext(dataset.field || {})
-        .execute([string, dataset.rule], dataset.value)
+        .withDataTypeValidator(string)
+        .execute([dataset.rule], dataset.value)
 
   if (dataset.error && dataset.errorsCount) {
     validated.assertErrorsCount(dataset.errorsCount)
@@ -588,7 +591,7 @@ test.group('String | confirmed', () => {
         },
       },
       {
-        rule: confirmedRule({ confirmationField: 'dummyConfirmed' }),
+        rule: confirmedRule({ as: 'dummyConfirmed' }),
         value: 'foo',
         field: {
           parent: {
@@ -1285,6 +1288,22 @@ test.group('String | uuid', () => {
         rule: uuidRule({ version: [1, 4] }),
         value: '71e4fbab-3498-447b-a97c-2c6060069678',
       },
+      {
+        rule: uuidRule({ version: [6] }),
+        value: '1ec9414c-232a-6b00-b3c8-9e6bdeced846',
+      },
+      {
+        rule: uuidRule({ version: [7] }),
+        value: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+      },
+      {
+        rule: uuidRule({ version: [8] }),
+        value: '12345678-1234-8234-a234-123456789012',
+      },
+      {
+        rule: uuidRule({ version: [4, 6, 7, 8] }),
+        value: '71e4fbab-3498-447b-a97c-2c6060069678',
+      },
     ])
     .run(stringRuleValidator)
 })
@@ -1585,6 +1604,100 @@ test.group('String | normalizeUrl', () => {
         rule: normalizeUrlRule({ stripWWW: true }),
         value: 'www.foo.com',
         output: 'http://foo.com',
+      },
+    ])
+    .run(stringRuleValidator)
+})
+
+test.group('String | vat', () => {
+  test('validate {value}')
+    .with([
+      {
+        errorsCount: 1,
+        rule: vatRule({ countryCode: ['FR'] }),
+        value: 22,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: vatRule({ countryCode: ['FR'] }),
+        value: 22,
+        bail: false,
+        error: 'The dummy field must be a string',
+      },
+      {
+        errorsCount: 1,
+        rule: vatRule({ countryCode: ['FR'] }),
+        value: 'FR3255208',
+        error: 'The dummy field must be a valid VAT number',
+      },
+      {
+        errorsCount: 0,
+        rule: vatRule({ countryCode: ['FR'] }),
+        value: 'FR32552081317',
+      },
+      {
+        errorsCount: 1,
+        rule: vatRule({ countryCode: ['FR'] }),
+        value: 'GB980780684',
+        error: 'The dummy field must be a valid VAT number',
+      },
+      {
+        errorsCount: 0,
+        rule: vatRule({ countryCode: ['DE'] }),
+        value: 'DE136695976',
+      },
+      {
+        errorsCount: 1,
+        rule: vatRule({ countryCode: ['IT'] }),
+        value: 'DE136695976',
+        error: 'The dummy field must be a valid VAT number',
+      },
+      {
+        errorsCount: 1,
+        rule: vatRule(() => {
+          return { countryCode: ['FR'] }
+        }),
+        value: 'FR3255208',
+        error: 'The dummy field must be a valid VAT number',
+      },
+      {
+        errorsCount: 0,
+        rule: vatRule(() => {
+          return { countryCode: ['FR'] }
+        }),
+        value: 'FR32552081317',
+      },
+      {
+        errorsCount: 0,
+        rule: vatRule({ countryCode: ['FR', 'DE', 'IT'] }),
+        value: 'IT12345678901',
+      },
+      {
+        errorsCount: 0,
+        rule: vatRule({ countryCode: ['GB', 'ES', 'NL'] }),
+        value: 'ES12345678Z',
+      },
+      {
+        errorsCount: 1,
+        rule: vatRule({ countryCode: ['GB', 'ES', 'NL'] }),
+        value: 'FR32552081317',
+        error: 'The dummy field must be a valid VAT number',
+      },
+      {
+        errorsCount: 0,
+        rule: vatRule(() => {
+          return { countryCode: ['FR', 'DE', 'IT'] }
+        }),
+        value: 'DE136695976',
+      },
+      {
+        errorsCount: 1,
+        rule: vatRule(() => {
+          return { countryCode: ['FR', 'IT'] }
+        }),
+        value: 'DE136695976',
+        error: 'The dummy field must be a valid VAT number',
       },
     ])
     .run(stringRuleValidator)

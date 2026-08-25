@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
-import { Vine } from '../../../src/vine/main.js'
+import { PARSE } from '../../../src/symbols.ts'
+import { Vine } from '../../../src/vine/main.ts'
 
 const vine = new Vine()
 
@@ -34,11 +34,13 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
+            subtype: 'boolean',
             validations: [
               {
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://3',
+                name: 'boolean',
               },
             ],
           },
@@ -53,13 +55,9 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://5',
-              },
-            ],
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://5',
+            validations: [],
           },
         },
       ],
@@ -86,11 +84,13 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
+            subtype: 'boolean',
             validations: [
               {
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://3',
+                name: 'boolean',
               },
             ],
           },
@@ -105,13 +105,9 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://5',
-              },
-            ],
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://5',
+            validations: [],
           },
         },
       ],
@@ -132,11 +128,13 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
+            subtype: 'boolean',
             validations: [
               {
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://3',
+                name: 'boolean',
               },
             ],
           },
@@ -151,13 +149,378 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://5',
+            validations: [],
+          },
+        },
+      ],
+      elseConditionalFnRefId: 'ref://1',
+    })
+  })
+
+  test('clone schema with optional type', ({ assert }) => {
+    const schema = vine.unionOfTypes([vine.optional(), vine.boolean(), vine.string()])
+    const schema1 = schema.clone().otherwise(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'union',
+      fieldName: '*',
+      propertyName: '*',
+      conditions: [
+        {
+          conditionalFnRefId: 'ref://2',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: true,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'optional',
+            validations: [],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://3',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'boolean',
             validations: [
               {
                 implicit: false,
                 isAsync: false,
-                ruleFnId: 'ref://5',
+                ruleFnId: 'ref://4',
+                name: 'boolean',
               },
             ],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://5',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://6',
+            validations: [],
+          },
+        },
+      ],
+      elseConditionalFnRefId: 'ref://1',
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'union',
+      fieldName: '*',
+      propertyName: '*',
+      conditions: [
+        {
+          conditionalFnRefId: 'ref://2',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: true,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'optional',
+            validations: [],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://3',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'boolean',
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://4',
+                name: 'boolean',
+              },
+            ],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://5',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://6',
+            validations: [],
+          },
+        },
+      ],
+      elseConditionalFnRefId: 'ref://1',
+    })
+  })
+
+  test('clone schema with optional type using nullable modifier', ({ assert }) => {
+    const schema = vine.unionOfTypes([vine.optional().nullable(), vine.boolean(), vine.string()])
+    const schema1 = schema.clone().otherwise(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'union',
+      fieldName: '*',
+      propertyName: '*',
+      conditions: [
+        {
+          conditionalFnRefId: 'ref://2',
+          schema: {
+            allowNull: true,
+            bail: true,
+            fieldName: '*',
+            isOptional: true,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'optional',
+            validations: [],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://3',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'boolean',
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://4',
+                name: 'boolean',
+              },
+            ],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://5',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://6',
+            validations: [],
+          },
+        },
+      ],
+      elseConditionalFnRefId: 'ref://1',
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'union',
+      fieldName: '*',
+      propertyName: '*',
+      conditions: [
+        {
+          conditionalFnRefId: 'ref://2',
+          schema: {
+            allowNull: true,
+            bail: true,
+            fieldName: '*',
+            isOptional: true,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'optional',
+            validations: [],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://3',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'boolean',
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://4',
+                name: 'boolean',
+              },
+            ],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://5',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://6',
+            validations: [],
+          },
+        },
+      ],
+      elseConditionalFnRefId: 'ref://1',
+    })
+  })
+
+  test('clone schema with null type', ({ assert }) => {
+    const schema = vine.unionOfTypes([vine.null(), vine.boolean(), vine.string()])
+    const schema1 = schema.clone().otherwise(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'union',
+      fieldName: '*',
+      propertyName: '*',
+      conditions: [
+        {
+          conditionalFnRefId: 'ref://2',
+          schema: {
+            allowNull: true,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'null',
+            validations: [],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://3',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'boolean',
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://4',
+                name: 'boolean',
+              },
+            ],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://5',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://6',
+            validations: [],
+          },
+        },
+      ],
+      elseConditionalFnRefId: 'ref://1',
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'union',
+      fieldName: '*',
+      propertyName: '*',
+      conditions: [
+        {
+          conditionalFnRefId: 'ref://2',
+          schema: {
+            allowNull: true,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'null',
+            validations: [],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://3',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'boolean',
+            validations: [
+              {
+                implicit: false,
+                isAsync: false,
+                ruleFnId: 'ref://4',
+                name: 'boolean',
+              },
+            ],
+          },
+        },
+        {
+          conditionalFnRefId: 'ref://5',
+          schema: {
+            allowNull: false,
+            bail: true,
+            fieldName: '*',
+            isOptional: false,
+            parseFnId: undefined,
+            propertyName: '*',
+            type: 'literal',
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://6',
+            validations: [],
           },
         },
       ],
@@ -183,11 +546,13 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: 'healthCheck',
             type: 'literal',
+            subtype: 'boolean',
             validations: [
               {
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://3',
+                name: 'boolean',
               },
             ],
           },
@@ -202,13 +567,9 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: 'healthCheck',
             type: 'literal',
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://5',
-              },
-            ],
+            subtype: 'string',
+            dataTypeValidatorFnId: 'ref://5',
+            validations: [],
           },
         },
       ],
@@ -235,11 +596,13 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
+            subtype: 'boolean',
             validations: [
               {
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://3',
+                name: 'boolean',
               },
             ],
           },
@@ -249,18 +612,14 @@ test.group('Vine UnionOfTypes', () => {
           schema: {
             allowNull: false,
             bail: true,
+            dataTypeValidatorFnId: 'ref://5',
             fieldName: '*',
             isOptional: false,
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://5',
-              },
-            ],
+            subtype: 'string',
+            validations: [],
           },
         },
       ],
@@ -281,11 +640,13 @@ test.group('Vine UnionOfTypes', () => {
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
+            subtype: 'boolean',
             validations: [
               {
                 implicit: false,
                 isAsync: false,
                 ruleFnId: 'ref://3',
+                name: 'boolean',
               },
             ],
           },
@@ -295,18 +656,14 @@ test.group('Vine UnionOfTypes', () => {
           schema: {
             allowNull: false,
             bail: true,
+            dataTypeValidatorFnId: 'ref://5',
             fieldName: '*',
             isOptional: false,
             parseFnId: undefined,
             propertyName: '*',
             type: 'literal',
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://5',
-              },
-            ],
+            subtype: 'string',
+            validations: [],
           },
         },
       ],

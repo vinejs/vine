@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
-import { Vine } from '../../../src/vine/main.js'
+import { PARSE } from '../../../src/symbols.ts'
+import { Vine } from '../../../src/vine/main.ts'
 
 const vine = new Vine()
 
@@ -62,11 +62,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://3',
+                    name: 'equals',
                   },
                 ],
               },
@@ -78,13 +80,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'account_id',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://4',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://4',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -111,11 +109,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://6',
+                    name: 'equals',
                   },
                 ],
               },
@@ -127,13 +127,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'email',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://7',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://7',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -160,11 +156,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://9',
+                    name: 'equals',
                   },
                 ],
               },
@@ -176,13 +174,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'project_url',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://10',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://10',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -243,11 +237,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://3',
+                    name: 'equals',
                   },
                 ],
               },
@@ -259,13 +255,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'account_id',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://4',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://4',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -292,11 +284,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://6',
+                    name: 'equals',
                   },
                 ],
               },
@@ -308,13 +302,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'email',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://7',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://7',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -341,11 +331,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://9',
+                    name: 'equals',
                   },
                 ],
               },
@@ -357,13 +349,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'project_url',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://10',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://10',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -429,11 +417,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://3',
+                    name: 'equals',
                   },
                 ],
               },
@@ -445,13 +435,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'account_id',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://4',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://4',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -478,11 +464,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://6',
+                    name: 'equals',
                   },
                 ],
               },
@@ -494,13 +482,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'email',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://7',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://7',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -527,11 +511,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://9',
+                    name: 'equals',
                   },
                 ],
               },
@@ -543,13 +529,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'project_url',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://10',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://10',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -585,11 +567,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://3',
+                    name: 'equals',
                   },
                 ],
               },
@@ -601,13 +585,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'account_id',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://4',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://4',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -634,11 +614,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://6',
+                    name: 'equals',
                   },
                 ],
               },
@@ -650,13 +632,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'email',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://7',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://7',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -683,11 +661,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://9',
+                    name: 'equals',
                   },
                 ],
               },
@@ -699,13 +679,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'project_url',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://10',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://10',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -769,11 +745,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://3',
+                    name: 'equals',
                   },
                 ],
               },
@@ -785,13 +763,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'accountId',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://4',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://4',
+                validations: [],
               },
             ],
             type: 'object',
@@ -818,11 +792,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://6',
+                    name: 'equals',
                   },
                 ],
               },
@@ -834,13 +810,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'email',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://7',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://7',
+                validations: [],
               },
             ],
             type: 'object',
@@ -867,11 +839,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://9',
+                    name: 'equals',
                   },
                 ],
               },
@@ -883,13 +857,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'projectUrl',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://10',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://10',
+                validations: [],
               },
             ],
             type: 'object',
@@ -954,11 +924,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://3',
+                    name: 'equals',
                   },
                 ],
               },
@@ -970,13 +942,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'account_id',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://4',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://4',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -1003,11 +971,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://6',
+                    name: 'equals',
                   },
                 ],
               },
@@ -1019,13 +989,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'email',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://7',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://7',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -1052,11 +1018,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://9',
+                    name: 'equals',
                   },
                 ],
               },
@@ -1068,13 +1036,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'project_url',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://10',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://10',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -1110,11 +1074,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://3',
+                    name: 'equals',
                   },
                 ],
               },
@@ -1126,13 +1092,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'account_id',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://4',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://4',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -1159,11 +1121,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://6',
+                    name: 'equals',
                   },
                 ],
               },
@@ -1175,13 +1139,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'email',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://7',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://7',
+                validations: [],
               },
             ],
             propertyName: '*',
@@ -1208,11 +1168,13 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'type',
                 type: 'literal',
+                subtype: 'literal',
                 validations: [
                   {
                     implicit: false,
                     isAsync: false,
                     ruleFnId: 'ref://9',
+                    name: 'equals',
                   },
                 ],
               },
@@ -1224,13 +1186,9 @@ test.group('Vine Union', () => {
                 parseFnId: undefined,
                 propertyName: 'project_url',
                 type: 'literal',
-                validations: [
-                  {
-                    implicit: false,
-                    isAsync: false,
-                    ruleFnId: 'ref://10',
-                  },
-                ],
+                subtype: 'string',
+                dataTypeValidatorFnId: 'ref://10',
+                validations: [],
               },
             ],
             propertyName: '*',

@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { PARSE } from '../../../src/symbols.js'
-import { Vine } from '../../../src/vine/main.js'
+import { PARSE } from '../../../src/symbols.ts'
+import { Vine } from '../../../src/vine/main.ts'
 
 const vine = new Vine()
 
@@ -20,6 +20,7 @@ test.group('VineAny', () => {
     const schema = vine.any()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -35,6 +36,7 @@ test.group('VineAny', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -50,6 +52,7 @@ test.group('VineAny', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -65,6 +68,7 @@ test.group('VineAny', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -79,6 +83,7 @@ test.group('VineAny', () => {
     const schema = vine.any().parse(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -93,6 +98,7 @@ test.group('VineAny', () => {
     const schema = vine.any().transform(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -112,6 +118,7 @@ test.group('VineAny | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -122,6 +129,7 @@ test.group('VineAny | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -138,6 +146,7 @@ test.group('VineAny | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -148,6 +157,7 @@ test.group('VineAny | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
@@ -164,6 +174,7 @@ test.group('VineAny | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -174,6 +185,7 @@ test.group('VineAny | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -190,6 +202,7 @@ test.group('VineAny | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -200,6 +213,7 @@ test.group('VineAny | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -216,6 +230,7 @@ test.group('VineAny | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -227,6 +242,7 @@ test.group('VineAny | clone', () => {
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -244,6 +260,7 @@ test.group('VineAny | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -254,6 +271,7 @@ test.group('VineAny | clone', () => {
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'any',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,

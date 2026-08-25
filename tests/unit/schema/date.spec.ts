@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.ts'
 import {
   afterRule,
   beforeRule,
@@ -26,7 +26,7 @@ import {
   beforeOrEqualRule,
   afterOrSameAsRule,
   beforeOrSameAsRule,
-} from '../../../src/schema/date/rules.js'
+} from '../../../src/schema/date/rules.ts'
 
 const vine = new Vine()
 
@@ -35,19 +35,15 @@ test.group('VineDate', () => {
     const schema = vine.date()
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -56,19 +52,15 @@ test.group('VineDate', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -77,19 +69,15 @@ test.group('VineDate', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -98,19 +86,15 @@ test.group('VineDate', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -119,21 +103,19 @@ test.group('VineDate', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
       ],
@@ -144,6 +126,7 @@ test.group('VineDate', () => {
     const schema = vine.date().transform(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -151,13 +134,8 @@ test.group('VineDate', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -165,19 +143,15 @@ test.group('VineDate', () => {
     const schema = vine.date().parse(() => {})
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
-      parseFnId: 'ref://1',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://2',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      parseFnId: 'ref://2',
+      validations: [],
     })
   })
 
@@ -200,35 +174,27 @@ test.group('VineDate | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -238,35 +204,27 @@ test.group('VineDate | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: true,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -276,35 +234,27 @@ test.group('VineDate | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -314,35 +264,27 @@ test.group('VineDate | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -352,47 +294,44 @@ test.group('VineDate | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
       ],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
         {
           implicit: false,
           isAsync: false,
+          name: 'afterOrEqual',
           ruleFnId: 'ref://3',
         },
       ],
@@ -405,23 +344,20 @@ test.group('VineDate | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
@@ -429,13 +365,8 @@ test.group('VineDate | clone', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -445,35 +376,27 @@ test.group('VineDate | clone', () => {
 
     assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       allowNull: false,
       isOptional: false,
       bail: true,
-      parseFnId: 'ref://1',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://2',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      parseFnId: 'ref://2',
+      validations: [],
     })
   })
 })
@@ -485,21 +408,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'equals',
           ruleFnId: 'ref://2',
         },
       ],
@@ -518,21 +439,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'after',
           ruleFnId: 'ref://2',
         },
       ],
@@ -551,21 +470,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'before',
           ruleFnId: 'ref://2',
         },
       ],
@@ -584,21 +501,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'afterOrEqual',
           ruleFnId: 'ref://2',
         },
       ],
@@ -617,21 +532,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'beforeOrEqual',
           ruleFnId: 'ref://2',
         },
       ],
@@ -650,21 +563,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'sameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -683,21 +594,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'notSameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -716,21 +625,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'afterField',
           ruleFnId: 'ref://2',
         },
       ],
@@ -749,21 +656,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'afterOrSameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -782,21 +687,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'beforeField',
           ruleFnId: 'ref://2',
         },
       ],
@@ -815,21 +718,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'beforeOrSameAs',
           ruleFnId: 'ref://2',
         },
       ],
@@ -848,21 +749,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'weekend',
           ruleFnId: 'ref://2',
         },
       ],
@@ -881,21 +780,19 @@ test.group('VineDate | applying rules', () => {
 
     assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
       type: 'literal',
+      subtype: 'date',
       fieldName: '*',
       propertyName: '*',
       bail: true,
       allowNull: false,
       isOptional: false,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'weekday',
           ruleFnId: 'ref://2',
         },
       ],
