@@ -324,10 +324,28 @@ export class VineValidator<
         issues: error?.messages.map((message: any) => {
           return {
             ...message,
-            path: message.field,
+            path: toStandardSchemaPath(message.field),
           }
         }),
       }
     },
   }
+}
+
+/**
+ * Converts a VineJS dotted field path (e.g. "contacts.0.email") to the
+ * array of segments required by the Standard Schema spec, converting
+ * array index segments to numbers (e.g. ["contacts", 0, "email"]).
+ *
+ * @see https://github.com/standard-schema/standard-schema
+ */
+function toStandardSchemaPath(field: string): (string | number)[] {
+  if (!field) {
+    return []
+  }
+
+  return field.split('.').map((segment) => {
+    const index = Number(segment)
+    return Number.isInteger(index) && String(index) === segment ? index : segment
+  })
 }
