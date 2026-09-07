@@ -77,7 +77,7 @@ test.group('JsonSchema', () => {
         vine.number().range([12, 36]),
         { type: 'number', minimum: 12, maximum: 36 },
       ],
-      ['positive()', vine.number().positive(), { type: 'number', minimum: 0 }],
+      ['positive()', vine.number().positive(), { type: 'number', exclusiveMinimum: 0 }],
       ['negative()', vine.number().negative(), { type: 'number', exclusiveMaximum: 0 }],
       ['withoutDecimals()', vine.number().withoutDecimals(), { type: 'integer' }],
       ['in([3, 1, 8])', vine.number().in([3, 1, 8]), { type: 'number', enum: [3, 1, 8] }],
