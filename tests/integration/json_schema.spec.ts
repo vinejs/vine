@@ -268,7 +268,7 @@ test.group('JsonSchema', () => {
         'positive',
         vine.number().positive(),
         [
-          [0, true],
+          [0, false],
           [100, true],
           [0.12, true],
           [-20, false],

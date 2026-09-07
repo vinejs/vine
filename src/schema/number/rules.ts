@@ -127,7 +127,7 @@ export const positiveRule = createRule(
   },
   {
     toJSONSchema: (schema) => {
-      schema.minimum = 0
+      schema.exclusiveMinimum = 0
     },
   }
 )
