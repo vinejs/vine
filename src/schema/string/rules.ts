@@ -245,6 +245,19 @@ export const alphaRule = createRule<AlphaOptions | undefined>(
   }
 )
 
+const alphaNumericValidator = createRule<RegExp>(
+  function alphaNumeric(value, expression, field) {
+    if (!expression.test(value as string)) {
+      field.report(messages.alphaNumeric, 'alphaNumeric', field)
+    }
+  },
+  {
+    toJSONSchema: (schema, expression) => {
+      schema.pattern = expression.source
+    },
+  }
+)
+
 /**
  * Validates the value to contain only alphanumeric characters (letters and numbers).
  * Supports options to allow spaces, dashes, and underscores.
@@ -254,45 +267,20 @@ export const alphaRule = createRule<AlphaOptions | undefined>(
  * vine.string().alphaNumeric({ allowSpaces: true })
  * vine.string().alphaNumeric({ allowDashes: true, allowUnderscores: true })
  */
-export const alphaNumericRule = createRule<AlphaNumericOptions | undefined>(
-  function alphaNumeric(value, options, field) {
-    let characterSet = 'a-zA-Z0-9'
-    if (options) {
-      if (options.allowSpaces) {
-        characterSet += '\\s'
-      }
-      if (options.allowDashes) {
-        characterSet += '-'
-      }
-      if (options.allowUnderscores) {
-        characterSet += '_'
-      }
-    }
-
-    const expression = new RegExp(`^[${characterSet}]+$`)
-    if (!expression.test(value as string)) {
-      field.report(messages.alphaNumeric, 'alphaNumeric', field)
-    }
-  },
-  {
-    toJSONSchema: (schema, options) => {
-      let characterSet = 'a-zA-Z0-9'
-      if (options) {
-        if (options.allowSpaces) {
-          characterSet += '\\s'
-        }
-        if (options.allowDashes) {
-          characterSet += '-'
-        }
-        if (options.allowUnderscores) {
-          characterSet += '_'
-        }
-      }
-
-      schema.pattern = `^[${characterSet}]+$`
-    },
+export function alphaNumericRule(options?: AlphaNumericOptions) {
+  let characterSet = 'a-zA-Z0-9'
+  if (options?.allowSpaces) {
+    characterSet += '\\s'
   }
-)
+  if (options?.allowDashes) {
+    characterSet += '-'
+  }
+  if (options?.allowUnderscores) {
+    characterSet += '_'
+  }
+
+  return alphaNumericValidator(new RegExp(`^[${characterSet}]+$`))
+}
 
 /**
  * Enforces a minimum length on a string field.

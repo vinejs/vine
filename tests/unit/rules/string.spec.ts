@@ -448,6 +448,26 @@ test.group('String | alphaNumeric', () => {
         rule: alphaNumericRule({ allowDashes: true }),
         value: 'hello-1244',
       },
+      {
+        rule: alphaNumericRule({ allowSpaces: true, allowDashes: true }),
+        value: 'hello world-1244',
+      },
+      {
+        rule: alphaNumericRule({ allowSpaces: true, allowUnderscores: true }),
+        value: 'hello world_1244',
+      },
+      {
+        rule: alphaNumericRule({ allowDashes: true, allowUnderscores: true }),
+        value: 'hello-world_1244',
+      },
+      {
+        rule: alphaNumericRule({
+          allowSpaces: true,
+          allowDashes: true,
+          allowUnderscores: true,
+        }),
+        value: 'hello world-foo_1244',
+      },
     ])
     .run(stringRuleValidator)
 })
