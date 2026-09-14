@@ -44,10 +44,6 @@ export class ValidationError extends Error {
     options?: ErrorOptions
   ) {
     super('Validation failure', options)
-    const ErrorConstructor = this.constructor as typeof ValidationError
-    if ('captureStackTrace' in Error) {
-      Error.captureStackTrace(this, ErrorConstructor)
-    }
   }
 
   /**
