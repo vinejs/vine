@@ -10,6 +10,7 @@
 import { test } from '@japa/runner'
 import { Vine } from '../../src/vine/main.ts'
 import { type Infer, type InferInput, type ValidationOptions } from '../../src/types.ts'
+import { type ValidationError } from '../../src/errors/validation_error.ts'
 
 const vine = new Vine()
 
@@ -2191,5 +2192,34 @@ test.group('Types | compiled schema', () => {
     expectTypeOf<typeof schema.validate>().parameters.toEqualTypeOf<
       [any, ValidationOptions<{ userId: number }>]
     >
+    expectTypeOf<typeof schema.validateSync>().parameters.toEqualTypeOf<
+      [any, ValidationOptions<{ userId: number }>]
+    >
+  })
+
+  test('infer synchronous validation return types', ({ expectTypeOf }) => {
+    const validator = vine.create({
+      username: vine.string(),
+      is_admin: vine.boolean(),
+    })
+
+    const output = validator.validateSync({ username: 'virk', is_admin: true })
+    expectTypeOf(output).toEqualTypeOf<{
+      username: string
+      is_admin: boolean
+    }>()
+
+    const result = validator.tryValidateSync({ username: 'virk', is_admin: true })
+    expectTypeOf(result).toEqualTypeOf<
+      [ValidationError, null] | [null, { username: string; is_admin: boolean }]
+    >()
+
+    const schema = vine.object({ username: vine.string() })
+    expectTypeOf(vine.validateSync({ schema, data: { username: 'virk' } })).toEqualTypeOf<{
+      username: string
+    }>()
+    expectTypeOf(vine.tryValidateSync({ schema, data: { username: 'virk' } })).toEqualTypeOf<
+      [ValidationError, null] | [null, { username: string }]
+    >()
   })
 })

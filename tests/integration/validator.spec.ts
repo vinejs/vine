@@ -111,6 +111,105 @@ test.group('Validator | metadata', () => {
   }).throws('Invalid metadata')
 })
 
+test.group('Validator | synchronous validation', () => {
+  test('validate nested structures and transforms synchronously', ({ assert, expectTypeOf }) => {
+    const validator = vine.create({
+      user: vine.object({
+        name: vine
+          .string()
+          .trim()
+          .transform((value) => value.toUpperCase()),
+        scores: vine.array(vine.number()),
+      }),
+    })
+
+    const result = validator.validateSync({
+      user: {
+        name: '  virk  ',
+        scores: ['10', 20],
+      },
+    })
+
+    expectTypeOf(result).toEqualTypeOf<Infer<typeof validator>>()
+    assert.deepEqual(result, {
+      user: {
+        name: 'VIRK',
+        scores: [10, 20],
+      },
+    })
+  })
+
+  test('throw validation errors synchronously', ({ assert }) => {
+    const validator = vine.create({ email: vine.string().email() })
+
+    let error: unknown
+    try {
+      validator.validateSync({ email: 'not-an-email' })
+    } catch (validationError) {
+      error = validationError
+    }
+
+    assert.instanceOf(error, ValidationError)
+    assert.deepEqual((error as ValidationError).messages, [
+      {
+        field: 'email',
+        message: 'The email field must be a valid email address',
+        rule: 'email',
+      },
+    ])
+  })
+
+  test('return synchronous validation errors and output as tuples', ({ assert }) => {
+    const validator = vine.create({ name: vine.string() })
+
+    const [validationError, invalidResult] = validator.tryValidateSync({})
+    assert.instanceOf(validationError, ValidationError)
+    assert.isNull(invalidResult)
+
+    const [error, result] = validator.tryValidateSync({ name: 'virk' })
+    assert.isNull(error)
+    assert.deepEqual(result, { name: 'virk' })
+  })
+
+  test('pass and validate metadata synchronously', ({ assert }) => {
+    const validator = vine
+      .withMetaData<{ choices: string[] }>((meta) => {
+        assert.deepEqual(meta, { choices: ['admin', 'guest'] })
+      })
+      .create({
+        role: vine.string().in((field) => {
+          assert.deepEqual(field.meta, { choices: ['admin', 'guest'] })
+          return field.meta.choices
+        }),
+      })
+
+    assert.deepEqual(
+      validator.validateSync({ role: 'admin' }, { meta: { choices: ['admin', 'guest'] } }),
+      { role: 'admin' }
+    )
+  })
+
+  test('validate and try to validate with the Vine shortcuts', ({ assert }) => {
+    const schema = vine.object({ count: vine.number() })
+
+    assert.deepEqual(vine.validateSync({ schema, data: { count: '10' } }), { count: 10 })
+    assert.deepEqual(vine.tryValidateSync({ schema, data: { count: 20 } }), [null, { count: 20 }])
+
+    const [error, result] = vine.tryValidateSync({ schema, data: { count: 'nope' } })
+    assert.instanceOf(error, ValidationError)
+    assert.isNull(result)
+  })
+
+  test('defer rejecting async rules until synchronous validation is used', ({ assert }) => {
+    const validator = vine.create({ url: vine.string().activeUrl() })
+
+    assert.throws(
+      () => validator.validateSync({ url: 'https://vinejs.dev' }),
+      'Cannot compile validation rule "activeUrl" for field "url" synchronously because it is async'
+    )
+  })
+})
+
 test.group('Validator | extend schema classes', () => {
   test('extend VineString class', ({ assert }) => {
     VineString.macro('notPawned' as any, function (value: string) {

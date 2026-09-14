@@ -257,6 +257,33 @@ export class Vine extends SchemaBuilder {
   }
 
   /**
+   * Validate data against a schema synchronously.
+   *
+   * The schema must not contain async rules. For repeated validations, create
+   * a validator and call "validateSync" on it so its compiled function is reused.
+   *
+   * @param options - Configuration object containing schema, data, and validation options
+   * @returns The validated and typed data
+   * @throws {ValidationError} When validation fails
+   * @throws {Error} When the schema contains an async rule
+   *
+   * @example
+   * const result = vine.validateSync({ schema, data })
+   */
+  validateSync<Schema extends SchemaTypes>(
+    options: {
+      /** Schema to use for validation */
+      schema: Schema
+
+      /** Data to validate */
+      data: any
+    } & ValidationOptions<Record<string, any> | undefined>
+  ): Infer<Schema> {
+    const validator = this.compile(options.schema)
+    return validator.validateSync(options.data, options)
+  }
+
+  /**
    * Validate data against a schema without throwing the
    * "ValidationError" exception. Instead the validation
    * errors are returned within the return value.
@@ -287,5 +314,29 @@ export class Vine extends SchemaBuilder {
   ): Promise<[ValidationError, null] | [null, Infer<Schema>]> {
     const validator = this.compile(options.schema)
     return validator.tryValidate(options.data, options)
+  }
+
+  /**
+   * Validate data synchronously without throwing ValidationError. Returns the
+   * validation error or the validated data as a discriminated tuple.
+   *
+   * @param options - Configuration object containing schema, data, and validation options
+   * @returns A tuple containing the validation error or the validated data
+   * @throws {Error} When the schema contains an async rule
+   *
+   * @example
+   * const [error, result] = vine.tryValidateSync({ schema, data })
+   */
+  tryValidateSync<Schema extends SchemaTypes>(
+    options: {
+      /** Schema to use for validation */
+      schema: Schema
+
+      /** Data to validate */
+      data: any
+    } & ValidationOptions<Record<string, any> | undefined>
+  ): [ValidationError, null] | [null, Infer<Schema>] {
+    const validator = this.compile(options.schema)
+    return validator.tryValidateSync(options.data, options)
   }
 }
