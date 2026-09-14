@@ -196,6 +196,19 @@ export const activeUrlRule = createRule(async function activeUrl(value, _, field
   }
 })
 
+const alphaValidator = createRule<RegExp>(
+  function alpha(value, expression, field) {
+    if (!expression.test(value as string)) {
+      field.report(messages.alpha, 'alpha', field)
+    }
+  },
+  {
+    toJSONSchema: (schema, expression) => {
+      schema.pattern = expression.source
+    },
+  }
+)
+
 /**
  * Validates the value to contain only alphabetic characters.
  * Supports options to allow spaces, dashes, and underscores.
@@ -205,45 +218,20 @@ export const activeUrlRule = createRule(async function activeUrl(value, _, field
  * vine.string().alpha({ allowSpaces: true })
  * vine.string().alpha({ allowDashes: true, allowUnderscores: true })
  */
-export const alphaRule = createRule<AlphaOptions | undefined>(
-  function alpha(value, options, field) {
-    let characterSet = 'a-zA-Z'
-    if (options) {
-      if (options.allowSpaces) {
-        characterSet += '\\s'
-      }
-      if (options.allowDashes) {
-        characterSet += '-'
-      }
-      if (options.allowUnderscores) {
-        characterSet += '_'
-      }
-    }
-
-    const expression = new RegExp(`^[${characterSet}]+$`)
-    if (!expression.test(value as string)) {
-      field.report(messages.alpha, 'alpha', field)
-    }
-  },
-  {
-    toJSONSchema: (schema, options) => {
-      let characterSet = 'a-zA-Z'
-      if (options) {
-        if (options.allowSpaces) {
-          characterSet += '\\s'
-        }
-        if (options.allowDashes) {
-          characterSet += '-'
-        }
-        if (options.allowUnderscores) {
-          characterSet += '_'
-        }
-      }
-
-      schema.pattern = `^[${characterSet}]+$`
-    },
+export function alphaRule(options?: AlphaOptions) {
+  let characterSet = 'a-zA-Z'
+  if (options?.allowSpaces) {
+    characterSet += '\\s'
   }
-)
+  if (options?.allowDashes) {
+    characterSet += '-'
+  }
+  if (options?.allowUnderscores) {
+    characterSet += '_'
+  }
+
+  return alphaValidator(new RegExp(`^[${characterSet}]+$`))
+}
 
 /**
  * Validates the value to contain only alphanumeric characters (letters and numbers).
