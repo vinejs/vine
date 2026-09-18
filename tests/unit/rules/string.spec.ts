@@ -406,6 +406,22 @@ test.group('String | alpha', () => {
         rule: alphaRule({ allowDashes: true }),
         value: 'hello-world',
       },
+      {
+        rule: alphaRule({ allowSpaces: true, allowDashes: true }),
+        value: 'hello world-foo',
+      },
+      {
+        rule: alphaRule({ allowSpaces: true, allowUnderscores: true }),
+        value: 'hello world_foo',
+      },
+      {
+        rule: alphaRule({ allowDashes: true, allowUnderscores: true }),
+        value: 'hello-world_foo',
+      },
+      {
+        rule: alphaRule({ allowSpaces: true, allowDashes: true, allowUnderscores: true }),
+        value: 'hello world-foo_bar',
+      },
     ])
     .run(stringRuleValidator)
 })
