@@ -30,6 +30,30 @@ test.group('Exception', () => {
     }
   })
 
+  test('point subclass stack trace to the call site', ({ assert }) => {
+    class CustomValidationError extends ValidationError {
+      constructor(messages: any) {
+        super(messages)
+      }
+    }
+
+    function createError() {
+      return new CustomValidationError([{ message: 'Field is required' }])
+    }
+
+    const error = createError()
+    assert.instanceOf(error, CustomValidationError)
+    assert.instanceOf(error, ValidationError)
+    assert.match(error.stack!.split('\n')[1], /at createError/)
+  })
+
+  test('forward error options to the base error', ({ assert }) => {
+    const cause = new Error('Database connection failed')
+    const error = new ValidationError([{ message: 'Field is required' }], { cause })
+
+    assert.equal(error.cause, cause)
+  })
+
   test('convert error to string', ({ assert }) => {
     const error = new ValidationError([{ message: 'Field is required' }])
     assert.equal(error.toString(), 'Error [E_VALIDATION_ERROR]: Validation failure')
