@@ -324,7 +324,14 @@ export class VineValidator<
         issues: error?.messages.map((message: any) => {
           return {
             ...message,
-            path: message.field,
+            /**
+             * The Standard Schema spec requires `path` to be a
+             * `ReadonlyArray<PropertyKey | PathSegment>`. `message.field` is a
+             * dotted string (e.g. "user.name"), so we split it into segments.
+             * Otherwise consumers that iterate `path` (e.g. TanStack Form) walk
+             * the array-like string character by character and misattach errors.
+             */
+            path: typeof message.field === 'string' ? message.field.split('.') : message.field,
           }
         }),
       }
