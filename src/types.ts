@@ -302,8 +302,8 @@ export type ValidationFields = Record<string, string>
  * }
  */
 export interface ConstructableSchema<Inputs, Output, CamelCaseOutput> {
-  isOptional?: boolean
-  allowNull?: boolean
+  isOptional?: boolean | undefined
+  allowNull?: boolean | undefined
   /** Type marker for input type inference */
   [ITYPE]: Inputs
   /** Type marker for output type inference */
@@ -349,8 +349,8 @@ export interface ConstructableSchema<Inputs, Output, CamelCaseOutput> {
  * }
  */
 export interface ConstructableLiteralSchema<Inputs, Output, CamelCaseOutput> {
-  isOptional?: boolean
-  allowNull?: boolean
+  isOptional?: boolean | undefined
+  allowNull?: boolean | undefined
   /** Type marker for input type inference */
   [ITYPE]: Inputs
   /** Type marker for output type inference */
