@@ -20,6 +20,7 @@ import vine, {
   VineLiteral,
   VineBoolean,
   VineNativeFile,
+  SimpleMessagesProvider,
 } from '../../index.ts'
 import { type Infer } from '../../src/types.ts'
 import { ValidationError } from '../../src/errors/validation_error.ts'
@@ -172,6 +173,8 @@ test.group('Validator | synchronous validation', () => {
   })
 
   test('pass and validate metadata synchronously', ({ assert }) => {
+    assert.plan(3)
+
     const validator = vine
       .withMetaData<{ choices: string[] }>((meta) => {
         assert.deepEqual(meta, { choices: ['admin', 'guest'] })
@@ -187,6 +190,27 @@ test.group('Validator | synchronous validation', () => {
       validator.validateSync({ role: 'admin' }, { meta: { choices: ['admin', 'guest'] } }),
       { role: 'admin' }
     )
+  })
+
+  test('use the messages provider passed to validateSync', ({ assert }) => {
+    assert.plan(1)
+
+    const validator = vine.create({ email: vine.string().email() })
+    validator.messagesProvider = new SimpleMessagesProvider({ email: 'Validator message' })
+
+    try {
+      validator.validateSync(
+        { email: 'not-an-email' },
+        { messagesProvider: new SimpleMessagesProvider({ email: 'Per-call message' }) }
+      )
+    } catch (error) {
+      if (!(error instanceof ValidationError)) {
+        throw error
+      }
+      assert.deepEqual(error.messages, [
+        { field: 'email', rule: 'email', message: 'Per-call message' },
+      ])
+    }
   })
 
   test('validate and try to validate with the Vine shortcuts', ({ assert }) => {

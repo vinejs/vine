@@ -2194,7 +2194,7 @@ test.group('Types | compiled schema', () => {
     >
     expectTypeOf<typeof schema.validateSync>().parameters.toEqualTypeOf<
       [any, ValidationOptions<{ userId: number }>]
-    >
+    >()
   })
 
   test('infer synchronous validation return types', ({ expectTypeOf }) => {
