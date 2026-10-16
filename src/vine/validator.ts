@@ -9,7 +9,12 @@
 
 import { Compiler, refsBuilder } from '@vinejs/compiler'
 import type { StandardJSONSchemaV1, StandardSchemaV1 } from '@standard-schema/spec'
-import type { MessagesProviderContact, Refs, RootNode } from '@vinejs/compiler/types'
+import type {
+  CompiledSyncValidator,
+  MessagesProviderContact,
+  Refs,
+  RootNode,
+} from '@vinejs/compiler/types'
 
 import { messages } from '../defaults.js'
 import { ITYPE, OTYPE, PARSE } from '../symbols.js'
@@ -72,6 +77,12 @@ export class VineValidator<
     schema: RootNode
     refs: Refs
   }
+
+  /**
+   * Synchronous validators are compiled on first use so that creating a
+   * validator with async rules remains valid for asynchronous validation.
+   */
+  #compiledSyncValidator?: CompiledSyncValidator<Infer<Schema>>
 
   /**
    * JSON Schema is only computed when asked.
@@ -212,6 +223,50 @@ export class VineValidator<
   }
 
   /**
+   * Validates data synchronously. The schema's synchronous validation function
+   * is compiled on the first call and reused by later calls.
+   *
+   * This method throws when the schema contains an async rule. Use "validate"
+   * for schemas that need async rules.
+   *
+   * @param data - The data to validate
+   * @param options - Optional validation options including metadata, custom error reporter, and messages provider
+   * @returns The validated and typed data
+   * @throws {ValidationError} When validation fails
+   * @throws {Error} When the schema contains an async rule
+   *
+   * @example
+   * const result = validator.validateSync({ name: 'John', age: 30 })
+   */
+  'validateSync'(
+    data: any,
+    ...[options]: [undefined] extends MetaData
+      ? [options?: ValidationOptions<MetaData> | undefined]
+      : [options: ValidationOptions<MetaData>]
+  ): Infer<Schema> {
+    if (!this.#compiledSyncValidator) {
+      this.#compiledSyncValidator = new Compiler(this.#compiled.schema, {
+        convertEmptyStringsToNull: this.options.convertEmptyStringsToNull,
+        messages: COMPILER_ERROR_MESSAGES,
+      }).compileSync() as CompiledSyncValidator<Infer<Schema>>
+    }
+
+    const normalizedOptions = options ?? (EMPTY_OBJECT as ValidationOptions<MetaData>)
+    const meta = normalizedOptions.meta ?? {}
+    const errorReporter = normalizedOptions.errorReporter ?? this.errorReporter
+    const messagesProvider = normalizedOptions.messagesProvider ?? this.messagesProvider
+
+    this.options.metaDataValidator?.(meta)
+    return this.#compiledSyncValidator(
+      data,
+      meta,
+      this.#compiled.refs,
+      messagesProvider,
+      errorReporter()
+    )
+  }
+
+  /**
    * Performs validation without throwing a ValidationError exception.
    * Instead, returns a tuple where the first element is the error (if any)
    * and the second is the validated data (if successful).
@@ -250,6 +305,34 @@ export class VineValidator<
     try {
       const result = await this.validate(data, options!)
       return [null, result]
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return [error, null]
+      }
+      throw error
+    }
+  }
+
+  /**
+   * Performs synchronous validation without throwing ValidationError. Returns
+   * the validation error or the validated data as a discriminated tuple.
+   *
+   * @param data - The data to validate
+   * @param options - Optional validation options including metadata, custom error reporter, and messages provider
+   * @returns A tuple containing the validation error or the validated data
+   * @throws {Error} When the schema contains an async rule
+   *
+   * @example
+   * const [error, result] = validator.tryValidateSync(data)
+   */
+  'tryValidateSync'(
+    data: any,
+    ...[options]: [undefined] extends MetaData
+      ? [options?: ValidationOptions<MetaData> | undefined]
+      : [options: ValidationOptions<MetaData>]
+  ): [ValidationError, null] | [null, Infer<Schema>] {
+    try {
+      return [null, this.validateSync(data, options!)]
     } catch (error) {
       if (error instanceof ValidationError) {
         return [error, null]

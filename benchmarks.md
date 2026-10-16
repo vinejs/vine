@@ -29,6 +29,38 @@ Joi x 2,252,419 ops/sec ±0.48% (90 runs sampled)
 Fastest is Vine
 ```
 
+## Async vs sync registration validation
+
+Run the same registration schema through `await validator.validate(data)` and
+`validator.validateSync(data)`:
+
+```sh
+npm run build
+node benchmarks/registration.mjs
+```
+
+The schema validates an email address, a 3 to 30 character username containing
+letters, numbers or underscores, and a 12 to 128 character password. It trims
+email and username values. None of its rules are async.
+
+The benchmark uses the built package, checks that both APIs normalize and reject
+the same inputs, then measures successful validations with four rotating inputs.
+Each call receives a fresh input object. Compilation is excluded, both modes get
+50,000 warmup calls, and each mode gets 15 samples of 100,000 validations. The
+execution order alternates between samples. Async calls are awaited individually.
+
+Three independent runs in an orb, Node.js 26.5.1, Linux x64, Intel Xeon 2.60 GHz:
+
+| Run | Async median | Sync median | Async ops/sec | Sync ops/sec |
+| --- | ------------ | ----------- | ------------- | ------------ |
+| 1   | 2.483 µs     | 2.422 µs    | 402,694       | 412,861      |
+| 2   | 2.420 µs     | 2.405 µs    | 413,183       | 415,758      |
+| 3   | 2.410 µs     | 2.314 µs    | 414,952       | 432,090      |
+
+Sync throughput was 0.6% to 4.1% higher in these runs. Sample ranges overlap, so
+this workload does not establish a substantial performance advantage. These
+numbers measure validation only, not request handling, compilation or error paths.
+
 ## Benchmarking against a nested object
 
 The source for this benchmark is saved inside the [./benchmarks/nested_object.ts](./benchmarks/nested_object.ts) file. You may run the benchmark as follows.
