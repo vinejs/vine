@@ -653,6 +653,29 @@ export const helpers = {
     }
 
     /**
+     * Avoid creating and traversing a values array for the common case where
+     * uniqueness is enforced using a single field.
+     */
+    if (typeof fields === 'string') {
+      for (let item of dataSet) {
+        if (helpers.isObject(item) && fields in item) {
+          const value = item[fields]
+          if (!helpers.exists(value)) {
+            continue
+          }
+
+          const element = JSON.stringify([value])
+          if (uniqueItems.has(element)) {
+            return false
+          } else {
+            uniqueItems.add(element)
+          }
+        }
+      }
+      return true
+    }
+
+    /**
      * Checking for duplicates when one or more fields are mentioned
      */
     const fieldsList = Array.isArray(fields) ? fields : [fields]

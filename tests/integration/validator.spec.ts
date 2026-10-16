@@ -582,6 +582,61 @@ test.group('Validator | regression', () => {
       }
     )
   })
+
+  test('report duplicates when distinct field is numeric', async ({ assert }) => {
+    /**
+     * Numeric fields are not allowed by the types, but JavaScript callers
+     * can still pass them and they must not crash the validator.
+     */
+    const validator = vine.create({
+      slots: vine
+        .array(
+          vine.object({
+            '1': vine.string(),
+          })
+        )
+        .distinct(1 as any),
+    })
+
+    await assert.validationErrors(validator.validate({ slots: [{ 1: 'a' }, { 1: 'a' }] }), [
+      {
+        field: 'slots',
+        message: 'The slots field has duplicate values',
+        meta: {
+          fields: 1,
+        },
+        rule: 'distinct',
+      },
+    ])
+  })
+
+  test('ignore null values when checking distinct composite fields', async ({ assert }) => {
+    const validator = vine.create({
+      users: vine
+        .array(
+          vine.object({
+            email: vine.string(),
+            tenant_id: vine.number().nullable(),
+          })
+        )
+        .distinct(['email', 'tenant_id']),
+    })
+
+    await assert.validationOutput(
+      validator.validate({
+        users: [
+          { email: 'foo@bar.com', tenant_id: null },
+          { email: 'foo@bar.com', tenant_id: null },
+        ],
+      }),
+      {
+        users: [
+          { email: 'foo@bar.com', tenant_id: null },
+          { email: 'foo@bar.com', tenant_id: null },
+        ],
+      }
+    )
+  })
 })
 
 test.group('Validator | standard validator', () => {

@@ -402,6 +402,20 @@ test.group('Array | distinct', () => {
     validated.assertSucceeded()
   })
 
+  test('compare object values using their serialized representation', () => {
+    const distinct = distinctRule({ fields: 'metadata' })
+    const validated = validator.withDataTypeValidator(arrayValidator).execute(distinct, [
+      {
+        metadata: { role: 'admin' },
+      },
+      {
+        metadata: { role: 'admin' },
+      },
+    ])
+
+    validated.assertError('The dummy field has duplicate values')
+  })
+
   test('report error when composite keys are genuinely duplicated', () => {
     /**
      * Guards against the structured key being too lax: identical values must
