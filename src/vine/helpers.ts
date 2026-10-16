@@ -678,7 +678,7 @@ export const helpers = {
     /**
      * Checking for duplicates when one or more fields are mentioned
      */
-    const fieldsList = fields
+    const fieldsList = Array.isArray(fields) ? fields : [fields]
     for (let item of dataSet) {
       /**
        * Only process item, if it is an object and has all the fields
