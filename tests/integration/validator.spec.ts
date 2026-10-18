@@ -582,6 +582,34 @@ test.group('Validator | regression', () => {
       }
     )
   })
+
+  test('report duplicates when distinct field is zero', async ({ assert }) => {
+    /**
+     * Numeric fields are not allowed by the types, but JavaScript callers
+     * can still pass them. A falsy field must not be mistaken for
+     * "no fields provided".
+     */
+    const validator = vine.create({
+      days: vine
+        .array(
+          vine.object({
+            '0': vine.string(),
+          })
+        )
+        .distinct(0 as any),
+    })
+
+    await assert.validationErrors(validator.validate({ days: [{ 0: 'a' }, { 0: 'a' }] }), [
+      {
+        field: 'days',
+        message: 'The days field has duplicate values',
+        meta: {
+          fields: 0,
+        },
+        rule: 'distinct',
+      },
+    ])
+  })
 })
 
 test.group('Validator | standard validator', () => {
