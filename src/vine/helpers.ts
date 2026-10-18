@@ -637,9 +637,10 @@ export const helpers = {
     const uniqueItems: Set<any> = new Set()
 
     /**
-     * Check for duplicates when no fields are provided
+     * Check for duplicates when no fields are provided. Avoid a truthy check,
+     * since a falsy field like 0 is a valid key and must not be ignored.
      */
-    if (!fields) {
+    if (fields === undefined || fields === null || fields === '') {
       for (let item of dataSet) {
         if (helpers.exists(item)) {
           if (uniqueItems.has(item)) {
