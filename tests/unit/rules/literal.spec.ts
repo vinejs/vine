@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
-import { equalsRule } from '../../../src/schema/literal/rules.js'
+import { validator } from '../../../factories/main.ts'
+import { equalsRule } from '../../../src/schema/literal/rules.ts'
 
 test.group('Literal | equals', () => {
   test('report when input value is not same as expected value', () => {

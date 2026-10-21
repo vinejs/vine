@@ -130,10 +130,12 @@ class ValidationResult {
 export class ValidatorFactory {
   #field?: Partial<FieldContext>
   #bail?: boolean
+  #dataTypeValidation?: Validation<any>
 
-  constructor(field?: Partial<FieldContext>, bail?: boolean) {
+  constructor(field?: Partial<FieldContext>, bail?: boolean, dataTypeValidation?: Validation<any>) {
     this.#field = field
     this.#bail = bail
+    this.#dataTypeValidation = dataTypeValidation
   }
 
   /**
@@ -148,14 +150,21 @@ export class ValidatorFactory {
    * Define field context for the validation
    */
   withContext(field: Partial<FieldContext>) {
-    return new ValidatorFactory(field, this.#bail)
+    return new ValidatorFactory(field, this.#bail, this.#dataTypeValidation)
+  }
+
+  /**
+   * Specify a rule for literal data type validation
+   */
+  withDataTypeValidator(validation: Validation<any>) {
+    return new ValidatorFactory(this.#field, this.#bail, validation)
   }
 
   /**
    * Toggle bail mode for the validation
    */
   bail(state: boolean) {
-    return new ValidatorFactory(this.#field, state)
+    return new ValidatorFactory(this.#field, state, this.#dataTypeValidation)
   }
 
   /**
@@ -169,6 +178,16 @@ export class ValidatorFactory {
       ...this.#field,
     }
 
+    let continuationCheck: boolean = field.isDefined
+    if (this.#dataTypeValidation) {
+      field.isValidDataType = this.#dataTypeValidation.rule.validator(
+        field.value,
+        this.#dataTypeValidation.options,
+        field
+      )
+      continuationCheck = field.isValidDataType
+    }
+
     const validations = Array.isArray(validation) ? validation : [validation]
     for (let one of validations) {
       if (one.rule.isAsync) {
@@ -177,7 +196,7 @@ export class ValidatorFactory {
         )
       }
 
-      if ((field.isDefined || one.rule.implicit) && (field.isValid || !bail)) {
+      if ((continuationCheck || one.rule.implicit) && (field.isValid || !bail)) {
         one.rule.validator(field.value, one.options, field)
       }
     }
@@ -197,9 +216,19 @@ export class ValidatorFactory {
       ...this.#field,
     }
 
+    let continuationCheck: boolean = field.isDefined
+    if (this.#dataTypeValidation) {
+      field.isValidDataType = this.#dataTypeValidation.rule.validator(
+        field.value,
+        this.#dataTypeValidation.options,
+        field
+      )
+      continuationCheck = field.isValidDataType
+    }
+
     const validations = Array.isArray(validation) ? validation : [validation]
     for (let one of validations) {
-      if ((field.isDefined || one.rule.implicit) && (field.isValid || !bail)) {
+      if ((continuationCheck || one.rule.implicit) && (field.isValid || !bail)) {
         await one.rule.validator(field.value, one.options, field)
       }
     }

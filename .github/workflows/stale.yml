@@ -1,0 +1,17 @@
+name: 'Close stale issues and PRs'
+on:
+  schedule:
+    - cron: '30 0 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          stale-issue-message: 'This issue has been marked as stale because it has been inactive for more than 21 days. Please reopen if you still need help on this issue'
+          stale-pr-message: 'This pull request has been marked as stale because it has been inactive for more than 21 days. Please reopen if you still intend to submit this pull request'
+          close-issue-message: 'This issue has been automatically closed because it has been inactive for more than 4 weeks. Please reopen if you still need help on this issue'
+          close-pr-message: 'This pull request has been automatically closed because it has been inactive for more than 4 weeks. Please reopen if you still intend to submit this pull request'
+          days-before-stale: 21
+          days-before-close: 5

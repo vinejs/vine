@@ -1,6 +1,6 @@
 # Benchmarks
 
-Following are the results from the benchmarks executed on the `Apple M1 Pro Mac - 16GB`. Feel free to clone this repo and re-run the benchmarks on your local computer.
+Following are the results from the benchmarks executed on the `Apple M3 Pro - 36 GB`. Feel free to clone this repo and re-run the benchmarks on your local computer.
 
 - We benchmark VineJS against only those validation libraries that offer similar API for composing schema.
 - Being slower does not mean bad. Continue using Yup or Zod if they work great for you or if performance is not a bottleneck for you.
@@ -21,14 +21,45 @@ node build/benchmarks/flat_object.js
 ===============================
 Benchmarking with flat object
 ===============================
-Vine x 13,755,815 ops/sec ±1.51% (85 runs sampled)
-Zod x 1,256,814 ops/sec ±1.16% (83 runs sampled)
-Yup x 516,677 ops/sec ±0.61% (86 runs sampled)
-Valibot x 5,856,615 ops/sec ±0.32% (90 runs sampled)
-Joi x 1,757,520 ops/sec ±0.47% (86 runs sampled)
-Ajv x 10,631,917 ops/sec ±0.59% (83 runs sampled)
+Vine x 13,072,620 ops/sec ±1.09% (84 runs sampled)
+Zod x 7,420,116 ops/sec ±0.34% (88 runs sampled)
+Yup x 746,769 ops/sec ±0.42% (90 runs sampled)
+Valibot x 6,558,725 ops/sec ±0.23% (90 runs sampled)
+Joi x 2,252,419 ops/sec ±0.48% (90 runs sampled)
 Fastest is Vine
 ```
+
+## Async vs sync registration validation
+
+Run the same registration schema through `await validator.validate(data)` and
+`validator.validateSync(data)`:
+
+```sh
+npm run build
+node benchmarks/registration.mjs
+```
+
+The schema validates an email address, a 3 to 30 character username containing
+letters, numbers or underscores, and a 12 to 128 character password. It trims
+email and username values. None of its rules are async.
+
+The benchmark uses the built package, checks that both APIs normalize and reject
+the same inputs, then measures successful validations with four rotating inputs.
+Each call receives a fresh input object. Compilation is excluded, both modes get
+50,000 warmup calls, and each mode gets 15 samples of 100,000 validations. The
+execution order alternates between samples. Async calls are awaited individually.
+
+Three independent runs in an orb, Node.js 26.5.1, Linux x64, Intel Xeon 2.60 GHz:
+
+| Run | Async median | Sync median | Async ops/sec | Sync ops/sec |
+| --- | ------------ | ----------- | ------------- | ------------ |
+| 1   | 2.483 µs     | 2.422 µs    | 402,694       | 412,861      |
+| 2   | 2.420 µs     | 2.405 µs    | 413,183       | 415,758      |
+| 3   | 2.410 µs     | 2.314 µs    | 414,952       | 432,090      |
+
+Sync throughput was 0.6% to 4.1% higher in these runs. Sample ranges overlap, so
+this workload does not establish a substantial performance advantage. These
+numbers measure validation only, not request handling, compilation or error paths.
 
 ## Benchmarking against a nested object
 
@@ -45,12 +76,11 @@ node build/benchmarks/nested_object.js
 =================================
 Benchmarking with nested object
 =================================
-Vine x 11,645,981 ops/sec ±0.64% (87 runs sampled)
-Zod x 586,571 ops/sec ±0.98% (89 runs sampled)
-Yup x 236,181 ops/sec ±0.54% (89 runs sampled)
-Valibot x 3,530,527 ops/sec ±0.57% (89 runs sampled)
-Joi x 875,866 ops/sec ±0.49% (87 runs sampled)
-Ajv x 9,903,577 ops/sec ±0.55% (85 runs sampled)
+Vine x 9,445,152 ops/sec ±0.42% (88 runs sampled)
+Zod x 3,628,979 ops/sec ±0.52% (91 runs sampled)
+Yup x 344,506 ops/sec ±0.18% (91 runs sampled)
+Valibot x 3,363,940 ops/sec ±0.17% (91 runs sampled)
+Joi x 1,137,401 ops/sec ±0.41% (92 runs sampled)
 Fastest is Vine
 ```
 
@@ -69,13 +99,12 @@ node build/benchmarks/array.js
 ======================
 Benchmarking arrays
 ======================
-Vine x 8,879,077 ops/sec ±0.81% (87 runs sampled)
-Zod x 422,019 ops/sec ±0.99% (88 runs sampled)
-Yup x 135,510 ops/sec ±0.58% (89 runs sampled)
-Valibot x 2,934,557 ops/sec ±0.44% (88 runs sampled)
-Joi x 630,307 ops/sec ±0.14% (92 runs sampled)
-Ajv x 9,797,067 ops/sec ±0.22% (91 runs sampled)
-Fastest is Ajv
+Vine x 6,810,515 ops/sec ±0.44% (87 runs sampled)
+Zod x 3,254,923 ops/sec ±0.14% (84 runs sampled)
+Yup x 202,143 ops/sec ±0.21% (91 runs sampled)
+Valibot x 3,064,924 ops/sec ±0.10% (89 runs sampled)
+Joi x 795,110 ops/sec ±0.71% (89 runs sampled)
+Fastest is Vine
 ```
 
 ## Benchmarking unions
@@ -95,10 +124,9 @@ node build/benchmarks/union.js
 =======================
 Benchmarking unions
 =======================
-Vine x 10,531,063 ops/sec ±0.80% (88 runs sampled)
-Zod x 184,707 ops/sec ±1.00% (85 runs sampled)
-Valibot x 2,454,900 ops/sec ±0.63% (90 runs sampled)
-Joi x 722,437 ops/sec ±1.18% (86 runs sampled)
-Ajv x 10,431,212 ops/sec ±0.51% (85 runs sampled)
+Vine x 9,949,804 ops/sec ±0.32% (84 runs sampled)
+Zod x 2,106,060 ops/sec ±0.15% (89 runs sampled)
+Valibot x 1,124,721 ops/sec ±0.21% (92 runs sampled)
+Joi x 957,252 ops/sec ±0.11% (92 runs sampled)
 Fastest is Vine
 ```

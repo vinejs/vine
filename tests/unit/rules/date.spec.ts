@@ -9,7 +9,7 @@
 
 import dayjs from 'dayjs'
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   dateRule,
   afterRule,
@@ -25,7 +25,7 @@ import {
   beforeOrEqualRule,
   afterOrSameAsRule,
   beforeOrSameAsRule,
-} from '../../../src/schema/date/rules.js'
+} from '../../../src/schema/date/rules.ts'
 
 test.group('Date | date', () => {
   test('report when value is not a number or a string', () => {
@@ -94,7 +94,7 @@ test.group('Date | equals', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const equals = equalsRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, equals], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([equals], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -103,7 +103,7 @@ test.group('Date | equals', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const equals = equalsRule({ expectedValue: '2024-01-22' })
-    const validated = validator.bail(false).execute([date, equals], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([equals], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -112,7 +112,7 @@ test.group('Date | equals', () => {
   test('report error when year is not the same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const equals = equalsRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, equals], '2023-01-22')
+    const validated = validator.withDataTypeValidator(date).execute([equals], '2023-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date equal to 2024-01-22')
@@ -121,7 +121,7 @@ test.group('Date | equals', () => {
   test('report error when month is not the same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const equals = equalsRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, equals], '2024-12-22')
+    const validated = validator.withDataTypeValidator(date).execute([equals], '2024-12-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date equal to 2024-01-22')
@@ -130,7 +130,7 @@ test.group('Date | equals', () => {
   test('report error when day is not the same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const equals = equalsRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, equals], '2024-01-01')
+    const validated = validator.withDataTypeValidator(date).execute([equals], '2024-01-01')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date equal to 2024-01-22')
@@ -139,7 +139,7 @@ test.group('Date | equals', () => {
   test('with month comparison pass when day is not the same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const equals = equalsRule({ expectedValue: '2024-01-22', compare: 'month' })
-    const validated = validator.execute([date, equals], '2024-01-01')
+    const validated = validator.withDataTypeValidator(date).execute([equals], '2024-01-01')
 
     validated.assertSucceeded()
   })
@@ -147,7 +147,7 @@ test.group('Date | equals', () => {
   test('use custom format for expected value', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const equals = equalsRule({ expectedValue: '2024/24/01', format: 'YYYY/DD/MM' })
-    const validated = validator.execute([date, equals], '2024-01-24')
+    const validated = validator.withDataTypeValidator(date).execute([equals], '2024-01-24')
 
     validated.assertSucceeded()
   })
@@ -159,7 +159,7 @@ test.group('Date | equals', () => {
       compare: 'year',
       format: 'YYYY/DD/MM',
     })
-    const validated = validator.execute([date, equals], '2024-10-10')
+    const validated = validator.withDataTypeValidator(date).execute([equals], '2024-10-10')
 
     validated.assertSucceeded()
   })
@@ -169,7 +169,7 @@ test.group('Date | after', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const after = afterRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, after], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([after], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -178,7 +178,7 @@ test.group('Date | after', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const after = afterRule({ expectedValue: '2024-01-22' })
-    const validated = validator.bail(false).execute([date, after], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([after], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -187,7 +187,7 @@ test.group('Date | after', () => {
   test('report error when year is smaller', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const after = afterRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, after], '2022-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2022-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after 2024-01-22')
@@ -196,7 +196,7 @@ test.group('Date | after', () => {
   test('report error when month is smaller', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const after = afterRule({ expectedValue: '2024-02-22' })
-    const validated = validator.execute([date, after], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2024-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after 2024-02-22')
@@ -205,7 +205,7 @@ test.group('Date | after', () => {
   test('report error when day is smaller or same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const after = afterRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, after], '2024-01-22')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2024-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after 2024-01-22')
@@ -214,7 +214,7 @@ test.group('Date | after', () => {
   test('pass when minutes are in the future', () => {
     const date = dateRule({})
     const after = afterRule({ expectedValue: '2024-01-22', compare: 'seconds' })
-    const validated = validator.execute([date, after], '2024-01-22 12:00:00')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2024-01-22 12:00:00')
 
     validated.assertSucceeded()
   })
@@ -222,7 +222,7 @@ test.group('Date | after', () => {
   test('pass when day is in the future', () => {
     const date = dateRule({})
     const after = afterRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, after], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2024-01-23')
 
     validated.assertSucceeded()
   })
@@ -230,7 +230,7 @@ test.group('Date | after', () => {
   test('report error when day is in future but comparing for months', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const after = afterRule({ expectedValue: '2024-01-22', compare: 'month' })
-    const validated = validator.execute([date, after], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2024-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after 2024-01-22')
@@ -239,7 +239,7 @@ test.group('Date | after', () => {
   test('use custom format for expected value', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const after = afterRule({ expectedValue: '2024/24/01', format: 'YYYY/DD/MM' })
-    const validated = validator.execute([date, after], '2024-01-25')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2024-01-25')
 
     validated.assertSucceeded()
   })
@@ -251,7 +251,7 @@ test.group('Date | after', () => {
       compare: 'year',
       format: 'YYYY/DD/MM',
     })
-    const validated = validator.execute([date, after], '2025-01-01')
+    const validated = validator.withDataTypeValidator(date).execute([after], '2025-01-01')
 
     validated.assertSucceeded()
   })
@@ -259,10 +259,14 @@ test.group('Date | after', () => {
   test('use "today" keyword', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const after = afterRule({ expectedValue: 'today' })
-    const validated = validator.execute([date, after], dayjs().add(1, 'day').format('YYYY-MM-DD'))
+    const validated = validator
+      .withDataTypeValidator(date)
+      .execute([after], dayjs().add(1, 'day').format('YYYY-MM-DD'))
     validated.assertSucceeded()
 
-    const validated1 = validator.execute([date, after], dayjs().format('YYYY-MM-DD'))
+    const validated1 = validator
+      .withDataTypeValidator(date)
+      .execute([after], dayjs().format('YYYY-MM-DD'))
     validated1.assertErrorsCount(1)
     validated1.assertError('The dummy field must be a date after today')
   })
@@ -270,10 +274,14 @@ test.group('Date | after', () => {
   test('use "tomorrow" keyword', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const after = afterRule({ expectedValue: 'tomorrow' })
-    const validated = validator.execute([date, after], dayjs().add(2, 'day').format('YYYY-MM-DD'))
+    const validated = validator
+      .withDataTypeValidator(date)
+      .execute([after], dayjs().add(2, 'day').format('YYYY-MM-DD'))
     validated.assertSucceeded()
 
-    const validated1 = validator.execute([date, after], dayjs().add(1, 'day').format('YYYY-MM-DD'))
+    const validated1 = validator
+      .withDataTypeValidator(date)
+      .execute([after], dayjs().add(1, 'day').format('YYYY-MM-DD'))
     validated1.assertErrorsCount(1)
     validated1.assertError('The dummy field must be a date after tomorrow')
   })
@@ -283,7 +291,7 @@ test.group('Date | afterOrEqual', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, afterOrEqual], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -292,7 +300,10 @@ test.group('Date | afterOrEqual', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.bail(false).execute([date, afterOrEqual], 'foo')
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(date)
+      .execute([afterOrEqual], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -301,7 +312,7 @@ test.group('Date | afterOrEqual', () => {
   test('report error when year is smaller', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, afterOrEqual], '2022-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2022-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after or equal to 2024-01-22')
@@ -310,7 +321,7 @@ test.group('Date | afterOrEqual', () => {
   test('report error when month is smaller', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-02-22' })
-    const validated = validator.execute([date, afterOrEqual], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2024-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after or equal to 2024-02-22')
@@ -319,7 +330,7 @@ test.group('Date | afterOrEqual', () => {
   test('report error when day is smaller', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, afterOrEqual], '2024-01-21')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2024-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after or equal to 2024-01-22')
@@ -328,7 +339,7 @@ test.group('Date | afterOrEqual', () => {
   test('pass when date is the same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, afterOrEqual], '2024-01-22')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2024-01-22')
 
     validated.assertSucceeded()
   })
@@ -336,7 +347,9 @@ test.group('Date | afterOrEqual', () => {
   test('pass when minutes are in the future', () => {
     const date = dateRule({})
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-01-22', compare: 'seconds' })
-    const validated = validator.execute([date, afterOrEqual], '2024-01-22 12:00:00')
+    const validated = validator
+      .withDataTypeValidator(date)
+      .execute([afterOrEqual], '2024-01-22 12:00:00')
 
     validated.assertSucceeded()
   })
@@ -344,7 +357,7 @@ test.group('Date | afterOrEqual', () => {
   test('pass when day is in the future', () => {
     const date = dateRule({})
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, afterOrEqual], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2024-01-23')
 
     validated.assertSucceeded()
   })
@@ -352,7 +365,7 @@ test.group('Date | afterOrEqual', () => {
   test('report error when day is in future but comparing for months', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024-02-22', compare: 'month' })
-    const validated = validator.execute([date, afterOrEqual], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2024-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after or equal to 2024-02-22')
@@ -361,7 +374,7 @@ test.group('Date | afterOrEqual', () => {
   test('use custom format for expected value', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterOrEqual = afterOrEqualRule({ expectedValue: '2024/24/01', format: 'YYYY/DD/MM' })
-    const validated = validator.execute([date, afterOrEqual], '2024-01-25')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2024-01-25')
 
     validated.assertSucceeded()
   })
@@ -373,7 +386,7 @@ test.group('Date | afterOrEqual', () => {
       compare: 'year',
       format: 'YYYY/DD/MM',
     })
-    const validated = validator.execute([date, afterOrEqual], '2025-01-01')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrEqual], '2025-01-01')
 
     validated.assertSucceeded()
   })
@@ -381,7 +394,9 @@ test.group('Date | afterOrEqual', () => {
   test('use "today" keyword', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const afterOrEqual = afterOrEqualRule({ expectedValue: 'today' })
-    const validated = validator.execute([date, afterOrEqual], dayjs().format('YYYY-MM-DD'))
+    const validated = validator
+      .withDataTypeValidator(date)
+      .execute([afterOrEqual], dayjs().format('YYYY-MM-DD'))
     validated.assertSucceeded()
 
     const validated1 = validator.execute(
@@ -401,7 +416,9 @@ test.group('Date | afterOrEqual', () => {
     )
     validated.assertSucceeded()
 
-    const validated1 = validator.execute([date, afterOrEqual], dayjs().format('YYYY-MM-DD'))
+    const validated1 = validator
+      .withDataTypeValidator(date)
+      .execute([afterOrEqual], dayjs().format('YYYY-MM-DD'))
     validated1.assertErrorsCount(1)
     validated1.assertError('The dummy field must be a date after or equal to tomorrow')
   })
@@ -411,7 +428,7 @@ test.group('Date | before', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const before = beforeRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, before], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([before], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -420,7 +437,7 @@ test.group('Date | before', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const before = beforeRule({ expectedValue: '2024-01-22' })
-    const validated = validator.bail(false).execute([date, before], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([before], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -429,7 +446,7 @@ test.group('Date | before', () => {
   test('report error when year is greater', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const before = beforeRule({ expectedValue: '2024-02-22' })
-    const validated = validator.execute([date, before], '2025-01-21')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2025-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before 2024-02-22')
@@ -438,7 +455,7 @@ test.group('Date | before', () => {
   test('report error when month is greater', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const before = beforeRule({ expectedValue: '2024-02-22' })
-    const validated = validator.execute([date, before], '2024-03-21')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2024-03-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before 2024-02-22')
@@ -447,7 +464,7 @@ test.group('Date | before', () => {
   test('report error when day is greater or same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const before = beforeRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, before], '2024-01-22')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2024-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before 2024-01-22')
@@ -456,7 +473,7 @@ test.group('Date | before', () => {
   test('pass when minutes are in the past', () => {
     const date = dateRule({})
     const before = beforeRule({ expectedValue: '2024-01-22 12:10:00', compare: 'seconds' })
-    const validated = validator.execute([date, before], '2024-01-22 12:00:00')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2024-01-22 12:00:00')
 
     validated.assertSucceeded()
   })
@@ -464,7 +481,7 @@ test.group('Date | before', () => {
   test('pass when day is in the past', () => {
     const date = dateRule({})
     const before = beforeRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, before], '2024-01-21')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2024-01-21')
 
     validated.assertSucceeded()
   })
@@ -472,7 +489,7 @@ test.group('Date | before', () => {
   test('report error when day is in past but comparing for months', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const before = beforeRule({ expectedValue: '2024-01-22', compare: 'month' })
-    const validated = validator.execute([date, before], '2024-01-21')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2024-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before 2024-01-22')
@@ -481,7 +498,7 @@ test.group('Date | before', () => {
   test('use custom format for expected value', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const before = beforeRule({ expectedValue: '2024/24/01', format: 'YYYY/DD/MM' })
-    const validated = validator.execute([date, before], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2024-01-23')
 
     validated.assertSucceeded()
   })
@@ -493,7 +510,7 @@ test.group('Date | before', () => {
       compare: 'year',
       format: 'YYYY/DD/MM',
     })
-    const validated = validator.execute([date, before], '2023-01-01')
+    const validated = validator.withDataTypeValidator(date).execute([before], '2023-01-01')
 
     validated.assertSucceeded()
   })
@@ -507,7 +524,9 @@ test.group('Date | before', () => {
     )
     validated.assertSucceeded()
 
-    const validated1 = validator.execute([date, before], dayjs().format('YYYY-MM-DD'))
+    const validated1 = validator
+      .withDataTypeValidator(date)
+      .execute([before], dayjs().format('YYYY-MM-DD'))
     validated1.assertErrorsCount(1)
     validated1.assertError('The dummy field must be a date before today')
   })
@@ -534,7 +553,7 @@ test.group('Date | beforeOrEqual', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, beforeOrEqual], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -543,7 +562,10 @@ test.group('Date | beforeOrEqual', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.bail(false).execute([date, beforeOrEqual], 'foo')
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(date)
+      .execute([beforeOrEqual], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -552,7 +574,7 @@ test.group('Date | beforeOrEqual', () => {
   test('report error when year is greater', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-02-22' })
-    const validated = validator.execute([date, beforeOrEqual], '2025-01-21')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2025-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before or equal to 2024-02-22')
@@ -561,7 +583,7 @@ test.group('Date | beforeOrEqual', () => {
   test('report error when month is greater', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-02-22' })
-    const validated = validator.execute([date, beforeOrEqual], '2024-03-21')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2024-03-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before or equal to 2024-02-22')
@@ -570,7 +592,7 @@ test.group('Date | beforeOrEqual', () => {
   test('report error when day is greater', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, beforeOrEqual], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2024-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before or equal to 2024-01-22')
@@ -579,7 +601,7 @@ test.group('Date | beforeOrEqual', () => {
   test('pass when date is the same', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, beforeOrEqual], '2024-01-22')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2024-01-22')
 
     validated.assertSucceeded()
   })
@@ -590,7 +612,9 @@ test.group('Date | beforeOrEqual', () => {
       expectedValue: '2024-01-22 12:10:00',
       compare: 'seconds',
     })
-    const validated = validator.execute([date, beforeOrEqual], '2024-01-22 12:00:00')
+    const validated = validator
+      .withDataTypeValidator(date)
+      .execute([beforeOrEqual], '2024-01-22 12:00:00')
 
     validated.assertSucceeded()
   })
@@ -598,7 +622,7 @@ test.group('Date | beforeOrEqual', () => {
   test('pass when day is in the past', () => {
     const date = dateRule({})
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-01-22' })
-    const validated = validator.execute([date, beforeOrEqual], '2024-01-21')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2024-01-21')
 
     validated.assertSucceeded()
   })
@@ -606,7 +630,7 @@ test.group('Date | beforeOrEqual', () => {
   test('report error when day is in past but comparing for months', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024-01-22', compare: 'month' })
-    const validated = validator.execute([date, beforeOrEqual], '2024-02-21')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2024-02-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before or equal to 2024-01-22')
@@ -615,7 +639,7 @@ test.group('Date | beforeOrEqual', () => {
   test('use custom format for expected value', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: '2024/24/01', format: 'YYYY/DD/MM' })
-    const validated = validator.execute([date, beforeOrEqual], '2024-01-23')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2024-01-23')
 
     validated.assertSucceeded()
   })
@@ -627,7 +651,7 @@ test.group('Date | beforeOrEqual', () => {
       compare: 'year',
       format: 'YYYY/DD/MM',
     })
-    const validated = validator.execute([date, beforeOrEqual], '2024-01-01')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrEqual], '2024-01-01')
 
     validated.assertSucceeded()
   })
@@ -635,7 +659,9 @@ test.group('Date | beforeOrEqual', () => {
   test('use "today" keyword', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const beforeOrEqual = beforeOrEqualRule({ expectedValue: 'today' })
-    const validated = validator.execute([date, beforeOrEqual], dayjs().format('YYYY-MM-DD'))
+    const validated = validator
+      .withDataTypeValidator(date)
+      .execute([beforeOrEqual], dayjs().format('YYYY-MM-DD'))
     validated.assertSucceeded()
 
     const validated1 = validator.execute(
@@ -655,7 +681,9 @@ test.group('Date | beforeOrEqual', () => {
     )
     validated.assertSucceeded()
 
-    const validated1 = validator.execute([date, beforeOrEqual], dayjs().format('YYYY-MM-DD'))
+    const validated1 = validator
+      .withDataTypeValidator(date)
+      .execute([beforeOrEqual], dayjs().format('YYYY-MM-DD'))
     validated1.assertErrorsCount(1)
     validated1.assertError('The dummy field must be a date before or equal to yesterday')
   })
@@ -665,7 +693,7 @@ test.group('Date | sameAs', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const sameAs = sameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.execute([date, sameAs], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([sameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -674,7 +702,7 @@ test.group('Date | sameAs', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const sameAs = sameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.bail(false).execute([date, sameAs], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([sameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -690,7 +718,8 @@ test.group('Date | sameAs', () => {
           checkin_date: 'foo',
         },
       })
-      .execute([date, sameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([sameAs], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -705,7 +734,8 @@ test.group('Date | sameAs', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, sameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([sameAs], '2023-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field and checkin_date field must be the same')
@@ -721,7 +751,8 @@ test.group('Date | sameAs', () => {
           checkin_date: '2023-02-22',
         },
       })
-      .execute([date, sameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([sameAs], '2023-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field and checkin_date field must be the same')
@@ -737,7 +768,8 @@ test.group('Date | sameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, sameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([sameAs], '2023-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field and checkin_date field must be the same')
@@ -753,7 +785,8 @@ test.group('Date | sameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, sameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([sameAs], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -768,7 +801,8 @@ test.group('Date | sameAs', () => {
           checkin_date: '2023/01/21',
         },
       })
-      .execute([date, sameAs], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([sameAs], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -787,7 +821,8 @@ test.group('Date | sameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, sameAs], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([sameAs], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -797,7 +832,7 @@ test.group('Date | notSameAs', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const notSameAs = notSameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.execute([date, notSameAs], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([notSameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -806,7 +841,7 @@ test.group('Date | notSameAs', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const notSameAs = notSameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.bail(false).execute([date, notSameAs], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([notSameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -822,7 +857,8 @@ test.group('Date | notSameAs', () => {
           checkin_date: 'foo',
         },
       })
-      .execute([date, notSameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([notSameAs], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -837,7 +873,8 @@ test.group('Date | notSameAs', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, notSameAs], '2022-01-22')
+      .withDataTypeValidator(date)
+      .execute([notSameAs], '2022-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field and checkin_date field must be different')
@@ -853,7 +890,8 @@ test.group('Date | notSameAs', () => {
           checkin_date: '2023-02-22',
         },
       })
-      .execute([date, notSameAs], '2023-02-21')
+      .withDataTypeValidator(date)
+      .execute([notSameAs], '2023-02-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field and checkin_date field must be different')
@@ -869,7 +907,8 @@ test.group('Date | notSameAs', () => {
           checkin_date: '2023-02-21',
         },
       })
-      .execute([date, notSameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([notSameAs], '2023-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field and checkin_date field must be different')
@@ -885,7 +924,8 @@ test.group('Date | notSameAs', () => {
           checkin_date: '2023/01/21',
         },
       })
-      .execute([date, notSameAs], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([notSameAs], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -903,7 +943,8 @@ test.group('Date | notSameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, notSameAs], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([notSameAs], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -913,7 +954,7 @@ test.group('Date | afterField', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const afterField = afterFieldRule({ otherField: 'checkin_date' })
-    const validated = validator.execute([date, afterField], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([afterField], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -922,7 +963,7 @@ test.group('Date | afterField', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const afterField = afterFieldRule({ otherField: 'checkin_date' })
-    const validated = validator.bail(false).execute([date, afterField], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([afterField], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -938,7 +979,8 @@ test.group('Date | afterField', () => {
           checkin_date: 'foo',
         },
       })
-      .execute([date, afterField], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([afterField], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -953,7 +995,25 @@ test.group('Date | afterField', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, afterField], '2022-01-21')
+      .withDataTypeValidator(date)
+      .execute([afterField], '2022-01-21')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a date after checkin_date')
+  })
+
+  test("report error when date is not after the other field's value and formatted as ISO8601", () => {
+    const date = dateRule({ formats: ['iso8601'] })
+    const afterField = afterFieldRule({ otherField: 'checkin_date' })
+    const validated = validator
+      .withContext({
+        data: {},
+        parent: {
+          checkin_date: '2022-01-22',
+        },
+      })
+      .withDataTypeValidator(date)
+      .execute([afterField], '2022-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after checkin_date')
@@ -969,7 +1029,8 @@ test.group('Date | afterField', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, afterField], '2022-01-23')
+      .withDataTypeValidator(date)
+      .execute([afterField], '2022-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after checkin_date')
@@ -985,7 +1046,8 @@ test.group('Date | afterField', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, afterField], '2022-04-23')
+      .withDataTypeValidator(date)
+      .execute([afterField], '2022-04-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after checkin_date')
@@ -1001,7 +1063,8 @@ test.group('Date | afterField', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, afterField], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([afterField], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -1016,7 +1079,8 @@ test.group('Date | afterField', () => {
           checkin_date: '2023/01/21',
         },
       })
-      .execute([date, afterField], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([afterField], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -1031,7 +1095,8 @@ test.group('Date | afterField', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, afterField], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([afterField], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -1041,7 +1106,7 @@ test.group('Date | afterOrSameAs', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const afterOrSameAs = afterOrSameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.execute([date, afterOrSameAs], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([afterOrSameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1050,7 +1115,10 @@ test.group('Date | afterOrSameAs', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const afterOrSameAs = afterOrSameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.bail(false).execute([date, afterOrSameAs], 'foo')
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1066,7 +1134,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: 'foo',
         },
       })
-      .execute([date, afterOrSameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -1081,7 +1150,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, afterOrSameAs], '2022-01-21')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2022-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after or same as checkin_date')
@@ -1097,7 +1167,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: '2022-02-22',
         },
       })
-      .execute([date, afterOrSameAs], '2022-01-23')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2022-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after or same as checkin_date')
@@ -1113,7 +1184,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, afterOrSameAs], '2021-04-23')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2021-04-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date after or same as checkin_date')
@@ -1129,7 +1201,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, afterOrSameAs], '2023-01-21')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2023-01-21')
 
     validated.assertSucceeded()
   })
@@ -1144,7 +1217,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, afterOrSameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -1159,7 +1233,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: '2023/01/21',
         },
       })
-      .execute([date, afterOrSameAs], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -1174,7 +1249,8 @@ test.group('Date | afterOrSameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, afterOrSameAs], '2023/01/22')
+      .withDataTypeValidator(date)
+      .execute([afterOrSameAs], '2023/01/22')
 
     validated.assertSucceeded()
   })
@@ -1184,7 +1260,7 @@ test.group('Date | beforeField', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const beforeField = beforeFieldRule({ otherField: 'checkin_date' })
-    const validated = validator.execute([date, beforeField], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([beforeField], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1193,7 +1269,10 @@ test.group('Date | beforeField', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const beforeField = beforeFieldRule({ otherField: 'checkin_date' })
-    const validated = validator.bail(false).execute([date, beforeField], 'foo')
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(date)
+      .execute([beforeField], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1209,7 +1288,8 @@ test.group('Date | beforeField', () => {
           checkin_date: 'foo',
         },
       })
-      .execute([date, beforeField], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([beforeField], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -1224,7 +1304,8 @@ test.group('Date | beforeField', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, beforeField], '2022-01-22')
+      .withDataTypeValidator(date)
+      .execute([beforeField], '2022-01-22')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before checkin_date')
@@ -1240,7 +1321,8 @@ test.group('Date | beforeField', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, beforeField], '2022-01-21')
+      .withDataTypeValidator(date)
+      .execute([beforeField], '2022-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before checkin_date')
@@ -1256,7 +1338,8 @@ test.group('Date | beforeField', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, beforeField], '2022-01-21')
+      .withDataTypeValidator(date)
+      .execute([beforeField], '2022-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before checkin_date')
@@ -1272,7 +1355,8 @@ test.group('Date | beforeField', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, beforeField], '2023-01-20')
+      .withDataTypeValidator(date)
+      .execute([beforeField], '2023-01-20')
 
     validated.assertSucceeded()
   })
@@ -1287,7 +1371,8 @@ test.group('Date | beforeField', () => {
           checkin_date: '2023/01/21',
         },
       })
-      .execute([date, beforeField], '2023/01/20')
+      .withDataTypeValidator(date)
+      .execute([beforeField], '2023/01/20')
 
     validated.assertSucceeded()
   })
@@ -1302,7 +1387,8 @@ test.group('Date | beforeField', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, beforeField], '2023/01/20')
+      .withDataTypeValidator(date)
+      .execute([beforeField], '2023/01/20')
 
     validated.assertSucceeded()
   })
@@ -1312,7 +1398,7 @@ test.group('Date | beforeOrSameAs', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const beforeOrSameAs = beforeOrSameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.execute([date, beforeOrSameAs], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([beforeOrSameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1321,7 +1407,10 @@ test.group('Date | beforeOrSameAs', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const beforeOrSameAs = beforeOrSameAsRule({ otherField: 'checkin_date' })
-    const validated = validator.bail(false).execute([date, beforeOrSameAs], 'foo')
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1337,7 +1426,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: 'foo',
         },
       })
-      .execute([date, beforeOrSameAs], '2023-01-22')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2023-01-22')
 
     validated.assertSucceeded()
   })
@@ -1352,7 +1442,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, beforeOrSameAs], '2022-01-23')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2022-01-23')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before or same as checkin_date')
@@ -1368,7 +1459,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, beforeOrSameAs], '2022-02-21')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2022-02-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before or same as checkin_date')
@@ -1384,7 +1476,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: '2022-01-22',
         },
       })
-      .execute([date, beforeOrSameAs], '2023-01-21')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2023-01-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a date before or same as checkin_date')
@@ -1400,7 +1493,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, beforeOrSameAs], '2023-01-20')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2023-01-20')
 
     validated.assertSucceeded()
   })
@@ -1415,7 +1509,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, beforeOrSameAs], '2023-01-21')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2023-01-21')
 
     validated.assertSucceeded()
   })
@@ -1430,7 +1525,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: '2023/01/21',
         },
       })
-      .execute([date, beforeOrSameAs], '2023/01/20')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2023/01/20')
 
     validated.assertSucceeded()
   })
@@ -1445,7 +1541,8 @@ test.group('Date | beforeOrSameAs', () => {
           checkin_date: '2023-01-21',
         },
       })
-      .execute([date, beforeOrSameAs], '2023/01/20')
+      .withDataTypeValidator(date)
+      .execute([beforeOrSameAs], '2023/01/20')
 
     validated.assertSucceeded()
   })
@@ -1455,7 +1552,7 @@ test.group('Date | weekend', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const weekend = weekendRule()
-    const validated = validator.execute([date, weekend], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([weekend], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1464,7 +1561,7 @@ test.group('Date | weekend', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const weekend = weekendRule()
-    const validated = validator.bail(false).execute([date, weekend], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([weekend], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1473,7 +1570,7 @@ test.group('Date | weekend', () => {
   test('report error when date is not a weekend', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const weekend = weekendRule()
-    const validated = validator.execute([date, weekend], '2023-11-21')
+    const validated = validator.withDataTypeValidator(date).execute([weekend], '2023-11-21')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field is not a weekend')
@@ -1482,7 +1579,7 @@ test.group('Date | weekend', () => {
   test('pass when date falls on Saturday', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const weekend = weekendRule()
-    const validated = validator.execute([date, weekend], '2023-11-18')
+    const validated = validator.withDataTypeValidator(date).execute([weekend], '2023-11-18')
 
     validated.assertSucceeded()
   })
@@ -1490,7 +1587,7 @@ test.group('Date | weekend', () => {
   test('pass when date falls on Sunday', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const weekend = weekendRule()
-    const validated = validator.execute([date, weekend], '2023-11-19')
+    const validated = validator.withDataTypeValidator(date).execute([weekend], '2023-11-19')
 
     validated.assertSucceeded()
   })
@@ -1500,7 +1597,7 @@ test.group('Date | weekday', () => {
   test('skip validation when value is not a valid date', () => {
     const date = dateRule({})
     const weekday = weekdayRule()
-    const validated = validator.execute([date, weekday], 'foo')
+    const validated = validator.withDataTypeValidator(date).execute([weekday], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1509,7 +1606,7 @@ test.group('Date | weekday', () => {
   test('skip validation when value is not a valid date with bail mode disabled', () => {
     const date = dateRule({})
     const weekday = weekdayRule()
-    const validated = validator.bail(false).execute([date, weekday], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(date).execute([weekday], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a datetime value')
@@ -1518,7 +1615,7 @@ test.group('Date | weekday', () => {
   test('report error when date falls on Saturday', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const weekday = weekdayRule()
-    const validated = validator.execute([date, weekday], '2023-11-18')
+    const validated = validator.withDataTypeValidator(date).execute([weekday], '2023-11-18')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field is not a weekday')
@@ -1527,7 +1624,7 @@ test.group('Date | weekday', () => {
   test('report error when date falls on Sunday', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const weekday = weekdayRule()
-    const validated = validator.execute([date, weekday], '2023-11-19')
+    const validated = validator.withDataTypeValidator(date).execute([weekday], '2023-11-19')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field is not a weekday')
@@ -1536,7 +1633,7 @@ test.group('Date | weekday', () => {
   test('pass when date falls on a Weekday', () => {
     const date = dateRule({ formats: ['YYYY-MM-DD'] })
     const weekday = weekdayRule()
-    const validated = validator.execute([date, weekday], '2023-11-21')
+    const validated = validator.withDataTypeValidator(date).execute([weekday], '2023-11-21')
 
     validated.assertSucceeded()
   })

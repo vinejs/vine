@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { ValidationError } from '../../src/errors/validation_error.js'
+import { ValidationError } from '../../src/errors/validation_error.ts'
 
 test.group('Exception', () => {
   test('create exception with error messages', ({ assert }) => {
@@ -25,9 +25,33 @@ test.group('Exception', () => {
 
     try {
       throw new ValidationError([{ message: 'Field is required' }])
-    } catch (error) {
+    } catch (error: any) {
       assert.match(error.stack.split('\n')[1], /validation_error.spec.ts/)
     }
+  })
+
+  test('point subclass stack trace to the call site', ({ assert }) => {
+    class CustomValidationError extends ValidationError {
+      constructor(messages: any) {
+        super(messages)
+      }
+    }
+
+    function createError() {
+      return new CustomValidationError([{ message: 'Field is required' }])
+    }
+
+    const error = createError()
+    assert.instanceOf(error, CustomValidationError)
+    assert.instanceOf(error, ValidationError)
+    assert.match(error.stack!.split('\n')[1], /at createError/)
+  })
+
+  test('forward error options to the base error', ({ assert }) => {
+    const cause = new Error('Database connection failed')
+    const error = new ValidationError([{ message: 'Field is required' }], { cause })
+
+    assert.equal(error.cause, cause)
   })
 
   test('convert error to string', ({ assert }) => {

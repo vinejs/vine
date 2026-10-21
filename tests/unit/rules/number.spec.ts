@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { validator } from '../../../factories/main.js'
+import { validator } from '../../../factories/main.ts'
 import {
   inRule,
   minRule,
@@ -19,7 +19,9 @@ import {
   negativeRule,
   decimalRule,
   withoutDecimalsRule,
-} from '../../../src/schema/number/rules.js'
+  nonNegativeRule,
+  nonPositiveRule,
+} from '../../../src/schema/number/rules.ts'
 
 test.group('Number | number', () => {
   test('report when value is not a number', () => {
@@ -82,7 +84,7 @@ test.group('Number | min', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const min = minRule({ min: 18 })
-    const validated = validator.execute([number, min], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([min], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -91,7 +93,7 @@ test.group('Number | min', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const min = minRule({ min: 18 })
-    const validated = validator.bail(false).execute([number, min], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(number).execute([min], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -100,7 +102,7 @@ test.group('Number | min', () => {
   test('report error when value is less than the minimum value', () => {
     const number = numberRule({})
     const min = minRule({ min: 18 })
-    const validated = validator.execute([number, min], 12)
+    const validated = validator.withDataTypeValidator(number).execute([min], 12)
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be at least 18')
@@ -110,8 +112,8 @@ test.group('Number | min', () => {
     const number = numberRule({})
     const min = minRule({ min: 18 })
 
-    validator.execute([number, min], 18).assertErrorsCount(0)
-    validator.execute([number, min], 20).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([min], 18).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([min], 20).assertErrorsCount(0)
   })
 })
 
@@ -119,7 +121,7 @@ test.group('Number | max', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const max = maxRule({ max: 60 })
-    const validated = validator.execute([number, max], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([max], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -128,7 +130,7 @@ test.group('Number | max', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const max = maxRule({ max: 60 })
-    const validated = validator.bail(false).execute([number, max], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(number).execute([max], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -137,7 +139,7 @@ test.group('Number | max', () => {
   test('report error when value is greater than the maximum value', () => {
     const number = numberRule({})
     const max = maxRule({ max: 60 })
-    const validated = validator.execute([number, max], 72)
+    const validated = validator.withDataTypeValidator(number).execute([max], 72)
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must not be greater than 60')
@@ -147,8 +149,8 @@ test.group('Number | max', () => {
     const number = numberRule({})
     const max = maxRule({ max: 60 })
 
-    validator.execute([number, max], 60).assertErrorsCount(0)
-    validator.execute([number, max], 32).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([max], 60).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([max], 32).assertErrorsCount(0)
   })
 })
 
@@ -156,7 +158,7 @@ test.group('Number | range', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
-    const validated = validator.execute([number, range], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([range], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -165,7 +167,7 @@ test.group('Number | range', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
-    const validated = validator.bail(false).execute([number, range], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(number).execute([range], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -174,7 +176,7 @@ test.group('Number | range', () => {
   test('report error when value is greater than the maximum value', () => {
     const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
-    const validated = validator.execute([number, range], 72)
+    const validated = validator.withDataTypeValidator(number).execute([range], 72)
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be between 18 and 60')
@@ -183,7 +185,7 @@ test.group('Number | range', () => {
   test('report error when value is less than the minimum value', () => {
     const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
-    const validated = validator.execute([number, range], 12)
+    const validated = validator.withDataTypeValidator(number).execute([range], 12)
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be between 18 and 60')
@@ -193,9 +195,9 @@ test.group('Number | range', () => {
     const number = numberRule({})
     const range = rangeRule({ min: 18, max: 60 })
 
-    validator.execute([number, range], 18).assertErrorsCount(0)
-    validator.execute([number, range], 60).assertErrorsCount(0)
-    validator.execute([number, range], 22).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([range], 18).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([range], 60).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([range], 22).assertErrorsCount(0)
   })
 })
 
@@ -203,7 +205,7 @@ test.group('Number | positive', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const positive = positiveRule()
-    const validated = validator.execute([number, positive], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([positive], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -212,7 +214,7 @@ test.group('Number | positive', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const positive = positiveRule()
-    const validated = validator.bail(false).execute([number, positive], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(number).execute([positive], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -222,11 +224,11 @@ test.group('Number | positive', () => {
     const number = numberRule({})
     const positive = positiveRule()
 
-    const validated = validator.execute([number, positive], -10)
+    const validated = validator.withDataTypeValidator(number).execute([positive], -10)
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be positive')
 
-    const validated1 = validator.execute([number, positive], '-10')
+    const validated1 = validator.withDataTypeValidator(number).execute([positive], '-10')
     validated1.assertErrorsCount(1)
     validated1.assertError('The dummy field must be positive')
   })
@@ -235,8 +237,66 @@ test.group('Number | positive', () => {
     const number = numberRule({})
     const positive = positiveRule()
 
-    validator.execute([number, positive], 10).assertErrorsCount(0)
-    validator.execute([number, positive], '0').assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([positive], 10).assertErrorsCount(0)
+  })
+
+  test('fail validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const positive = positiveRule()
+
+    validator
+      .withDataTypeValidator(number)
+      .execute([positive], '0')
+      .assertError('The dummy field must be positive')
+  })
+})
+
+test.group('Number | nonNegative', () => {
+  test('skip validation when value is not a number', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+    const validated = validator.withDataTypeValidator(number).execute([positiveOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('skip validation when value is not a number with bail mode disabled', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(number)
+      .execute([positiveOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('report error when value is negative', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+
+    const validated = validator.withDataTypeValidator(number).execute([positiveOrZero], -10)
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be positive or zero')
+
+    const validated1 = validator.withDataTypeValidator(number).execute([positiveOrZero], '-10')
+    validated1.assertErrorsCount(1)
+    validated1.assertError('The dummy field must be positive or zero')
+  })
+
+  test('pass validation when value is positive', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+
+    validator.withDataTypeValidator(number).execute([positiveOrZero], 10).assertErrorsCount(0)
+  })
+
+  test('pass validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const positiveOrZero = nonNegativeRule()
+    validator.withDataTypeValidator(number).execute([positiveOrZero], '0').assertErrorsCount(0)
   })
 })
 
@@ -244,7 +304,7 @@ test.group('Number | negative', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const negative = negativeRule()
-    const validated = validator.execute([number, negative], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([negative], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -253,7 +313,7 @@ test.group('Number | negative', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const negative = negativeRule()
-    const validated = validator.bail(false).execute([number, negative], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(number).execute([negative], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -263,11 +323,11 @@ test.group('Number | negative', () => {
     const number = numberRule({})
     const negative = negativeRule()
 
-    const validated = validator.execute([number, negative], 0)
+    const validated = validator.withDataTypeValidator(number).execute([negative], 0)
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be negative')
 
-    const validated1 = validator.execute([number, negative], '10')
+    const validated1 = validator.withDataTypeValidator(number).execute([negative], '10')
     validated1.assertErrorsCount(1)
     validated1.assertError('The dummy field must be negative')
   })
@@ -276,8 +336,74 @@ test.group('Number | negative', () => {
     const number = numberRule({})
     const negative = negativeRule()
 
-    validator.execute([number, negative], '-10').assertErrorsCount(0)
-    validator.execute([number, negative], -1).assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([negative], '-10').assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([negative], -1).assertErrorsCount(0)
+  })
+
+  test('fail validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const negative = negativeRule()
+
+    validator
+      .withDataTypeValidator(number)
+      .execute([negative], '0')
+      .assertError('The dummy field must be negative')
+    validator
+      .withDataTypeValidator(number)
+      .execute([negative], 0)
+      .assertError('The dummy field must be negative')
+  })
+})
+
+test.group('Number | nonPositive', () => {
+  test('skip validation when value is not a number', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+    const validated = validator.withDataTypeValidator(number).execute([negativeOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('skip validation when value is not a number with bail mode disabled', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(number)
+      .execute([negativeOrZero], 'foo')
+
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be a number')
+  })
+
+  test('report error when value is positive', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+
+    const validated = validator.withDataTypeValidator(number).execute([negativeOrZero], 1)
+    validated.assertErrorsCount(1)
+    validated.assertError('The dummy field must be negative or zero')
+
+    const validated1 = validator.withDataTypeValidator(number).execute([negativeOrZero], '10')
+    validated1.assertErrorsCount(1)
+    validated1.assertError('The dummy field must be negative or zero')
+  })
+
+  test('pass validation when value is negative', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+
+    validator.withDataTypeValidator(number).execute([negativeOrZero], '-10').assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([negativeOrZero], -1).assertErrorsCount(0)
+  })
+
+  test('pass validation when value is a neutral number', () => {
+    const number = numberRule({})
+    const negativeOrZero = nonPositiveRule()
+
+    validator.withDataTypeValidator(number).execute([negativeOrZero], '0').assertErrorsCount(0)
+    validator.withDataTypeValidator(number).execute([negativeOrZero], 0).assertErrorsCount(0)
   })
 })
 
@@ -285,7 +411,7 @@ test.group('Number | decimals', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [0, 2] })
-    const validated = validator.execute([number, decimal], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([decimal], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -294,7 +420,7 @@ test.group('Number | decimals', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [0, 2] })
-    const validated = validator.bail(false).execute([number, decimal], 'foo')
+    const validated = validator.bail(false).withDataTypeValidator(number).execute([decimal], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -303,7 +429,7 @@ test.group('Number | decimals', () => {
   test('report error when value has less than fixed decimal places', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [2] })
-    const validated = validator.execute([number, decimal], '9')
+    const validated = validator.withDataTypeValidator(number).execute([decimal], '9')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must have 2 decimal places')
@@ -312,7 +438,7 @@ test.group('Number | decimals', () => {
   test('report error when value has more than fixed decimal places', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [2] })
-    const validated = validator.execute([number, decimal], '9.9899')
+    const validated = validator.withDataTypeValidator(number).execute([decimal], '9.9899')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must have 2 decimal places')
@@ -321,7 +447,7 @@ test.group('Number | decimals', () => {
   test('work fine when value has exact decimal places', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [2] })
-    const validated = validator.execute([number, decimal], '9.99')
+    const validated = validator.withDataTypeValidator(number).execute([decimal], '9.99')
 
     validated.assertSucceeded()
     validated.assertOutput(9.99)
@@ -330,7 +456,7 @@ test.group('Number | decimals', () => {
   test('report error when value has less than the range of decimal places', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [2, 4] })
-    const validated = validator.execute([number, decimal], '9')
+    const validated = validator.withDataTypeValidator(number).execute([decimal], '9')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must have 2-4 decimal places')
@@ -339,7 +465,7 @@ test.group('Number | decimals', () => {
   test('report error when value has more than the range of decimal places', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [2, 4] })
-    const validated = validator.execute([number, decimal], '9.90009')
+    const validated = validator.withDataTypeValidator(number).execute([decimal], '9.90009')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must have 2-4 decimal places')
@@ -349,11 +475,11 @@ test.group('Number | decimals', () => {
     const number = numberRule({})
     const decimal = decimalRule({ range: [0, 2] })
 
-    const validated = validator.execute([number, decimal], '9.99')
+    const validated = validator.withDataTypeValidator(number).execute([decimal], '9.99')
     validated.assertSucceeded()
     validated.assertOutput(9.99)
 
-    const validated1 = validator.execute([number, decimal], '9')
+    const validated1 = validator.withDataTypeValidator(number).execute([decimal], '9')
     validated1.assertSucceeded()
     validated1.assertOutput(9)
   })
@@ -363,7 +489,7 @@ test.group('Number | withoutDecimals', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
-    const validated = validator.execute([number, withoutDecimals], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([withoutDecimals], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -372,7 +498,10 @@ test.group('Number | withoutDecimals', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
-    const validated = validator.bail(false).execute([number, withoutDecimals], 'foo')
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(number)
+      .execute([withoutDecimals], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -381,7 +510,7 @@ test.group('Number | withoutDecimals', () => {
   test('report error when value has decimal places', () => {
     const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
-    const validated = validator.execute([number, withoutDecimals], '18.11')
+    const validated = validator.withDataTypeValidator(number).execute([withoutDecimals], '18.11')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be an integer')
@@ -390,7 +519,7 @@ test.group('Number | withoutDecimals', () => {
   test('work fine when value is an integer', () => {
     const number = numberRule({})
     const withoutDecimals = withoutDecimalsRule()
-    const validated = validator.execute([number, withoutDecimals], '18.00')
+    const validated = validator.withDataTypeValidator(number).execute([withoutDecimals], '18.00')
 
     validated.assertSucceeded()
     validated.assertOutput(18)
@@ -401,7 +530,7 @@ test.group('Number | in', () => {
   test('skip validation when value is not a number', () => {
     const number = numberRule({})
     const inArrayRule = inRule({ values: [1, 4] })
-    const validated = validator.execute([number, inArrayRule], 'foo')
+    const validated = validator.withDataTypeValidator(number).execute([inArrayRule], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -410,7 +539,10 @@ test.group('Number | in', () => {
   test('skip validation when value is not a number with bail mode disabled', () => {
     const number = numberRule({})
     const inArrayRule = inRule({ values: [1, 4] })
-    const validated = validator.bail(false).execute([number, inArrayRule], 'foo')
+    const validated = validator
+      .bail(false)
+      .withDataTypeValidator(number)
+      .execute([inArrayRule], 'foo')
 
     validated.assertErrorsCount(1)
     validated.assertError('The dummy field must be a number')
@@ -419,7 +551,7 @@ test.group('Number | in', () => {
   test('work fine when value is in an array', () => {
     const number = numberRule({})
     const inArrayRule = inRule({ values: [1, 4] })
-    const validated = validator.execute([number, inArrayRule], 4)
+    const validated = validator.withDataTypeValidator(number).execute([inArrayRule], 4)
 
     validated.assertSucceeded()
   })
@@ -427,7 +559,7 @@ test.group('Number | in', () => {
   test('fails when value is not in an array', () => {
     const number = numberRule({})
     const inArrayRule = inRule({ values: [1, 4] })
-    const validated = validator.execute([number, inArrayRule], 3)
+    const validated = validator.withDataTypeValidator(number).execute([inArrayRule], 3)
 
     validated.assertErrorsCount(1)
   })

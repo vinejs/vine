@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
-import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.js'
+import vine from '../../../index.ts'
+import { SimpleMessagesProvider } from '../../../src/messages_provider/simple_messages_provider.ts'
 
 test.group('Accepted', () => {
   test('fail when field is missing', async ({ assert }) => {

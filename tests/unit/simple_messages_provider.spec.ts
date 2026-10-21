@@ -8,8 +8,8 @@
  */
 
 import { test } from '@japa/runner'
-import { fieldContext } from '../../factories/main.js'
-import { SimpleMessagesProvider } from '../../src/messages_provider/simple_messages_provider.js'
+import { fieldContext } from '../../factories/main.ts'
+import { SimpleMessagesProvider } from '../../src/messages_provider/simple_messages_provider.ts'
 
 test.group('Simple messages provider | resolving messages', () => {
   test('get custom message for a rule', ({ assert }) => {
@@ -84,6 +84,26 @@ test.group('Simple messages provider | resolving fields', () => {
     assert.equal(
       provider.getMessage('Enter value', 'required', fieldContext.create('username', undefined)),
       'The account id field is required'
+    )
+  })
+
+  test('substitue nested field name in custom message', ({ assert }) => {
+    const provider = new SimpleMessagesProvider(
+      {
+        required: 'The {{ field }} field is required',
+      },
+      {
+        'auth.username': 'nested user name',
+        'username': 'root user name',
+      }
+    )
+
+    const field = fieldContext.create('auth.username', undefined)
+    field.name = 'username'
+
+    assert.equal(
+      provider.getMessage('Enter value', 'required', field),
+      'The nested user name field is required'
     )
   })
 

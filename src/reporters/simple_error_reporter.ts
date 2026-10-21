@@ -8,43 +8,45 @@
  */
 
 import { E_VALIDATION_ERROR } from '../errors/main.js'
-import { ValidationError } from '../errors/validation_error.js'
-import type { ErrorReporterContract, FieldContext } from '../types.js'
+import { type ValidationError } from '../errors/validation_error.js'
+import type { ErrorReporterContract, FieldContext, SimpleError } from '../types.js'
 
 /**
- * Shape of the error message collected by the SimpleErrorReporter
- */
-type SimpleError = {
-  message: string
-  field: string
-  rule: string
-  index?: number
-  meta?: Record<string, any>
-}
-
-/**
- * Simple error reporter collects error messages as an array of object.
- * Each object has following properties.
+ * SimpleErrorReporter collects validation error messages as an array of objects.
+ * It's the default error reporter used by Vine and provides a simple, structured
+ * format for validation errors.
  *
- * - message: string
- * - field: string
- * - rule: string
- * - index?: number (in case of an array member)
- * - args?: Record<string, any>
+ * Each error object contains:
+ * - message: Human-readable error message
+ * - field: The field path where validation failed
+ * - rule: The validation rule that failed
+ * - index: Array index (for array element errors)
+ * - meta: Additional error metadata
+ *
+ * @example
+ * const reporter = new SimpleErrorReporter()
+ * // After validation errors are reported:
+ * console.log(reporter.errors)
+ * // [{ message: "Required", field: "email", rule: "required" }]
  */
 export class SimpleErrorReporter implements ErrorReporterContract {
   /**
-   * Boolean to know one or more errors have been reported
+   * Flag indicating whether any validation errors have been reported
    */
   hasErrors: boolean = false
 
   /**
-   * Collection of errors
+   * Collection of all reported validation errors
    */
   errors: SimpleError[] = []
 
   /**
-   * Report an error.
+   * Report a validation error by adding it to the errors collection.
+   *
+   * @param message - The human-readable error message
+   * @param rule - The name of the validation rule that failed
+   * @param field - The field context containing field path and metadata
+   * @param meta - Optional additional metadata about the error
    */
   report(
     message: string,
@@ -70,7 +72,10 @@ export class SimpleErrorReporter implements ErrorReporterContract {
   }
 
   /**
-   * Returns an instance of the validation error
+   * Creates and returns a ValidationError instance containing all reported errors.
+   * This method is called by the validation engine when validation fails.
+   *
+   * @returns A ValidationError containing all collected error messages
    */
   createError(): ValidationError {
     return new E_VALIDATION_ERROR(this.errors)

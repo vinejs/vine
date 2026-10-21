@@ -10,10 +10,10 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { RuleBuilder } from '../../../src/types.js'
-import { createRule } from '../../../src/vine/create_rule.js'
-import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { type RuleBuilder } from '../../../src/types.ts'
+import { createRule } from '../../../src/vine/create_rule.ts'
+import { IS_OF_TYPE, PARSE, VALIDATION } from '../../../src/symbols.ts'
 import {
   inRule,
   urlRule,
@@ -49,7 +49,8 @@ import {
   escapeRule,
   normalizeUrlRule,
   mobileRule,
-} from '../../../src/schema/string/rules.js'
+  vatRule,
+} from '../../../src/schema/string/rules.ts'
 
 const vine = new Vine()
 
@@ -65,13 +66,8 @@ test.group('VineString', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -87,13 +83,8 @@ test.group('VineString', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -109,13 +100,50 @@ test.group('VineString', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
+    })
+  })
+
+  test('apply optional modifier and then transformer', ({ assert }) => {
+    const schema = vine
+      .string()
+      .optional()
+      .transform(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      subtype: 'string',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: false,
+      isOptional: true,
+      bail: true,
+      parseFnId: undefined,
+      transformFnId: 'ref://2',
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
+    })
+  })
+
+  test('apply nullable modifier and then transformer', ({ assert }) => {
+    const schema = vine
+      .string()
+      .nullable()
+      .transform(() => {})
+
+    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
+      type: 'literal',
+      subtype: 'string',
+      fieldName: '*',
+      propertyName: '*',
+      allowNull: true,
+      isOptional: false,
+      bail: true,
+      parseFnId: undefined,
+      transformFnId: 'ref://2',
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -131,13 +159,8 @@ test.group('VineString', () => {
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -153,13 +176,8 @@ test.group('VineString', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -189,13 +207,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -206,13 +219,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -229,13 +237,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -246,13 +249,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -269,13 +267,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -286,13 +279,8 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -309,13 +297,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -326,13 +309,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: false,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -349,13 +327,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
 
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
@@ -368,13 +341,8 @@ test.group('VineString | clone', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 
@@ -391,13 +359,8 @@ test.group('VineString | clone', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -408,15 +371,12 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://2',
         },
       ],
@@ -436,15 +396,12 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://2',
         },
       ],
@@ -458,20 +415,18 @@ test.group('VineString | clone', () => {
       isOptional: true,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://2',
         },
         {
           implicit: true,
           isAsync: false,
+          name: 'requiredWhen',
           ruleFnId: 'ref://3',
         },
       ],
@@ -492,13 +447,8 @@ test.group('VineString | clone', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
     assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
       type: 'literal',
@@ -510,20 +460,15 @@ test.group('VineString | clone', () => {
       bail: true,
       parseFnId: undefined,
       transformFnId: 'ref://2',
-      validations: [
-        {
-          implicit: false,
-          isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-      ],
+      dataTypeValidatorFnId: 'ref://1',
+      validations: [],
     })
   })
 })
 
 test.group('VineString | applying rules', () => {
   test('register rule via rule builder', ({ assert }) => {
-    const passwordRule = createRule(() => {})
+    const passwordRule = createRule(function password() {})
     class Password implements RuleBuilder {
       [VALIDATION]() {
         return passwordRule()
@@ -543,15 +488,12 @@ test.group('VineString | applying rules', () => {
       isOptional: false,
       bail: true,
       parseFnId: undefined,
+      dataTypeValidatorFnId: 'ref://1',
       validations: [
         {
           implicit: false,
           isAsync: false,
-          ruleFnId: 'ref://1',
-        },
-        {
-          implicit: false,
-          isAsync: false,
+          name: 'password',
           ruleFnId: 'ref://2',
         },
       ],
@@ -740,6 +682,11 @@ test.group('VineString | applying rules', () => {
         schema: vine.string().normalizeUrl(),
         rule: normalizeUrlRule(),
       },
+      {
+        name: 'vat',
+        schema: vine.string().vat({ countryCode: ['IN'] }),
+        rule: vatRule({ countryCode: ['IN'] }),
+      },
     ])
     .run(({ assert }, { schema, rule }) => {
       const refs = refsBuilder()
@@ -753,15 +700,12 @@ test.group('VineString | applying rules', () => {
         isOptional: false,
         bail: true,
         parseFnId: undefined,
+        dataTypeValidatorFnId: 'ref://1',
         validations: [
           {
             implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-          {
-            implicit: false,
             isAsync: rule.rule.isAsync,
+            name: rule.rule.name,
             ruleFnId: 'ref://2',
           },
         ],

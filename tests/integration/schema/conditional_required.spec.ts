@@ -8,9 +8,9 @@
  */
 
 import { test } from '@japa/runner'
-import vine from '../../../index.js'
+import vine from '../../../index.ts'
 
-test.group('requiredIfExists', () => {
+test.group('requiredIfExists | literal', () => {
   test('fail when value is missing but other field exists', async ({ assert }) => {
     const schema = vine.object({
       email: vine.string().optional(),
@@ -466,5 +466,193 @@ test.group('requiredWhen', () => {
         rule: 'required',
       },
     ])
+  })
+})
+
+test.group('requiredIfExists | array', () => {
+  test('fail when value is missing but other field exists', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean(),
+      scores: vine.array(vine.string()).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      participated: true,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'scores',
+        message: 'The scores field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('pass when value is missing but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.array(vine.string()).optional().requiredIfExists('participated'),
+    })
+
+    const data = {}
+
+    await assert.validationOutput(vine.validate({ schema, data }), {})
+  })
+
+  test('pass when value is defined but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.array(vine.string()).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      scores: [],
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      scores: [],
+    })
+  })
+})
+
+test.group('requiredIfExists | object', () => {
+  test('fail when value is missing but other field exists', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean(),
+      scores: vine.object({}).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      participated: true,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'scores',
+        message: 'The scores field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('pass when value is missing but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.object({}).optional().requiredIfExists('participated'),
+    })
+
+    const data = {}
+
+    await assert.validationOutput(vine.validate({ schema, data }), {})
+  })
+
+  test('pass when value is defined but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.object({}).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      scores: {},
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      scores: {},
+    })
+  })
+})
+
+test.group('requiredIfExists | tuple', () => {
+  test('fail when value is missing but other field exists', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean(),
+      scores: vine.tuple([vine.string()]).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      participated: true,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'scores',
+        message: 'The scores field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('pass when value is missing but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.tuple([vine.string()]).optional().requiredIfExists('participated'),
+    })
+
+    const data = {}
+
+    await assert.validationOutput(vine.validate({ schema, data }), {})
+  })
+
+  test('pass when value is defined but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.tuple([vine.string()]).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      scores: ['1'],
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      scores: ['1'],
+    })
+  })
+})
+
+test.group('requiredIfExists | record', () => {
+  test('fail when value is missing but other field exists', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean(),
+      scores: vine.record(vine.string()).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      participated: true,
+    }
+
+    await assert.validationErrors(vine.validate({ schema, data }), [
+      {
+        field: 'scores',
+        message: 'The scores field must be defined',
+        rule: 'required',
+      },
+    ])
+  })
+
+  test('pass when value is missing but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.record(vine.string()).optional().requiredIfExists('participated'),
+    })
+
+    const data = {}
+
+    await assert.validationOutput(vine.validate({ schema, data }), {})
+  })
+
+  test('pass when value is defined but other field does not exist', async ({ assert }) => {
+    const schema = vine.object({
+      participated: vine.boolean().optional(),
+      scores: vine.record(vine.string()).optional().requiredIfExists('participated'),
+    })
+
+    const data = {
+      scores: {},
+    }
+
+    await assert.validationOutput(vine.validate({ schema, data }), {
+      scores: {},
+    })
   })
 })

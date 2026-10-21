@@ -10,8 +10,8 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.ts'
 
 const vine = new Vine()
 
@@ -61,13 +61,8 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -102,13 +97,8 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -143,13 +133,8 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -184,13 +169,8 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -225,13 +205,8 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -285,14 +260,15 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://4',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                   {
                     type: 'literal',
@@ -302,14 +278,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -319,14 +290,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://6',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
                   },
                 ],
               },
@@ -345,14 +311,15 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://8',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                 ],
               },
@@ -370,14 +337,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -387,14 +349,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -465,6 +422,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://3',
                       },
                     ],
@@ -477,14 +435,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://4',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://4',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -494,14 +447,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                 ],
               },
@@ -525,6 +473,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://7',
                       },
                     ],
@@ -557,6 +506,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://10',
                       },
                     ],
@@ -574,6 +524,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'enumList',
                         ruleFnId: 'ref://11',
                       },
                     ],
@@ -591,6 +542,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://12',
                       },
                     ],
@@ -617,6 +569,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://14',
                       },
                     ],
@@ -634,6 +587,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'enumList',
                         ruleFnId: 'ref://15',
                       },
                     ],
@@ -651,6 +605,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://16',
                       },
                     ],
@@ -671,14 +626,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
       ],
     })
@@ -737,14 +687,15 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://4',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                   {
                     type: 'literal',
@@ -754,14 +705,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -771,14 +717,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://6',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
                   },
                 ],
               },
@@ -797,14 +738,15 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://8',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                 ],
               },
@@ -822,14 +764,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -839,14 +776,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -894,14 +826,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://1',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://1',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -911,14 +838,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
           ],
         },
@@ -958,14 +880,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -987,14 +904,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -1004,14 +916,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -1051,14 +958,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -1080,14 +982,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -1097,14 +994,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -1165,6 +1057,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://4',
                       },
                     ],
@@ -1177,14 +1070,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -1194,14 +1082,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://6',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
                   },
                 ],
               },
@@ -1225,6 +1108,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://8',
                       },
                     ],
@@ -1245,14 +1129,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -1262,14 +1141,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -1341,6 +1215,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://3',
                       },
                     ],
@@ -1353,14 +1228,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://4',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://4',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -1370,14 +1240,9 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                 ],
               },
@@ -1401,6 +1266,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://7',
                       },
                     ],
@@ -1428,14 +1294,15 @@ test.group('VineObject', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://10',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                   {
                     type: 'literal',
@@ -1450,6 +1317,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'enumList',
                         ruleFnId: 'ref://11',
                       },
                     ],
@@ -1467,6 +1335,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://12',
                       },
                     ],
@@ -1493,6 +1362,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://14',
                       },
                     ],
@@ -1510,6 +1380,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'enumList',
                         ruleFnId: 'ref://15',
                       },
                     ],
@@ -1527,6 +1398,7 @@ test.group('VineObject', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://16',
                       },
                     ],
@@ -1547,14 +1419,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
       ],
     })
@@ -1592,14 +1459,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -1621,14 +1483,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -1638,14 +1495,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -1705,14 +1557,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -1734,14 +1581,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -1751,14 +1593,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -1799,14 +1636,9 @@ test.group('VineObject', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -1828,14 +1660,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -1845,14 +1672,9 @@ test.group('VineObject', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -1949,13 +1771,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -1981,13 +1798,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
         {
@@ -1998,13 +1810,190 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://3',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://3',
+          validations: [],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
+
+  test('cherry pick properties', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.object({
+      id: vine.number(),
+      username: vine.string(),
+    })
+
+    const schema1 = vine.object({
+      ...schema.pick(['username']),
+      password: vine.string(),
+    })
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'number',
+          fieldName: 'id',
+          propertyName: 'id',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
+          parseFnId: undefined,
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://3',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://4',
+          validations: [],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
+
+  test('omit properties', ({ assert }) => {
+    const refs = refsBuilder()
+    const schema = vine.object({
+      id: vine.number(),
+      username: vine.string(),
+    })
+
+    const schema1 = vine.object({
+      ...schema.omit(['username']),
+      password: vine.string(),
+    })
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'number',
+          fieldName: 'id',
+          propertyName: 'id',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
+          parseFnId: undefined,
+        },
+      ],
+    })
+
+    assert.deepEqual(schema1[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'number',
+          fieldName: 'id',
+          propertyName: 'id',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://3',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://4',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2039,13 +2028,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2071,13 +2055,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2111,13 +2090,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2143,13 +2117,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2184,13 +2153,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2216,13 +2180,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2256,13 +2215,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2287,13 +2241,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -2318,196 +2267,172 @@ test.group('VineObject | clone', () => {
     })
     const schema1 = schema.clone().merge(hiringGuide)
 
-    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
-      type: 'object',
-      fieldName: '*',
-      propertyName: '*',
-      bail: true,
-      allowNull: false,
-      isOptional: false,
-      allowUnknownProperties: false,
-      validations: [],
-      groups: [],
-      parseFnId: undefined,
-      properties: [
-        {
-          type: 'literal',
-          subtype: 'string',
-          fieldName: 'username',
-          propertyName: 'username',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
-        },
-        {
-          type: 'literal',
-          subtype: 'string',
-          fieldName: 'password',
-          propertyName: 'password',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
-        },
-      ],
-    })
+    assert.snapshot(schema[PARSE]('*', refsBuilder(), { toCamelCase: false })).matchInline(`
+      {
+        "allowNull": false,
+        "allowUnknownProperties": false,
+        "bail": true,
+        "fieldName": "*",
+        "groups": [],
+        "isOptional": false,
+        "parseFnId": undefined,
+        "properties": [
+          {
+            "allowNull": false,
+            "bail": true,
+            "dataTypeValidatorFnId": "ref://1",
+            "fieldName": "username",
+            "isOptional": false,
+            "parseFnId": undefined,
+            "propertyName": "username",
+            "subtype": "string",
+            "type": "literal",
+            "validations": [],
+          },
+          {
+            "allowNull": false,
+            "bail": true,
+            "dataTypeValidatorFnId": "ref://2",
+            "fieldName": "password",
+            "isOptional": false,
+            "parseFnId": undefined,
+            "propertyName": "password",
+            "subtype": "string",
+            "type": "literal",
+            "validations": [],
+          },
+        ],
+        "propertyName": "*",
+        "type": "object",
+        "validations": [],
+      }
+    `)
 
-    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
-      type: 'object',
-      fieldName: '*',
-      propertyName: '*',
-      bail: true,
-      allowNull: false,
-      isOptional: false,
-      allowUnknownProperties: false,
-      validations: [],
-      groups: [
-        {
-          type: 'group',
-          elseConditionalFnRefId: 'ref://3',
-          conditions: [
-            {
-              conditionalFnRefId: 'ref://7',
-              schema: {
-                type: 'sub_object',
-                groups: [],
-                properties: [
-                  {
-                    type: 'literal',
-                    subtype: 'literal',
-                    fieldName: 'is_hiring_guide',
-                    propertyName: 'is_hiring_guide',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://4',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    subtype: 'string',
-                    fieldName: 'name',
-                    propertyName: 'name',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
-                  },
-                  {
-                    type: 'literal',
-                    subtype: 'string',
-                    fieldName: 'price',
-                    propertyName: 'price',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
-                  },
-                ],
+    assert.snapshot(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false })).matchInline(`
+      {
+        "allowNull": false,
+        "allowUnknownProperties": false,
+        "bail": true,
+        "fieldName": "*",
+        "groups": [
+          {
+            "conditions": [
+              {
+                "conditionalFnRefId": "ref://7",
+                "schema": {
+                  "groups": [],
+                  "properties": [
+                    {
+                      "allowNull": false,
+                      "bail": true,
+                      "fieldName": "is_hiring_guide",
+                      "isOptional": false,
+                      "parseFnId": undefined,
+                      "propertyName": "is_hiring_guide",
+                      "subtype": "literal",
+                      "type": "literal",
+                      "validations": [
+                        {
+                          "implicit": false,
+                          "isAsync": false,
+                          "name": "equals",
+                          "ruleFnId": "ref://4",
+                        },
+                      ],
+                    },
+                    {
+                      "allowNull": false,
+                      "bail": true,
+                      "dataTypeValidatorFnId": "ref://5",
+                      "fieldName": "name",
+                      "isOptional": false,
+                      "parseFnId": undefined,
+                      "propertyName": "name",
+                      "subtype": "string",
+                      "type": "literal",
+                      "validations": [],
+                    },
+                    {
+                      "allowNull": false,
+                      "bail": true,
+                      "dataTypeValidatorFnId": "ref://6",
+                      "fieldName": "price",
+                      "isOptional": false,
+                      "parseFnId": undefined,
+                      "propertyName": "price",
+                      "subtype": "string",
+                      "type": "literal",
+                      "validations": [],
+                    },
+                  ],
+                  "type": "sub_object",
+                },
               },
-            },
-            {
-              conditionalFnRefId: 'ref://9',
-              schema: {
-                type: 'sub_object',
-                groups: [],
-                properties: [
-                  {
-                    type: 'literal',
-                    subtype: 'literal',
-                    fieldName: 'is_hiring_guide',
-                    propertyName: 'is_hiring_guide',
-                    bail: true,
-                    allowNull: false,
-                    isOptional: false,
-                    parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://8',
-                      },
-                    ],
-                  },
-                ],
+              {
+                "conditionalFnRefId": "ref://9",
+                "schema": {
+                  "groups": [],
+                  "properties": [
+                    {
+                      "allowNull": false,
+                      "bail": true,
+                      "fieldName": "is_hiring_guide",
+                      "isOptional": false,
+                      "parseFnId": undefined,
+                      "propertyName": "is_hiring_guide",
+                      "subtype": "literal",
+                      "type": "literal",
+                      "validations": [
+                        {
+                          "implicit": false,
+                          "isAsync": false,
+                          "name": "equals",
+                          "ruleFnId": "ref://8",
+                        },
+                      ],
+                    },
+                  ],
+                  "type": "sub_object",
+                },
               },
-            },
-          ],
-        },
-      ],
-      parseFnId: undefined,
-      properties: [
-        {
-          type: 'literal',
-          subtype: 'string',
-          fieldName: 'username',
-          propertyName: 'username',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
-        },
-        {
-          type: 'literal',
-          subtype: 'string',
-          fieldName: 'password',
-          propertyName: 'password',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
-        },
-      ],
-    })
+            ],
+            "elseConditionalFnRefId": "ref://3",
+            "type": "group",
+          },
+        ],
+        "isOptional": false,
+        "parseFnId": undefined,
+        "properties": [
+          {
+            "allowNull": false,
+            "bail": true,
+            "dataTypeValidatorFnId": "ref://1",
+            "fieldName": "username",
+            "isOptional": false,
+            "parseFnId": undefined,
+            "propertyName": "username",
+            "subtype": "string",
+            "type": "literal",
+            "validations": [],
+          },
+          {
+            "allowNull": false,
+            "bail": true,
+            "dataTypeValidatorFnId": "ref://2",
+            "fieldName": "password",
+            "isOptional": false,
+            "parseFnId": undefined,
+            "propertyName": "password",
+            "subtype": "string",
+            "type": "literal",
+            "validations": [],
+          },
+        ],
+        "propertyName": "*",
+        "type": "object",
+        "validations": [],
+      }
+    `)
   })
 
   test('merge groups across original and cloned objects', ({ assert }) => {
@@ -2574,6 +2499,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://3',
                       },
                     ],
@@ -2586,14 +2512,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://4',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://4',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -2603,14 +2524,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                 ],
               },
@@ -2634,6 +2550,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://7',
                       },
                     ],
@@ -2654,14 +2571,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
       ],
     })
@@ -2699,6 +2611,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://3',
                       },
                     ],
@@ -2716,6 +2629,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'enumList',
                         ruleFnId: 'ref://4',
                       },
                     ],
@@ -2733,6 +2647,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://5',
                       },
                     ],
@@ -2759,6 +2674,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://7',
                       },
                     ],
@@ -2776,6 +2692,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'enumList',
                         ruleFnId: 'ref://8',
                       },
                     ],
@@ -2793,6 +2710,7 @@ test.group('VineObject | clone', () => {
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://9',
                       },
                     ],
@@ -2813,14 +2731,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
       ],
     })
@@ -2837,165 +2750,138 @@ test.group('VineObject | clone', () => {
 
     const schema1 = schema.clone().toCamelCase()
 
-    assert.deepEqual(schema[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
-      type: 'object',
-      fieldName: '*',
-      propertyName: '*',
-      bail: true,
-      allowNull: false,
-      isOptional: false,
-      allowUnknownProperties: false,
-      validations: [],
-      groups: [],
-      parseFnId: undefined,
-      properties: [
-        {
-          type: 'literal',
-          subtype: 'number',
-          fieldName: 'post_id',
-          propertyName: 'post_id',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
-        },
-        {
-          type: 'object',
-          fieldName: 'user',
-          propertyName: 'user',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          allowUnknownProperties: false,
-          validations: [],
-          groups: [],
-          parseFnId: undefined,
-          properties: [
-            {
-              type: 'literal',
-              subtype: 'string',
-              fieldName: 'user_name',
-              propertyName: 'user_name',
-              bail: true,
-              allowNull: false,
-              isOptional: false,
-              parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
-            },
-            {
-              type: 'literal',
-              subtype: 'string',
-              fieldName: 'pass_word',
-              propertyName: 'pass_word',
-              bail: true,
-              allowNull: false,
-              isOptional: false,
-              parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    })
-
-    assert.deepEqual(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false }), {
-      type: 'object',
-      fieldName: '*',
-      propertyName: '*',
-      bail: true,
-      allowNull: false,
-      isOptional: false,
-      allowUnknownProperties: false,
-      validations: [],
-      groups: [],
-      parseFnId: undefined,
-      properties: [
-        {
-          type: 'literal',
-          subtype: 'number',
-          fieldName: 'post_id',
-          propertyName: 'postId',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
-        },
-        {
-          type: 'object',
-          fieldName: 'user',
-          propertyName: 'user',
-          bail: true,
-          allowNull: false,
-          isOptional: false,
-          allowUnknownProperties: false,
-          validations: [],
-          groups: [],
-          parseFnId: undefined,
-          properties: [
-            {
-              type: 'literal',
-              subtype: 'string',
-              fieldName: 'user_name',
-              propertyName: 'userName',
-              bail: true,
-              allowNull: false,
-              isOptional: false,
-              parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
-            },
-            {
-              type: 'literal',
-              subtype: 'string',
-              fieldName: 'pass_word',
-              propertyName: 'passWord',
-              bail: true,
-              allowNull: false,
-              isOptional: false,
-              parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    })
+    assert.snapshot(schema[PARSE]('*', refsBuilder(), { toCamelCase: false })).matchInline(`
+      {
+        "allowNull": false,
+        "allowUnknownProperties": false,
+        "bail": true,
+        "fieldName": "*",
+        "groups": [],
+        "isOptional": false,
+        "parseFnId": undefined,
+        "properties": [
+          {
+            "allowNull": false,
+            "bail": true,
+            "dataTypeValidatorFnId": "ref://1",
+            "fieldName": "post_id",
+            "isOptional": false,
+            "parseFnId": undefined,
+            "propertyName": "post_id",
+            "subtype": "number",
+            "type": "literal",
+            "validations": [],
+          },
+          {
+            "allowNull": false,
+            "allowUnknownProperties": false,
+            "bail": true,
+            "fieldName": "user",
+            "groups": [],
+            "isOptional": false,
+            "parseFnId": undefined,
+            "properties": [
+              {
+                "allowNull": false,
+                "bail": true,
+                "dataTypeValidatorFnId": "ref://2",
+                "fieldName": "user_name",
+                "isOptional": false,
+                "parseFnId": undefined,
+                "propertyName": "user_name",
+                "subtype": "string",
+                "type": "literal",
+                "validations": [],
+              },
+              {
+                "allowNull": false,
+                "bail": true,
+                "dataTypeValidatorFnId": "ref://3",
+                "fieldName": "pass_word",
+                "isOptional": false,
+                "parseFnId": undefined,
+                "propertyName": "pass_word",
+                "subtype": "string",
+                "type": "literal",
+                "validations": [],
+              },
+            ],
+            "propertyName": "user",
+            "type": "object",
+            "validations": [],
+          },
+        ],
+        "propertyName": "*",
+        "type": "object",
+        "validations": [],
+      }
+    `)
+    assert.snapshot(schema1[PARSE]('*', refsBuilder(), { toCamelCase: false })).matchInline(`
+      {
+        "allowNull": false,
+        "allowUnknownProperties": false,
+        "bail": true,
+        "fieldName": "*",
+        "groups": [],
+        "isOptional": false,
+        "parseFnId": undefined,
+        "properties": [
+          {
+            "allowNull": false,
+            "bail": true,
+            "dataTypeValidatorFnId": "ref://1",
+            "fieldName": "post_id",
+            "isOptional": false,
+            "parseFnId": undefined,
+            "propertyName": "postId",
+            "subtype": "number",
+            "type": "literal",
+            "validations": [],
+          },
+          {
+            "allowNull": false,
+            "allowUnknownProperties": false,
+            "bail": true,
+            "fieldName": "user",
+            "groups": [],
+            "isOptional": false,
+            "parseFnId": undefined,
+            "properties": [
+              {
+                "allowNull": false,
+                "bail": true,
+                "dataTypeValidatorFnId": "ref://2",
+                "fieldName": "user_name",
+                "isOptional": false,
+                "parseFnId": undefined,
+                "propertyName": "userName",
+                "subtype": "string",
+                "type": "literal",
+                "validations": [],
+              },
+              {
+                "allowNull": false,
+                "bail": true,
+                "dataTypeValidatorFnId": "ref://3",
+                "fieldName": "pass_word",
+                "isOptional": false,
+                "parseFnId": undefined,
+                "propertyName": "passWord",
+                "subtype": "string",
+                "type": "literal",
+                "validations": [],
+              },
+            ],
+            "propertyName": "user",
+            "type": "object",
+            "validations": [],
+          },
+        ],
+        "propertyName": "*",
+        "type": "object",
+        "validations": [],
+      }
+    `)
   })
 
   test('re-use schema via cloning', ({ assert }) => {
@@ -3031,14 +2917,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -3060,14 +2941,9 @@ test.group('VineObject | clone', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -3077,14 +2953,9 @@ test.group('VineObject | clone', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -3111,14 +2982,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -3128,14 +2994,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -3194,14 +3055,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://4',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                   {
                     type: 'literal',
@@ -3211,14 +3073,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -3228,14 +3085,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://6',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
                   },
                 ],
               },
@@ -3254,14 +3106,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://8',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                 ],
               },
@@ -3279,14 +3132,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -3296,14 +3144,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -3336,14 +3179,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://4',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                   {
                     type: 'literal',
@@ -3353,14 +3197,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -3370,14 +3209,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://6',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
                   },
                 ],
               },
@@ -3396,14 +3230,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://8',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                 ],
               },
@@ -3421,14 +3256,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -3438,14 +3268,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -3503,14 +3328,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://4',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                   {
                     type: 'literal',
@@ -3520,14 +3346,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -3537,14 +3358,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://6',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
                   },
                 ],
               },
@@ -3563,14 +3379,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://8',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                 ],
               },
@@ -3588,14 +3405,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -3605,14 +3417,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -3645,14 +3452,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://4',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                   {
                     type: 'literal',
@@ -3662,14 +3470,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://5',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://5',
-                      },
-                    ],
                   },
                   {
                     type: 'literal',
@@ -3679,14 +3482,9 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
+                    dataTypeValidatorFnId: 'ref://6',
+                    validations: [],
                     parseFnId: undefined,
-                    validations: [
-                      {
-                        implicit: false,
-                        isAsync: false,
-                        ruleFnId: 'ref://6',
-                      },
-                    ],
                   },
                 ],
               },
@@ -3705,14 +3503,15 @@ test.group('VineObject | clone', () => {
                     bail: true,
                     allowNull: false,
                     isOptional: false,
-                    parseFnId: undefined,
                     validations: [
                       {
                         implicit: false,
                         isAsync: false,
+                        name: 'equals',
                         ruleFnId: 'ref://8',
                       },
                     ],
+                    parseFnId: undefined,
                   },
                 ],
               },
@@ -3730,14 +3529,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'literal',
@@ -3747,14 +3541,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
         },
       ],
     })
@@ -3793,14 +3582,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -3822,14 +3606,9 @@ test.group('VineObject | clone', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -3839,14 +3618,9 @@ test.group('VineObject | clone', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -3873,14 +3647,9 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
         },
         {
           type: 'object',
@@ -3902,14 +3671,9 @@ test.group('VineObject | clone', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://2',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://2',
-                },
-              ],
             },
             {
               type: 'literal',
@@ -3919,14 +3683,9 @@ test.group('VineObject | clone', () => {
               bail: true,
               allowNull: false,
               isOptional: false,
+              dataTypeValidatorFnId: 'ref://3',
+              validations: [],
               parseFnId: undefined,
-              validations: [
-                {
-                  implicit: false,
-                  isAsync: false,
-                  ruleFnId: 'ref://3',
-                },
-              ],
             },
           ],
         },
@@ -3964,13 +3723,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -3996,13 +3750,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -4039,13 +3788,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -4071,13 +3815,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -4114,13 +3853,8 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://1',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
           parseFnId: undefined,
         },
       ],
@@ -4146,16 +3880,194 @@ test.group('VineObject | clone', () => {
           bail: true,
           allowNull: false,
           isOptional: false,
-          validations: [
-            {
-              implicit: false,
-              isAsync: false,
-              ruleFnId: 'ref://2',
-            },
-          ],
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
           parseFnId: undefined,
         },
       ],
     })
   })
+
+  test('convert to all properties optional', ({ assert }) => {
+    const refs = refsBuilder()
+
+    const schema = vine
+      .object({
+        username: vine.string(),
+        password: vine.string(),
+        is_remember: vine.boolean(),
+        optional: vine.string().optional(),
+        nested: vine.object({
+          prop: vine.string(),
+        }),
+      })
+      .partial()
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'boolean',
+          fieldName: 'is_remember',
+          propertyName: 'is_remember',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          validations: [
+            {
+              implicit: false,
+              isAsync: false,
+              name: 'boolean',
+              ruleFnId: 'ref://3',
+            },
+          ],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'optional',
+          propertyName: 'optional',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://4',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'object',
+          fieldName: 'nested',
+          propertyName: 'nested',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          allowUnknownProperties: false,
+          validations: [],
+          groups: [],
+          parseFnId: undefined,
+          properties: [
+            {
+              type: 'literal',
+              subtype: 'string',
+              fieldName: 'prop',
+              propertyName: 'prop',
+              bail: true,
+              allowNull: false,
+              isOptional: false,
+              dataTypeValidatorFnId: 'ref://5',
+              validations: [],
+              parseFnId: undefined,
+            },
+          ],
+        },
+      ],
+    })
+  })
+
+  test('convert to some properties optional', ({ assert }) => {
+    const refs = refsBuilder()
+
+    const schema = vine
+      .object({
+        username: vine.string(),
+        password: vine.string(),
+      })
+      .partial(['username'])
+
+    assert.deepEqual(schema[PARSE]('*', refs, { toCamelCase: false }), {
+      type: 'object',
+      fieldName: '*',
+      propertyName: '*',
+      bail: true,
+      allowNull: false,
+      isOptional: false,
+      allowUnknownProperties: false,
+      validations: [],
+      groups: [],
+      parseFnId: undefined,
+      properties: [
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'username',
+          propertyName: 'username',
+          bail: true,
+          allowNull: false,
+          isOptional: true,
+          dataTypeValidatorFnId: 'ref://1',
+          validations: [],
+          parseFnId: undefined,
+        },
+        {
+          type: 'literal',
+          subtype: 'string',
+          fieldName: 'password',
+          propertyName: 'password',
+          bail: true,
+          allowNull: false,
+          isOptional: false,
+          dataTypeValidatorFnId: 'ref://2',
+          validations: [],
+          parseFnId: undefined,
+        },
+      ],
+    })
+  })
+
+  test('toOptional throws error for groups and unknown properties', () => {
+    const guideSchema = vine.group([
+      vine.group.if((data) => vine.helpers.isTrue(data.hiring_guide), {
+        hiring_guide: vine.literal(true),
+        guide_name: vine.string(),
+        fees: vine.string(),
+      }),
+      vine.group.if(() => true, {
+        hiring_guide: vine.literal(false),
+      }),
+    ])
+
+    vine
+      .object({
+        visitor_name: vine.string(),
+      })
+      .merge(guideSchema)
+      .partial()
+  }).throws(
+    'toOptional cannot be used on schemas that have groups or allowUnknownProperties enabled'
+  )
 })

@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import { Vine } from '../../src/vine/main.js'
+import { Vine } from '../../src/vine/main.ts'
 
 const vine = new Vine()
 
@@ -144,6 +144,7 @@ test.group('Vine Helpers', () => {
     .run(async ({ assert }, { url, result }) => {
       assert.equal(await vine.helpers.isActiveURL(url), result)
     })
+    .timeout(6000)
 
   test('mobileLocales contains the list of mobile locales', ({ assert }) => {
     const codes = vine.helpers.mobileLocales

@@ -12,32 +12,29 @@ import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 
 /**
- * Verifies two equals are equal considering the HTML forms
- * serialization behavior.
+ * Validates that two values are equal, considering HTML form serialization behavior.
+ * Compares values using normalized comparison that handles type coercion.
+ *
+ * @example
+ * vine.literal('admin')
+ * vine.literal(42)
+ * vine.literal(true)
  */
-export const equalsRule = createRule<{ expectedValue: any }>((value, options, field) => {
-  let input = value
+export const equalsRule = createRule<{ expectedValue: any }>(
+  function equals(value, options, field) {
+    const comparedValue = helpers.compareValues(value, options.expectedValue)
 
-  /**
-   * Normalizing the field value as per the expected
-   * value.
-   */
-  if (typeof options.expectedValue === 'boolean') {
-    input = helpers.asBoolean(value)
-  } else if (typeof options.expectedValue === 'number') {
-    input = helpers.asNumber(value)
+    /**
+     * Performing validation and reporting error
+     */
+    if (!comparedValue.isEqual) {
+      field.report(messages.literal, 'literal', field, options)
+      return
+    }
+
+    /**
+     * Mutating input with normalized value
+     */
+    field.mutate(comparedValue.casted, field)
   }
-
-  /**
-   * Performing validation and reporting error
-   */
-  if (input !== options.expectedValue) {
-    field.report(messages.literal, 'literal', field, options)
-    return
-  }
-
-  /**
-   * Mutating input with normalized value
-   */
-  field.mutate(input, field)
-})
+)

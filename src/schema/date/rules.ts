@@ -8,75 +8,45 @@
  */
 
 import dayjs, { type Dayjs } from 'dayjs'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter.js'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore.js'
-import customParseFormat from 'dayjs/plugin/customParseFormat.js'
-
-import { messages } from '../../defaults.js'
+import { globalTransforms, messages } from '../../defaults.js'
 import { helpers } from '../../vine/helpers.js'
 import { createRule } from '../../vine/create_rule.js'
 import type { DateEqualsOptions, DateFieldOptions, FieldContext } from '../../types.js'
-
-export const DEFAULT_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss']
-
-/**
- * Registering plugins
- */
-dayjs.extend(customParseFormat)
-dayjs.extend(isSameOrAfter)
-dayjs.extend(isSameOrBefore)
 
 /**
  * Validates the value to be a string or number formatted
  * as per the expected date-time format.
  */
-export const dateRule = createRule<Partial<DateFieldOptions>>((value, options, field) => {
-  if (typeof value !== 'string' && typeof value !== 'number') {
-    field.report(messages.date, 'date', field)
-    return
+export const dateRule = createRule<Partial<DateFieldOptions>>(
+  function date(value, options, field): boolean {
+    if (!field.isDefined) {
+      return false
+    }
+
+    if (typeof value !== 'string' && typeof value !== 'number') {
+      field.report(messages.date, 'date', field)
+      return false
+    }
+
+    const { dateTime, formats } = helpers.asDayJS(value, options.formats)
+
+    /**
+     * Ensure post parsing the datetime instance is valid
+     */
+    if (!dateTime.isValid()) {
+      field.report(messages.date, 'date', field)
+      return false
+    }
+
+    field.$value = dateTime
+    field.$formats = formats
+    field.mutate(
+      globalTransforms.date ? globalTransforms.date(dateTime.toDate()) : dateTime.toDate(),
+      field
+    )
+    return true
   }
-
-  let isTimestampAllowed = false
-  let formats: DateEqualsOptions['format'] = options.formats || DEFAULT_DATE_FORMATS
-
-  /**
-   * DayJS mutates the formats property under the hood. There
-   * we have to create a shallow clone before passing formats.
-   *
-   * https://github.com/iamkun/dayjs/issues/2136
-   */
-  if (Array.isArray(formats)) {
-    formats = [...formats]
-    isTimestampAllowed = formats.includes('x')
-  } else if (typeof formats !== 'string') {
-    formats = { ...formats }
-    isTimestampAllowed = formats.format === 'x'
-  }
-
-  const valueAsNumber = isTimestampAllowed ? helpers.asNumber(value) : value
-
-  /**
-   * The timestamp validation does not work with formats array
-   * when using "customFormatsPlugin". Therefore we have
-   * to create dayjs instance without formats option
-   */
-  const dateTime =
-    isTimestampAllowed && !Number.isNaN(valueAsNumber)
-      ? dayjs(valueAsNumber)
-      : dayjs(value, formats, true)
-
-  /**
-   * Ensure post parsing the datetime instance is valid
-   */
-  if (!dateTime.isValid()) {
-    field.report(messages.date, 'date', field)
-    return
-  }
-
-  field.meta.$value = dateTime
-  field.meta.$formats = formats
-  field.mutate(dateTime.toDate(), field)
-})
+)
 
 /**
  * The equals rule compares the input value to be same
@@ -88,22 +58,18 @@ export const equalsRule = createRule<
   {
     expectedValue: string | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function equals(_, options, field) {
   const compare = options.compare || 'day'
-  const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const format = options.format || field.$formats
+  const dateTime = field.$value as Dayjs
   const expectedValue =
     typeof options.expectedValue === 'function'
       ? options.expectedValue(field)
       : options.expectedValue
 
-  const expectedDateTime = dayjs(expectedValue, format, true)
+  const { dateTime: expectedDateTime } = helpers.asDayJS(expectedValue, format)
   if (!expectedDateTime.isValid()) {
-    throw new Error(`Invalid datetime value "${expectedValue}" value provided to the equals rule`)
+    throw new Error(`Invalid datetime value "${expectedValue}" provided to the equals rule`)
   }
 
   /**
@@ -126,19 +92,12 @@ export const equalsRule = createRule<
 export const afterRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'tomorrow'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'tomorrow' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function after(_, options, field) {
   const compare = options.compare || 'day'
-  const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const format = options.format || field.$formats
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -150,10 +109,10 @@ export const afterRule = createRule<
       ? dayjs()
       : expectedValue === 'tomorrow'
         ? dayjs().add(1, 'day')
-        : dayjs(expectedValue, format, true)
+        : helpers.asDayJS(expectedValue, format).dateTime
 
   if (!expectedDateTime.isValid()) {
-    throw new Error(`Invalid datetime value "${expectedValue}" value provided to the after rule`)
+    throw new Error(`Invalid datetime value "${expectedValue}" provided to the after rule`)
   }
 
   /**
@@ -176,19 +135,12 @@ export const afterRule = createRule<
 export const afterOrEqualRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'tomorrow'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'tomorrow' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function afterOrEqual(_, options, field) {
   const compare = options.compare || 'day'
-  const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const format = options.format || field.$formats
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -200,12 +152,10 @@ export const afterOrEqualRule = createRule<
       ? dayjs()
       : expectedValue === 'tomorrow'
         ? dayjs().add(1, 'day')
-        : dayjs(expectedValue, format, true)
+        : helpers.asDayJS(expectedValue, format).dateTime
 
   if (!expectedDateTime.isValid()) {
-    throw new Error(
-      `Invalid datetime value "${expectedValue}" value provided to the afterOrEqual rule`
-    )
+    throw new Error(`Invalid datetime value "${expectedValue}" provided to the afterOrEqual rule`)
   }
 
   /**
@@ -229,19 +179,12 @@ export const afterOrEqualRule = createRule<
 export const beforeRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'yesterday'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'yesterday' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function before(_, options, field) {
   const compare = options.compare || 'day'
-  const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const format = options.format || field.$formats
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -253,10 +196,10 @@ export const beforeRule = createRule<
       ? dayjs()
       : expectedValue === 'yesterday'
         ? dayjs().subtract(1, 'day')
-        : dayjs(expectedValue, format, true)
+        : helpers.asDayJS(expectedValue, format).dateTime
 
   if (!expectedDateTime.isValid()) {
-    throw new Error(`Invalid datetime value "${expectedValue}" value provided to the before rule`)
+    throw new Error(`Invalid datetime value "${expectedValue}" provided to the before rule`)
   }
 
   /**
@@ -279,19 +222,12 @@ export const beforeRule = createRule<
 export const beforeOrEqualRule = createRule<
   {
     expectedValue:
-      | 'today'
-      | 'yesterday'
-      | (string & { _?: never })
-      | ((field: FieldContext) => string)
+      'today' | 'yesterday' | (string & { _?: never }) | ((field: FieldContext) => string)
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function beforeOrEqual(_, options, field) {
   const compare = options.compare || 'day'
-  const format = options.format || DEFAULT_DATE_FORMATS
-  const dateTime = field.meta.$value as Dayjs
+  const format = options.format || field.$formats
+  const dateTime = field.$value as Dayjs
 
   const expectedValue =
     typeof options.expectedValue === 'function'
@@ -303,12 +239,10 @@ export const beforeOrEqualRule = createRule<
       ? dayjs()
       : expectedValue === 'yesterday'
         ? dayjs().subtract(1, 'day')
-        : dayjs(expectedValue, format, true)
+        : helpers.asDayJS(expectedValue, format).dateTime
 
   if (!expectedDateTime.isValid()) {
-    throw new Error(
-      `Invalid datetime value "${expectedValue}" value provided to the beforeOrEqual rule`
-    )
+    throw new Error(`Invalid datetime value "${expectedValue}" provided to the beforeOrEqual rule`)
   }
 
   /**
@@ -332,16 +266,12 @@ export const sameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function sameAs(_, options, field) {
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
-  const expectedDateTime = dayjs(expectedValue, format, true)
+  const expectedDateTime = helpers.asDayJS(expectedValue, format).dateTime
 
   /**
    * Skip validation when the other field is not a valid
@@ -374,16 +304,12 @@ export const notSameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function notSameAs(_, options, field) {
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
-  const expectedDateTime = dayjs(expectedValue, format, true)
+  const expectedDateTime = helpers.asDayJS(expectedValue, format).dateTime
 
   /**
    * Skip validation when the other field is not a valid
@@ -416,16 +342,12 @@ export const afterFieldRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function afterField(_, options, field) {
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
-  const expectedDateTime = dayjs(expectedValue, format, true)
+  const expectedDateTime = helpers.asDayJS(expectedValue, format).dateTime
 
   /**
    * Skip validation when the other field is not a valid
@@ -458,16 +380,12 @@ export const afterOrSameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function afterOrSameAs(_, options, field) {
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
-  const expectedDateTime = dayjs(expectedValue, format, true)
+  const expectedDateTime = helpers.asDayJS(expectedValue, format).dateTime
 
   /**
    * Skip validation when the other field is not a valid
@@ -500,16 +418,12 @@ export const beforeFieldRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function beforeField(_, options, field) {
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
-  const expectedDateTime = dayjs(expectedValue, format, true)
+  const expectedDateTime = helpers.asDayJS(expectedValue, format).dateTime
 
   /**
    * Skip validation when the other field is not a valid
@@ -542,16 +456,12 @@ export const beforeOrSameAsRule = createRule<
   {
     otherField: string
   } & DateEqualsOptions
->((_, options, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
+>(function beforeOrSameAs(_, options, field) {
   const compare = options.compare || 'day'
-  const dateTime = field.meta.$value as Dayjs
-  const format = options.format || field.meta.$formats
+  const dateTime = field.$value as Dayjs
+  const format = options.format || field.$formats
   const expectedValue = helpers.getNestedValue(options.otherField, field)
-  const expectedDateTime = dayjs(expectedValue, format, true)
+  const expectedDateTime = helpers.asDayJS(expectedValue, format).dateTime
 
   /**
    * Skip validation when the other field is not a valid
@@ -577,12 +487,8 @@ export const beforeOrSameAsRule = createRule<
 /**
  * The weekend rule ensures the date falls on a weekend
  */
-export const weekendRule = createRule((_, __, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
-  const dateTime = field.meta.$value as Dayjs
+export const weekendRule = createRule(function weekend(_, __, field) {
+  const dateTime = field.$value as Dayjs
   const day = dateTime.day()
 
   if (day !== 0 && day !== 6) {
@@ -593,12 +499,8 @@ export const weekendRule = createRule((_, __, field) => {
 /**
  * The weekday rule ensures the date falls on a weekday
  */
-export const weekdayRule = createRule((_, __, field) => {
-  if (!field.meta.$value) {
-    return
-  }
-
-  const dateTime = field.meta.$value as Dayjs
+export const weekdayRule = createRule(function weekday(_, __, field) {
+  const dateTime = field.$value as Dayjs
   const day = dateTime.day()
 
   if (day === 0 || day === 6) {

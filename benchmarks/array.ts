@@ -5,7 +5,6 @@ import * as yup from 'yup'
 import vine from '../index.js'
 import * as valibot from 'valibot'
 import Joi from 'joi'
-import Ajv, { AsyncSchema } from 'ajv'
 
 function getData() {
   return {
@@ -77,31 +76,6 @@ const joiSchema = Joi.object({
     .required(),
 }).required()
 
-const ajv = new Ajv.default()
-interface AjvData {
-  contacts: [{ type: string; value: string }]
-}
-const ajvSchema: AsyncSchema = {
-  $async: true,
-  type: 'object',
-  properties: {
-    contacts: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          type: { type: 'string', nullable: false },
-          value: { type: 'string', nullable: false },
-        },
-        required: ['type', 'value'],
-      },
-    },
-  },
-  required: ['contacts'],
-  additionalProperties: false,
-}
-const ajvValidator = ajv.compile<AjvData>(ajvSchema)
-
 console.log('======================')
 console.log('Benchmarking arrays')
 console.log('======================')
@@ -137,14 +111,6 @@ suite
     fn: function (deferred: any) {
       joiSchema
         .validateAsync(getData())
-        .then(() => deferred.resolve())
-        .catch(console.log)
-    },
-  })
-  .add('Ajv', {
-    defer: true,
-    fn: function (deferred: any) {
-      ajvValidator(getData())
         .then(() => deferred.resolve())
         .catch(console.log)
     },

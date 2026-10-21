@@ -10,14 +10,14 @@
 import { test } from '@japa/runner'
 import { refsBuilder } from '@vinejs/compiler'
 
-import { Vine } from '../../../src/vine/main.js'
-import { IS_OF_TYPE, PARSE } from '../../../src/symbols.js'
+import { Vine } from '../../../src/vine/main.ts'
+import { IS_OF_TYPE, PARSE } from '../../../src/symbols.ts'
 import {
   maxLengthRule,
   minLengthRule,
   fixedLengthRule,
   validateKeysRule,
-} from '../../../src/schema/record/rules.js'
+} from '../../../src/schema/record/rules.ts'
 
 const vine = new Vine()
 
@@ -57,16 +57,11 @@ test.group('VineRecord', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -74,16 +69,11 @@ test.group('VineRecord', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -127,16 +117,11 @@ test.group('VineRecord', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -144,16 +129,11 @@ test.group('VineRecord', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -197,16 +177,11 @@ test.group('VineRecord', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -214,16 +189,11 @@ test.group('VineRecord', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -267,16 +237,11 @@ test.group('VineRecord', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -284,16 +249,11 @@ test.group('VineRecord', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -337,16 +297,11 @@ test.group('VineRecord', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -354,16 +309,11 @@ test.group('VineRecord', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -407,16 +357,11 @@ test.group('VineRecord', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -424,16 +369,11 @@ test.group('VineRecord', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -490,16 +430,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -507,16 +442,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -548,16 +478,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -565,16 +490,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -617,16 +537,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -634,16 +549,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -675,16 +585,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -692,16 +597,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -744,16 +644,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -761,16 +656,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -802,16 +692,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -819,16 +704,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -872,16 +752,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -889,16 +764,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -931,16 +801,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -948,16 +813,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -1003,16 +863,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -1020,16 +875,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -1061,16 +911,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -1078,16 +923,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -1133,16 +973,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -1150,16 +985,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -1191,16 +1021,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'username',
             propertyName: 'username',
             bail: true,
+            dataTypeValidatorFnId: 'ref://1',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://1',
-              },
-            ],
+            validations: [],
           },
           {
             type: 'literal',
@@ -1208,16 +1033,11 @@ test.group('VineRecord | clone', () => {
             fieldName: 'password',
             propertyName: 'password',
             bail: true,
+            dataTypeValidatorFnId: 'ref://2',
             allowNull: false,
             isOptional: false,
             parseFnId: undefined,
-            validations: [
-              {
-                implicit: false,
-                isAsync: false,
-                ruleFnId: 'ref://2',
-              },
-            ],
+            validations: [],
           },
         ],
       },
@@ -1239,6 +1059,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'minLength',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1251,16 +1072,11 @@ test.group('VineRecord | applying rules', () => {
         fieldName: '*',
         propertyName: '*',
         bail: true,
+        dataTypeValidatorFnId: 'ref://1',
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        validations: [],
       },
     })
 
@@ -1284,6 +1100,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'maxLength',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1296,16 +1113,11 @@ test.group('VineRecord | applying rules', () => {
         fieldName: '*',
         propertyName: '*',
         bail: true,
+        dataTypeValidatorFnId: 'ref://1',
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        validations: [],
       },
     })
 
@@ -1329,6 +1141,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'fixedLength',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1341,16 +1154,11 @@ test.group('VineRecord | applying rules', () => {
         fieldName: '*',
         propertyName: '*',
         bail: true,
+        dataTypeValidatorFnId: 'ref://1',
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        validations: [],
       },
     })
 
@@ -1375,6 +1183,7 @@ test.group('VineRecord | applying rules', () => {
       isOptional: false,
       validations: [
         {
+          name: 'validateKeys',
           implicit: false,
           isAsync: false,
           ruleFnId: 'ref://2',
@@ -1387,16 +1196,11 @@ test.group('VineRecord | applying rules', () => {
         fieldName: '*',
         propertyName: '*',
         bail: true,
+        dataTypeValidatorFnId: 'ref://1',
         allowNull: false,
         isOptional: false,
         parseFnId: undefined,
-        validations: [
-          {
-            implicit: false,
-            isAsync: false,
-            ruleFnId: 'ref://1',
-          },
-        ],
+        validations: [],
       },
     })
 
